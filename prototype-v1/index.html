@@ -1,0 +1,356 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Premier soir à Shanghai</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap">
+<style>
+/* Layout: one dark stage (the game canvas) with an HTML dialogue panel laid over its lower third.
+   Single committed night look: Nanjing Road at dusk, lantern amber on indigo. */
+:root{
+  --ink:#0b0d26;        /* night sky / page */
+  --paper:#171b48;      /* panels */
+  --paper-2:#22275e;    /* raised tiles */
+  --line:#3a4088;
+  --fog:#e6e8f7;        /* text */
+  --mute:#9aa0cf;
+  --lantern:#ffa23f;    /* accent */
+  --jade:#58d6a9;       /* good */
+  --rose:#ff617a;       /* wrong */
+  --display:'Fraunces',Georgia,serif;
+  --body:'Nunito Sans',system-ui,sans-serif;
+  --zh:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--fog);font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(22px,3.4vw,32px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .zh{font-family:var(--zh);font-weight:700;color:var(--lantern);margin-right:.35em}
+.meta{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mute)}
+.pill{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
+.pill b{color:var(--jade)}
+#stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:#0e1030;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -20px #000}
+#game{position:absolute;inset:0}
+#game canvas{display:block;width:100%!important;height:100%!important}
+.hint{position:absolute;left:12px;top:10px;font-size:12px;color:var(--mute);background:rgba(11,13,38,.6);padding:4px 9px;border-radius:8px;pointer-events:none}
+.hint kbd{font-family:inherit;color:var(--fog);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+/* dialogue panel */
+#dlg{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(23,27,72,.0),rgba(23,27,72,.96) 22%);padding:28px 16px 12px;display:flex;flex-direction:column;gap:8px}
+#dlg[hidden]{display:none}
+.who{font-family:var(--display);font-style:italic;color:var(--lantern);font-size:15px;display:flex;gap:10px;align-items:center}
+.who .n{font-family:var(--zh);font-style:normal;font-weight:700}
+.patience{margin-left:auto;display:flex;gap:4px}
+.patience i{width:14px;height:14px;border-radius:50%;background:var(--rose);display:inline-block;opacity:.25}
+.patience i.on{opacity:1}
+.line{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:flex-end;min-height:44px}
+.w{display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:8px;padding:2px 5px;border:1px solid transparent}
+.w:hover,.w:focus-visible{border-color:var(--line);background:var(--paper-2);outline:none}
+.w b{font-family:var(--zh);font-weight:700;font-size:clamp(20px,3vw,26px);line-height:1.1}
+.w i{font-style:normal;font-size:12px;color:var(--mute);margin-top:2px}
+.w.punct{cursor:default}.w.punct:hover{border-color:transparent;background:none}
+.fr{font-size:14px;color:var(--mute)}
+.fr.off{visibility:hidden}
+.tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+button{font:inherit;color:var(--fog);background:var(--paper-2);border:1px solid var(--line);border-radius:9px;padding:6px 11px;cursor:pointer}
+button:hover{border-color:var(--lantern)}
+button:focus-visible{outline:2px solid var(--lantern);outline-offset:2px}
+button.go{background:var(--lantern);color:#2a1600;border-color:transparent;font-weight:700}
+button.sm{font-size:12px;padding:4px 9px}
+.choices{display:flex;flex-direction:column;gap:6px}
+.choices button{text-align:left;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:flex-end}
+.choices .w b{font-size:20px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;min-height:46px;padding:6px;border:1px dashed var(--line);border-radius:10px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px}
+.tile{font-family:var(--zh);font-size:22px;font-weight:700;padding:4px 12px;border-radius:10px;background:var(--paper-2);border:1px solid var(--line)}
+.slots .tile{background:#2d3474;border-color:var(--lantern)}
+.feedback{font-size:13px;min-height:18px}
+.feedback.bad{color:var(--rose)}.feedback.good{color:var(--jade)}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* touch pad */
+.pad{display:none;justify-content:space-between;align-items:center;gap:12px}
+.dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:4px}
+.dpad button{font-size:20px;padding:0;border-radius:12px}
+.dpad .u{grid-column:2;grid-row:1}.dpad .l{grid-column:1;grid-row:2}.dpad .r{grid-column:3;grid-row:2}.dpad .d{grid-column:2;grid-row:3}
+.act{width:84px;height:84px;border-radius:50%;font-family:var(--zh);font-size:22px;font-weight:700}
+@media (pointer:coarse){.pad{display:flex}.hint{display:none}}
+/* word list */
+details{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+summary{cursor:pointer;color:var(--mute);font-size:14px}
+.vocab{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.vocab .w{border-color:var(--line)}
+.vocab .w small{font-size:11px;color:var(--fog);opacity:.8}
+footer{font-size:12px;color:var(--mute);line-height:1.5}
+footer code{color:var(--fog)}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1><span class="zh">第一天</span>Premier soir à Shanghai</h1>
+    <div class="meta">
+      <span class="pill">Mots rencontrés <b id="wc">0</b></span>
+      <span class="pill">Niveau <b>HSK 1</b></span>
+    </div>
+  </header>
+
+  <div id="stage">
+    <div id="game"></div>
+    <div class="hint"><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> marcher · <kbd>Espace</kbd> parler</div>
+    <div id="dlg" hidden>
+      <div class="who"><span class="n" id="who"></span><span id="whofr"></span><span class="patience" id="pat"></span></div>
+      <div class="line" id="line"></div>
+      <div class="fr" id="fr"></div>
+      <div class="tools" id="tools">
+        <button class="sm" id="bSlow" title="Écouter lentement">🐢 慢 · lent</button>
+        <button class="sm" id="bNorm" title="Écouter à vitesse normale">🔊 正常 · normal</button>
+        <button class="sm" id="bWords" title="Mot à mot">🔤 mot à mot</button>
+        <button class="sm" id="bFr" title="Afficher ou cacher le français">FR</button>
+        <span class="fr" id="voiceNote"></span>
+      </div>
+      <div id="body"></div>
+      <div class="feedback" id="fb"></div>
+    </div>
+  </div>
+
+  <div class="pad">
+    <div class="dpad">
+      <button class="u" data-k="u">▲</button><button class="l" data-k="l">◀</button>
+      <button class="r" data-k="r">▶</button><button class="d" data-k="d">▼</button>
+    </div>
+    <button class="act" id="act">说</button>
+  </div>
+
+  <details>
+    <summary>Carnet de mots · 词本</summary>
+    <div class="vocab" id="vocab"></div>
+  </details>
+
+  <footer>Prototype pédagogique. Déplace-toi dans la rue, approche 小李 puis 阿姨 et parle-leur. Chaque réplique s'écoute lentement, à vitesse normale ou mot par mot ; clique un caractère pour l'entendre seul. Les voix sont enregistrées avec le jeu (locuteurs natifs de la bibliothèque chinoise d'ElevenLabs, modèle v4, langue forcée en mandarin, débit posé pour débutants), rien à installer.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"></script>
+<script>
+/* ---------- Voix : fichiers audio embarqués (ElevenLabs), avec repli sur la synthèse du navigateur ---------- */
+const AUDIO={ // texte → fichier
+  '你好！我是小李。':'s00','很高兴认识你！你是法国人吗？':'s01','太好了！我们去喝茶吧！':'s02',
+  '你好！你要什么？':'s03','好！三块钱。':'s04','谢谢！再见！':'s05',
+  '你好！我叫马努。':'s06','是，我是法国人。':'s07','我要一个包子。':'s08','给你。谢谢！':'s09',
+  '再见！':'s10','不客气。':'s11','我是中国人。':'s12','谢谢。':'s13','我不要。':'s14','你好吗？':'s15'};
+['你好','我','是','小李','叫','马努','很','高兴','认识','你','法国人','吗','中国人','谢谢','不客气','再见','太','好','了','我们','去','喝','茶','吧','要','什么','一个','包子','三','块','钱','给','不']
+  .forEach((w,i)=>{ AUDIO[w]='v'+String(i+1).padStart(2,'0'); });
+const SLOW=0.75, NORMAL=1.0; // les phrases sont déjà enregistrées à un débit posé (ElevenLabs v4, [slowly] [clearly])
+let current=null;
+function stopAudio(){ if(current){ try{current.pause();}catch(e){} current=null; } try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
+function playFile(file,rate,onEnd){
+  const a=new Audio('audio/'+file+'.mp3'); current=a;
+  try{ a.preservesPitch=true; a.mozPreservesPitch=true; }catch(e){}
+  a.playbackRate=rate; let done=false; const fin=()=>{ if(done)return; done=true; if(current===a)current=null; onEnd&&onEnd(); };
+  a.onended=fin; a.onerror=fin; a.play().catch(fin);
+  setTimeout(fin, 6000/rate); // garde-fou
+}
+let zhVoice=null;
+function pickVoice(){ try{const vs=speechSynthesis.getVoices(); zhVoice=vs.find(v=>/zh[-_]CN/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null;}catch(e){} }
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }
+function synth(text,rate,onEnd){ if(!('speechSynthesis' in window)){ onEnd&&onEnd(); return; }
+  try{ const u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; if(zhVoice)u.voice=zhVoice; u.rate=rate*0.9;
+    let done=false; const fin=()=>{ if(done)return; done=true; onEnd&&onEnd(); };
+    u.onend=fin; u.onerror=fin; speechSynthesis.speak(u); setTimeout(fin, 1200+text.length*450/rate);
+  }catch(e){ onEnd&&onEnd(); } }
+function speak(text,rate,onEnd){ stopAudio(); const f=AUDIO[text]; if(f) playFile(f,rate,onEnd); else synth(text,rate,onEnd); }
+// enchaîne après la fin réelle de la phrase, jamais avant
+function speakThen(text,rate,fn){ let called=false; speak(text,rate,()=>{ if(!called){called=true; setTimeout(fn,350);} }); }
+// mot à mot : lecture séquentielle des clips de mots
+function speakWords(words){ stopAudio(); const list=words.filter(w=>w[1]).map(w=>w[0]); let i=0;
+  const next=()=>{ if(i>=list.length) return; const t=list[i++]; const f=AUDIO[t]; if(f) playFile(f,0.85,()=>setTimeout(next,120)); else synth(t,0.6,()=>setTimeout(next,120)); };
+  next(); }
+/* ---------- Dialogues (HSK 1) ---------- */
+// mot = [hanzi, pinyin, français] ; ponctuation = [hanzi]
+const DIALOGUES={
+  xiaoli:{ name:'小李', fr:'Xiǎo Lǐ, ton ami shanghaïen', steps:[
+    {t:'say', w:[['你好','nǐ hǎo','bonjour'],['！'],['我','wǒ','je'],['是','shì','suis'],['小李','Xiǎo Lǐ','Xiao Li'],['。']], fr:'Bonjour ! Je suis Xiao Li.'},
+    {t:'choose', ask:'Réponds-lui :', choices:[
+      {w:[['你好','nǐ hǎo','bonjour'],['！'],['我','wǒ','je'],['叫','jiào','m’appelle'],['马努','Mǎnǔ','Manu'],['。']], fr:'Bonjour ! Je m’appelle Manu.', ok:true},
+      {w:[['再见','zàijiàn','au revoir'],['！']], fr:'Au revoir !', ok:false, why:'再见 se dit en partant… vous venez juste de vous rencontrer.'},
+      {w:[['不客气','bú kèqi','de rien'],['。']], fr:'De rien.', ok:false, why:'不客气 répond à un merci. Ici, il faut te présenter.'}
+    ]},
+    {t:'say', w:[['很','hěn','très'],['高兴','gāoxìng','content'],['认识','rènshi','connaître'],['你','nǐ','toi'],['！'],['你','nǐ','tu'],['是','shì','es'],['法国人','Fǎguórén','Français'],['吗','ma','? (particule)'],['？']], fr:'Enchanté ! Tu es français ?'},
+    {t:'choose', ask:'Réponds-lui :', choices:[
+      {w:[['是','shì','oui / être'],['，'],['我','wǒ','je'],['是','shì','suis'],['法国人','Fǎguórén','Français'],['。']], fr:'Oui, je suis français.', ok:true},
+      {w:[['我','wǒ','je'],['是','shì','suis'],['中国人','Zhōngguórén','Chinois'],['。']], fr:'Je suis chinois.', ok:false, why:'Tu viens d’arriver de France… 小李 a l’air perplexe.'},
+      {w:[['谢谢','xièxie','merci'],['。']], fr:'Merci.', ok:false, why:'Il t’a posé une question, pas fait un cadeau.'}
+    ]},
+    {t:'say', w:[['太','tài','trop'],['好','hǎo','bien'],['了','le','(particule)'],['！'],['我们','wǒmen','nous'],['去','qù','aller'],['喝','hē','boire'],['茶','chá','thé'],['吧','ba','(suggestion)'],['！']], fr:'Super ! Allons boire un thé !', end:true}
+  ]},
+  ayi:{ name:'阿姨', fr:'la marchande de baozi', steps:[
+    {t:'say', w:[['你好','nǐ hǎo','bonjour'],['！'],['你','nǐ','tu'],['要','yào','veux'],['什么','shénme','quoi'],['？']], fr:'Bonjour ! Qu’est-ce que tu veux ?'},
+    {t:'order', ask:'Mets les mots dans l’ordre pour commander un baozi :', target:[['我','wǒ','je'],['要','yào','veux'],['一个','yí ge','un (classificateur)'],['包子','bāozi','baozi']], fr:'Je veux un baozi.', why:'En chinois : sujet · verbe · quantité · objet. 我 要 一个 包子。'},
+    {t:'say', w:[['好','hǎo','bien'],['！'],['三','sān','trois'],['块','kuài','yuan'],['钱','qián','argent'],['。']], fr:'D’accord ! Trois yuans.'},
+    {t:'choose', ask:'Tu lui tends l’argent :', choices:[
+      {w:[['给','gěi','donner'],['你','nǐ','toi'],['。'],['谢谢','xièxie','merci'],['！']], fr:'Voilà. Merci !', ok:true},
+      {w:[['我','wǒ','je'],['不','bù','ne pas'],['要','yào','vouloir'],['。']], fr:'Je n’en veux pas.', ok:false, why:'Tu viens de commander… elle a déjà le baozi dans la main.'},
+      {w:[['你','nǐ','tu'],['好','hǎo','bien'],['吗','ma','?'],['？']], fr:'Comment vas-tu ?', ok:false, why:'Gentil, mais elle attend ses trois yuans.'}
+    ]},
+    {t:'say', w:[['谢谢','xièxie','merci'],['！'],['再见','zàijiàn','au revoir'],['！']], fr:'Merci ! Au revoir !', end:true}
+  ]}
+};
+
+/* ---------- Carnet de mots ---------- */
+const met=new Map();
+function meet(words){ words.forEach(w=>{ if(w[1]&&!met.has(w[0])) met.set(w[0],w); }); renderVocab(); }
+function renderVocab(){ document.getElementById('wc').textContent=met.size;
+  const v=document.getElementById('vocab'); v.innerHTML='';
+  met.forEach(w=>{ const s=wordEl(w); const sm=document.createElement('small'); sm.textContent=w[2]; s.appendChild(sm); v.appendChild(s); }); }
+function wordEl(w){ const s=document.createElement('span'); s.className='w'+(w[1]?'':' punct');
+  const b=document.createElement('b'); b.textContent=w[0]; s.appendChild(b);
+  if(w[1]){ const i=document.createElement('i'); i.textContent=w[1]; s.appendChild(i); s.tabIndex=0; s.title=w[2];
+    s.addEventListener('click',e=>{e.stopPropagation();speak(w[0],0.6);}); s.addEventListener('keydown',e=>{if(e.key==='Enter')speak(w[0],0.6);}); }
+  return s; }
+const joinW=w=>w.map(x=>x[0]).join('');
+
+/* ---------- Moteur de dialogue (HTML) ---------- */
+const ui={open:false,cur:null,i:0,patience:3,words:[],frOn:true,done:{}};
+const $=id=>document.getElementById(id);
+function setPatience(n){ ui.patience=n; const p=$('pat'); p.innerHTML=''; for(let k=0;k<3;k++){const i=document.createElement('i'); if(k<n)i.className='on'; p.appendChild(i);} }
+function openDialogue(key){ ui.open=true; ui.cur=DIALOGUES[key]; ui.key=key; ui.i=0; setPatience(3); $('dlg').hidden=false; $('who').textContent=ui.cur.name; $('whofr').textContent=ui.cur.fr; step(); }
+function closeDialogue(ok){ ui.open=false; $('dlg').hidden=true; stopAudio(); if(ok){ ui.done[ui.key]=true; window.onNpcDone&&window.onNpcDone(ui.key);} }
+function showLine(words,fr){ ui.words=words; const l=$('line'); l.innerHTML=''; words.forEach(w=>l.appendChild(wordEl(w))); $('fr').textContent=fr; $('fr').classList.toggle('off',!ui.frOn); meet(words); }
+function fb(msg,cls){ const f=$('fb'); f.textContent=msg||''; f.className='feedback '+(cls||''); }
+function step(){ const s=ui.cur.steps[ui.i]; const body=$('body'); body.innerHTML=''; fb('');
+  if(!s){ closeDialogue(true); return; }
+  if(s.t==='say'){ showLine(s.w,s.fr); speak(joinW(s.w),SLOW);
+    const b=document.createElement('button'); b.className='go'; b.textContent=s.end?'再见 · Terminer':'继续 · Continuer';
+    b.onclick=()=>{ if(s.end) closeDialogue(true); else {ui.i++; step();} }; body.appendChild(b); }
+  if(s.t==='choose'){ const ask=document.createElement('div'); ask.className='fr'; ask.textContent=s.ask; body.appendChild(ask);
+    const c=document.createElement('div'); c.className='choices';
+    s.choices.forEach(ch=>{ const b=document.createElement('button'); ch.w.forEach(w=>b.appendChild(wordEl(w))); b.title=ch.fr;
+      b.onclick=()=>{ meet(ch.w);
+        if(ch.ok){ c.querySelectorAll('button').forEach(x=>x.disabled=true); fb('✓ '+ch.fr,'good'); speakThen(joinW(ch.w),NORMAL,()=>{ui.i++;step();}); }
+        else { speak(joinW(ch.w),NORMAL); lose(ch.why); } }; c.appendChild(b); });
+    body.appendChild(c); }
+  if(s.t==='order'){ showLine([],''); $('fr').textContent='';
+    const ask=document.createElement('div'); ask.className='fr'; ask.textContent=s.ask; body.appendChild(ask);
+    const slots=document.createElement('div'); slots.className='slots'; const tiles=document.createElement('div'); tiles.className='tiles';
+    const answer=[]; const pool=s.target.slice().sort(()=>Math.random()-.5);
+    function render(){ slots.innerHTML=''; tiles.innerHTML='';
+      answer.forEach((w,idx)=>{const t=document.createElement('button'); t.className='tile'; t.textContent=w[0]; t.onclick=()=>{answer.splice(idx,1);pool.push(w);render();}; slots.appendChild(t);});
+      pool.forEach((w,idx)=>{const t=document.createElement('button'); t.className='tile'; t.textContent=w[0]; t.title=w[1]+' · '+w[2]; t.onclick=()=>{speak(w[0],0.6);pool.splice(idx,1);answer.push(w);render();}; tiles.appendChild(t);}); }
+    render(); body.appendChild(slots); body.appendChild(tiles);
+    const ok=document.createElement('button'); ok.className='go'; ok.textContent='说 · Dire';
+    ok.onclick=()=>{ if(answer.map(w=>w[0]).join('')===s.target.map(w=>w[0]).join('')){ ok.disabled=true; const w=s.target.concat([['。']]); showLine(w,s.fr); fb('✓ '+s.fr,'good'); speakThen(joinW(w),NORMAL,()=>{ui.i++;step();}); }
+      else lose(s.why); };
+    body.appendChild(ok); }
+}
+function lose(why){ setPatience(ui.patience-1); $('dlg').classList.remove('shake'); void $('dlg').offsetWidth; $('dlg').classList.add('shake');
+  if(ui.patience<=0){ fb(ui.cur.name+' n’a plus de patience… On recommence.','bad'); setTimeout(()=>{ui.i=0;setPatience(3);step();},1400); }
+  else fb(why,'bad'); }
+$('bSlow').onclick=()=>speak(joinW(ui.words),SLOW);
+$('bNorm').onclick=()=>speak(joinW(ui.words),NORMAL);
+$('bWords').onclick=()=>speakWords(ui.words);
+$('bFr').onclick=()=>{ ui.frOn=!ui.frOn; $('fr').classList.toggle('off',!ui.frOn); $('bFr').style.opacity=ui.frOn?1:.5; };
+
+/* ---------- Pad tactile ---------- */
+const pad={l:0,r:0,u:0,d:0,act:0};
+document.querySelectorAll('.dpad button').forEach(b=>{ const k=b.dataset.k;
+  const on=e=>{e.preventDefault();pad[k]=1}, off=e=>{e.preventDefault();pad[k]=0};
+  b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointercancel',off); b.addEventListener('pointerleave',off); });
+$('act').addEventListener('pointerdown',e=>{e.preventDefault();pad.act=1;});
+
+/* ---------- Monde (Phaser) ---------- */
+const W=960,H=540,WORLD=2100;
+function drawPerson(ctx,c,frame){ // 56x80
+  ctx.clearRect(0,0,56,80);
+  ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(28,76,18,5,0,0,Math.PI*2); ctx.fill();
+  const lo=frame?6:0;
+  ctx.fillStyle=c.pants; rr(ctx,18,52,9,22+ (frame?0:0),4); rr(ctx,29,52,9,22,4);
+  if(frame){ ctx.clearRect(14,52,30,30); ctx.fillStyle=c.pants; rr(ctx,14,52,9,22,4); rr(ctx,33,52,9,22,4); }
+  ctx.fillStyle=c.shoe; rr(ctx,frame?13:17,70,11,6,3); rr(ctx,frame?32:28,70,11,6,3);
+  const g=ctx.createLinearGradient(0,26,0,56); g.addColorStop(0,c.top); g.addColorStop(1,c.top2); ctx.fillStyle=g; rr(ctx,14,26,28,30,8);
+  if(c.apron){ ctx.fillStyle=c.apron; rr(ctx,18,36,20,20,4); }
+  if(c.bag){ ctx.fillStyle=c.bag; rr(ctx,36,28,10,22,4); }
+  ctx.fillStyle=c.top2; rr(ctx,8,30,8,20,4); rr(ctx,40,30,8,20,4);
+  ctx.fillStyle=c.skin; ctx.beginPath(); ctx.arc(28,16,13,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=c.hair; ctx.beginPath(); ctx.arc(28,13,13,Math.PI*1.02,Math.PI*1.98); ctx.fill();
+  if(c.bun){ ctx.beginPath(); ctx.arc(28,3,6,0,Math.PI*2); ctx.fill(); }
+  ctx.fillStyle='#2a1a12'; ctx.beginPath(); ctx.arc(23,17,1.6,0,Math.PI*2); ctx.arc(33,17,1.6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#8a4a3a'; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(28,20,4,0.15*Math.PI,0.85*Math.PI); ctx.stroke();
+}
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); }
+function makeTex(scene,key,c,frame){ const t=scene.textures.createCanvas(key,56,80); drawPerson(t.getContext(),c,frame); t.refresh(); }
+
+function create(){
+  const s=this;
+  // ciel
+  const g=s.add.graphics();
+  g.fillGradientStyle(0x1b1250,0x1b1250,0x3a2a6b,0x3a2a6b,1); g.fillRect(0,0,WORLD,320);
+  g.fillGradientStyle(0x3a2a6b,0x3a2a6b,0x6b3f6b,0x6b3f6b,1); g.fillRect(0,320,WORLD,60);
+  for(let i=0;i<120;i++){ g.fillStyle(0xffffff,Math.random()*.7+.2); g.fillCircle(Math.random()*WORLD,Math.random()*220,Math.random()*1.3+.3); }
+  // tour perle en silhouette
+  const tx=1750; g.fillStyle(0x2a1f5e,1); g.fillRect(tx-6,60,12,320); g.fillCircle(tx,110,26); g.fillCircle(tx,200,40); g.fillCircle(tx,300,22);
+  g.fillStyle(0xff5d73,.9); g.fillCircle(tx,110,22); g.fillCircle(tx,200,34); g.fillStyle(0xffa23f,.5); g.fillCircle(tx,200,12);
+  // immeubles
+  const palette=[0x2b2f6e,0x242858,0x33306f,0x1e2250];
+  let x=0; while(x<WORLD){ const w=120+Math.random()*150, h=150+Math.random()*180; const col=palette[Math.floor(Math.random()*palette.length)];
+    g.fillStyle(col,1); g.fillRect(x,380-h,w,h);
+    g.fillStyle(0x11132f,1); g.fillRect(x,380-h,w,6);
+    for(let wy=380-h+18; wy<360; wy+=26) for(let wx=x+12; wx<x+w-18; wx+=24){ const lit=Math.random()<.55; g.fillStyle(lit?0xffc46b:0x1a1d44, lit?.85:1); g.fillRect(wx,wy,12,15); }
+    x+=w+8; }
+  // enseignes
+  const sign=(sx,sy,txt,col,fg)=>{ const bg=s.add.graphics(); bg.fillStyle(col,1); bg.fillRoundedRect(sx-6,sy-6,txt.length*34+12,46,8); bg.fillStyle(0xffffff,.12); bg.fillRoundedRect(sx-6,sy-6,txt.length*34+12,10,{tl:8,tr:8,bl:0,br:0});
+    s.add.text(sx,sy,txt,{fontFamily:'"Noto Sans SC"',fontSize:'30px',fontStyle:'bold',color:fg}).setOrigin(0,0); };
+  sign(300,280,'地铁',0x1d6f52,'#ffffff'); s.add.text(300,250,'M · Ligne 2',{fontFamily:'"Nunito Sans"',fontSize:'14px',color:'#9aa0cf'});
+  sign(1290,268,'包子',0xc2381f,'#fff3d6'); sign(760,292,'茶',0x2b5e9e,'#ffffff'); sign(1620,300,'南京东路',0xb3771b,'#fff6e8');
+  // stand de baozi
+  g.fillStyle(0x5a3a2a,1); g.fillRect(1280,330,150,50); g.fillStyle(0xd9d2c5,1); g.fillRect(1286,318,138,14);
+  g.fillStyle(0xffffff,.9); for(let i=0;i<5;i++) g.fillCircle(1300+i*26,336,9);
+  // lanternes
+  g.lineStyle(2,0x3d2a2a,1); g.beginPath(); g.moveTo(0,110); g.lineTo(WORLD,130); g.strokePath();
+  for(let lx=60; lx<WORLD; lx+=140){ const ly=118+(lx/WORLD)*20; g.fillStyle(0xff7a4a,.12); g.fillCircle(lx,ly+28,46); g.fillStyle(0xff7a4a,.2); g.fillCircle(lx,ly+28,26);
+    g.fillStyle(0xd63a2a,1); g.fillEllipse(lx,ly+28,26,34); g.fillStyle(0xffd27a,1); g.fillRect(lx-5,ly+8,10,5); g.fillRect(lx-5,ly+45,10,8); }
+  // trottoir + rue
+  g.fillStyle(0x4a4f78,1); g.fillRect(0,380,WORLD,26); g.fillStyle(0x6a6f9a,1); g.fillRect(0,380,WORLD,3);
+  g.fillStyle(0x15172f,1); g.fillRect(0,406,WORLD,134);
+  g.fillStyle(0xe8e3d2,.7); for(let cx=440; cx<560; cx+=24) g.fillRect(cx,410,14,130);
+  g.fillStyle(0xffd27a,.35); for(let dx=0; dx<WORLD; dx+=70) g.fillRect(dx,470,36,3);
+  // flaques lumineuses
+  for(let lx=60; lx<WORLD; lx+=140){ g.fillStyle(0xff9a5a,.06); g.fillEllipse(lx,470,120,50); }
+
+  // personnages
+  makeTex(s,'p0',{top:'#58d6a9',top2:'#2f9c77',pants:'#2b2f6e',shoe:'#111',skin:'#f1c9a5',hair:'#3a2a1a',bag:'#ffcd3c'},0);
+  makeTex(s,'p1',{top:'#58d6a9',top2:'#2f9c77',pants:'#2b2f6e',shoe:'#111',skin:'#f1c9a5',hair:'#3a2a1a',bag:'#ffcd3c'},1);
+  makeTex(s,'xl',{top:'#4f8dff',top2:'#2a5fd0',pants:'#1c1f46',shoe:'#fff',skin:'#f0c69a',hair:'#1a1410'},0);
+  makeTex(s,'ayi',{top:'#ff9a9a',top2:'#d65c6a',pants:'#3a2a3a',shoe:'#222',skin:'#efc39a',hair:'#2a1a12',apron:'#fff3d6',bun:true},0);
+
+  s.physics.world.setBounds(0,406,WORLD,120);
+  s.player=s.physics.add.sprite(170,480,'p0').setCollideWorldBounds(true);
+  s.player.body.setSize(30,20).setOffset(13,58);
+  s.npcs=[{key:'xiaoli',spr:s.add.sprite(640,440,'xl'),label:'小李'},{key:'ayi',spr:s.add.sprite(1355,430,'ayi'),label:'阿姨'}];
+  s.npcs.forEach(n=>{ n.spr.setDepth(n.spr.y); n.name=s.add.text(n.spr.x,n.spr.y-52,n.label,{fontFamily:'"Noto Sans SC"',fontSize:'15px',color:'#ffa23f',fontStyle:'bold'}).setOrigin(.5).setDepth(900);
+    n.check=s.add.text(n.spr.x,n.spr.y-70,'✓',{fontSize:'18px',color:'#58d6a9'}).setOrigin(.5).setDepth(900).setVisible(false); });
+  s.prompt=s.add.text(0,0,' 空格 · parler ',{fontFamily:'"Noto Sans SC"',fontSize:'14px',color:'#171b48',backgroundColor:'#ffa23f',padding:{x:8,y:4}}).setOrigin(.5).setDepth(1000).setVisible(false);
+  s.cursors=s.input.keyboard.createCursorKeys(); s.keys=s.input.keyboard.addKeys('W,A,S,D,SPACE,E');
+  s.cameras.main.setBounds(0,0,WORLD,H); s.cameras.main.startFollow(s.player,true,.12,.12);
+  s.walkT=0; s.frame=0; s.finale=null;
+  window.onNpcDone=key=>{ const n=s.npcs.find(n=>n.key===key); if(n) n.check.setVisible(true);
+    if(s.npcs.every(n=>ui.done[n.key])&&!s.finale){ s.finale=s.add.text(W/2,80,'第一天完成！ Première soirée réussie 🎉',{fontFamily:'"Noto Sans SC"',fontSize:'26px',color:'#ffa23f',fontStyle:'bold'}).setOrigin(.5).setScrollFactor(0).setDepth(2000); } };
+}
+function update(t,dt){
+  const s=this,p=s.player;
+  if(ui.open){ p.setVelocity(0); s.prompt.setVisible(false); pad.act=0; return; }
+  const L=s.cursors.left.isDown||s.keys.A.isDown||pad.l, R=s.cursors.right.isDown||s.keys.D.isDown||pad.r, U=s.cursors.up.isDown||s.keys.W.isDown||pad.u, D=s.cursors.down.isDown||s.keys.S.isDown||pad.d;
+  const v=220; p.setVelocity((R-L)*v,(D-U)*v*.75);
+  if(L) p.setFlipX(true); if(R) p.setFlipX(false);
+  const moving=L||R||U||D;
+  if(moving){ s.walkT+=dt; if(s.walkT>140){ s.walkT=0; s.frame=1-s.frame; p.setTexture(s.frame?'p1':'p0'); } } else { s.frame=0; p.setTexture('p0'); }
+  p.setDepth(p.y);
+  let near=null; s.npcs.forEach(n=>{ if(Phaser.Math.Distance.Between(p.x,p.y,n.spr.x,n.spr.y+30)<80) near=n; });
+  if(near){ s.prompt.setPosition(near.spr.x,near.spr.y-92).setVisible(true); } else s.prompt.setVisible(false);
+  const act=Phaser.Input.Keyboard.JustDown(s.keys.SPACE)||Phaser.Input.Keyboard.JustDown(s.keys.E)||pad.act; pad.act=0;
+  if(act&&near){ p.setVelocity(0); openDialogue(near.key); }
+}
+const boot=()=>new Phaser.Game({type:Phaser.AUTO,parent:'game',width:W,height:H,backgroundColor:'#0e1030',scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},physics:{default:'arcade'},scene:{create,update}});
+(document.fonts&&document.fonts.load ? Promise.all([document.fonts.load('bold 30px "Noto Sans SC"'),document.fonts.load('14px "Nunito Sans"')]).catch(()=>{}) : Promise.resolve()).then(boot);
+</script>
+
+</body></html>
