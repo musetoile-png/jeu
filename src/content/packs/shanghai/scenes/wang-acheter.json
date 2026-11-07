@@ -1,0 +1,761 @@
+{
+ "id": "wang-acheter",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Trois œufs pour 奶奶"
+ },
+ "place": "cour",
+ "npc": "wang",
+ "patience": 3,
+ "actors": {
+  "wang": {
+   "name": "王阿姨",
+   "label": {
+    "fr": "l'épicière"
+   },
+   "portrait": "wang"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {
+  "egg": {
+   "word": "jidan",
+   "image": "obj_egg"
+  },
+  "bread": {
+   "word": "mianbao",
+   "image": "obj_mianbao"
+  },
+  "water": {
+   "word": "shui",
+   "image": "obj_water"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "epicerie": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu entres au 小卖部. Salue l'épicière :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wa_01a_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, madame !"
+     }
+    },
+    {
+     "vo": "wa_01b_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, monsieur !"
+     },
+     "why": {
+      "fr": "叔叔 = « tonton », pour un homme. Pour une dame de l'âge de tes parents : 阿姨."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "wa_01c_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Au revoir, madame !"
+     },
+     "why": {
+      "fr": "再见 = au revoir : tu arrives à peine ! Pour saluer : 阿姨好."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wa_02",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "aiyo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ah, te voilà ! Tu veux quoi ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Regarde la liste de 奶奶 et demande :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wa_03a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "jidan"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais acheter des œufs."
+     }
+    },
+    {
+     "vo": "wa_03b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai_vendre"
+      ],
+      [
+       "w",
+       "jidan"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais vendre des œufs."
+     },
+     "why": {
+      "fr": "Attention au ton ! 买 mǎi = acheter : ton bas, grave. 卖 mài = vendre : ton qui tombe de haut, sec. Tu viens de lui proposer tes œufs !"
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "wa_03c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais acheter du pain."
+     },
+     "why": {
+      "fr": "Le pain est tentant… mais la liste de 奶奶 dit 鸡蛋 (œufs)."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "wang",
+   "vo": "wa_04",
+   "line": [
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "duoshao"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Des œufs ? Combien ?"
+   },
+   "ask": {
+    "fr": "Combien ? (pense au riz sauté de tout à l'heure)"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wa_04a_{body}",
+     "line": [
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Trois."
+     }
+    },
+    {
+     "vo": "wa_04b_{body}",
+     "line": [
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Trois yuans."
+     },
+     "why": {
+      "fr": "块 compte l'argent. Pour des œufs, on compte avec 个 : 三个, comme 放三个鸡蛋 dans la cuisine."
+     },
+     "errorType": "classifier"
+    },
+    {
+     "vo": "wa_04c_{body}",
+     "line": [
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "duo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Beaucoup."
+     },
+     "why": {
+      "fr": "很多 = beaucoup : elle veut un nombre ! Ici, 多少 veut dire « combien » : réponds 三个."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wa_05",
+   "line": [
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "si"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Trois œufs, quatre yuans."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wa_06",
+   "line": [
+    [
+     "w",
+     "saoma"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Tu scannes ? (à Shanghai, presque tout le monde paie en scannant un QR code)"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "player",
+   "vo": "wa_07_{body}",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "shouji"
+    ],
+    [
+     "p",
+     "……"
+    ]
+   ],
+   "gloss": {
+    "fr": "Mon téléphone… (tu montres l'écran fendu)"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wa_08",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "aiyo"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oh là là ! Bon, en liquide alors."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Paie le bon montant :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wa_09a_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici quatre yuans."
+     }
+    },
+    {
+     "vo": "wa_09b_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici dix yuans."
+     },
+     "why": {
+      "fr": "十 shí (dix), c'était le prix du pain ! Elle a dit 四 sì (quatre) : un « s » sifflant et un ton qui tombe."
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "wa_09c_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bai"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici cent yuans."
+     },
+     "why": {
+      "fr": "一百 = cent ! Pour trois œufs, elle n'aura jamais la monnaie… Elle a dit 四块 : quatre."
+     },
+     "errorType": "number"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wa_10",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Voilà, trois œufs, tiens !"
+   },
+   "give": [
+    "jidan"
+   ],
+   "effect": "pay"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie-la et dis au revoir :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wa_11a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci madame, au revoir !"
+     }
+    },
+    {
+     "vo": "wa_11b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢阿姨."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "wa_11c_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, madame !"
+     },
+     "why": {
+      "fr": "阿姨好 sert à saluer en arrivant. En partant : 谢谢 + 再见."
+     },
+     "errorType": "pragmatic"
+    }
+   ],
+   "end": true
+  }
+ ]
+}

@@ -1,0 +1,1635 @@
+{
+ "$schema": "../../../../schemas/scene.schema.json",
+ "id": "cuisine-cran1",
+ "version": "0.1",
+ "language": "zh",
+ "world": "cuisine",
+ "tier": 1,
+ "title": {
+  "fr": "Le riz sauté de 奶奶"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  },
+  "xiaolong": {
+   "name": "小龙",
+   "label": {
+    "fr": "son petit-neveu, apprenti"
+   },
+   "portrait": "xiaolong"
+  }
+ },
+ "objects": {
+  "oil": {
+   "word": "you",
+   "image": "obj_oil"
+  },
+  "water": {
+   "word": "shui",
+   "image": "obj_water"
+  },
+  "salt": {
+   "word": "yan",
+   "image": "obj_salt"
+  },
+  "egg": {
+   "word": "jidan",
+   "image": "obj_egg"
+  },
+  "rice": {
+   "word": "mifan",
+   "image": "obj_rice"
+  },
+  "bowl": {
+   "word": "wan",
+   "image": "obj_bowl"
+  },
+  "wok": {
+   "word": "guo",
+   "image": "obj_wok"
+  },
+  "scallion_small": {
+   "word": "xiaocong",
+   "image": "obj_scallion",
+   "label": {
+    "fr": "la ciboule fine (小葱)"
+   }
+  },
+  "scallion_big": {
+   "word": "dacong",
+   "image": "obj_scallion_big",
+   "label": {
+    "fr": "le gros oignon vert (大葱)"
+   }
+  },
+  "apple": {
+   "word": "pingguo",
+   "image": "obj_pingguo"
+  }
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_01",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Te voilà ! Aujourd'hui, c'est toi qui cuisines."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_02a_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "zuo"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord. Je fais quoi ?"
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_02b_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "chi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord. Je mange quoi ?"
+     },
+     "why": {
+      "fr": "Tu as confondu 吃 (manger) et 做 (faire) : 奶奶 te demande de cuisiner, pas de choisir ton repas."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "ok": false,
+     "vo": "c1_02c_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shei"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord. Tu es qui ?"
+     },
+     "why": {
+      "fr": "谁 = « qui ». Tu demandes à 奶奶 qui elle est, alors qu'elle vient de te donner un ordre."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_03",
+   "line": [
+    [
+     "w",
+     "chaofan"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "guo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "you"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Du riz sauté. Regarde : ça, c'est le wok ; ça, c'est l'huile."
+   },
+   "highlight": [
+    "wok",
+    "oil"
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_04",
+   "line": [
+    [
+     "w",
+     "you"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "nar"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Où est l'huile ?"
+   },
+   "ask": {
+    "fr": "Clique sur le bon objet."
+   },
+   "options": [
+    {
+     "object": "oil",
+     "ok": true
+    },
+    {
+     "object": "water",
+     "why": {
+      "fr": "水 = eau. Deux liquides, deux mots : 油 yóu (huile, jaune) / 水 shuǐ (eau, transparente)."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "salt",
+     "why": {
+      "fr": "盐 = sel. Les finales yóu / yán se ressemblent ; réécoute : « you » comme « yo », « yan » comme « yane »."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_05",
+   "line": [
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "you"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Un : mets l'huile."
+   },
+   "ask": {
+    "fr": "Que mets-tu dans le wok ?"
+   },
+   "options": [
+    {
+     "object": "oil",
+     "ok": true
+    },
+    {
+     "object": "water",
+     "why": {
+      "fr": "水 = eau : on ne fait pas sauter du riz dans l'eau. Tu as confondu 油 et 水."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "rice",
+     "why": {
+      "fr": "Trop tôt : 奶奶 a dit 一 (étape un) et 油. Le riz (米饭) vient plus tard ; écoute le chiffre."
+     },
+     "errorType": "sequence"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "nainai",
+   "vo": "c1_07",
+   "line": [
+    [
+     "w",
+     "re"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est chaud ? (l'huile commence à fumer)"
+   },
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_07a_{body}",
+     "line": [
+      [
+       "w",
+       "re"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "re"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui, très chaud."
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_07b_{body}",
+     "line": [
+      [
+       "w",
+       "leng"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Froid."
+     },
+     "why": {
+      "fr": "冷 = froid. L'huile fume : c'est 热 (chaud). Tu as inversé le couple 热 / 冷."
+     },
+     "errorType": "antonym"
+    },
+    {
+     "ok": false,
+     "vo": "c1_07c_{body}",
+     "line": [
+      [
+       "w",
+       "re"
+      ],
+      [
+       "w",
+       "ma"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est chaud ?"
+     },
+     "why": {
+      "fr": "Tu répètes la question. 吗 transforme une affirmation en question : pour répondre, enlève-le."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_06",
+   "line": [
+    [
+     "w",
+     "er"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Deux : mets trois œufs (battus)."
+   },
+   "ask": {
+    "fr": "Que mets-tu, et combien ?"
+   },
+   "options": [
+    {
+     "object": "egg",
+     "qty": "3",
+     "ok": true
+    },
+    {
+     "object": "egg",
+     "qty": "2",
+     "why": {
+      "fr": "二 était le numéro de l'étape. Le nombre d'œufs se dit juste avant le classificateur 个 : 三个, trois."
+     },
+     "errorType": "classifier"
+    },
+    {
+     "object": "rice",
+     "qty": "3",
+     "why": {
+      "fr": "Tu as bien entendu 三 mais pas l'objet : 鸡蛋 (œuf), pas 米饭 (riz). Et le riz se compte en 碗 (bols), pas en 个."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_08",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "leng"
+    ],
+    [
+     "w",
+     "mifan"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien. Trois : mets le riz froid (celui d'hier). Mets-en beaucoup !"
+   },
+   "ask": {
+    "fr": "Que mets-tu, et combien ?"
+   },
+   "options": [
+    {
+     "object": "rice",
+     "qty": "beaucoup",
+     "ok": true
+    },
+    {
+     "object": "rice",
+     "qty": "peu",
+     "why": {
+      "fr": "多 duō = beaucoup, 少 shǎo = peu. Ce sont des contraires ; 奶奶 veut un wok plein."
+     },
+     "errorType": "antonym"
+    },
+    {
+     "object": "salt",
+     "qty": "beaucoup",
+     "why": {
+      "fr": "Tu as bien entendu 多, mais l'objet est 米饭 (riz), pas 盐 (sel). Beaucoup de sel, personne ne mange."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_12",
+   "line": [
+    [
+     "w",
+     "si"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "chao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Quatre : fais sauter ! (les grains se détachent)"
+   },
+   "effect": "chao"
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_11",
+   "line": [
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "yan"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "shao"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Cinq : mets le sel. Mets-en peu !"
+   },
+   "ask": {
+    "fr": "Que mets-tu, et combien ?"
+   },
+   "options": [
+    {
+     "object": "salt",
+     "qty": "peu",
+     "ok": true
+    },
+    {
+     "object": "salt",
+     "qty": "beaucoup",
+     "why": {
+      "fr": "Inversion 多 / 少 : trop salé. Rappelle-toi l'étape 3 : 多 pour le riz, 少 pour le sel."
+     },
+     "errorType": "antonym"
+    },
+    {
+     "object": "oil",
+     "qty": "peu",
+     "why": {
+      "fr": "Tu as bien compris 少 mais confondu 盐 (sel) et 油 (huile) ; l'huile est déjà dans le wok depuis l'étape un."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "nainai",
+   "vo": "c1_09",
+   "line": [
+    [
+     "w",
+     "liu"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "cong"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Six : mets la ciboule. (sur la table : un gros oignon vert 大葱 et une botte de ciboule fine 小葱)"
+   },
+   "ask": {
+    "fr": "Il y en a deux sortes. Demande laquelle :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_09a_{body}",
+     "line": [
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "w",
+       "cong"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Quelle ciboule ?"
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_09b_{body}",
+     "line": [
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "w",
+       "fan"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Quel riz ?"
+     },
+     "why": {
+      "fr": "饭 = riz/repas. Tu demandes quel riz, alors qu'il s'agit de la ciboule (葱)."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "ok": false,
+     "vo": "c1_09c_{body}",
+     "line": [
+      [
+       "w",
+       "shei"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "cong"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "La ciboule de qui ?"
+     },
+     "why": {
+      "fr": "谁的 = « à qui ». Tu demandes à qui est la ciboule, pas laquelle mettre."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_10",
+   "line": [
+    [
+     "w",
+     "xiaocong"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "xiao"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "La ciboule fine ! Celle-ci, la petite."
+   },
+   "ask": {
+    "fr": "Laquelle ?"
+   },
+   "options": [
+    {
+     "object": "scallion_small",
+     "ok": true
+    },
+    {
+     "object": "scallion_big",
+     "why": {
+      "fr": "大 = grand. 奶奶 a dit 小葱 (ciboule fine), pas 大葱 (gros oignon vert, plutôt du Nord). À Shanghai, on parsème du 小葱 à la fin."
+     },
+     "errorType": "antonym"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "nainai",
+   "vo": "c1_13",
+   "line": [
+    [
+     "w",
+     "hao_le"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est prêt ?"
+   },
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_13a_{body}",
+     "line": [
+      [
+       "w",
+       "hao_le"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est prêt."
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_13b_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pas bien."
+     },
+     "why": {
+      "fr": "不好 = « pas bien, mauvais ». Pour dire « pas encore prêt », on dirait 没好 ; ici les grains sont bien sautés, donc 好了."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "ok": false,
+     "vo": "c1_13c_{body}",
+     "line": [
+      [
+       "w",
+       "haochi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est bon (au goût)."
+     },
+     "why": {
+      "fr": "好吃 = « bon au goût ». Tu n'as pas encore goûté ; 奶奶 demande si c'est prêt (好了), pas si c'est bon."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_14",
+   "line": [
+    [
+     "w",
+     "qi"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "wan"
+    ],
+    [
+     "w",
+     "li"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Sept : mets-le dans le bol."
+   },
+   "ask": {
+    "fr": "Où verses-tu le riz ?"
+   },
+   "options": [
+    {
+     "object": "bowl",
+     "ok": true
+    },
+    {
+     "object": "wok",
+     "why": {
+      "fr": "锅 = wok. Le riz y est déjà ; 碗 = bol, c'est pour servir. Réécoute : wǎn / guō."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "water",
+     "why": {
+      "fr": "水 = eau. Confusion 碗 wǎn / 水 shuǐ : l'un est un récipient, l'autre un liquide."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_15",
+   "expression": "joy",
+   "line": [
+    [
+     "t",
+     "嗯",
+     "ng",
+     "mmm"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "shao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "haochi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Mmm… ni trop ni trop peu. C'est bon !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_16a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, 奶奶 !"
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_16b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien."
+     },
+     "why": {
+      "fr": "« De rien » répond à un merci. C'est toi qui dois remercier : les rôles sont inversés."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "ok": false,
+     "vo": "c1_16c_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pardon."
+     },
+     "why": {
+      "fr": "« Pardon ». Elle te félicite ; il n'y a rien à excuser."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaolong",
+   "vo": "c1_17",
+   "line": [
+    [
+     "w",
+     "nainai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "xiang"
+    ],
+    [
+     "w",
+     "chi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Mamie, moi aussi je veux en manger !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_18",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "haochi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Toi ? Ton riz n'est pas bon."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_19",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "t",
+     "错得少，钱就多",
+     "cuò de shǎo, qián jiù duō",
+     "moins d'erreurs, plus d'argent"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Aujourd'hui c'était bien. Moins d'erreurs, plus d'argent !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_21",
+   "line": [
+    [
+     "w",
+     "mingtian"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "w",
+     "cai"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "qingdan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Demain, on cuisine encore. Va faire les courses ! Voici la liste."
+   },
+   "give": [
+    "qingdan"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_22",
+   "line": [
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "wang_xing"
+    ],
+    [
+     "w",
+     "ayi"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Va chez 王阿姨 acheter trois œufs."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "c1_23",
+   "line": [
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "li_xing"
+    ],
+    [
+     "w",
+     "shushu"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Va chez 李叔叔 acheter trois pommes."
+   },
+   "ask": {
+    "fr": "Que dois-tu acheter chez 李叔叔 ?"
+   },
+   "options": [
+    {
+     "object": "apple",
+     "qty": "3",
+     "ok": true
+    },
+    {
+     "object": "apple",
+     "qty": "1",
+     "why": {
+      "fr": "一个 = un seul. Elle a dit 三个, trois — comme les œufs."
+     },
+     "errorType": "number"
+    },
+    {
+     "object": "egg",
+     "qty": "3",
+     "why": {
+      "fr": "Les 鸡蛋, c'est chez 王阿姨. Chez 李叔叔, le marchand de fruits : 苹果 píngguǒ, les pommes."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c1_24",
+   "line": [
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "chen_xing"
+    ],
+    [
+     "w",
+     "yeye"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Va chez 陈爷爷 acheter du thé vert."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Dis-lui que tu y vas :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "c1_20a_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord, je vais les acheter !"
+     }
+    },
+    {
+     "ok": false,
+     "vo": "c1_20b_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "ni_hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, bonjour !"
+     },
+     "why": {
+      "fr": "你好 sert à saluer en arrivant. Ici, 奶奶 t'envoie faire les courses : réponds-lui que tu y vas, 好，我去买 !"
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "ok": false,
+     "vo": "c1_20c_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, de rien !"
+     },
+     "why": {
+      "fr": "不客气 répond au merci de quelqu'un d'autre : on ne se le dit pas à soi-même. Ici, dis-lui simplement que tu y vas : 好，我去买 !"
+     },
+     "errorType": "pragmatic"
+    }
+   ],
+   "end": true
+  }
+ ],
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "onEnd": {
+  "flags": {
+   "cran1": "fait"
+  },
+  "give": [
+   "qian"
+  ]
+ }
+}

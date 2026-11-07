@@ -1,0 +1,380 @@
+{
+  "$schema": "../../../schemas/pack.schema.json",
+  "id": "shanghai",
+  "name": {
+    "fr": "Premier soir à Shanghai"
+  },
+  "language": "zh",
+  "uiLanguages": [
+    "fr"
+  ],
+  "city": "shanghai",
+  "start": {
+    "place": "ruelle",
+    "entrance": "arrivee"
+  },
+  "places": [
+    "ruelle",
+    "cuisine",
+    "cour"
+  ],
+  "scenes": [
+    "cuisine-cran1",
+    "prologue-chien",
+    "prologue-bol",
+    "xiaoma-xiangji",
+    "xiaoma-regarder",
+    "wang-voir",
+    "wang-acheter",
+    "li-voir",
+    "li-acheter",
+    "chen-voir",
+    "chen-acheter",
+    "nainai-courses"
+  ],
+  "worlds": {
+    "cuisine": {
+      "name": {
+        "fr": "La cuisine"
+      },
+      "tiers": {
+        "1": "cuisine-cran1"
+      }
+    }
+  },
+  "modifiers": {
+    "noSubtitles": false,
+    "hurriedClients": false,
+    "southernAccent": false
+  },
+  "assets": {
+    "images": {
+      "cuisine_far": "art/cuisine_far.jpg",
+      "cuisine_mid": "art/cuisine_mid.jpg",
+      "cuisine_near": "art/cuisine_near.jpg",
+      "nainai_stand": "art/nainai_stand.png",
+      "nainai_talk": "art/nainai_talk.png",
+      "portrait_nainai_neutral": "art/nainai_bust_neutral.jpg",
+      "portrait_nainai_joy": "art/nainai_bust_joy.jpg",
+      "portrait_nainai_surprise": "art/nainai_bust_surprise.jpg",
+      "obj_lantern": "art/obj_lantern.png",
+      "obj_baozi": "art/obj_baozi.png",
+      "player_torso": "art/player_torso.webp",
+      "player_leg_back": "art/player_leg_back.webp",
+      "player_leg_front": "art/player_leg_front.webp",
+      "player_front": "art/player_front.webp",
+      "ruelle_far": "art/ruelle_far.jpg",
+      "ruelle_shop": "art/ruelle_shop.webp",
+      "playerf_front": "art/playerf_front.webp",
+      "playerf_torso": "art/playerf_torso.webp",
+      "playerf_leg_back": "art/playerf_leg_back.webp",
+      "playerf_leg_front": "art/playerf_leg_front.webp",
+      "xiaoma_stand": "art/xiaoma_stand.webp",
+      "dog": "art/dog.webp",
+      "obj_postcard": "art/obj_postcard.webp",
+      "obj_scroll": "art/obj_scroll.webp",
+      "portrait_xiaoma_neutral": "art/xiaoma_bust_neutral.jpg",
+      "portrait_xiaoma_joy": "art/xiaoma_bust_joy.jpg",
+      "portrait_xiaoma_surprise": "art/xiaoma_bust_surprise.jpg",
+      "item_huzhao": "art/item_huzhao.webp",
+      "item_shouji": "art/item_shouji.webp",
+      "item_benzi": "art/item_benzi.webp",
+      "item_bi": "art/item_bi.webp",
+      "item_qianbao": "art/item_qianbao.webp",
+      "item_kuaizi": "art/item_kuaizi.webp",
+      "item_qian": "art/item_qian.webp",
+      "item_xiangji": "art/item_xiangji.webp",
+      "photo_denglong": "art/photo_denglong.jpg",
+      "photo_shikumen": "art/photo_shikumen.jpg",
+      "item_yaoshi": "art/item_yaoshi.webp",
+      "ruelle_xiaoma": "art/ruelle_xiaoma.webp",
+      "chambre": "art/chambre.jpg",
+      "intro_avion": "art/intro_avion.jpg",
+      "cour_far": "art/cour_far.jpg",
+      "wang_stand": "art/wang_stand.webp",
+      "portrait_wang_neutral": "art/wang_bust_neutral.jpg",
+      "portrait_wang_joy": "art/wang_bust_joy.jpg",
+      "portrait_wang_surprise": "art/wang_bust_surprise.jpg",
+      "li_stand": "art/li_stand.webp",
+      "portrait_li_neutral": "art/li_bust_neutral.jpg",
+      "portrait_li_joy": "art/li_bust_joy.jpg",
+      "portrait_li_surprise": "art/li_bust_surprise.jpg",
+      "chen_stand": "art/chen_stand.webp",
+      "portrait_chen_neutral": "art/chen_bust_neutral.jpg",
+      "portrait_chen_joy": "art/chen_bust_joy.jpg",
+      "portrait_chen_surprise": "art/chen_bust_surprise.jpg",
+      "passant_oiseau": "art/passant_oiseau.webp",
+      "passante_courses": "art/passante_courses.webp",
+      "enfant_moulinet": "art/enfant_moulinet.webp",
+      "velo": "art/velo.webp",
+      "chat_marche": "art/chat_marche.webp",
+      "chat_assis": "art/chat_assis.webp",
+      "moineaux": "art/moineaux.webp",
+      "item_jidan": "art/item_jidan.webp",
+      "item_pingguo": "art/item_pingguo.webp",
+      "item_chaye": "art/item_chaye.webp",
+      "item_qingdan": "art/item_qingdan.webp",
+      "obj_pingguo": "art/obj_pingguo.webp",
+      "obj_xigua": "art/obj_xigua.webp",
+      "obj_xiangjiao": "art/obj_xiangjiao.webp",
+      "obj_shui": "art/obj_shui.webp",
+      "obj_mianbao": "art/obj_mianbao.webp",
+      "obj_lucha": "art/obj_lvcha.webp",
+      "obj_hongcha": "art/obj_hongcha.webp",
+      "obj_chaye": "art/item_chaye.webp",
+      "obj_water": "art/obj_shui.webp"
+    },
+    "voicePath": "audio/vo/zh/",
+    "keyWhite": [
+      "cuisine_mid",
+      "cuisine_near",
+      "nainai_stand",
+      "nainai_talk",
+      "obj_lantern",
+      "obj_baozi"
+    ],
+    "player": {
+      "side": "player_torso",
+      "front": "player_front",
+      "height": 660,
+      "rig": {
+        "width": 767,
+        "height": 1263,
+        "ground": 1238,
+        "cx": 345,
+        "legs": [
+          {
+            "key": "player_leg_back",
+            "pivot": [
+              290,
+              725
+            ],
+            "foot": [
+              110,
+              1238
+            ]
+          },
+          {
+            "key": "player_leg_front",
+            "pivot": [
+              400,
+              725
+            ],
+            "foot": [
+              650,
+              1238
+            ]
+          }
+        ]
+      }
+    },
+    "playerF": {
+      "side": "playerf_torso",
+      "front": "playerf_front",
+      "height": 640,
+      "rig": {
+        "width": 777,
+        "height": 1311,
+        "ground": 1290,
+        "cx": 346,
+        "legs": [
+          {
+            "key": "playerf_leg_back",
+            "pivot": [
+              296,
+              705
+            ],
+            "foot": [
+              106,
+              1272
+            ]
+          },
+          {
+            "key": "playerf_leg_front",
+            "pivot": [
+              376,
+              705
+            ],
+            "foot": [
+              676,
+              1272
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "title": {
+    "line": [
+      [
+        "w",
+        "qian_mille"
+      ],
+      [
+        "w",
+        "li"
+      ]
+    ],
+    "fr": "Mille li",
+    "sub": {
+      "fr": "de Shanghai à Chang'an"
+    },
+    "chapter": {
+      "zh": "上海第一夜",
+      "fr": "Premier soir à Shanghai"
+    }
+  },
+  "profile": {
+    "bodies": [
+      {
+        "id": "m",
+        "label": {
+          "fr": "un étudiant"
+        },
+        "front": "player_front"
+      },
+      {
+        "id": "f",
+        "label": {
+          "fr": "une étudiante"
+        },
+        "front": "playerf_front"
+      }
+    ],
+    "names": [
+      {
+        "id": "an",
+        "zh": "小安",
+        "pinyin": "Xiǎo Ān",
+        "why": {
+          "fr": "安, la paix — tu le retrouveras dans 西安 (Xi'an), la ville de la paix de l'Ouest."
+        }
+      },
+      {
+        "id": "ming",
+        "zh": "小明",
+        "pinyin": "Xiǎo Míng",
+        "why": {
+          "fr": "明, la lumière — c'est le 明 de 明天 (demain), dès la cuisine."
+        }
+      },
+      {
+        "id": "wen",
+        "zh": "小文",
+        "pinyin": "Xiǎo Wén",
+        "why": {
+          "fr": "文, l'écrit — c'est le 文 de 中文 (le chinois)."
+        }
+      }
+    ],
+    "vars": {
+      "TA": {
+        "m": [
+          "w",
+          "ta_m"
+        ],
+        "f": [
+          "w",
+          "ta_f"
+        ]
+      }
+    },
+    "startItems": [
+      "huzhao",
+      "shouji",
+      "benzi",
+      "bi",
+      "qianbao"
+    ]
+  },
+  "detours": {
+    "vaisselle": {
+      "actor": "nainai",
+      "go": {
+        "vo": "d_01",
+        "line": [
+          [
+            "w",
+            "qu"
+          ],
+          [
+            "w",
+            "xi"
+          ],
+          [
+            "w",
+            "wan"
+          ],
+          [
+            "p",
+            "！"
+          ]
+        ],
+        "gloss": {
+          "fr": "Va faire la vaisselle !"
+        }
+      },
+      "back": {
+        "vo": "d_02",
+        "line": [
+          [
+            "w",
+            "hao_le"
+          ],
+          [
+            "p",
+            "！"
+          ],
+          [
+            "w",
+            "lai"
+          ],
+          [
+            "p",
+            "，"
+          ],
+          [
+            "w",
+            "zuo"
+          ],
+          [
+            "w",
+            "fan"
+          ],
+          [
+            "p",
+            "！"
+          ]
+        ],
+        "gloss": {
+          "fr": "C'est bon ! Allez, on cuisine !"
+        }
+      },
+      "ask": {
+        "fr": "Chaque bol lavé = un mot à reconnaître. Écoute, puis touche le bon caractère."
+      },
+      "bowls": 3
+    }
+  },
+  "closedSign": [
+    [
+      "w",
+      "jintian"
+    ],
+    [
+      "w",
+      "xiuxi"
+    ]
+  ],
+  "photo": {
+    "item": "xiangji",
+    "credits": "credits.json"
+  },
+  "intro": {
+    "image": "intro_avion",
+    "word": "shanghai",
+    "text": {
+      "fr": "Un soir de septembre, l'avion descend sur Shanghai. Mille li depuis chez toi, et tout reste à apprendre."
+    }
+  }
+}

@@ -1,0 +1,399 @@
+{
+ "id": "xiaoma-regarder",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "L'appareil dans la vitrine"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "vu_xiaoma": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xr_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "xiangji"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Salut ! Regarde, un appareil photo !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande le prix :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "xr_02a_{body}",
+     "line": [
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien ?"
+     }
+    },
+    {
+     "vo": "xr_02b_{body}",
+     "line": [
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "duo"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Beaucoup d'argent !"
+     },
+     "why": {
+      "fr": "很多钱 = « beaucoup d'argent » : une exclamation, pas une question. Collés, 多 (beaucoup) + 少 (peu) font 多少 : « combien ? ». Donc 多少钱 ?"
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "xr_02c_{body}",
+     "line": [
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Qu'est-ce que c'est ?"
+     },
+     "why": {
+      "fr": "Il vient de te le dire : 相机, un appareil photo. Pour le prix, la formule magique est 多少钱 ?"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xr_03",
+   "line": [
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Cinquante yuans. Tu as de l'argent ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu fouilles tes poches… Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "xr_04a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je n'ai pas d'argent."
+     }
+    },
+    {
+     "vo": "xr_04b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je n'ai pas d'argent. (incorrect)"
+     },
+     "why": {
+      "fr": "Piège classique : 有 (avoir) ne se nie jamais avec 不. On dit toujours 没有 : 我没有钱."
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "xr_04c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "J'ai de l'argent."
+     },
+     "why": {
+      "fr": "Hélas non : ton portefeuille est parti avec le chien hier soir ! Pour « je n'en ai pas » : 我没有钱."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xr_05",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "meiyou"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "nainai"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Pas d'argent ? Va donc cuisiner chez 奶奶 !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xr_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ta_f"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Elle te paiera, et tu reviendras acheter !"
+   },
+   "end": true
+  }
+ ]
+}

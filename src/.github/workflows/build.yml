@@ -1,0 +1,67 @@
+name: build
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: ${{ github.ref_name != 'master' }}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Lint commit message
+        run: npx commitlint --from=HEAD~1
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run lint:tsc
+
+      - name: Page test
+        uses: remarkablemark/page-test-action@v1
+        with:
+          url: http://localhost:5173
+          start: npm start
+          wait-on: http://localhost:5173
+
+      - name: Set environment variables
+        run: |
+          echo "VITE_APP_HOMEPAGE=$(jq -r .homepage package.json)" >> "$GITHUB_ENV"
+          echo "VITE_APP_VERSION=$(jq -r .version package.json)" >> "$GITHUB_ENV"
+
+      - name: Build for GitHub Pages
+        run: npm run build -- --base /${{ github.event.repository.name }}/
+
+      - name: Inject Google Analytics
+        if: github.ref_name == 'master' && env.GOOGLE_ANALYTICS_ID != ''
+        uses: remarkablemark/google-analytics-action@v1
+        with:
+          html-path: dist/index.html
+          measurement-id: ${{ env.GOOGLE_ANALYTICS_ID }}
+
+      - name: Deploy to GitHub Pages
+        if: github.ref_name == 'master'
+        uses: remarkablemark/gitploy-action@v1
+        with:
+          directory: dist

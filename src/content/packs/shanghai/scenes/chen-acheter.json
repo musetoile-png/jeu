@@ -1,0 +1,921 @@
+{
+ "id": "chen-acheter",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le thé vert de 陈爷爷"
+ },
+ "place": "cour",
+ "npc": "chen",
+ "patience": 3,
+ "actors": {
+  "chen": {
+   "name": "陈爷爷",
+   "label": {
+    "fr": "le maître du salon de thé"
+   },
+   "portrait": "chen"
+  }
+ },
+ "objects": {
+  "greentea": {
+   "word": "lucha",
+   "image": "obj_lucha"
+  },
+  "redtea": {
+   "word": "hongcha",
+   "image": "obj_hongcha"
+  },
+  "water": {
+   "word": "shui",
+   "image": "obj_water"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "the": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Le vieux monsieur lève les yeux de son échiquier. Salue-le :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_01a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père !"
+     }
+    },
+    {
+     "vo": "ca_01b_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, madame !"
+     },
+     "why": {
+      "fr": "阿姨, c'est pour une dame de l'âge de tes parents. Pour un monsieur âgé : 爷爷."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "ca_01c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Au revoir, grand-père !"
+     },
+     "why": {
+      "fr": "再见 = au revoir : tu viens d'arriver ! Pour saluer : 爷爷好."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "ca_02",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "he"
+    ],
+    [
+     "w",
+     "cha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Te voilà. Viens, bois un thé."
+   },
+   "effect": "tea"
+  },
+  {
+   "type": "choose",
+   "actor": "chen",
+   "vo": "ca_03",
+   "line": [
+    [
+     "w",
+     "re"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est chaud ?"
+   },
+   "ask": {
+    "fr": "Tu y trempes les lèvres… Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_03a_{body}",
+     "line": [
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "re"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Très chaud !"
+     }
+    },
+    {
+     "vo": "ca_03b_{body}",
+     "line": [
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "leng"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Très froid !"
+     },
+     "why": {
+      "fr": "冷 = froid. La tasse fume encore : 热, chaud — comme l'huile dans le wok de 奶奶."
+     },
+     "errorType": "antonym"
+    },
+    {
+     "vo": "ca_03c_{body}",
+     "line": [
+      [
+       "w",
+       "re"
+      ],
+      [
+       "w",
+       "ma"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est chaud ?"
+     },
+     "why": {
+      "fr": "Tu lui renvoies sa question. Pour répondre, enlève 吗 : 很热."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "chen",
+   "vo": "ca_04",
+   "line": [
+    [
+     "w",
+     "haohe"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est bon ?"
+   },
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_04a_{body}",
+     "line": [
+      [
+       "w",
+       "haohe"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Délicieux !"
+     }
+    },
+    {
+     "vo": "ca_04b_{body}",
+     "line": [
+      [
+       "w",
+       "haochi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bon (à manger) !"
+     },
+     "why": {
+      "fr": "吃 = manger, 喝 = boire. Le thé se boit : 好喝. 好吃, c'était pour le riz sauté."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "ca_04c_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pas bon."
+     },
+     "why": {
+      "fr": "不好 = mauvais : un peu vexant pour 陈爷爷 ! Et pour une boisson, on dit 好喝 (bon à boire)."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande ce qui est sur la liste :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_05a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "chaye"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, je voudrais acheter du thé en feuilles."
+     }
+    },
+    {
+     "vo": "ca_05b_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai_vendre"
+      ],
+      [
+       "w",
+       "chaye"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, je voudrais vendre du thé en feuilles."
+     },
+     "why": {
+      "fr": "买 mǎi = acheter : ton bas, grave. 卖 mài = vendre : ton qui tombe de haut, sec. Tu proposes du thé à un marchand de thé !"
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "ca_05c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "he"
+      ],
+      [
+       "w",
+       "chaye"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, je voudrais boire des feuilles de thé."
+     },
+     "why": {
+      "fr": "On ne boit pas les feuilles ! 喝 = boire. 奶奶 veut des 茶叶 à rapporter : 买茶叶."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "chen",
+   "vo": "ca_06",
+   "line": [
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Du vert ? Du rouge ?"
+   },
+   "ask": {
+    "fr": "Lequel ? Rappelle-toi la liste de 奶奶 :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_06a_{body}",
+     "line": [
+      [
+       "w",
+       "lucha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Du thé vert."
+     }
+    },
+    {
+     "vo": "ca_06b_{body}",
+     "line": [
+      [
+       "w",
+       "hongcha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Du thé rouge."
+     },
+     "why": {
+      "fr": "红茶 = le thé « rouge » (notre thé noir). La liste de 奶奶 dit 绿茶, le vert."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "ca_06c_{body}",
+     "line": [
+      [
+       "w",
+       "chaye"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Du thé en feuilles."
+     },
+     "why": {
+      "fr": "Il sait que tu veux des feuilles (茶叶) ! Il demande la couleur : 绿 (vert) ou 红 (rouge)."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "ca_07",
+   "line": [
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "si"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé vert… quarante yuans."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Paie le bon montant (à un aîné, on dit 您 nín, le « vous » de respect) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_08a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, voici quarante yuans."
+     }
+    },
+    {
+     "vo": "ca_08b_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, voici quatorze yuans."
+     },
+     "why": {
+      "fr": "L'ordre compte : 十四 (dix-quatre) = 14, 四十 (quatre-dix) = 40. Et les tons : 四 sì tombe, 十 shí monte."
+     },
+     "errorType": "number"
+    },
+    {
+     "vo": "ca_08c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, voici quatre yuans."
+     },
+     "why": {
+      "fr": "Il manque le 十 ! Il a dit sì-shí, deux syllabes avant 块 : 四十, quarante."
+     },
+     "errorType": "number"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "ca_09",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "chaye"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien. Voici ton thé."
+   },
+   "give": [
+    "chaye"
+   ],
+   "effect": "pay"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie-le et dis au revoir :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "ca_10a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci à vous, grand-père ! Au revoir !"
+     }
+    },
+    {
+     "vo": "ca_10b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien, grand-père !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢您."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "ca_10c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père !"
+     },
+     "why": {
+      "fr": "爷爷好 sert à l'arrivée. Pour partir : 谢谢 + 再见."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "ca_11",
+   "line": [
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "jian"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "manzou"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Au revoir… va doucement. (慢走, « marche lentement » : on le dit à qui s'en va)"
+   },
+   "end": true
+  }
+ ]
+}

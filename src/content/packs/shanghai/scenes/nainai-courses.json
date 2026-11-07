@@ -1,0 +1,671 @@
+{
+ "id": "nainai-courses",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Les courses de 奶奶"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  }
+ },
+ "objects": {
+  "egg": {
+   "word": "jidan",
+   "image": "obj_egg"
+  },
+  "apple": {
+   "word": "pingguo",
+   "image": "obj_pingguo"
+  },
+  "tealeaves": {
+   "word": "chaye",
+   "image": "obj_chaye"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "courses": "fait"
+  },
+  "card": {
+   "zh": "晚安，上海",
+   "fr": "Bonne nuit, Shanghai."
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nc_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Te voilà ! Tu as fait les courses ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nc_02a_{body}",
+     "line": [
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui, j'ai acheté !"
+     }
+    },
+    {
+     "vo": "nc_02b_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui (c'est ça) !"
+     },
+     "why": {
+      "fr": "Pour dire oui, on reprend le verbe de la question : 买了吗 ? → 买了 !"
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "nc_02c_{body}",
+     "line": [
+      [
+       "w",
+       "mai_vendre"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "J'ai vendu !"
+     },
+     "why": {
+      "fr": "卖了 = « j'ai vendu » ! 买 mǎi = acheter : ton bas, grave. 卖 mài = vendre : ton qui tombe de haut, sec."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "vo": "nc_03",
+   "line": [
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Les œufs, donne-les-moi."
+   },
+   "ask": {
+    "fr": "Que lui donnes-tu ?"
+   },
+   "options": [
+    {
+     "object": "egg",
+     "ok": true
+    },
+    {
+     "object": "apple",
+     "why": {
+      "fr": "苹果 = les pommes de 李叔叔. Elle a dit 鸡蛋 : les œufs de 王阿姨."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "tealeaves",
+     "why": {
+      "fr": "茶叶 = le thé de 陈爷爷. Elle a dit 鸡蛋 jīdàn : les œufs."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "take": [
+    "jidan"
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "nainai",
+   "vo": "nc_04",
+   "line": [
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ji"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Les pommes, combien ?"
+   },
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nc_04a_{body}",
+     "line": [
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Trois."
+     }
+    },
+    {
+     "vo": "nc_04b_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Quinze yuans."
+     },
+     "why": {
+      "fr": "Ça, c'est le prix payé chez 李叔叔 ! Elle demande combien de pommes : 三个."
+     },
+     "errorType": "classifier"
+    },
+    {
+     "vo": "nc_04c_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "duo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pas beaucoup."
+     },
+     "why": {
+      "fr": "几个 attend un nombre, pas « pas beaucoup » : 三个."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "take": [
+    "pingguo"
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "nainai",
+   "vo": "nc_05",
+   "line": [
+    [
+     "w",
+     "chaye"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé… c'est du thé rouge ?"
+   },
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nc_05a_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "lucha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Non, c'est du thé vert."
+     }
+    },
+    {
+     "vo": "nc_05b_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "hongcha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui, c'est du thé rouge."
+     },
+     "why": {
+      "fr": "Tu as acheté du 绿茶 (vert) chez 陈爷爷, comme sur la liste. 红茶, c'est le « thé rouge » — notre thé noir."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "nc_05c_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "chaye"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Non, c'est du thé en feuilles."
+     },
+     "why": {
+      "fr": "Elle voit bien que ce sont des feuilles (茶叶) ! Elle demande lequel : 绿茶, le vert."
+     },
+     "errorType": "pragmatic"
+    }
+   ],
+   "take": [
+    "chaye"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nc_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "shao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "zhongwen"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est ça ! Ni trop ni trop peu. Ton chinois est très bien !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nc_07",
+   "line": [
+    [
+     "w",
+     "lei"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "xiuxi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Fatigué·e, hein ? Va te reposer !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Fin de journée. Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nc_08a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wanan"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, 奶奶 ! Bonne nuit !"
+     }
+    },
+    {
+     "vo": "nc_08b_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "ni_hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, bonjour !"
+     },
+     "why": {
+      "fr": "你好 sert à saluer en arrivant. Pour aller dormir : 晚安, bonne nuit."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "nc_08c_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien, 奶奶 !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci… mais c'est elle qui t'a accueilli·e et nourri·e ! Dis 谢谢."
+     },
+     "errorType": "pragmatic"
+    }
+   ],
+   "end": true
+  }
+ ]
+}

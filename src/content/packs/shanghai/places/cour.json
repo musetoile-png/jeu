@@ -1,0 +1,254 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "cour",
+  "name": {
+    "zh": "院子",
+    "fr": "La cour du lilong"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.43,
+  "planes": [
+    {
+      "image": "cour_far",
+      "parallax": 1.0,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 447,
+      "y": 456,
+      "text": {
+        "zh": "小卖部"
+      },
+      "size": 50
+    },
+    {
+      "x": 1031,
+      "y": 456,
+      "text": {
+        "zh": "水果"
+      },
+      "size": 52
+    },
+    {
+      "x": 1622,
+      "y": 456,
+      "text": {
+        "zh": "茶馆"
+      },
+      "size": 52
+    }
+  ],
+  "walk": {
+    "yMin": 1036,
+    "yMax": 1074,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 120,
+    "y": 1056,
+    "facing": "right",
+    "walkIn": 320
+  },
+  "entrances": {
+    "portail": {
+      "x": 120,
+      "y": 1056,
+      "facing": "right",
+      "walkIn": 320
+    }
+  },
+  "hotspots": [
+    {
+      "id": "sortie",
+      "kind": "exit",
+      "x": 70,
+      "y": 1050,
+      "to": "ruelle",
+      "toEntrance": "portail",
+      "prompt": {
+        "fr": "retour à la ruelle"
+      }
+    },
+    {
+      "id": "wang_voir",
+      "kind": "npc",
+      "x": 450,
+      "y": 1040,
+      "scene": "wang-voir",
+      "sprite": "wang_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": ""
+      },
+      "prompt": {
+        "fr": "parler à 王阿姨"
+      }
+    },
+    {
+      "id": "wang",
+      "kind": "npc",
+      "x": 450,
+      "y": 1040,
+      "scene": "wang-acheter",
+      "sprite": "wang_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": "fait"
+      },
+      "prompt": {
+        "fr": "faire les courses chez 王阿姨"
+      }
+    },
+    {
+      "id": "li_voir",
+      "kind": "npc",
+      "x": 1031,
+      "y": 1040,
+      "scene": "li-voir",
+      "sprite": "li_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": ""
+      },
+      "prompt": {
+        "fr": "parler à 李叔叔"
+      }
+    },
+    {
+      "id": "li",
+      "kind": "npc",
+      "x": 1031,
+      "y": 1040,
+      "scene": "li-acheter",
+      "sprite": "li_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": "fait"
+      },
+      "prompt": {
+        "fr": "acheter des fruits chez 李叔叔"
+      }
+    },
+    {
+      "id": "chen_voir",
+      "kind": "npc",
+      "x": 1490,
+      "y": 1040,
+      "scene": "chen-voir",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": ""
+      },
+      "prompt": {
+        "fr": "parler à 陈爷爷"
+      }
+    },
+    {
+      "id": "chen",
+      "kind": "npc",
+      "x": 1490,
+      "y": 1040,
+      "scene": "chen-acheter",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "when": {
+        "cran1": "fait"
+      },
+      "prompt": {
+        "fr": "acheter du thé chez 陈爷爷"
+      }
+    },
+    {
+      "id": "s_xigua",
+      "kind": "subject",
+      "x": 1140,
+      "y": 720,
+      "word": "xigua",
+      "prompt": {
+        "fr": "la pastèque"
+      }
+    },
+    {
+      "id": "s_cha",
+      "kind": "subject",
+      "x": 1656,
+      "y": 787,
+      "word": "cha",
+      "prompt": {
+        "fr": "la table à thé"
+      }
+    }
+  ],
+  "ambient": [
+    {
+      "image": "enfant_moulinet",
+      "kind": "walk",
+      "y": [
+        1012,
+        1024
+      ],
+      "height": 170,
+      "speed": 150,
+      "every": [
+        14,
+        30
+      ]
+    },
+    {
+      "image": "passante_courses",
+      "kind": "walk",
+      "y": [
+        1006,
+        1020
+      ],
+      "height": 262,
+      "speed": 62,
+      "every": [
+        18,
+        40
+      ]
+    },
+    {
+      "image": "chat_marche",
+      "restImage": "chat_assis",
+      "kind": "rest",
+      "y": [
+        1016,
+        1030
+      ],
+      "height": 70,
+      "speed": 55,
+      "every": [
+        25,
+        50
+      ]
+    },
+    {
+      "image": "moineaux",
+      "kind": "hop",
+      "y": [
+        1024,
+        1032
+      ],
+      "height": 34,
+      "every": [
+        12,
+        28
+      ]
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#58d6a9"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+ "quests": [
+  {
+   "id": "lettre",
+   "item": "mingxinpian",
+   "title": {
+    "fr": "La lettre que tu ne pouvais pas lire"
+   },
+   "pitch": {
+    "fr": "Ton ami d'enfance Léo est parti en Chine il y a dix ans. Sa dernière carte postale montre la ruelle de 奶奶. Au dos, une phrase en chinois que tu n'as jamais su lire."
+   },
+   "steps": [
+    {
+     "know": {
+      "fr": "La carte de Léo montre la ruelle de 奶奶."
+     },
+     "seek": {
+      "fr": "Quelqu'un ici se souvient-il de lui ?"
+     },
+     "where": {
+      "fr": "Shanghai · la ruelle"
+     }
+    },
+    {
+     "know": {
+      "fr": "奶奶 se souvient : il a porté le même tablier que toi."
+     },
+     "seek": {
+      "fr": "Lire le dos de la carte."
+     },
+     "where": {
+      "fr": "Shanghai · la bouquinerie"
+     }
+    }
+   ]
+  },
+  {
+   "id": "rouleau",
+   "item": "hua_peinture",
+   "title": {
+    "fr": "Le rouleau dispersé"
+   },
+   "pitch": {
+    "fr": "Tu as hérité de la première section d'un rouleau peint, « Voyage aux capitales ». Les autres ont été vendues, morceau par morceau, dans toute la Chine."
+   },
+   "steps": [
+    {
+     "know": {
+      "fr": "La section montre une ruelle de Shanghai et porte un colophon taché."
+     },
+     "seek": {
+      "fr": "Qui sait lire un vieux rouleau ?"
+     },
+     "where": {
+      "fr": "Shanghai · la ruelle"
+     }
+    },
+    {
+     "know": {
+      "fr": "Un bouquiniste de la ruelle restaure les rouleaux."
+     },
+     "seek": {
+      "fr": "Compléter les caractères manquants du colophon."
+     },
+     "where": {
+      "fr": "Shanghai · la bouquinerie"
+     }
+    }
+   ]
+  },
+  {
+   "id": "courses",
+   "kind": "errand",
+   "item": "qingdan",
+   "title": {
+    "fr": "Les courses de 奶奶"
+   },
+   "pitch": {
+    "fr": "Demain, on cuisine encore. 奶奶 t'envoie dans la cour derrière le portail de pierre : trois boutiques, trois commerçants, une liste."
+   },
+   "list": [
+    {
+     "word": "jidan",
+     "flag": "epicerie",
+     "who": {
+      "fr": "王阿姨, le 小卖部"
+     }
+    },
+    {
+     "word": "pingguo",
+     "flag": "fruits",
+     "who": {
+      "fr": "李叔叔, l'étal de fruits"
+     }
+    },
+    {
+     "word": "chaye",
+     "flag": "the",
+     "who": {
+      "fr": "陈爷爷, le salon de thé"
+     }
+    }
+   ]
+  }
+ ]
+}

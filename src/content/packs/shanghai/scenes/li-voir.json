@@ -1,0 +1,733 @@
+{
+ "id": "li-voir",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "L'étal de 李叔叔"
+ },
+ "place": "cour",
+ "npc": "li",
+ "patience": 3,
+ "actors": {
+  "li": {
+   "name": "李叔叔",
+   "label": {
+    "fr": "le marchand de fruits"
+   },
+   "portrait": "li"
+  }
+ },
+ "objects": {
+  "apple": {
+   "word": "pingguo",
+   "image": "obj_pingguo"
+  },
+  "melon": {
+   "word": "xigua",
+   "image": "obj_xigua"
+  },
+  "banana": {
+   "word": "xiangjiao",
+   "image": "obj_xiangjiao"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "vu_li": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Un homme rieur derrière l'étal de fruits. Salue-le :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "lv_01a_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, monsieur !"
+     }
+    },
+    {
+     "vo": "lv_01b_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, madame !"
+     },
+     "why": {
+      "fr": "阿姨, c'est pour une dame. Pour un homme de l'âge de tes parents : 叔叔 (« tonton »)."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "lv_01c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père !"
+     },
+     "why": {
+      "fr": "爷爷 = grand-père : il a quarante-cinq ans, il va faire semblant de pleurer ! Pour lui : 叔叔."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "lv_02",
+   "expression": "joy",
+   "highlight": [
+    "apple",
+    "melon",
+    "banana"
+   ],
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "："
+    ],
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "xigua"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "xiangjiao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Salut ! Regarde : des pommes, des pastèques, des bananes !"
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "li",
+   "vo": "lv_03",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "xigua"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "da"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Cette pastèque est très grosse !"
+   },
+   "ask": {
+    "fr": "Il tapote un fruit. Lequel ?"
+   },
+   "options": [
+    {
+     "object": "melon",
+     "ok": true
+    },
+    {
+     "object": "apple",
+     "why": {
+      "fr": "苹果 píngguǒ = pomme : petite et ronde. 西瓜, le « melon de l'Ouest », c'est la pastèque — très 大 !"
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "banana",
+     "why": {
+      "fr": "香蕉 xiāngjiāo = banane. Les deux commencent par « x » : écoute la fin, 西瓜 xīguā."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande le prix de la pastèque :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "lv_04a_{body}",
+     "line": [
+      [
+       "w",
+       "xigua"
+      ],
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien la pastèque ?"
+     }
+    },
+    {
+     "vo": "lv_04b_{body}",
+     "line": [
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "xigua"
+      ],
+      [
+       "w",
+       "ma"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tu veux une pastèque ?"
+     },
+     "why": {
+      "fr": "Tu lui proposes une pastèque… c'est lui le marchand ! Pour le prix : 多少钱 ?"
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "lv_04c_{body}",
+     "line": [
+      [
+       "w",
+       "xigua"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "da"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "La pastèque est grosse."
+     },
+     "why": {
+      "fr": "C'est vrai ! Mais ce n'est pas une question. Pour le prix : 多少钱 ?"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "li",
+   "vo": "lv_05",
+   "line": [
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bai"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Cent yuans !"
+   },
+   "ask": {
+    "fr": "Cent yuans pour une pastèque ?! Réagis :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "lv_05a_{body}",
+     "line": [
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bai"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ],
+      [
+       "w",
+       "tai"
+      ],
+      [
+       "w",
+       "duo"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Cent yuans ? C'est trop !"
+     }
+    },
+    {
+     "vo": "lv_05b_{body}",
+     "line": [
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bai"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ],
+      [
+       "w",
+       "tai"
+      ],
+      [
+       "w",
+       "shao"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Cent yuans ? C'est trop peu !"
+     },
+     "why": {
+      "fr": "多 = beaucoup, 少 = peu. « Trop peu », il accepterait tout de suite ! Cent yuans pour un fruit : 太多了."
+     },
+     "errorType": "antonym"
+    },
+    {
+     "vo": "lv_05c_{body}",
+     "line": [
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bai"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Cent yuans ? D'accord !"
+     },
+     "why": {
+      "fr": "Tu acceptes un prix fou ! Il plaisante, c'est le moment de protester : 太多了 !"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "lv_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "haha"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ha ha ! Pas cent : trente yuans !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu fouilles tes poches… Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "lv_07a_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Monsieur, je n'ai pas d'argent."
+     }
+    },
+    {
+     "vo": "lv_07b_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Monsieur, je n'ai pas d'argent. (incorrect)"
+     },
+     "why": {
+      "fr": "有 se nie toujours avec 没, jamais avec 不 : 我没有钱."
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "lv_07c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "w",
+       "xigua"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je veux dix pastèques !"
+     },
+     "why": {
+      "fr": "Dix pastèques… et avec quel argent ? Ton portefeuille est parti avec le chien. Dis-lui : 我没有钱."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "lv_08",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "meiyou"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "mai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Pas d'argent ? Regarder, c'est gratuit ! Reviens acheter quand tu en auras !"
+   },
+   "end": true
+  }
+ ]
+}

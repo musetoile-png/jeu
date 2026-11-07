@@ -1,0 +1,1527 @@
+{
+ "$schema": "../../../schemas/lexicon.schema.json",
+ "language": "zh",
+ "entries": [
+  {
+   "id": "ni_hao",
+   "target": "你好",
+   "transcription": "nǐ hǎo",
+   "gloss": {
+    "fr": "bonjour"
+   },
+   "pos": "expr",
+   "level": "HSK1"
+  },
+  {
+   "id": "wo",
+   "target": "我",
+   "transcription": "wǒ",
+   "gloss": {
+    "fr": "je, moi"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "ni",
+   "target": "你",
+   "transcription": "nǐ",
+   "gloss": {
+    "fr": "tu, toi"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "shi",
+   "target": "是",
+   "transcription": "shì",
+   "gloss": {
+    "fr": "être"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "shei",
+   "target": "谁",
+   "transcription": "shéi",
+   "gloss": {
+    "fr": "qui"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "shenme",
+   "target": "什么",
+   "transcription": "shénme",
+   "gloss": {
+    "fr": "quoi, quel"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "lai",
+   "target": "来",
+   "transcription": "lái",
+   "gloss": {
+    "fr": "venir"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "le",
+   "target": "了",
+   "transcription": "le",
+   "gloss": {
+    "fr": "(particule d'accompli / changement)"
+   },
+   "pos": "part",
+   "level": "HSK1"
+  },
+  {
+   "id": "jintian",
+   "target": "今天",
+   "transcription": "jīntiān",
+   "gloss": {
+    "fr": "aujourd'hui"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "mingtian",
+   "target": "明天",
+   "transcription": "míngtiān",
+   "gloss": {
+    "fr": "demain"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "jian",
+   "target": "见",
+   "transcription": "jiàn",
+   "gloss": {
+    "fr": "voir ; (dans 明天见 : à demain)"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "zuo",
+   "target": "做",
+   "transcription": "zuò",
+   "gloss": {
+    "fr": "faire"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "fan",
+   "target": "饭",
+   "transcription": "fàn",
+   "gloss": {
+    "fr": "repas, riz"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "mifan",
+   "target": "米饭",
+   "transcription": "mǐfàn",
+   "gloss": {
+    "fr": "riz cuit"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "cai",
+   "target": "菜",
+   "transcription": "cài",
+   "gloss": {
+    "fr": "légume ; plat"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "shui",
+   "target": "水",
+   "transcription": "shuǐ",
+   "gloss": {
+    "fr": "eau"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "jidan",
+   "target": "鸡蛋",
+   "transcription": "jīdàn",
+   "gloss": {
+    "fr": "œuf"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "you",
+   "target": "油",
+   "transcription": "yóu",
+   "gloss": {
+    "fr": "huile"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "yan",
+   "target": "盐",
+   "transcription": "yán",
+   "gloss": {
+    "fr": "sel"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "guo",
+   "target": "锅",
+   "transcription": "guō",
+   "gloss": {
+    "fr": "wok"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "wan",
+   "target": "碗",
+   "transcription": "wǎn",
+   "gloss": {
+    "fr": "bol"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "fang",
+   "target": "放",
+   "transcription": "fàng",
+   "gloss": {
+    "fr": "mettre, poser"
+   },
+   "pos": "v",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "chao",
+   "target": "炒",
+   "transcription": "chǎo",
+   "gloss": {
+    "fr": "faire sauter"
+   },
+   "pos": "v",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "chaofan",
+   "target": "炒饭",
+   "transcription": "chǎofàn",
+   "gloss": {
+    "fr": "riz sauté"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "cong",
+   "target": "葱",
+   "transcription": "cōng",
+   "gloss": {
+    "fr": "ciboule, oignon vert"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "xiaocong",
+   "target": "小葱",
+   "transcription": "xiǎocōng",
+   "gloss": {
+    "fr": "ciboule fine"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "dacong",
+   "target": "大葱",
+   "transcription": "dàcōng",
+   "gloss": {
+    "fr": "gros oignon vert (sorte de poireau)"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "chi",
+   "target": "吃",
+   "transcription": "chī",
+   "gloss": {
+    "fr": "manger"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "kan",
+   "target": "看",
+   "transcription": "kàn",
+   "gloss": {
+    "fr": "regarder"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "zhe",
+   "target": "这",
+   "transcription": "zhè",
+   "gloss": {
+    "fr": "ceci, ce"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "zhege",
+   "target": "这个",
+   "transcription": "zhège",
+   "gloss": {
+    "fr": "celui-ci"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "zai",
+   "target": "在",
+   "transcription": "zài",
+   "gloss": {
+    "fr": "être à, se trouver"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "nar",
+   "target": "哪儿",
+   "transcription": "nǎr",
+   "gloss": {
+    "fr": "où"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "re",
+   "target": "热",
+   "transcription": "rè",
+   "gloss": {
+    "fr": "chaud"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "leng",
+   "target": "冷",
+   "transcription": "lěng",
+   "gloss": {
+    "fr": "froid"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "hen",
+   "target": "很",
+   "transcription": "hěn",
+   "gloss": {
+    "fr": "très"
+   },
+   "pos": "adv",
+   "level": "HSK1"
+  },
+  {
+   "id": "duo",
+   "target": "多",
+   "transcription": "duō",
+   "gloss": {
+    "fr": "beaucoup"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "shao",
+   "target": "少",
+   "transcription": "shǎo",
+   "gloss": {
+    "fr": "peu"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "da",
+   "target": "大",
+   "transcription": "dà",
+   "gloss": {
+    "fr": "grand"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "xiao",
+   "target": "小",
+   "transcription": "xiǎo",
+   "gloss": {
+    "fr": "petit"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "de",
+   "target": "的",
+   "transcription": "de",
+   "gloss": {
+    "fr": "(particule : le … / de)"
+   },
+   "pos": "part",
+   "level": "HSK1"
+  },
+  {
+   "id": "hao",
+   "target": "好",
+   "transcription": "hǎo",
+   "gloss": {
+    "fr": "bien, bon"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "hao_le",
+   "target": "好了",
+   "transcription": "hǎo le",
+   "gloss": {
+    "fr": "c'est prêt, c'est bon"
+   },
+   "pos": "expr",
+   "level": "HSK1"
+  },
+  {
+   "id": "haochi",
+   "target": "好吃",
+   "transcription": "hǎochī",
+   "gloss": {
+    "fr": "bon (au goût)"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "bu",
+   "target": "不",
+   "transcription": "bù",
+   "gloss": {
+    "fr": "ne … pas"
+   },
+   "pos": "adv",
+   "level": "HSK1"
+  },
+  {
+   "id": "ma",
+   "target": "吗",
+   "transcription": "ma",
+   "gloss": {
+    "fr": "(particule interrogative)"
+   },
+   "pos": "part",
+   "level": "HSK1"
+  },
+  {
+   "id": "ge",
+   "target": "个",
+   "transcription": "ge",
+   "gloss": {
+    "fr": "(classificateur général)"
+   },
+   "pos": "cl",
+   "level": "HSK1"
+  },
+  {
+   "id": "yi",
+   "target": "一",
+   "transcription": "yī",
+   "gloss": {
+    "fr": "un"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "er",
+   "target": "二",
+   "transcription": "èr",
+   "gloss": {
+    "fr": "deux"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "san",
+   "target": "三",
+   "transcription": "sān",
+   "gloss": {
+    "fr": "trois"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "si",
+   "target": "四",
+   "transcription": "sì",
+   "gloss": {
+    "fr": "quatre"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "wu",
+   "target": "五",
+   "transcription": "wǔ",
+   "gloss": {
+    "fr": "cinq"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "liu",
+   "target": "六",
+   "transcription": "liù",
+   "gloss": {
+    "fr": "six"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "qi",
+   "target": "七",
+   "transcription": "qī",
+   "gloss": {
+    "fr": "sept"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "li",
+   "target": "里",
+   "transcription": "lǐ",
+   "gloss": {
+    "fr": "dans, à l'intérieur"
+   },
+   "pos": "loc",
+   "level": "HSK1"
+  },
+  {
+   "id": "xiexie",
+   "target": "谢谢",
+   "transcription": "xièxie",
+   "gloss": {
+    "fr": "merci"
+   },
+   "pos": "expr",
+   "level": "HSK1"
+  },
+  {
+   "id": "bukeqi",
+   "target": "不客气",
+   "transcription": "bú kèqi",
+   "gloss": {
+    "fr": "de rien"
+   },
+   "pos": "expr",
+   "level": "HSK1"
+  },
+  {
+   "id": "duibuqi",
+   "target": "对不起",
+   "transcription": "duìbuqǐ",
+   "gloss": {
+    "fr": "pardon"
+   },
+   "pos": "expr",
+   "level": "HSK1"
+  },
+  {
+   "id": "ye",
+   "target": "也",
+   "transcription": "yě",
+   "gloss": {
+    "fr": "aussi"
+   },
+   "pos": "adv",
+   "level": "HSK1"
+  },
+  {
+   "id": "xiang",
+   "target": "想",
+   "transcription": "xiǎng",
+   "gloss": {
+    "fr": "vouloir, avoir envie de"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "nainai",
+   "target": "奶奶",
+   "transcription": "nǎinai",
+   "gloss": {
+    "fr": "grand-mère (paternelle)"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "xiaolong",
+   "target": "小龙",
+   "transcription": "Xiǎo Lóng",
+   "gloss": {
+    "fr": "Xiao Long (prénom)"
+   },
+   "pos": "name",
+   "level": "nom"
+  },
+  {
+   "id": "qian_mille",
+   "target": "千",
+   "transcription": "qiān",
+   "gloss": {
+    "fr": "mille"
+   },
+   "pos": "num",
+   "level": "HSK2"
+  },
+  {
+   "id": "wei",
+   "target": "喂",
+   "transcription": "wèi",
+   "gloss": {
+    "fr": "hé ! / allô"
+   },
+   "pos": "interj",
+   "level": "HSK1"
+  },
+  {
+   "id": "e",
+   "target": "饿",
+   "transcription": "è",
+   "gloss": {
+    "fr": "avoir faim"
+   },
+   "pos": "adj",
+   "level": "HSK3"
+  },
+  {
+   "id": "jiao",
+   "target": "叫",
+   "transcription": "jiào",
+   "gloss": {
+    "fr": "s'appeler ; appeler"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "mingzi",
+   "target": "名字",
+   "transcription": "míngzi",
+   "gloss": {
+    "fr": "nom, prénom"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "tai",
+   "target": "太",
+   "transcription": "tài",
+   "gloss": {
+    "fr": "trop"
+   },
+   "pos": "adv",
+   "level": "HSK1"
+  },
+  {
+   "id": "nan",
+   "target": "难",
+   "transcription": "nán",
+   "gloss": {
+    "fr": "difficile"
+   },
+   "pos": "adj",
+   "level": "HSK3"
+  },
+  {
+   "id": "guo_pays",
+   "target": "国",
+   "transcription": "guó",
+   "gloss": {
+    "fr": "pays"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "ren",
+   "target": "人",
+   "transcription": "rén",
+   "gloss": {
+    "fr": "personne"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "faguo",
+   "target": "法国",
+   "transcription": "Fǎguó",
+   "gloss": {
+    "fr": "France"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "bilishi",
+   "target": "比利时",
+   "transcription": "Bǐlìshí",
+   "gloss": {
+    "fr": "Belgique"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "ruishi",
+   "target": "瑞士",
+   "transcription": "Ruìshì",
+   "gloss": {
+    "fr": "Suisse"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "jianada",
+   "target": "加拿大",
+   "transcription": "Jiānádà",
+   "gloss": {
+    "fr": "Canada"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "huanying",
+   "target": "欢迎",
+   "transcription": "huānyíng",
+   "gloss": {
+    "fr": "bienvenue"
+   },
+   "pos": "v",
+   "level": "HSK3"
+  },
+  {
+   "id": "lou",
+   "target": "楼",
+   "transcription": "lóu",
+   "gloss": {
+    "fr": "étage, immeuble"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "shang",
+   "target": "上",
+   "transcription": "shàng",
+   "gloss": {
+    "fr": "dessus, en haut"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "you_avoir",
+   "target": "有",
+   "transcription": "yǒu",
+   "gloss": {
+    "fr": "il y a ; avoir"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "chuang",
+   "target": "床",
+   "transcription": "chuáng",
+   "gloss": {
+    "fr": "lit"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "qianbao",
+   "target": "钱包",
+   "transcription": "qiánbāo",
+   "gloss": {
+    "fr": "portefeuille"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "qian",
+   "target": "钱",
+   "transcription": "qián",
+   "gloss": {
+    "fr": "argent"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "gou",
+   "target": "狗",
+   "transcription": "gǒu",
+   "gloss": {
+    "fr": "chien"
+   },
+   "pos": "n",
+   "level": "HSK1",
+   "taughtInContext": true
+  },
+  {
+   "id": "kuaizi",
+   "target": "筷子",
+   "transcription": "kuàizi",
+   "gloss": {
+    "fr": "baguettes"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "yaoshi",
+   "target": "钥匙",
+   "transcription": "yàoshi",
+   "gloss": {
+    "fr": "clé"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "huzhao",
+   "target": "护照",
+   "transcription": "hùzhào",
+   "gloss": {
+    "fr": "passeport"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "shouji",
+   "target": "手机",
+   "transcription": "shǒujī",
+   "gloss": {
+    "fr": "téléphone portable"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "benzi",
+   "target": "本子",
+   "transcription": "běnzi",
+   "gloss": {
+    "fr": "carnet"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "bi",
+   "target": "笔",
+   "transcription": "bǐ",
+   "gloss": {
+    "fr": "stylo"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "mingxinpian",
+   "target": "明信片",
+   "transcription": "míngxìnpiàn",
+   "gloss": {
+    "fr": "carte postale"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "hua_peinture",
+   "target": "画",
+   "transcription": "huà",
+   "gloss": {
+    "fr": "peinture, rouleau peint"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "xi",
+   "target": "洗",
+   "transcription": "xǐ",
+   "gloss": {
+    "fr": "laver"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "qu",
+   "target": "去",
+   "transcription": "qù",
+   "gloss": {
+    "fr": "aller"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "women",
+   "target": "我们",
+   "transcription": "wǒmen",
+   "gloss": {
+    "fr": "nous"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "xiangji",
+   "target": "相机",
+   "transcription": "xiàngjī",
+   "gloss": {
+    "fr": "appareil photo"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "kuai",
+   "target": "块",
+   "transcription": "kuài",
+   "gloss": {
+    "fr": "yuan (monnaie parlée)"
+   },
+   "pos": "cl",
+   "level": "HSK1"
+  },
+  {
+   "id": "shi_dix",
+   "target": "十",
+   "transcription": "shí",
+   "gloss": {
+    "fr": "dix"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "yao",
+   "target": "要",
+   "transcription": "yào",
+   "gloss": {
+    "fr": "vouloir"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "gei",
+   "target": "给",
+   "transcription": "gěi",
+   "gloss": {
+    "fr": "donner"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "ni_men",
+   "target": "你们",
+   "transcription": "nǐmen",
+   "gloss": {
+    "fr": "vous"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "paizhao",
+   "target": "拍照",
+   "transcription": "pāizhào",
+   "gloss": {
+    "fr": "prendre une photo"
+   },
+   "pos": "v"
+  },
+  {
+   "id": "denglong",
+   "target": "灯笼",
+   "transcription": "dēnglong",
+   "gloss": {
+    "fr": "lanterne"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "baozi",
+   "target": "包子",
+   "transcription": "bāozi",
+   "gloss": {
+    "fr": "brioche farcie vapeur"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "men",
+   "target": "门",
+   "transcription": "mén",
+   "gloss": {
+    "fr": "porte"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "hua_fleur",
+   "target": "花",
+   "transcription": "huā",
+   "gloss": {
+    "fr": "fleur"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "xiuxi",
+   "target": "休息",
+   "transcription": "xiūxi",
+   "gloss": {
+    "fr": "se reposer ; fermé"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "ta_m",
+   "target": "他",
+   "transcription": "tā",
+   "gloss": {
+    "fr": "il, lui"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "ta_f",
+   "target": "她",
+   "transcription": "tā",
+   "gloss": {
+    "fr": "elle"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "xiaoma",
+   "target": "小马",
+   "transcription": "Xiǎo Mǎ",
+   "gloss": {
+    "fr": "Xiao Ma (le réparateur)"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "wang",
+   "target": "汪汪",
+   "transcription": "wāngwāng",
+   "gloss": {
+    "fr": "ouaf ouaf"
+   },
+   "pos": "onomat"
+  },
+  {
+   "id": "dier_tian",
+   "target": "第二天",
+   "transcription": "dì èr tiān",
+   "gloss": {
+    "fr": "le lendemain"
+   },
+   "pos": "n"
+  },
+  {
+   "id": "na",
+   "target": "哪",
+   "transcription": "nǎ",
+   "gloss": {
+    "fr": "quel ? lequel ?"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "shanghai",
+   "target": "上海",
+   "transcription": "Shànghǎi",
+   "gloss": {
+    "fr": "Shanghai"
+   },
+   "pos": "n",
+   "level": "nom"
+  },
+  {
+   "id": "duoshao",
+   "target": "多少",
+   "transcription": "duōshao",
+   "gloss": {
+    "fr": "combien"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "meiyou",
+   "target": "没有",
+   "transcription": "méiyǒu",
+   "gloss": {
+    "fr": "ne pas avoir ; il n'y a pas"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "mai",
+   "target": "买",
+   "transcription": "mǎi",
+   "gloss": {
+    "fr": "acheter"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "mai_vendre",
+   "target": "卖",
+   "transcription": "mài",
+   "gloss": {
+    "fr": "vendre"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "nar_la",
+   "target": "那儿",
+   "transcription": "nàr",
+   "gloss": {
+    "fr": "là-bas ; chez (qqn)"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "zai_encore",
+   "target": "再",
+   "transcription": "zài",
+   "gloss": {
+    "fr": "encore, de nouveau ; en plus ; ensuite"
+   },
+   "pos": "adv",
+   "level": "HSK2"
+  },
+  {
+   "id": "dui",
+   "target": "对",
+   "transcription": "duì",
+   "gloss": {
+    "fr": "oui, c'est ça ; juste"
+   },
+   "pos": "adj",
+   "level": "HSK1"
+  },
+  {
+   "id": "ji",
+   "target": "几",
+   "transcription": "jǐ",
+   "gloss": {
+    "fr": "combien (petit nombre)"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "bai",
+   "target": "百",
+   "transcription": "bǎi",
+   "gloss": {
+    "fr": "cent"
+   },
+   "pos": "num",
+   "level": "HSK2"
+  },
+  {
+   "id": "ba",
+   "target": "吧",
+   "transcription": "ba",
+   "gloss": {
+    "fr": "(particule : suggestion « …donc » ; supposition « …hein ? »)"
+   },
+   "pos": "part",
+   "level": "HSK2"
+  },
+  {
+   "id": "nin",
+   "target": "您",
+   "transcription": "nín",
+   "gloss": {
+    "fr": "vous (de respect)"
+   },
+   "pos": "pron",
+   "level": "HSK2"
+  },
+  {
+   "id": "ayi",
+   "target": "阿姨",
+   "transcription": "āyí",
+   "gloss": {
+    "fr": "tante ; madame (dame de l'âge de tes parents)"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "shushu",
+   "target": "叔叔",
+   "transcription": "shūshu",
+   "gloss": {
+    "fr": "oncle ; monsieur (homme de l'âge de tes parents)"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "yeye",
+   "target": "爷爷",
+   "transcription": "yéye",
+   "gloss": {
+    "fr": "grand-père ; monsieur âgé"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "mama",
+   "target": "妈妈",
+   "transcription": "māma",
+   "gloss": {
+    "fr": "maman"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "wang_xing",
+   "target": "王",
+   "transcription": "Wáng",
+   "gloss": {
+    "fr": "Wang (nom de famille)"
+   },
+   "pos": "name",
+   "level": "nom"
+  },
+  {
+   "id": "li_xing",
+   "target": "李",
+   "transcription": "Lǐ",
+   "gloss": {
+    "fr": "Li (nom de famille)"
+   },
+   "pos": "name",
+   "level": "nom"
+  },
+  {
+   "id": "chen_xing",
+   "target": "陈",
+   "transcription": "Chén",
+   "gloss": {
+    "fr": "Chen (nom de famille)"
+   },
+   "pos": "name",
+   "level": "nom"
+  },
+  {
+   "id": "aiyo",
+   "target": "哎哟",
+   "transcription": "āiyō",
+   "gloss": {
+    "fr": "oh là là ! (surprise)"
+   },
+   "pos": "interj",
+   "level": "hors-liste"
+  },
+  {
+   "id": "haha",
+   "target": "哈哈",
+   "transcription": "hāhā",
+   "gloss": {
+    "fr": "ha ha !"
+   },
+   "pos": "onomat",
+   "level": "hors-liste"
+  },
+  {
+   "id": "mianbao",
+   "target": "面包",
+   "transcription": "miànbāo",
+   "gloss": {
+    "fr": "pain"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "pingguo",
+   "target": "苹果",
+   "transcription": "píngguǒ",
+   "gloss": {
+    "fr": "pomme"
+   },
+   "pos": "n",
+   "level": "HSK1",
+   "taughtInContext": true
+  },
+  {
+   "id": "xigua",
+   "target": "西瓜",
+   "transcription": "xīguā",
+   "gloss": {
+    "fr": "pastèque"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "xiangjiao",
+   "target": "香蕉",
+   "transcription": "xiāngjiāo",
+   "gloss": {
+    "fr": "banane"
+   },
+   "pos": "n",
+   "level": "HSK3",
+   "taughtInContext": true
+  },
+  {
+   "id": "cha",
+   "target": "茶",
+   "transcription": "chá",
+   "gloss": {
+    "fr": "thé"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "chaye",
+   "target": "茶叶",
+   "transcription": "cháyè",
+   "gloss": {
+    "fr": "feuilles de thé, thé en vrac"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "lucha",
+   "target": "绿茶",
+   "transcription": "lǜchá",
+   "gloss": {
+    "fr": "thé vert"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "hongcha",
+   "target": "红茶",
+   "transcription": "hóngchá",
+   "gloss": {
+    "fr": "« thé rouge » = thé noir (en France)"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "hong",
+   "target": "红",
+   "transcription": "hóng",
+   "gloss": {
+    "fr": "rouge"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "he",
+   "target": "喝",
+   "transcription": "hē",
+   "gloss": {
+    "fr": "boire"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "haohe",
+   "target": "好喝",
+   "transcription": "hǎohē",
+   "gloss": {
+    "fr": "bon (à boire)"
+   },
+   "pos": "adj",
+   "level": "hors-liste"
+  },
+  {
+   "id": "saoma",
+   "target": "扫码",
+   "transcription": "sǎomǎ",
+   "gloss": {
+    "fr": "scanner (le QR code pour payer)"
+   },
+   "pos": "v",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "manzou",
+   "target": "慢走",
+   "transcription": "mànzǒu",
+   "gloss": {
+    "fr": "« marche lentement » : au revoir (dit à qui s'en va)"
+   },
+   "pos": "expr",
+   "level": "hors-liste"
+  },
+  {
+   "id": "qingdan",
+   "target": "清单",
+   "transcription": "qīngdān",
+   "gloss": {
+    "fr": "liste"
+   },
+   "pos": "n",
+   "level": "hors-liste",
+   "taughtInContext": true
+  },
+  {
+   "id": "zhongwen",
+   "target": "中文",
+   "transcription": "Zhōngwén",
+   "gloss": {
+    "fr": "le chinois (langue)"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "lei",
+   "target": "累",
+   "transcription": "lèi",
+   "gloss": {
+    "fr": "fatigué"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "wanan",
+   "target": "晚安",
+   "transcription": "wǎn'ān",
+   "gloss": {
+    "fr": "bonne nuit"
+   },
+   "pos": "expr",
+   "level": "hors-liste"
+  }
+ ]
+}

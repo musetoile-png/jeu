@@ -1,0 +1,854 @@
+{
+ "id": "prologue-bol",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 0,
+ "title": {
+  "fr": "Un bol de riz"
+ },
+ "place": "ruelle",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  },
+  "gou": {
+   "name": "狗",
+   "label": {
+    "fr": "un chien"
+   },
+   "portrait": "gou"
+  }
+ },
+ "objects": {
+  "carte": {
+   "word": "mingxinpian",
+   "image": "obj_postcard"
+  },
+  "rouleau": {
+   "word": "hua_peinture",
+   "image": "obj_scroll"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "time": "jour",
+   "prologue": "fait"
+  },
+  "goto": {
+   "place": "cuisine"
+  },
+  "card": {
+   "zh": "第二天",
+   "fr": "Le lendemain matin"
+  }
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_01",
+   "line": [
+    [
+     "w",
+     "wei"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "e"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Hé ! Tu as faim ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "p1_02a_{body}",
+     "line": [
+      [
+       "w",
+       "e"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "e"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui, j'ai très faim."
+     }
+    },
+    {
+     "vo": "p1_02b_{body}",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "e"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je n'ai pas faim."
+     },
+     "why": {
+      "fr": "不饿 = « pas faim ». Tu n'as rien mangé depuis l'avion… et ton ventre gargouille : 饿 suffit."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "p1_02c_{body}",
+     "line": [
+      [
+       "w",
+       "ni_hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour !"
+     },
+     "why": {
+      "fr": "Poli, mais elle te demande si tu as faim (饿吗 ?). Réponds avec 饿."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_03",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "chi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Viens, mange !"
+   },
+   "effect": "bowl"
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_04",
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "kuaizi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ce sont tes baguettes."
+   },
+   "give": [
+    "kuaizi"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_05",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "jiao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "w",
+     "mingzi"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Comment tu t'appelles ?"
+   }
+  },
+  {
+   "type": "choose",
+   "free": true,
+   "ask": {
+    "fr": "Dis ton prénom :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "……",
+       "…",
+       "(ton prénom)"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je m'appelle … (ton prénom)."
+     },
+     "vo": "p1_06_{body}"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_07",
+   "expression": "surprise",
+   "line": [
+    [
+     "t",
+     "哎呀",
+     "āiyā",
+     "oh là là"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "tai"
+    ],
+    [
+     "w",
+     "nan"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oh là là, c'est trop difficile !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_08",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "jiao"
+    ],
+    [
+     "t",
+     "小安",
+     "Xiǎo Ān",
+     "Petit An"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "t",
+     "小明",
+     "Xiǎo Míng",
+     "Petit Ming"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "t",
+     "小文",
+     "Xiǎo Wén",
+     "Petit Wen"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Tu t'appelles Xiao An ? Xiao Ming ? Xiao Wen ?"
+   }
+  },
+  {
+   "type": "choose",
+   "free": true,
+   "ask": {
+    "fr": "Choisis ton nom chinois (survole pour voir son sens) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "p1_09an_{body}",
+     "set": {
+      "name": "an"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "小安",
+       "Xiǎo Ān",
+       "ton nom"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je m'appelle 小安 (Xiǎo Ān)."
+     }
+    },
+    {
+     "ok": true,
+     "vo": "p1_09ming_{body}",
+     "set": {
+      "name": "ming"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "小明",
+       "Xiǎo Míng",
+       "ton nom"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je m'appelle 小明 (Xiǎo Míng)."
+     }
+    },
+    {
+     "ok": true,
+     "vo": "p1_09wen_{body}",
+     "set": {
+      "name": "wen"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "小文",
+       "Xiǎo Wén",
+       "ton nom"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je m'appelle 小文 (Xiǎo Wén)."
+     }
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_10_{name}",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "v",
+     "NAME"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "na"
+    ],
+    [
+     "w",
+     "guo_pays"
+    ],
+    [
+     "w",
+     "ren"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien, {NAME} ! Tu viens de quel pays ?"
+   }
+  },
+  {
+   "type": "choose",
+   "free": true,
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "p1_11fr_{body}",
+     "set": {
+      "country": "fr"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "faguo"
+      ],
+      [
+       "w",
+       "ren"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis Français·e."
+     }
+    },
+    {
+     "ok": true,
+     "vo": "p1_11be_{body}",
+     "set": {
+      "country": "be"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "bilishi"
+      ],
+      [
+       "w",
+       "ren"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis Belge."
+     }
+    },
+    {
+     "ok": true,
+     "vo": "p1_11ch_{body}",
+     "set": {
+      "country": "ch"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "ruishi"
+      ],
+      [
+       "w",
+       "ren"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis Suisse."
+     }
+    },
+    {
+     "ok": true,
+     "vo": "p1_11ca_{body}",
+     "set": {
+      "country": "ca"
+     },
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "jianada"
+      ],
+      [
+       "w",
+       "ren"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis Canadien·ne."
+     }
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_12",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "huanying"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bienvenue !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "p1_13",
+   "line": [
+    [
+     "w",
+     "lou"
+    ],
+    [
+     "w",
+     "shang"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "chuang"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "mingtian"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Il y a un lit à l'étage. Demain, c'est toi qui cuisines !"
+   },
+   "give": [
+    "yaoshi"
+   ]
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie-la :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "p1_14a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, grand-mère !"
+     }
+    },
+    {
+     "vo": "p1_14b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. Ici, c'est toi qui remercies : 谢谢."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "p1_14c_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pardon !"
+     },
+     "why": {
+      "fr": "对不起 = « pardon ». Elle t'offre un lit : 谢谢."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "cinematic",
+   "options": [
+    {
+     "object": "carte",
+     "ok": true,
+     "set": {
+      "quest": "lettre"
+     },
+     "caption": {
+      "fr": "la carte postale de Léo"
+     }
+    },
+    {
+     "object": "rouleau",
+     "ok": true,
+     "set": {
+      "quest": "rouleau"
+     },
+     "caption": {
+      "fr": "le rouleau peint"
+     }
+    }
+   ],
+   "end": true,
+   "cinematic": "valise",
+   "narration": {
+    "fr": "Le soir, dans la petite chambre au-dessus de la cantine, tu ouvres enfin ta valise. Deux choses t'ont amené·e jusqu'ici."
+   },
+   "backdrop": "chambre"
+  }
+ ]
+}

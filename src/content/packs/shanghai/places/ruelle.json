@@ -1,0 +1,328 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "ruelle",
+  "name": {
+    "zh": "弄堂",
+    "fr": "La ruelle"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.43,
+  "planes": [
+    {
+      "image": "ruelle_far",
+      "parallax": 0.8,
+      "y": 0
+    },
+    {
+      "image": "ruelle_shop",
+      "parallax": 1.0,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 845,
+      "y": 668,
+      "text": {
+        "zh": "奶奶小馆"
+      },
+      "size": 54
+    }
+  ],
+  "walk": {
+    "yMin": 1036,
+    "yMax": 1074,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 1900,
+    "y": 1056,
+    "facing": "left",
+    "walkIn": -380
+  },
+  "entrances": {
+    "porte": {
+      "x": 854,
+      "y": 1050,
+      "facing": "right",
+      "walkIn": 120
+    },
+    "arrivee": {
+      "x": 1900,
+      "y": 1056,
+      "facing": "left",
+      "walkIn": -560
+    },
+    "portail": {
+      "x": 1290,
+      "y": 1046,
+      "facing": "left",
+      "walkIn": -140
+    }
+  },
+  "hotspots": [
+    {
+      "id": "nainai_porte",
+      "kind": "npc",
+      "x": 905,
+      "y": 1046,
+      "scene": "prologue-bol",
+      "sprite": "nainai_stand",
+      "scale": 0.62,
+      "when": {
+        "time": "nuit",
+        "chien": "fait"
+      },
+      "prompt": {
+        "fr": "parler à 奶奶"
+      }
+    },
+    {
+      "id": "porte",
+      "kind": "exit",
+      "x": 854,
+      "y": 1050,
+      "to": "cuisine",
+      "when": {
+        "time": "jour"
+      },
+      "prompt": {
+        "fr": "entrer chez 奶奶"
+      }
+    },
+    {
+      "id": "portail",
+      "kind": "exit",
+      "x": 1290,
+      "y": 1050,
+      "to": "cour",
+      "prompt": {
+        "fr": "vers la cour"
+      },
+      "toEntrance": "portail",
+      "when": {
+        "time": "jour"
+      }
+    },
+    {
+      "id": "portail_nuit",
+      "kind": "exit",
+      "x": 1290,
+      "y": 1050,
+      "to": "cour_nuit",
+      "when": {
+        "time": "nuit"
+      },
+      "prompt": {
+        "fr": "la cour"
+      }
+    },
+    {
+      "id": "xiaoma_avant",
+      "kind": "npc",
+      "x": 1680,
+      "y": 1050,
+      "scene": "xiaoma-regarder",
+      "sprite": "xiaoma_stand",
+      "scale": 0.48,
+      "when": {
+        "time": "jour",
+        "cran1": ""
+      },
+      "prompt": {
+        "fr": "parler à 小马"
+      }
+    },
+    {
+      "id": "xiaoma",
+      "kind": "npc",
+      "x": 1680,
+      "y": 1050,
+      "scene": "xiaoma-xiangji",
+      "sprite": "xiaoma_stand",
+      "scale": 0.48,
+      "when": {
+        "cran1": "fait",
+        "xiangji": ""
+      },
+      "prompt": {
+        "fr": "parler à 小马"
+      }
+    },
+    {
+      "id": "s_lanterne",
+      "kind": "subject",
+      "x": 660,
+      "y": 745,
+      "word": "denglong",
+      "photo": "photo_denglong",
+      "prompt": {
+        "fr": "la lanterne"
+      }
+    },
+    {
+      "id": "s_baozi",
+      "kind": "subject",
+      "x": 430,
+      "y": 840,
+      "word": "baozi",
+      "prompt": {
+        "fr": "les paniers vapeur"
+      }
+    },
+    {
+      "id": "s_men",
+      "kind": "subject",
+      "x": 1280,
+      "y": 760,
+      "word": "men",
+      "photo": "photo_shikumen",
+      "prompt": {
+        "fr": "le portail du lilong"
+      }
+    },
+    {
+      "id": "s_fleurs",
+      "kind": "subject",
+      "x": 1800,
+      "y": 950,
+      "word": "hua_fleur",
+      "prompt": {
+        "fr": "les fleurs"
+      }
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#58d6a9"
+  ],
+  "onEnter": [
+    {
+      "scene": "prologue-chien",
+      "when": {
+        "time": "nuit",
+        "chien": ""
+      },
+      "effect": "dog",
+      "delay": 5400
+    }
+  ],
+  "night": {
+    "tint": "#5a6488",
+    "alpha": 1,
+    "lights": [
+      {
+        "x": 660,
+        "y": 745,
+        "r": 160,
+        "color": "#ffb070"
+      },
+      {
+        "x": 854,
+        "y": 900,
+        "r": 230,
+        "color": "#ffcf8a"
+      }
+    ]
+  },
+  "props": [
+    {
+      "image": "ruelle_xiaoma",
+      "x": 1560,
+      "y": 1062,
+      "scale": 0.4,
+      "depth": 1040
+    }
+  ],
+  "ambient": [
+    {
+      "image": "passant_oiseau",
+      "kind": "walk",
+      "y": [
+        1004,
+        1018
+      ],
+      "height": 268,
+      "speed": 48,
+      "every": [
+        16,
+        36
+      ],
+      "when": {
+        "time": "jour"
+      }
+    },
+    {
+      "image": "velo",
+      "kind": "walk",
+      "y": [
+        1010,
+        1022
+      ],
+      "height": 280,
+      "speed": 190,
+      "every": [
+        22,
+        45
+      ],
+      "when": {
+        "time": "jour"
+      }
+    },
+    {
+      "image": "passante_courses",
+      "kind": "walk",
+      "y": [
+        1006,
+        1020
+      ],
+      "height": 262,
+      "speed": 62,
+      "every": [
+        25,
+        50
+      ],
+      "when": {
+        "time": "jour"
+      }
+    },
+    {
+      "image": "chat_marche",
+      "restImage": "chat_assis",
+      "kind": "rest",
+      "y": [
+        1016,
+        1030
+      ],
+      "height": 70,
+      "speed": 55,
+      "every": [
+        20,
+        45
+      ]
+    },
+    {
+      "image": "moineaux",
+      "kind": "hop",
+      "y": [
+        1024,
+        1032
+      ],
+      "height": 34,
+      "every": [
+        15,
+        30
+      ],
+      "when": {
+        "time": "jour"
+      }
+    }
+  ]
+}

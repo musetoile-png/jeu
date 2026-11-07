@@ -1,0 +1,317 @@
+{
+ "id": "xiaoma-xiangji",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le vieil appareil photo"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "xiangji": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "x_01",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour ! Tu veux quoi ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "x_02a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "xiangji"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je veux un appareil photo."
+     }
+    },
+    {
+     "vo": "x_02b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "shouji"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je veux un téléphone."
+     },
+     "why": {
+      "fr": "手机 = téléphone. Tu veux photographier : 相机, l'appareil photo."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "x_02c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mifan"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je veux du riz."
+     },
+     "why": {
+      "fr": "米饭 = riz cuit. Ici, c'est une échoppe de réparation, pas une cantine."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "x_03",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "xiangji"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Cet appareil, cinquante yuans."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Paie avec ta paie du jour :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "x_04a_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord, tiens."
+     }
+    },
+    {
+     "vo": "x_04b_{body}",
+     "line": [
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Cinq yuans ?"
+     },
+     "why": {
+      "fr": "五块 = 5 yuans. Il a dit 五十块 : cinq-dix, cinquante."
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "x_04c_{body}",
+     "line": [
+      [
+       "w",
+       "duo"
+      ],
+      [
+       "w",
+       "shao"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Beaucoup, peu ?"
+     },
+     "why": {
+      "fr": "多 et 少 séparés ne demandent pas le prix ; il te l'a déjà dit : 五十块."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "take": [
+    "qian"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "x_05",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "xiexie"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "paizhao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Merci ! Va prendre des photos !"
+   },
+   "give": [
+    "xiangji"
+   ],
+   "end": true
+  }
+ ]
+}

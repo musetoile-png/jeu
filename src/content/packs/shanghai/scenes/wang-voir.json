@@ -1,0 +1,694 @@
+{
+ "id": "wang-voir",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "L'épicerie de 王阿姨"
+ },
+ "place": "cour",
+ "npc": "wang",
+ "patience": 3,
+ "actors": {
+  "wang": {
+   "name": "王阿姨",
+   "label": {
+    "fr": "l'épicière"
+   },
+   "portrait": "wang"
+  }
+ },
+ "objects": {
+  "water": {
+   "word": "shui",
+   "image": "obj_water"
+  },
+  "egg": {
+   "word": "jidan",
+   "image": "obj_egg"
+  },
+  "bread": {
+   "word": "mianbao",
+   "image": "obj_mianbao"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "vu_wang": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Une dame aux lunettes rondes tient le 小卖部. Salue-la :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wv_01a_{body}",
+     "line": [
+      [
+       "w",
+       "ayi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, madame !"
+     }
+    },
+    {
+     "vo": "wv_01b_{body}",
+     "line": [
+      [
+       "w",
+       "mama"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, maman !"
+     },
+     "why": {
+      "fr": "妈妈 = maman : elle va bien rire ! Une dame de l'âge de tes parents qu'on ne connaît pas, on l'appelle 阿姨 (« tantine ») : poli et chaleureux. Pareil pour un homme : 叔叔 ; pour un monsieur âgé : 爷爷."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "wv_01c_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-mère !"
+     },
+     "why": {
+      "fr": "奶奶 = grand-mère : elle a la cinquantaine, elle pourrait se vexer ! 奶奶 se garde pour les dames âgées. Pour elle : 阿姨."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wv_02",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "aiyo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oh, bonjour, bonjour ! Tu veux quoi ?"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wv_03",
+   "highlight": [
+    "water",
+    "egg",
+    "bread"
+   ],
+   "line": [
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "shui"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "mianbao"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Il y a de l'eau, des œufs, du pain."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "wang",
+   "vo": "wv_04",
+   "line": [
+    [
+     "w",
+     "mianbao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "re"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Du pain ! Tout chaud !"
+   },
+   "ask": {
+    "fr": "Que te montre-t-elle ?"
+   },
+   "options": [
+    {
+     "object": "bread",
+     "ok": true
+    },
+    {
+     "object": "egg",
+     "why": {
+      "fr": "鸡蛋 jīdàn = œuf. Elle a dit 面包 miànbāo : le pain (ici, de petits pains moelleux)."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "water",
+     "why": {
+      "fr": "水 = eau. 面包, c'est le pain — le même 包 que dans 包子, les brioches vapeur de la ruelle."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande le prix du pain :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wv_05a_{body}",
+     "line": [
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien coûte le pain ?"
+     }
+    },
+    {
+     "vo": "wv_05b_{body}",
+     "line": [
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Le pain, c'est quoi ?"
+     },
+     "why": {
+      "fr": "什么 = quoi : tu sais déjà ce que c'est ! Pour le prix : 多少钱 ?"
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "wv_05c_{body}",
+     "line": [
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "nar"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Où est le pain ?"
+     },
+     "why": {
+      "fr": "哪儿 = où. Le pain est sous ton nez ! Pour le prix : 多少钱 ?"
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wv_06",
+   "line": [
+    [
+     "w",
+     "mianbao"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le pain ? Dix yuans."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu as bien entendu ? Vérifie le prix :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wv_07a_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dix yuans ?"
+     }
+    },
+    {
+     "vo": "wv_07b_{body}",
+     "line": [
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Quatre yuans ?"
+     },
+     "why": {
+      "fr": "Les deux se ressemblent ! 十 shí (dix) commence par « sh » et monte, comme une question. 四 sì (quatre) a un « s » sifflant et tombe, sec. Elle a dit shí : 十."
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "wv_07c_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dix (pièces) ?"
+     },
+     "why": {
+      "fr": "个 compte des choses (三个鸡蛋). Pour l'argent, on compte en 块 (le yuan parlé) : 十块."
+     },
+     "errorType": "classifier"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "wang",
+   "vo": "wv_08",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oui, dix yuans. Tu en veux ?"
+   },
+   "ask": {
+    "fr": "Elle attend… Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "wv_08a_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Désolé·e, je n'ai pas d'argent."
+     }
+    },
+    {
+     "vo": "wv_08b_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Désolé·e, je n'ai pas de pain."
+     },
+     "why": {
+      "fr": "C'est vrai… mais c'est elle qui vend le pain ! Ce qui te manque, c'est 钱 : 我没有钱."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "wv_08c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mianbao"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je veux du pain, j'ai de l'argent !"
+     },
+     "why": {
+      "fr": "Avec quoi ? Ton portefeuille (钱包) est parti avec le chien. Dis-lui : 我没有钱."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "wang",
+   "vo": "wv_09",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "aiyo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "meiyou"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oh là là, pas d'argent ? Bon, reviens quand tu en auras !"
+   },
+   "end": true
+  }
+ ]
+}

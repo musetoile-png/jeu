@@ -1,0 +1,19 @@
+{
+  "code": "zh",
+  "bcp47": "zh-CN",
+  "name": { "fr": "Chinois (mandarin)", "en": "Chinese (Mandarin)" },
+  "script": "hans",
+  "direction": "ltr",
+  "transcription": "pinyin",
+  "font": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+  "segmentation": "content",
+  "tts": { "provider": "elevenlabs", "model": "eleven_v4", "language_code": "zh" },
+  "casting": {
+    "nainai": { "voice": "5eoK8NqMBsMdqUmImHNs", "label": "Yating Lin", "style": "[slowly] [clearly]" },
+    "xiaoli": { "voice": "xQsp9uyB3OResmXFYuFx", "label": "Arthur", "style": "[slowly] [clearly]" },
+    "xiaolong": { "voice": "xQsp9uyB3OResmXFYuFx", "label": "Arthur", "style": "" },
+    "player": { "voice": "zYD0xJl1ponKr8TwFBmJ", "label": "Jin", "style": "[slowly] [clearly]" },
+    "lexicon": { "voice": "s2LjOZIlsH2Yu4p6MtAK", "label": "Bobo", "style": "" }
+  },
+  "mastery": { "contextsRequired": 3 }
+}

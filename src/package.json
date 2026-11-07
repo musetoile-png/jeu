@@ -1,0 +1,38 @@
+{
+  "name": "phaser-rpg",
+  "private": true,
+  "version": "1.0.0-alpha",
+  "scripts": {
+    "build": "npm run clean && vite build",
+    "bundle": "bash scripts/bundle.sh",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:tsc": "tsc --project tsconfig.app.json",
+    "prepare": "husky",
+    "preview": "vite preview",
+    "start": "vite --open"
+  },
+  "homepage": "https://remarkablegames.org/phaser-rpg/",
+  "dependencies": {
+    "phaser": "4.2.1",
+    "phaser-jsx": "1.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "eslint": "10.14.0",
+    "eslint-plugin-prettier": "5.5.7",
+    "eslint-plugin-simple-import-sort": "14.0.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vite-plugin-html": "3.2.2"
+  }
+}

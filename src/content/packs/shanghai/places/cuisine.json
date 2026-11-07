@@ -1,0 +1,104 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "cuisine",
+  "name": {
+    "zh": "奶奶小馆",
+    "fr": "La cuisine de 奶奶"
+  },
+  "world": "cuisine",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "planes": [
+    {
+      "image": "cuisine_far",
+      "parallax": 0.7,
+      "y": 0
+    },
+    {
+      "image": "cuisine_mid",
+      "parallax": 1.0,
+      "y": 0
+    }
+  ],
+  "walk": {
+    "yMin": 1000,
+    "yMax": 1065,
+    "xMin": 120,
+    "xMax": 1800
+  },
+  "spawn": {
+    "x": 160,
+    "y": 1040,
+    "facing": "right",
+    "walkIn": 420
+  },
+  "hotspots": [
+    {
+      "id": "nainai",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "cuisine-cran1",
+      "prompt": {
+        "fr": "parler à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "when": {
+        "time": "jour",
+        "courses": "!pret"
+      }
+    },
+    {
+      "id": "nainai_courses",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "nainai-courses",
+      "prompt": {
+        "fr": "rapporter les courses à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "when": {
+        "courses": "pret"
+      }
+    },
+    {
+      "id": "lantern",
+      "kind": "object",
+      "x": 1543,
+      "y": 468,
+      "sprite": "obj_lantern",
+      "word": "denglong",
+      "prompt": {
+        "fr": "la lanterne"
+      }
+    },
+    {
+      "id": "exit",
+      "kind": "exit",
+      "x": 200,
+      "y": 1040,
+      "to": "ruelle",
+      "prompt": {
+        "fr": "sortir dans la ruelle"
+      },
+      "toEntrance": "porte"
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#ff8a1f",
+    "#f3e6c8",
+    "#58d6a9"
+  ],
+  "music": "guzheng_calm",
+  "zoom": 0.72
+}

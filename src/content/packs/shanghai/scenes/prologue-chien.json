@@ -1,0 +1,117 @@
+{
+ "id": "prologue-chien",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 0,
+ "title": {
+  "fr": "Le chien"
+ },
+ "place": "ruelle",
+ "npc": "gou",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  },
+  "gou": {
+   "name": "狗",
+   "label": {
+    "fr": "un chien"
+   },
+   "portrait": "gou"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "chien": "fait"
+  }
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "gou",
+   "vo": "p0_01",
+   "line": [
+    [
+     "w",
+     "wang"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ouaf ouaf !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "player",
+   "vo": "p0_02_{body}",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "qianbao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Mon portefeuille !"
+   },
+   "take": [
+    "qianbao"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "player",
+   "vo": "p0_03_{body}",
+   "line": [
+    [
+     "w",
+     "gou"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "gou"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le chien ! Le chien !"
+   },
+   "end": true
+  }
+ ]
+}

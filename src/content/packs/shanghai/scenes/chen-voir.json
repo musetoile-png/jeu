@@ -1,0 +1,571 @@
+{
+ "id": "chen-voir",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le salon de thé de 陈爷爷"
+ },
+ "place": "cour",
+ "npc": "chen",
+ "patience": 3,
+ "actors": {
+  "chen": {
+   "name": "陈爷爷",
+   "label": {
+    "fr": "le maître du salon de thé"
+   },
+   "portrait": "chen"
+  }
+ },
+ "objects": {
+  "greentea": {
+   "word": "lucha",
+   "image": "obj_lucha"
+  },
+  "redtea": {
+   "word": "hongcha",
+   "image": "obj_hongcha"
+  },
+  "water": {
+   "word": "shui",
+   "image": "obj_water"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "vu_chen": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Un vieux monsieur joue aux échecs chinois devant le salon de thé. Salue-le :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cv_01a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père !"
+     }
+    },
+    {
+     "vo": "cv_01b_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, monsieur !"
+     },
+     "why": {
+      "fr": "叔叔 va à un homme de l'âge de tes parents. Lui a plus de soixante-dix ans : 爷爷 (« grand-père »), respectueux et affectueux."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "cv_01c_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-mère !"
+     },
+     "why": {
+      "fr": "奶奶 = grand-mère. Pour un monsieur âgé, c'est 爷爷."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cv_02",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour… Viens, regarde."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cv_03",
+   "highlight": [
+    "greentea",
+    "redtea"
+   ],
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ça, c'est du thé vert. Ça, du thé rouge."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "chen",
+   "vo": "cv_04",
+   "line": [
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé rouge."
+   },
+   "ask": {
+    "fr": "Il te tend une boîte. Laquelle ?"
+   },
+   "options": [
+    {
+     "object": "redtea",
+     "ok": true
+    },
+    {
+     "object": "greentea",
+     "why": {
+      "fr": "绿 lǜ = vert : 绿茶, le thé vert. 红 hóng = rouge : 红茶, ce sont les feuilles sombres."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "water",
+     "why": {
+      "fr": "水 = l'eau chaude de la bouilloire. Il a dit 红茶, le thé « rouge »."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cv_05",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "hong"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé rouge… il est rouge. (regarde l'infusion : ce que la France appelle « thé noir », la Chine l'appelle « thé rouge » !)"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande le prix du thé vert :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cv_06a_{body}",
+     "line": [
+      [
+       "w",
+       "lucha"
+      ],
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien le thé vert ?"
+     }
+    },
+    {
+     "vo": "cv_06b_{body}",
+     "line": [
+      [
+       "w",
+       "hongcha"
+      ],
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien le thé rouge ?"
+     },
+     "why": {
+      "fr": "红茶, c'est le thé « rouge » (notre thé noir). Le vert, c'est 绿 lǜ : 绿茶."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "cv_06c_{body}",
+     "line": [
+      [
+       "w",
+       "lucha"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "nar"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Où est le thé vert ?"
+     },
+     "why": {
+      "fr": "哪儿 = où : la boîte est juste devant toi ! Pour le prix : 多少钱 ?"
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cv_07",
+   "line": [
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "si"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé vert… quarante yuans."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cv_08a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, désolé·e, je n'ai pas d'argent."
+     }
+    },
+    {
+     "vo": "cv_08b_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "meiyou"
+      ],
+      [
+       "w",
+       "cha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, je n'ai pas de thé."
+     },
+     "why": {
+      "fr": "C'est lui qui a le thé ! Ce qui te manque, c'est 钱 : 我没有钱."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "cv_08c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, j'ai de l'argent !"
+     },
+     "why": {
+      "fr": "Ton portefeuille est parti avec le chien hier soir… Dis-lui : 我没有钱."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cv_09",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "meiyou"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "huanying"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Pas d'argent ? Bon… reviens quand tu veux."
+   },
+   "end": true
+  }
+ ]
+}

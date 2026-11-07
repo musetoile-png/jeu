@@ -1,0 +1,604 @@
+{
+ "items": [
+  {
+   "id": "huzhao",
+   "word": "huzhao",
+   "image": "item_huzhao",
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "huzhao"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Voici mon passeport."
+    },
+    "vo": "i_huzhao"
+   },
+   "reuse": [
+    "auberge (宾馆)",
+    "billet de train",
+    "aéroport"
+   ]
+  },
+  {
+   "id": "shouji",
+   "word": "shouji",
+   "image": "item_shouji",
+   "usage": {
+    "line": [
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "shouji"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Mon téléphone (fendu)."
+    },
+    "vo": "i_shouji"
+   },
+   "reuse": [
+    "réparation chez 小马",
+    "messages",
+    "appeler 奶奶 depuis chaque ville"
+   ]
+  },
+  {
+   "id": "benzi",
+   "word": "benzi",
+   "image": "item_benzi",
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "benzi"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Voici mon carnet."
+    },
+    "vo": "i_benzi"
+   },
+   "reuse": [
+    "carnet de mots",
+    "bouquinerie (一本书)",
+    "notes de quête"
+   ]
+  },
+  {
+   "id": "bi",
+   "word": "bi",
+   "image": "item_bi",
+   "usage": {
+    "line": [
+     [
+      "w",
+      "ni"
+     ],
+     [
+      "w",
+      "you_avoir"
+     ],
+     [
+      "w",
+      "bi"
+     ],
+     [
+      "w",
+      "ma"
+     ],
+     [
+      "p",
+      "？"
+     ]
+    ],
+    "gloss": {
+     "fr": "Tu as un stylo ?"
+    },
+    "vo": "i_bi"
+   },
+   "reuse": [
+    "l'ardoise de l'épicerie",
+    "毛笔 chez le bouquiniste",
+    "铅笔"
+   ]
+  },
+  {
+   "id": "qianbao",
+   "word": "qianbao",
+   "image": "item_qianbao",
+   "usage": {
+    "line": [
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "qianbao"
+     ],
+     [
+      "p",
+      "！"
+     ]
+    ],
+    "gloss": {
+     "fr": "Mon portefeuille !"
+    },
+    "vo": "i_qianbao"
+   },
+   "reuse": [
+    "钱 (la paie)",
+    "包子 (même 包)",
+    "le nouveau portefeuille offert par 小龙"
+   ]
+  },
+  {
+   "id": "kuaizi",
+   "word": "kuaizi",
+   "image": "item_kuaizi",
+   "from": {
+    "fr": "奶奶, le premier soir"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "ni"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "kuaizi"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Ce sont tes baguettes."
+    },
+    "vo": "i_kuaizi"
+   },
+   "reuse": [
+    "chaque repas",
+    "肉夹馍 à Xi'an",
+    "note culturelle : ne pas les planter dans le riz"
+   ]
+  },
+  {
+   "id": "yaoshi",
+   "word": "yaoshi",
+   "image": "item_yaoshi",
+   "from": {
+    "fr": "奶奶, la clé de la chambre"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "lou"
+     ],
+     [
+      "w",
+      "shang"
+     ],
+     [
+      "w",
+      "you_avoir"
+     ],
+     [
+      "w",
+      "chuang"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Il y a un lit à l'étage."
+    },
+    "vo": "i_yaoshi"
+   },
+   "reuse": [
+    "la chambre",
+    "la clé perdue de 老王"
+   ]
+  },
+  {
+   "id": "qian",
+   "word": "qian",
+   "image": "item_qian",
+   "from": {
+    "fr": "奶奶, ta paie du jour"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "gei"
+     ],
+     [
+      "w",
+      "ni"
+     ],
+     [
+      "w",
+      "qian"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Voici ton argent."
+    },
+    "vo": "i_qian"
+   },
+   "reuse": [
+    "acheter l'appareil photo",
+    "épicerie",
+    "billet de train"
+   ]
+  },
+  {
+   "id": "xiangji",
+   "word": "xiangji",
+   "image": "item_xiangji",
+   "from": {
+    "fr": "acheté chez 小马"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "qu"
+     ],
+     [
+      "w",
+      "paizhao"
+     ],
+     [
+      "p",
+      "！"
+     ]
+    ],
+    "gloss": {
+     "fr": "Va prendre des photos !"
+    },
+    "vo": "i_xiangji"
+   },
+   "reuse": [
+    "album de chaque ville",
+    "montrer une photo (你见过他吗？)",
+    "quête Q1"
+   ],
+   "unlocks": "photo"
+  },
+  {
+   "id": "mingxinpian",
+   "word": "mingxinpian",
+   "image": "obj_postcard",
+   "from": {
+    "fr": "dans ta valise"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "shenme"
+     ],
+     [
+      "p",
+      "？"
+     ]
+    ],
+    "gloss": {
+     "fr": "Qu'est-ce que c'est ?"
+    },
+    "vo": "i_mingxinpian"
+   },
+   "reuse": [
+    "quête « la lettre »",
+    "une carte par ville",
+    "écrire à 奶奶"
+   ]
+  },
+  {
+   "id": "hua_peinture",
+   "word": "hua_peinture",
+   "image": "obj_scroll",
+   "from": {
+    "fr": "dans ta valise"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "shenme"
+     ],
+     [
+      "p",
+      "？"
+     ]
+    ],
+    "gloss": {
+     "fr": "Qu'est-ce que c'est ?"
+    },
+    "vo": "i_hua_peinture"
+   },
+   "reuse": [
+    "quête « le rouleau »",
+    "la carte du voyage",
+    "la bouquinerie"
+   ]
+  },
+  {
+   "id": "qingdan",
+   "word": "qingdan",
+   "image": "item_qingdan",
+   "from": {
+    "fr": "奶奶, pour les courses"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "nainai"
+     ],
+     [
+      "w",
+      "de"
+     ],
+     [
+      "w",
+      "qingdan"
+     ],
+     [
+      "p",
+      "："
+     ],
+     [
+      "w",
+      "jidan"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "pingguo"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "lucha"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "La liste de 奶奶 : des œufs, des pommes, du thé vert."
+    },
+    "vo": "i_qingdan"
+   },
+   "reuse": [
+    "la prochaine liste de 奶奶",
+    "les courses du Nouvel An",
+    "les listes des autres villes"
+   ]
+  },
+  {
+   "id": "jidan",
+   "word": "jidan",
+   "image": "item_jidan",
+   "from": {
+    "fr": "王阿姨, le 小卖部"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "fang"
+     ],
+     [
+      "w",
+      "san"
+     ],
+     [
+      "w",
+      "ge"
+     ],
+     [
+      "w",
+      "jidan"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Mets trois œufs."
+    },
+    "vo": "i_jidan"
+   },
+   "reuse": [
+    "le riz sauté du lendemain",
+    "番茄炒蛋 (tomates-œufs) à la cantine",
+    "茶叶蛋 (œufs au thé)"
+   ]
+  },
+  {
+   "id": "pingguo",
+   "word": "pingguo",
+   "image": "item_pingguo",
+   "from": {
+    "fr": "李叔叔, l'étal de fruits"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhege"
+     ],
+     [
+      "w",
+      "pingguo"
+     ],
+     [
+      "w",
+      "hen"
+     ],
+     [
+      "w",
+      "haochi"
+     ],
+     [
+      "p",
+      "！"
+     ]
+    ],
+    "gloss": {
+     "fr": "Cette pomme est très bonne !"
+    },
+    "vo": "i_pingguo"
+   },
+   "reuse": [
+    "un fruit offert à un hôte",
+    "平安夜 : la pomme porte-bonheur de Noël en Chine",
+    "le marché de nuit"
+   ]
+  },
+  {
+   "id": "chaye",
+   "word": "chaye",
+   "image": "item_chaye",
+   "from": {
+    "fr": "陈爷爷, le salon de thé"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhe"
+     ],
+     [
+      "w",
+      "shi"
+     ],
+     [
+      "w",
+      "lucha"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "C'est du thé vert."
+    },
+    "vo": "i_chaye"
+   },
+   "reuse": [
+    "茶叶蛋 (œufs au thé) avec 奶奶",
+    "le 龙井 de Hangzhou",
+    "offrir du thé à un hôte"
+   ]
+  }
+ ]
+}

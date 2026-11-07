@@ -1,0 +1,745 @@
+{
+ "id": "li-acheter",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Trois pommes"
+ },
+ "place": "cour",
+ "npc": "li",
+ "patience": 3,
+ "actors": {
+  "li": {
+   "name": "李叔叔",
+   "label": {
+    "fr": "le marchand de fruits"
+   },
+   "portrait": "li"
+  }
+ },
+ "objects": {
+  "apple": {
+   "word": "pingguo",
+   "image": "obj_pingguo"
+  },
+  "melon": {
+   "word": "xigua",
+   "image": "obj_xigua"
+  },
+  "banana": {
+   "word": "xiangjiao",
+   "image": "obj_xiangjiao"
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "fruits": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "la_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "haha"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ha ha, te revoilà ! Tu as de l'argent aujourd'hui ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "la_02a_{body}",
+     "line": [
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "pingguo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je voudrais acheter des pommes."
+     }
+    },
+    {
+     "vo": "la_02b_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai"
+      ],
+      [
+       "w",
+       "pingguo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui (c'est ça) ! Je voudrais acheter des pommes."
+     },
+     "why": {
+      "fr": "Pour dire oui, le chinois reprend le verbe de la question : 有钱吗 ? → 有 ! 是 ne répond qu'à une question en 是…吗."
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "la_02c_{body}",
+     "line": [
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "mai_vendre"
+      ],
+      [
+       "w",
+       "pingguo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je voudrais vendre des pommes."
+     },
+     "why": {
+      "fr": "买 mǎi = acheter : ton bas, grave. 卖 mài = vendre : ton qui tombe de haut, sec. Tu veux lui vendre ses propres pommes !"
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "actor": "li",
+   "vo": "la_03",
+   "line": [
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "ji"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Des pommes ? Combien ?"
+   },
+   "ask": {
+    "fr": "Combien ? (regarde la liste de 奶奶)"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "la_03a_{body}",
+     "line": [
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Trois."
+     }
+    },
+    {
+     "vo": "la_03b_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dix."
+     },
+     "why": {
+      "fr": "十个 = dix ! 奶奶 en veut trois, comme les œufs : 三个."
+     },
+     "errorType": "number"
+    },
+    {
+     "vo": "la_03c_{body}",
+     "line": [
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Trois yuans."
+     },
+     "why": {
+      "fr": "块 compte l'argent ; les pommes se comptent avec 个. 几个 ? → 三个."
+     },
+     "errorType": "classifier"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "la_04",
+   "line": [
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Trois pommes, quinze yuans."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Paie le bon montant :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "la_05a_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici quinze yuans."
+     }
+    },
+    {
+     "vo": "la_05b_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici cinquante yuans."
+     },
+     "why": {
+      "fr": "L'ordre compte : 五十 (cinq-dix) = 50, c'était le prix de l'appareil de 小马 ! 十五 (dix-cinq) = 15 : c'est ce qu'il a dit."
+     },
+     "errorType": "number"
+    },
+    {
+     "vo": "la_05c_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici cinq yuans."
+     },
+     "why": {
+      "fr": "Il manque le 十 ! Il a dit shí-wǔ, deux syllabes avant 块 : 十五, quinze."
+     },
+     "errorType": "number"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "la_06",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "pingguo"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Voilà ! Trois pommes, pour toi."
+   },
+   "give": [
+    "pingguo"
+   ],
+   "effect": "pay"
+  },
+  {
+   "type": "pick",
+   "actor": "li",
+   "vo": "la_07",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "xiangjiao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Et je te donne une banane en plus ! C'est gratuit !"
+   },
+   "ask": {
+    "fr": "Il ajoute un cadeau. Lequel ?"
+   },
+   "options": [
+    {
+     "object": "banana",
+     "qty": "1",
+     "ok": true
+    },
+    {
+     "object": "apple",
+     "qty": "1",
+     "why": {
+      "fr": "Tes trois 苹果 sont déjà dans le sac. Il a dit 香蕉 xiāngjiāo : la banane."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "melon",
+     "qty": "1",
+     "why": {
+      "fr": "Une pastèque gratuite ? 李叔叔 n'est pas si généreux ! Il a dit 香蕉, la banane."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie-le et dis au revoir :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "la_08a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, monsieur ! Au revoir !"
+     }
+    },
+    {
+     "vo": "la_08b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien, monsieur !"
+     },
+     "why": {
+      "fr": "不客气 se dit après un merci reçu. C'est lui qui t'offre la banane : à toi de dire 谢谢."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "la_08c_{body}",
+     "line": [
+      [
+       "w",
+       "shushu"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, monsieur !"
+     },
+     "why": {
+      "fr": "叔叔好 sert à saluer en arrivant. En partant : 谢谢 + 再见."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "li",
+   "vo": "la_09",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "haha"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "mingtian"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ha ha, reviens demain !"
+   },
+   "end": true
+  }
+ ]
+}
