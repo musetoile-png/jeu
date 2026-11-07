@@ -361,3 +361,25 @@ span.flyer { width: auto; height: auto; background: #fffaf0; border-radius: 10px
 @keyframes exitnudge-r { 50% { transform: translateX(6px); } }
 body.anim .exitbanner { opacity: 0; }
 @media (max-width: 720px) { .exitbanner { top: 18%; padding: 8px 12px 10px; } .exitbanner b { font-size: 24px; } }
+
+/* ---------- Game feel : chaque geste répond ---------- */
+/* boutons : on sent l'appui */
+button { transition: transform .08s ease, box-shadow .15s ease, background-color .15s ease, opacity .2s ease; }
+button:not([disabled]):active { transform: translateY(1px) scale(.97); }
+/* les mots de la réplique se posent un à un (la voix, elle, part tout de suite) */
+.bubble.pop .line .w { animation: inkin .32s ease both; animation-delay: calc(var(--k, 0) * 45ms + 120ms); }
+@keyframes inkin { from { opacity: 0; transform: translateY(4px); filter: blur(2px); } }
+/* bonne réponse : la réponse s'allume au jade ; mauvaise : elle tressaille, sans plus */
+#dlg button.right { outline: 3px solid var(--jade); outline-offset: 2px; background: #e6f4ee; animation: rightpop .45s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes rightpop { 40% { transform: scale(1.04); } }
+#dlg button.wrong { animation: shake .35s; background: #f6e3df; }
+.feedback.good, .feedback.bad { animation: fbin .3s ease both; }
+@keyframes fbin { from { opacity: 0; transform: translateY(-3px); } }
+/* le compteur de mots du carnet frémit quand il change */
+.pill.bump { animation: bump .5s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes bump { 40% { transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) {
+  .bubble.pop .line .w, #dlg button.right, #dlg button.wrong, .pill.bump, .feedback.good, .feedback.bad { animation: none; }
+  button:not([disabled]):active { transform: none; }
+}
+#dlg button.right:disabled { opacity: 1; }

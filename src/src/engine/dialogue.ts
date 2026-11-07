@@ -2,12 +2,13 @@
  * Lecteur de scènes : affiche les répliques en HTML par-dessus le canvas,
  * gère les choix, les « pick » (dictée-wok), la patience, l'audio et le journal.
  */
-import { RATE, speak, speakWords, stop } from './audio';
+import { preloadVoices, RATE, speak, speakWords, stop } from './audio';
 import type { Choice, Content, PickOption, Scene, Step, Token } from './content';
 import { lineText, lineWords, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
+import { play as sound } from './sfx';
 import { cinematic, flyToBag, toast } from './ui';
 
 export interface DialogueHost {
@@ -159,6 +160,7 @@ export class Dialogue {
 
   open() {
     this.i = 0;
+    this.preload();
     this.setPatience(this.scene.patience);
     this.root.hidden = false;
     this.live = true;
@@ -172,6 +174,16 @@ export class Dialogue {
     requestAnimationFrame(tick);
     log({ scene: this.scene.id, step: 0, kind: 'scene_start' });
     this.step();
+  }
+
+  /**
+   * Les répliques de la scène (personnage et réponses du joueur) sont demandées dès l'ouverture :
+   * aucune n'attend le réseau. Les mots isolés restent chargés à la demande (téléphone, petite connexion).
+   */
+  private preload() {
+    const fill = (vo?: string) => (vo ? save.fill(vo, this.content) : undefined);
+    const vos = this.scene.steps.flatMap((st) => [fill(st.vo), ...(st.choices ?? []).map((ch) => fill(ch.vo))]);
+    preloadVoices(this.content, [...new Set(vos)]);
   }
 
   close(success: boolean) {
@@ -243,7 +255,12 @@ export class Dialogue {
     gloss = save.fill(gloss, this.content);
     this.words = line;
     this.el.line.innerHTML = '';
-    line.forEach((tok) => this.el.line.appendChild(this.wordEl(tok)));
+    // les mots se posent un à un, comme un pinceau qui avance (sans retarder la voix)
+    line.forEach((tok, k) => {
+      const w = this.wordEl(tok);
+      w.style.setProperty('--k', String(k));
+      this.el.line.appendChild(w);
+    });
     this.el.fr.textContent = gloss;
     this.el.fr.classList.toggle('off', !this.subtitles);
     // nouvelle réplique : la bulle « éclot » à nouveau, celui qui parle s'anime
@@ -280,6 +297,7 @@ export class Dialogue {
    * `replay` : rejouer la question du personnage après la réponse fautive (on réécoute ce qui était demandé).
    */
   private lose(why: string, errorType: string | undefined, words: string[], container: HTMLElement, replay?: () => void) {
+    sound('bad');
     this.setPatience(this.patience - 1);
     this.bubble.classList.remove('shake');
     void this.bubble.offsetWidth;
@@ -305,6 +323,7 @@ export class Dialogue {
   }
 
   private win(gloss: string, words: string[], next: () => void) {
+    sound('good');
     words.forEach((w) => notebook.mark(w, true));
     log({ scene: this.scene.id, step: this.i, kind: 'answer', ok: true });
     this.feedback(`${this.content.ui.right} ${gloss}`, 'good');
@@ -332,7 +351,11 @@ export class Dialogue {
       const b = document.createElement('button');
       b.className = 'go';
       b.textContent = s.end ? this.content.ui.finish : this.content.ui.continue;
-      b.onclick = () => (s.end ? this.close(true) : this.advance());
+      b.onclick = () => {
+        sound('tap');
+        if (s.end) this.close(true);
+        else this.advance();
+      };
       body.appendChild(b);
     }
 
@@ -445,13 +468,14 @@ export class Dialogue {
           const ok = w === target;
           notebook.mark(target, ok);
           log({ scene: this.scene.id, step: this.i, kind: 'answer', ok, word: target, detail: `detour:${w}` });
+          sound(ok ? 'good' : 'bad');
           if (ok) {
             notebook.meet(target, `detour:${this.scene.id}`);
             bowls.children[k]?.classList.add('clean');
             k++;
             setTimeout(next, 500);
           } else {
-            b.classList.add('nope');
+            b.classList.add('nope', 'wrong');
             play();
           }
         };
@@ -486,6 +510,7 @@ export class Dialogue {
           }
           this.exchange(s);
           c.querySelectorAll('button').forEach((x) => (x.disabled = true));
+          b.classList.add('right');
           this.setActor('player');
           this.showLine(ch.line, t(this.content, ch.gloss));
           this.win(t(this.content, ch.gloss), words, () => this.sayLine(ch.line, ch.vo, RATE.NORMAL, () => setTimeout(() => (s.end ? this.close(true) : this.advance()), 350)));
@@ -495,6 +520,9 @@ export class Dialogue {
           speak(this.content, lineText(this.content, save.resolveLine(this.content, ch.line)), ch.vo ? save.fill(ch.vo, this.content) : undefined, RATE.NORMAL, () =>
             s.line ? setTimeout(() => this.sayLine(s.line!, s.vo, RATE.NORMAL), 500) : undefined,
           );
+          b.classList.remove('wrong');
+          void b.offsetWidth;
+          b.classList.add('wrong');
           const right = choices.find((x) => x.ok);
           if (right) this.confuse(words, lineWords(right.line));
           this.lose(t(this.content, ch.why), ch.errorType, words, c);
@@ -564,10 +592,14 @@ export class Dialogue {
             }
             this.exchange(s);
             grid.querySelectorAll('button').forEach((x) => (x.disabled = true));
+            b.classList.add('right');
             this.host.onEffect?.(`pick:${o.object}`);
             this.win(t(this.content, s.gloss), [obj.word], () => setTimeout(() => (s.end ? this.close(true) : this.advance()), 700));
           } else {
             if (entry) speak(this.content, entry.target, `w_${obj.word}`, RATE.WORD);
+            b.classList.remove('wrong');
+            void b.offsetWidth;
+            b.classList.add('wrong');
             const right = options.find((x) => x.ok);
             if (right) this.confuse([obj.word], [this.scene.objects[right.object].word]);
             this.lose(t(this.content, o.why), o.errorType, [obj.word], grid);

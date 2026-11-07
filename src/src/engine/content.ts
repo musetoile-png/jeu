@@ -199,6 +199,8 @@ export interface Place {
   ambient?: Ambient[];
   /** Scènes lancées à l'arrivée, si les drapeaux correspondent. */
   onEnter?: { scene: string; when?: Record<string, string>; effect?: string; delay?: number }[];
+  /** Boucle d'ambiance du lieu (fichier audio), fondue à l'entrée et à la sortie. */
+  ambience?: string;
   /** Variante de nuit (drapeau time = nuit). */
   night?: { tint: string; alpha: number; lights?: { x: number; y: number; r: number; color: string }[] };
 }
@@ -235,6 +237,8 @@ export interface Pack {
     images: Record<string, string>;
     voicePath: string;
     keyWhite?: string[];
+    /** Sons d'interface remplaçant la synthèse : tap, good, bad, item, page, door → chemin du fichier. */
+    sfx?: Partial<Record<'tap' | 'good' | 'bad' | 'item' | 'page' | 'door', string>>;
     /** Illustration du joueur : marionnette découpée (rig) ou image simple. */
     player?: PlayerArt;
     /** La joueuse (même gabarit). Absente : silhouette de secours. */

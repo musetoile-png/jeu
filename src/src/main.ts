@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import type { Content } from './engine/content';
 import { count, toCsv } from './engine/log';
 import * as notebook from './engine/notebook';
+import * as sfx from './engine/sfx';
 import * as scenes from './scenes';
 
 // La calligraphie des enseignes est dessinée dans le canvas : on attend la police (2 s max).
@@ -25,11 +26,20 @@ const game = new Phaser.Game({
 (window as unknown as { __game: Phaser.Game }).__game = game; // aide au test
 
 // ---- Interface HTML autour du canvas : carnet de mots, journal ----
+let lastCount = -1;
 function renderNotebook(content: Content) {
   const v = document.getElementById('vocab') as HTMLElement;
   const wc = document.getElementById('wc') as HTMLElement;
   const ids = notebook.all();
   wc.textContent = String(ids.length);
+  // un nouveau mot dans le carnet : le compteur frémit (aucun son : la voix chinoise reste seule)
+  if (lastCount >= 0 && ids.length > lastCount) {
+    const pill = wc.closest('.pill');
+    pill?.classList.remove('bump');
+    void (pill as HTMLElement | null)?.offsetWidth;
+    pill?.classList.add('bump');
+  }
+  lastCount = ids.length;
   v.innerHTML = '';
   const required = content.language.mastery?.contextsRequired ?? 3;
   for (const id of ids) {
@@ -62,9 +72,25 @@ game.events.once('ready', () => {
     };
     renderNotebook(content);
     const bar = document.getElementById('gamebar') as HTMLElement;
+    // son : bouton de la barre et touche M
+    const mute = document.getElementById('mute') as HTMLButtonElement | null;
+    const showMute = () => mute && (mute.innerHTML = sfx.isMuted() ? '🔇 Sons <kbd>M</kbd>' : '🔈 Sons <kbd>M</kbd>');
+    const toggleSound = () => {
+      sfx.setMuted(!sfx.isMuted());
+      if (!sfx.isMuted()) sfx.play('tap');
+      showMute();
+    };
+    if (mute) mute.onclick = toggleSound;
+    document.addEventListener('toggle-sound', toggleSound);
+    showMute();
     document.addEventListener('game-started', () => (bar.hidden = false));
     bar.querySelectorAll<HTMLButtonElement>('[data-panel]').forEach((b) => {
       b.onclick = () => (world as unknown as { openPanel: (w: string) => void }).openPanel(b.dataset.panel ?? '');
+    });
+    // chaque bouton répond d'un petit clic (les panneaux ont leur bruit de papier)
+    document.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button');
+      if (b && !b.disabled && !b.dataset.panel && !b.closest('#dlg .choices, #dlg .picks, #dlg-body > .go') && b.id !== 'mute') sfx.play('tap');
     });
     document.addEventListener('notebook-changed', () => {
       renderNotebook(content);

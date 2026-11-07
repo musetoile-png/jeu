@@ -18,9 +18,12 @@ import * as ui from '../engine/ui';
 import * as notebook from '../engine/notebook';
 import { log } from '../engine/log';
 import { speak, RATE } from '../engine/audio';
+import * as sfx from '../engine/sfx';
 
 const SPEED = 260;
 const NEAR = 140;
+/** La caméra regarde un peu devant le joueur, du côté où il va (px à l'écran). */
+const LOOK_AHEAD = 150;
 
 type Body = Phaser.GameObjects.Sprite | Puppet;
 
@@ -60,6 +63,8 @@ export class World extends Phaser.Scene {
   private exitBannerFor: string | null = null;
   /** Point d'interaction visé par un clic : on y marche, puis on parle / on entre. */
   private clickTarget: Hotspot | null = null;
+  /** Décalage courant de la caméra vers l'avant (px du lieu, signé). */
+  private look = 0;
 
   constructor() {
     super(KEY.SCENE.WORLD);
@@ -76,6 +81,7 @@ export class World extends Phaser.Scene {
 
   create() {
     initVoices(this.content.language.bcp47);
+    sfx.initSfx(this.content.pack.assets.sfx);
     document.documentElement.style.setProperty('--zh-font', this.content.language.font);
     // Détourage du blanc sur tout ce qui est livré sur fond blanc (pack.assets.keyWhite)
     for (const key of this.content.pack.assets.keyWhite ?? []) if (this.textures.exists(key)) keyOutWhite(this, key);
@@ -83,7 +89,7 @@ export class World extends Phaser.Scene {
     ensurePlaceholderPerson(this, 'player_1', '#58d6a9', true);
 
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,ESC') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,M,ESC') as Record<string, Phaser.Input.Keyboard.Key>;
     document.getElementById('hint')!.textContent = this.content.ui.hintMove;
     // clic / toucher : marcher jusque-là ; sur un personnage ou une porte, y aller puis interagir
     this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => this.clickTo(ptr.worldX, ptr.worldY));
@@ -94,6 +100,20 @@ export class World extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#efe9dc');
     this.events.emit('content-ready', this.content);
 
+    // Raccourci de test : ?lieu=cuisine (et éventuellement &scene=cuisine-cran1) saute l'écran titre et l'arrivée.
+    const qs = new URLSearchParams(location.search);
+    const jump = qs.get('lieu');
+    if (jump && this.content.places.has(jump)) {
+      if (!save.get().profile) save.newGame(qs.get('corps') === 'f' ? 'f' : 'm', this.content.pack.profile?.startItems ?? []);
+      if (qs.get('temps')) save.setFlags({ time: qs.get('temps')! });
+      this.started = true;
+      document.dispatchEvent(new CustomEvent('game-started'));
+      this.enterPlace(jump);
+      this.pendingScene = null;
+      const sc = qs.get('scene');
+      if (sc && this.content.scenes.has(sc)) this.time.delayedCall(900, () => this.playScene(sc));
+      return;
+    }
     // Écran titre : le monde attend le choix du joueur.
     ui.showTitle(this.content, (c) => {
       if (c.mode === 'new') {
@@ -180,6 +200,8 @@ export class World extends Phaser.Scene {
 
     this.makePlayer(at);
     this.startAmbient(place);
+    sfx.ambience(place.ambience);
+    this.look = 0;
     const cam = this.cameras.main;
     cam.setBounds(0, 0, W, H);
     cam.startFollow(this.player, true, 0.1, 0.1);
@@ -229,7 +251,8 @@ export class World extends Phaser.Scene {
         })
         .setOrigin(0.5)
         .setDepth(3000)
-        .setVisible(false);
+        .setVisible(false)
+        .setData('y0', Math.max(h.y - (h.kind === 'exit' ? this.exitPromptHeight(place) : obj.displayHeight) - 16, 48));
       if (closed && signText) {
         const plaque = this.add
           .text(h.x, h.y - this.exitPromptHeight(place) * 1.15, signText, {
@@ -396,7 +419,9 @@ export class World extends Phaser.Scene {
     const h = this.spotAt(wx, wy);
     this.clickTarget = null;
     if (!h) {
-      this.autoWalk = Phaser.Math.Clamp(wx, w.xMin, w.xMax) - p.x;
+      const tx = Phaser.Math.Clamp(wx, w.xMin, w.xMax);
+      this.autoWalk = tx - p.x;
+      this.ripple(tx, p.y);
       return;
     }
     const dir = this.edgeDir(h);
@@ -414,6 +439,27 @@ export class World extends Phaser.Scene {
     this.clickTarget = h;
   }
 
+  /** Rond d'encre au sol là où l'on a cliqué : le jeu a compris où aller. */
+  private ripple(x: number, y: number) {
+    const ps = this.place.playerScale ?? 1;
+    const ring = this.add.ellipse(x, y - 2, 30 * ps, 8 * ps).setStrokeStyle(3, 0x2b2b33, 0.45).setDepth(y - 1);
+    this.tweens.add({ targets: ring, scaleX: 3.2, scaleY: 3.2, alpha: 0, duration: 650, ease: 'Sine.easeOut', onComplete: () => ring.destroy() });
+  }
+
+  /** Étiquette d'un point d'interaction : elle monte en fondu quand on approche, redescend quand on s'éloigne. */
+  private promptOn(prompt: Phaser.GameObjects.Text, on: boolean) {
+    if (prompt.getData('on') === on) return;
+    prompt.setData('on', on);
+    const y0 = (prompt.getData('y0') as number | undefined) ?? prompt.y;
+    this.tweens.killTweensOf(prompt);
+    if (on) {
+      prompt.setVisible(true).setAlpha(0).setY(y0 + 10).setScale(0.92);
+      this.tweens.add({ targets: prompt, alpha: 1, y: y0, scale: 1, duration: 220, ease: 'Back.easeOut' });
+    } else {
+      this.tweens.add({ targets: prompt, alpha: 0, y: y0 + 6, duration: 160, ease: 'Sine.easeIn', onComplete: () => prompt.setVisible(false) });
+    }
+  }
+
   private activate(h: Hotspot) {
     this.clickTarget = null;
     this.showExitBanner(null, 0, 0);
@@ -427,6 +473,7 @@ export class World extends Phaser.Scene {
     this.showExitBanner(null, 0, 0);
     this.busy = true;
     this.stage(true);
+    sfx.play('door');
     const cam = this.cameras.main;
     cam.zoomTo((this.place.zoom ?? 1) * 1.25, 600, 'Sine.easeIn');
     cam.fadeOut(600, 0xef, 0xe9, 0xdc);
@@ -668,6 +715,7 @@ export class World extends Phaser.Scene {
       const go = end.goto;
       this.busy = true;
       this.stage(true);
+      sfx.play('door');
       this.cameras.main.fadeOut(900, 0x1d, 0x24, 0x40);
       this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
         this.enterPlace(go.place, go.entrance);
@@ -875,6 +923,7 @@ export class World extends Phaser.Scene {
       if (JD(this.keys.J)) ui.panelOpen() ? ui.closePanel() : this.openPanel('quest');
       if (JD(this.keys.O)) ui.panelOpen() ? ui.closePanel() : this.openPanel('album');
       if (JD(this.keys.P)) this.togglePhoto();
+      if (JD(this.keys.M)) document.dispatchEvent(new CustomEvent('toggle-sound'));
       if (JD(this.keys.ESC)) {
         ui.closePanel();
         if (this.photo) this.togglePhoto();
@@ -898,7 +947,7 @@ export class World extends Phaser.Scene {
       return;
     }
     if (this.busy) {
-      for (const s of this.spots) s.prompt.setVisible(false);
+      for (const s of this.spots) this.promptOn(s.prompt, false);
       this.showExitBanner(null, 0, 0);
       if (p instanceof Puppet && !this.tweens.isTweening(p)) p.step(dt, false);
       return;
@@ -965,6 +1014,15 @@ export class World extends Phaser.Scene {
     }
     this.shadow.setScale(k);
 
+    // la caméra glisse un peu devant le joueur, du côté où il marche (pas pendant les dialogues : elle est alors cadrée)
+    {
+      const cam = this.cameras.main;
+      const facing = p instanceof Puppet ? (p.scaleX < 0 ? -1 : 1) : p.flipX ? -1 : 1;
+      const want = (moving ? facing : facing * 0.6) * (LOOK_AHEAD / cam.zoom);
+      this.look += (want - this.look) * Math.min(1, dt / 600);
+      cam.setFollowOffset(-this.look, 0);
+    }
+
     // proximité
     this.near = null;
     let edge: Hotspot | null = null;
@@ -974,7 +1032,7 @@ export class World extends Phaser.Scene {
       const dir = this.edgeDir(s.h);
       if (dir) {
         // sortie au bord : pas d'étiquette, c'est la bannière qui parle quand on s'en approche
-        s.prompt.setVisible(false);
+        this.promptOn(s.prompt, false);
         if (dir < 0 ? p.x < s.h.x + 230 : p.x > s.h.x - 230) {
           edge = s.h;
           edgeDir = dir;
@@ -982,7 +1040,7 @@ export class World extends Phaser.Scene {
         continue;
       }
       const close = Phaser.Math.Distance.Between(p.x, p.y, s.h.x, s.h.y) < NEAR;
-      s.prompt.setVisible(close);
+      this.promptOn(s.prompt, close);
       if (close) this.near = s.h;
     }
     // marcher vers le bord : la bannière se remplit, on sort sans rien presser ; faire demi-tour annule

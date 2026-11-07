@@ -4,6 +4,7 @@
  */
 import type { Content } from './content';
 import { assetUrl } from './content';
+import { duck } from './sfx';
 
 export const RATE = { SLOW: 0.75, NORMAL: 1.0, WORD: 0.85 } as const;
 
@@ -29,25 +30,70 @@ export function stop() {
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
 
-function playClip(url: string, rate: number, onEnd: () => void) {
-  const a = new Audio(url);
+/**
+ * Clips déjà demandés : un seul élément audio par fichier, réutilisé.
+ * (Avant, chaque réplique téléchargeait le fichier, attendait, puis le rechargeait pour le jouer : d'où un petit blanc.)
+ */
+const clips = new Map<string, HTMLAudioElement | 'missing'>();
+
+function clip(url: string) {
+  let a = clips.get(url);
+  if (!a) {
+    const el = new Audio();
+    el.preload = 'auto';
+    el.onerror = () => clips.set(url, 'missing');
+    el.src = url;
+    el.load();
+    clips.set(url, el);
+    a = el;
+  }
+  return a;
+}
+
+/** Charge à l'avance les voix d'une scène, pour qu'aucune réplique n'attende le réseau. */
+export function preloadVoices(content: Content, vos: (string | undefined)[]) {
+  for (const vo of vos) if (vo && !vo.includes('{')) clip(assetUrl(`${content.pack.assets.voicePath}${vo}.mp3`));
+}
+
+let turn = 0;
+
+function playClip(a: HTMLAudioElement, rate: number, onEnd: () => void, onFail: () => void) {
+  const mine = ++turn;
   current = a;
   try {
     (a as HTMLAudioElement & { preservesPitch?: boolean }).preservesPitch = true;
   } catch {
     /* non supporté */
   }
+  a.pause();
+  a.currentTime = 0;
   a.playbackRate = rate;
   let done = false;
   const fin = () => {
     if (done) return;
     done = true;
-    if (current === a) current = null;
+    // une lecture plus récente a pu reprendre le même élément : on n'y touche pas
+    if (turn === mine) {
+      a.onended = null;
+      if (current === a) current = null;
+      duck(false);
+    }
     onEnd();
   };
   a.onended = fin;
-  a.onerror = fin;
-  a.play().catch(fin);
+  duck(true);
+  a.play().catch((e: unknown) => {
+    if (done) return;
+    // interrompue par stop() ou par une autre réplique : rien à faire
+    if (e instanceof DOMException && e.name === 'AbortError') return;
+    done = true;
+    if (turn === mine) {
+      if (current === a) current = null;
+      duck(false);
+    }
+    if (a.error) onFail();
+    else onEnd();
+  });
   setTimeout(fin, 8000 / rate);
 }
 
@@ -74,12 +120,15 @@ export function speak(content: Content, text: string, vo: string | undefined, ra
   stop();
   const file = vo ? assetUrl(`${content.pack.assets.voicePath}${vo}.mp3`) : null;
   if (file) {
-    // On tente le clip ; en cas d'absence (404) l'élément déclenche onerror → repli sur la synthèse.
-    const a = new Audio(file);
-    a.oncanplaythrough = () => playClip(file, rate, onEnd);
-    a.onerror = () => synth(text, content.language.bcp47, rate, onEnd);
-    a.load();
-    return;
+    // Clip pré-généré s'il existe ; s'il manque (404), synthèse du navigateur.
+    const a = clip(file);
+    if (a !== 'missing') {
+      playClip(a, rate, onEnd, () => {
+        clips.set(file, 'missing');
+        synth(text, content.language.bcp47, rate, onEnd);
+      });
+      return;
+    }
   }
   synth(text, content.language.bcp47, rate, onEnd);
 }

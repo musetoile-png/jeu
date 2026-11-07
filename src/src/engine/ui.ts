@@ -8,6 +8,7 @@ import { assetUrl, lineText, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
+import { play } from './sfx';
 
 const stage = () => document.getElementById('stage') as HTMLElement;
 
@@ -85,11 +86,13 @@ export function card(content: Content, zh: string, fr: string) {
 
 function panel(title: string, onClose?: () => void) {
   stage().querySelector('.panel')?.remove();
+  play('page');
   const p = el('section', 'panel');
   const head = el('header');
   const close = el('button', 'sm', '✕');
   close.setAttribute('aria-label', 'Fermer');
   close.onclick = () => {
+    play('tap');
     p.remove();
     onClose?.();
   };
@@ -198,6 +201,7 @@ export function flyToBag(content: Content, itemId: string, from?: { x: number; y
     { duration: 1300, easing: 'cubic-bezier(.45,0,.3,1)' },
   ).onfinish = () => {
     node.remove();
+    play('item');
     bag.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 380 });
   };
 }
