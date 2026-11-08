@@ -725,6 +725,12 @@ export class Dialogue {
         save.set(o.set);
         log({ scene: this.scene.id, step: this.i, kind: 'choice_set', detail: JSON.stringify(o.set) });
       }
+      // l'objet choisi (la carte de Léo, la section de rouleau) rejoint le sac
+      const word = o ? this.scene.objects[o.object]?.word : undefined;
+      if (word && this.content.items.has(word) && !save.hasItem(word)) {
+        save.addItem(word);
+        log({ scene: this.scene.id, step: this.i, kind: 'item_get', detail: word, word });
+      }
       this.root.hidden = false;
       if (s.end) this.close(true);
       else this.advance();

@@ -229,7 +229,7 @@
   {"vo": "bv_01b_f", "speaker": "player", "text": "白爷爷好！"},
   {"vo": "bv_01c_m", "speaker": "player", "text": "白老师，再见！"},
   {"vo": "bv_01c_f", "speaker": "player", "text": "白老师，再见！"},
-  {"vo": "bv_02", "speaker": "bai", "text": "你好，你好。你看，很多书。"},
+  {"vo": "bv_02", "speaker": "bai", "text": "你好，你好。你看，这儿有很多书。"},
   {"vo": "bv_03", "speaker": "bai", "text": "我以前是老师。"},
   {"vo": "bv_04", "speaker": "bai", "text": "我在写字。"},
   {"vo": "bv_05", "speaker": "bai", "text": "这个，是什么字？"},

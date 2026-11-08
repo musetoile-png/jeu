@@ -146,7 +146,7 @@
     {
       "id": "bouquinerie_nuit",
       "kind": "exit",
-      "x": 90,
+      "x": 190,
       "y": 1050,
       "to": "bouquinerie_nuit",
       "when": {

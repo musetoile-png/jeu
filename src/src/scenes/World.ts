@@ -521,6 +521,10 @@ export class World extends Phaser.Scene {
   private openScene(h: Hotspot) {
     const sc = this.content.scenes.get(h.scene ?? '');
     if (!sc) return;
+    // si l'on parle pendant l'entrée dans un lieu, la mise en scène s'arrête (sinon le panneau resterait caché)
+    this.autoWalk = 0;
+    this.clickTarget = null;
+    if (this.staging) this.stage(false);
     this.busy = true;
     // Le joueur se met de côté pour ne pas masquer son interlocuteur, puis se tourne vers nous.
     const p = this.player;
