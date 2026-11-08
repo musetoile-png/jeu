@@ -16,7 +16,8 @@
   "places": [
     "ruelle",
     "cuisine",
-    "cour"
+    "cour",
+    "bouquinerie"
   ],
   "scenes": [
     "cuisine-cran1",
@@ -30,7 +31,12 @@
     "li-acheter",
     "chen-voir",
     "chen-acheter",
-    "nainai-courses"
+    "nainai-courses",
+    "nainai-leo",
+    "bai-voir",
+    "bai-carte",
+    "chen-rouleau",
+    "bai-rouleau"
   ],
   "worlds": {
     "cuisine": {
@@ -123,7 +129,12 @@
       "obj_lucha": "art/obj_lvcha.webp",
       "obj_hongcha": "art/obj_hongcha.webp",
       "obj_chaye": "art/item_chaye.webp",
-      "obj_water": "art/obj_shui.webp"
+      "obj_water": "art/obj_shui.webp",
+      "bouquinerie_far": "art/bouquinerie_far.jpg",
+      "bai_stand": "art/bai_stand.webp",
+      "portrait_bai_neutral": "art/bai_bust_neutral.jpg",
+      "portrait_bai_joy": "art/bai_bust_joy.jpg",
+      "portrait_bai_surprise": "art/bai_bust_surprise.jpg"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [

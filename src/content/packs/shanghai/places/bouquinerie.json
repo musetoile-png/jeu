@@ -1,0 +1,121 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "bouquinerie",
+  "name": {
+    "zh": "旧书店",
+    "fr": "La bouquinerie"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 0.8,
+  "playerScale": 0.6,
+  "planes": [
+    {
+      "image": "bouquinerie_far",
+      "parallax": 1.0,
+      "y": 0
+    }
+  ],
+  "walk": {
+    "yMin": 1010,
+    "yMax": 1060,
+    "xMin": 80,
+    "xMax": 1840
+  },
+  "spawn": {
+    "x": 1800,
+    "y": 1040,
+    "facing": "left",
+    "walkIn": -320
+  },
+  "entrances": {
+    "ruelle": {
+      "x": 1800,
+      "y": 1040,
+      "facing": "left",
+      "walkIn": -320
+    }
+  },
+  "hotspots": [
+    {
+      "id": "sortie",
+      "kind": "exit",
+      "x": 1830,
+      "y": 1040,
+      "to": "ruelle",
+      "toEntrance": "bouquinerie",
+      "prompt": {
+        "fr": "retour à la ruelle"
+      }
+    },
+    {
+      "id": "bai_voir",
+      "kind": "npc",
+      "actor": "bai",
+      "x": 820,
+      "y": 1030,
+      "scene": "bai-voir",
+      "sprite": "bai_stand",
+      "scale": 0.62,
+      "when": {
+        "leo": "!nainai",
+        "rouleau": "!piste"
+      },
+      "prompt": {
+        "fr": "parler à 白老师"
+      }
+    },
+    {
+      "id": "bai_lettre",
+      "kind": "npc",
+      "actor": "bai",
+      "x": 820,
+      "y": 1030,
+      "scene": "bai-carte",
+      "sprite": "bai_stand",
+      "scale": 0.62,
+      "when": {
+        "quest": "lettre",
+        "leo": "nainai"
+      },
+      "prompt": {
+        "fr": "montrer la carte de Léo à 白老师"
+      }
+    },
+    {
+      "id": "bai_rouleau",
+      "kind": "npc",
+      "actor": "bai",
+      "x": 820,
+      "y": 1030,
+      "scene": "bai-rouleau",
+      "sprite": "bai_stand",
+      "scale": 0.62,
+      "when": {
+        "quest": "rouleau",
+        "rouleau": "piste"
+      },
+      "prompt": {
+        "fr": "montrer le rouleau à 白老师"
+      }
+    },
+    {
+      "id": "s_shu",
+      "kind": "subject",
+      "x": 420,
+      "y": 720,
+      "word": "shu",
+      "prompt": {
+        "fr": "les piles de livres"
+      }
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#2b2b33"
+  ]
+}

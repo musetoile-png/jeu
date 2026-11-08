@@ -168,6 +168,44 @@
       }
     },
     {
+      "id": "chen_rouleau_matin",
+      "kind": "npc",
+      "x": 1490,
+      "y": 1040,
+      "scene": "chen-rouleau",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "replaces": "chen_voir",
+      "when": {
+        "quest": "rouleau",
+        "rouleau": "",
+        "cran1": "",
+        "vu_chen": "fait"
+      },
+      "prompt": {
+        "fr": "montrer le rouleau à 陈爷爷"
+      }
+    },
+    {
+      "id": "chen_rouleau",
+      "kind": "npc",
+      "x": 1490,
+      "y": 1040,
+      "scene": "chen-rouleau",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "replaces": "chen",
+      "when": {
+        "quest": "rouleau",
+        "rouleau": "",
+        "cran1": "fait",
+        "the": "fait"
+      },
+      "prompt": {
+        "fr": "montrer le rouleau à 陈爷爷"
+      }
+    },
+    {
       "id": "s_xigua",
       "kind": "subject",
       "x": 1140,

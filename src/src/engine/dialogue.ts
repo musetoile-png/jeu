@@ -3,7 +3,7 @@
  * gère les choix, les « pick » (dictée-wok), la patience, l'audio et le journal.
  */
 import { preloadVoices, RATE, speak, speakWords, stop } from './audio';
-import type { Choice, Content, PickOption, Scene, Step, Token } from './content';
+import type { Choice, Content, PickOption, Restore, Scene, Step, Token } from './content';
 import { lineText, lineWords, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
@@ -41,6 +41,11 @@ export class Dialogue {
 
   /** Paires de mots confondus pendant la scène (mot choisi, mot attendu) : matière du détour. */
   private confusions: [string, string][] = [];
+
+  /** Feuille posée sur la scène pendant une étape « restore » (ligne abîmée), retirée ensuite. */
+  private sheet: HTMLElement | null = null;
+  /** Cases déjà restaurées, par étape : un détour ou un nouvel affichage ne fait jamais tout recommencer. */
+  private restored = new Map<number, Set<number>>();
 
   private content: Content;
   private scene: Scene;
@@ -130,8 +135,15 @@ export class Dialogue {
     const bw = this.bubble.offsetWidth;
     const bh = this.bubble.offsetHeight;
     if (!a) {
+      // une ligne à restaurer posée en haut à gauche : la voix hors champ se range juste dessous
+      let below = 0;
+      if (this.sheet) {
+        const sr = this.sheet.getBoundingClientRect();
+        const st = stage.getBoundingClientRect();
+        if (sr.left - st.left < W * 0.03 + bw) below = sr.bottom - st.top + 10;
+      }
       this.bubble.style.left = `${Math.round(W * 0.03)}px`;
-      this.bubble.style.top = `${Math.round(H * 0.05)}px`;
+      this.bubble.style.top = `${Math.round(Math.max(H * 0.05, below))}px`;
       return;
     }
     const hx = a.x * W;
@@ -193,6 +205,7 @@ export class Dialogue {
     document.removeEventListener('keydown', this.keys);
     this.root.hidden = true;
     this.bubble.hidden = true;
+    this.clearSheet();
     log({ scene: this.scene.id, step: this.i, kind: 'scene_end', ok: success });
     this.host.onClose(success);
   }
@@ -335,6 +348,7 @@ export class Dialogue {
     const body = this.el.body;
     body.innerHTML = '';
     this.feedback('', '');
+    this.clearSheet();
     if (!s) return this.close(true);
     // une étape sans réplique (choix, wok) garde la question précédente dans la bulle
     if (s.line || s.expression || this.i === 0) this.setActor(s.actor ?? (s.type === 'say' ? undefined : this.scene.npc), s.expression);
@@ -375,6 +389,7 @@ export class Dialogue {
     if (s.type === 'choose') this.renderChoose(s, s.choices ?? []);
     if (s.type === 'pick') this.renderPick(s, s.options ?? []);
     if (s.type === 'cinematic') this.renderCinematic(s);
+    if (s.type === 'restore' && s.restore) this.renderRestore(s, s.restore);
   }
 
   private advance() {
@@ -553,6 +568,151 @@ export class Dialogue {
       c.appendChild(b);
     });
     body.appendChild(c);
+  }
+
+  private clearSheet() {
+    this.sheet?.remove();
+    this.sheet = null;
+  }
+
+  /**
+   * Restauration d'une ligne abîmée (colophon d'un rouleau, enseigne, stèle…). La ligne s'affiche en grand
+   * sur un papier ancien, les caractères manquants en cases pâles. Pour chaque case, quelques caractères
+   * connus sont proposés, sans transcription au départ (l'écoute du mot reste possible).
+   * Bonne réponse : le caractère s'imprime à l'encre et compte au carnet. Mauvaise : explication, la patience
+   * baisse, les transcriptions apparaissent ; on ne recommence jamais. Une fois tout restauré, le personnage lit la ligne.
+   */
+  private renderRestore(s: Step, r: Restore) {
+    const body = this.el.body;
+    const line = save.resolveLine(this.content, r.line);
+    const ctx = lineText(this.content, line);
+    // chaque caractère garde le mot dont il vient (carnet, écoute)
+    const cells: { ch: string; word?: string; punct: boolean }[] = [];
+    for (const tok of line) {
+      const text = tok[0] === 'w' ? (this.content.lexicon.get(tok[1])?.target ?? '') : tok[0] === 'v' ? '' : tok[1];
+      for (const ch of text) cells.push({ ch, word: tok[0] === 'w' ? tok[1] : undefined, punct: tok[0] === 'p' });
+    }
+    const gaps = r.gaps.filter((g) => g.at >= 0 && g.at < cells.length);
+    const done = this.restored.get(this.i) ?? new Set<number>();
+    this.restored.set(this.i, done);
+
+    // la feuille, posée du côté du panneau d'action (les personnages sont cadrés de l'autre côté)
+    const sheet = document.createElement('div');
+    sheet.className = `restore side-${this.host.side ?? 'right'}${r.vertical ? ' vertical' : ''}`;
+    const paper = document.createElement('div');
+    paper.className = 'paper';
+    paper.style.setProperty('--n', String(cells.length));
+    const boxes = cells.map((c, k) => {
+      const box = document.createElement('span');
+      const g = gaps.findIndex((x) => x.at === k);
+      box.className = `rc${c.punct ? ' punct' : ''}${g >= 0 ? ' gap' : ''}${g >= 0 && done.has(g) ? ' inked' : ''}`;
+      box.textContent = g >= 0 && !done.has(g) ? '' : c.ch;
+      paper.appendChild(box);
+      return box;
+    });
+    sheet.appendChild(paper);
+    this.bubble.parentElement?.appendChild(sheet);
+    this.sheet = sheet;
+
+    const ask = document.createElement('div');
+    ask.className = 'fr';
+    ask.textContent = t(this.content, s.ask) || (this.content.ui.restoreAsk ?? '');
+    const listen = document.createElement('button');
+    listen.className = 'sm restore-listen';
+    listen.textContent = this.content.ui.restoreListen ?? '🔊';
+    const grid = document.createElement('div');
+    grid.className = 'picks restore-picks';
+    body.append(ask, listen, grid);
+
+    const finish = () => {
+      ask.remove();
+      listen.remove();
+      grid.remove();
+      this.feedback('', '');
+      sheet.classList.add('done');
+      log({ scene: this.scene.id, step: this.i, kind: 'answer', ok: true, detail: 'restore=complete' });
+      // le personnage lit la ligne entière, à voix haute
+      this.setActor(s.actor ?? this.scene.npc, 'joy');
+      this.showLine(r.line, t(this.content, r.gloss));
+      setTimeout(() => {
+        if (this.live && this.sheet === sheet) this.sayLine(r.line, r.vo, RATE.NORMAL);
+      }, 600);
+      const go = document.createElement('button');
+      go.className = 'go';
+      go.textContent = s.end ? this.content.ui.finish : this.content.ui.continue;
+      go.onclick = () => {
+        sound('tap');
+        if (s.end) this.close(true);
+        else this.advance();
+      };
+      body.appendChild(go);
+    };
+
+    const next = () => {
+      grid.innerHTML = '';
+      grid.classList.remove('show-py');
+      for (const b of boxes) b.classList.remove('active');
+      const g = gaps.findIndex((_, k) => !done.has(k));
+      if (g < 0) {
+        finish();
+        return;
+      }
+      const gap = gaps[g];
+      const cell = cells[gap.at];
+      const box = boxes[gap.at];
+      box.classList.add('active');
+      const entry = cell.word ? this.content.lexicon.get(cell.word) : undefined;
+      listen.hidden = !entry;
+      listen.onclick = () => {
+        if (!entry || !cell.word) return;
+        speak(this.content, entry.target, `w_${cell.word}`, RATE.WORD);
+        log({ scene: this.scene.id, step: this.i, kind: 'listen', word: cell.word, detail: `restore:${String(gap.at)}` });
+      };
+      // l'ordre est mélangé : la position ne doit rien révéler
+      const order = [...gap.options];
+      for (let k = order.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [order[k], order[j]] = [order[j], order[k]];
+      }
+      for (const o of order) {
+        const b = document.createElement('button');
+        b.className = 'pick hanzi restore-pick';
+        if (o.ok) b.dataset.ok = '1';
+        const ph = document.createElement('span');
+        ph.className = 'ph';
+        ph.textContent = o.char;
+        const py = document.createElement('span');
+        py.className = 'cap restore-py';
+        py.textContent = o.transcription ?? '';
+        b.append(ph, py);
+        b.onclick = () => {
+          log({ scene: this.scene.id, step: this.i, kind: 'answer', word: cell.word, detail: `restore:${String(gap.at)}=${o.char}` });
+          if (o.ok) {
+            grid.querySelectorAll('button').forEach((x) => (x.disabled = true));
+            b.classList.add('right');
+            done.add(g);
+            box.textContent = cell.ch;
+            box.classList.remove('active');
+            box.classList.add('inked');
+            if (cell.word) notebook.meet(cell.word, ctx);
+            document.dispatchEvent(new CustomEvent('notebook-changed'));
+            this.win(`${o.char} ${o.transcription ?? ''}`.trim(), cell.word ? [cell.word] : [], () => setTimeout(next, 900));
+          } else {
+            b.disabled = true;
+            b.classList.add('wrong', 'nope');
+            // après une erreur, les transcriptions aident à départager
+            grid.classList.add('show-py');
+            box.classList.remove('shake');
+            box.getBoundingClientRect(); // relance l'animation
+            box.classList.add('shake');
+            if (o.word && cell.word) this.confuse([o.word], [cell.word]);
+            this.lose(t(this.content, o.why), o.errorType, cell.word ? [cell.word] : [], grid);
+          }
+        };
+        grid.appendChild(b);
+      }
+    };
+    next();
   }
 
   /** Séquence animée : le dialogue s'efface, la scène plein écran rend la main avec l'option choisie. */

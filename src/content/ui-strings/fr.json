@@ -45,5 +45,7 @@
   "photoMiss": "Rien à photographier ici : cherche ce qui est en couleur.",
   "photoName": "Légende ta photo : quel est ce mot ?",
   "photoSaved": "Photo rangée dans l'album.",
-  "sleep": "Éteindre la lampe"
+  "sleep": "Éteindre la lampe",
+  "restoreAsk": "Quel caractère manque dans la case rouge ?",
+  "restoreListen": "🔊 écouter le mot"
 }

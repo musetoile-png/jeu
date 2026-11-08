@@ -12,24 +12,35 @@
    "steps": [
     {
      "know": {
-      "fr": "La carte de Léo montre la ruelle de 奶奶."
+      "fr": "La carte de Léo montre la ruelle de 奶奶. Au dos, une phrase au pinceau que tu n'as jamais su lire."
      },
      "seek": {
-      "fr": "Quelqu'un ici se souvient-il de lui ?"
+      "fr": "Quelqu'un ici se souvient-il de lui ? Montre la carte à 奶奶, une fois ses courses faites."
      },
      "where": {
-      "fr": "Shanghai · la ruelle"
+      "fr": "Shanghai · la cuisine de 奶奶"
      }
     },
     {
      "know": {
-      "fr": "奶奶 se souvient : il a porté le même tablier que toi."
+      "fr": "奶奶 se souvient : Léo faisait la cuisine chez elle (他以前在这儿做饭). Il a porté le même tablier que toi."
      },
      "seek": {
-      "fr": "Lire le dos de la carte."
+      "fr": "Lire le dos de la carte : 奶奶 t'envoie chez 白老师, l'ancien professeur."
      },
      "where": {
-      "fr": "Shanghai · la bouquinerie"
+      "fr": "Shanghai · la bouquinerie 旧书店, au bout de la ruelle (à gauche)"
+     }
+    },
+    {
+     "know": {
+      "fr": "Au dos : 我去杭州学茶。 « Je pars à Hangzhou apprendre le thé. » 白老师 a reconnu l'écriture de Léo."
+     },
+     "seek": {
+      "fr": "Retrouver Léo à Hangzhou, la ville du thé vert."
+     },
+     "where": {
+      "fr": "Hangzhou 杭州 · plus loin sur la route"
      }
     }
    ]
@@ -49,21 +60,32 @@
       "fr": "La section montre une ruelle de Shanghai et porte un colophon taché."
      },
      "seek": {
-      "fr": "Qui sait lire un vieux rouleau ?"
+      "fr": "Qui sait lire un vieux rouleau ? Montre-le à 陈爷爷, le vieux maître du salon de thé (après une première visite)."
      },
      "where": {
-      "fr": "Shanghai · la ruelle"
+      "fr": "Shanghai · la cour, le salon de thé 茶馆"
      }
     },
     {
      "know": {
-      "fr": "Un bouquiniste de la ruelle restaure les rouleaux."
+      "fr": "陈爷爷 ne sait pas lire ces vieux caractères. Il t'envoie chez 白老师, un ancien professeur de calligraphie qui a beaucoup de livres."
      },
      "seek": {
       "fr": "Compléter les caractères manquants du colophon."
      },
      "where": {
-      "fr": "Shanghai · la bouquinerie"
+      "fr": "Shanghai · la bouquinerie, au bout de la ruelle (à gauche)"
+     }
+    },
+    {
+     "know": {
+      "fr": "Le colophon restauré : 我在上海。明天，我去杭州。 « Je suis à Shanghai. Demain, je pars pour Hangzhou. » Le peintre a continué sa route."
+     },
+     "seek": {
+      "fr": "Retrouver la section suivante du rouleau, sans doute vendue à Hangzhou."
+     },
+     "where": {
+      "fr": "Hangzhou 杭州 · plus loin sur la route"
      }
     }
    ]

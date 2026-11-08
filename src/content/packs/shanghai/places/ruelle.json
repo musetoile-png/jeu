@@ -64,6 +64,12 @@
       "y": 1046,
       "facing": "left",
       "walkIn": -140
+    },
+    "bouquinerie": {
+      "x": 150,
+      "y": 1056,
+      "facing": "right",
+      "walkIn": 260
     }
   },
   "hotspots": [
@@ -121,6 +127,33 @@
       },
       "prompt": {
         "fr": "la cour"
+      }
+    },
+    {
+      "id": "bouquinerie",
+      "kind": "exit",
+      "x": 90,
+      "y": 1050,
+      "to": "bouquinerie",
+      "toEntrance": "ruelle",
+      "when": {
+        "time": "jour"
+      },
+      "prompt": {
+        "fr": "vers la bouquinerie"
+      }
+    },
+    {
+      "id": "bouquinerie_nuit",
+      "kind": "exit",
+      "x": 90,
+      "y": 1050,
+      "to": "bouquinerie_nuit",
+      "when": {
+        "time": "nuit"
+      },
+      "prompt": {
+        "fr": "la bouquinerie"
       }
     },
     {

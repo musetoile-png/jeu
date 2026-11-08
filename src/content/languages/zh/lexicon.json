@@ -1522,6 +1522,116 @@
    },
    "pos": "expr",
    "level": "hors-liste"
+  },
+  {
+   "id": "pengyou",
+   "target": "朋友",
+   "transcription": "péngyou",
+   "gloss": {
+    "fr": "ami, amie"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "renshi",
+   "target": "认识",
+   "transcription": "rènshi",
+   "gloss": {
+    "fr": "connaître (qqn) ; savoir lire (un caractère)"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "yiqian",
+   "target": "以前",
+   "transcription": "yǐqián",
+   "gloss": {
+    "fr": "avant, autrefois"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "zher",
+   "target": "这儿",
+   "transcription": "zhèr",
+   "gloss": {
+    "fr": "ici"
+   },
+   "pos": "pron",
+   "level": "HSK1"
+  },
+  {
+   "id": "laoshi",
+   "target": "老师",
+   "transcription": "lǎoshī",
+   "gloss": {
+    "fr": "professeur"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "bai_xing",
+   "target": "白",
+   "transcription": "Bái",
+   "gloss": {
+    "fr": "Bai (nom de famille) ; blanc"
+   },
+   "pos": "name",
+   "level": "nom"
+  },
+  {
+   "id": "shu",
+   "target": "书",
+   "transcription": "shū",
+   "gloss": {
+    "fr": "livre"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "zi",
+   "target": "字",
+   "transcription": "zì",
+   "gloss": {
+    "fr": "caractère (écrit) ; écriture"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "xie",
+   "target": "写",
+   "transcription": "xiě",
+   "gloss": {
+    "fr": "écrire"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "xue",
+   "target": "学",
+   "transcription": "xué",
+   "gloss": {
+    "fr": "apprendre, étudier"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "hangzhou",
+   "target": "杭州",
+   "transcription": "Hángzhōu",
+   "gloss": {
+    "fr": "Hangzhou (ville du thé, au sud-ouest de Shanghai)"
+   },
+   "pos": "n",
+   "level": "nom"
   }
  ]
 }

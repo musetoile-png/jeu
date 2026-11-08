@@ -1,0 +1,518 @@
+{
+ "id": "bai-voir",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "La bouquinerie de 白老师"
+ },
+ "place": "bouquinerie",
+ "npc": "bai",
+ "patience": 3,
+ "actors": {
+  "bai": {
+   "name": "白老师",
+   "label": {
+    "fr": "le bouquiniste"
+   },
+   "portrait": "bai"
+  }
+ },
+ "objects": {
+  "z_shanghai": {
+   "word": "shanghai",
+   "image": ""
+  },
+  "z_zhongwen": {
+   "word": "zhongwen",
+   "image": ""
+  },
+  "z_faguo": {
+   "word": "faguo",
+   "image": ""
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "bai": "vu"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Entre les piles de livres, un vieux monsieur aux lunettes rondes. Dans la ruelle, tout le monde l'appelle 白老师 — 老师 lǎoshī, « professeur ». Salue-le :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "bv_01a_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, professeur Bai !"
+     }
+    },
+    {
+     "vo": "bv_01b_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père Bai !"
+     },
+     "why": {
+      "fr": "爷爷 va bien pour un monsieur âgé qu'on ne connaît pas… mais lui, toute la ruelle l'appelle 白老师 : un ancien professeur garde son titre toute sa vie, c'est une marque de respect."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "bv_01c_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Au revoir, professeur Bai !"
+     },
+     "why": {
+      "fr": "再见 = au revoir : tu viens d'entrer ! Pour saluer : 白老师好."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bv_02",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "shu"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour, bonjour. Regarde : des livres, partout."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bv_03",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "yiqian"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "laoshi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il remonte ses lunettes.) Avant, j'étais professeur."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bv_04",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il trempe son pinceau.) J'écris des caractères."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "bai",
+   "vo": "bv_05",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Et ça, c'est quel caractère ?"
+   },
+   "ask": {
+    "fr": "Sur la feuille encore humide : le nom de la ville où tu as atterri hier soir. Lequel est-ce ?"
+   },
+   "options": [
+    {
+     "object": "z_shanghai",
+     "ok": true
+    },
+    {
+     "object": "z_zhongwen",
+     "why": {
+      "fr": "中文 Zhōngwén, c'est la langue chinoise — le 文 de 小文. La ville où tu es : 上海, « sur (上) la mer (海) »."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "z_faguo",
+     "why": {
+      "fr": "法国 Fǎguó, c'est la France (国, le pays). La ville, c'est 上海 : le 上 de 楼上, « en haut »."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bv_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "shanghai"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Exact ! 上海. Très bien !"
+   }
+  },
+  {
+   "type": "choose",
+   "actor": "bai",
+   "vo": "bv_07",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "xiang"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Tu veux écrire des caractères ?"
+   },
+   "ask": {
+    "fr": "Réponds-lui que oui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "bv_07a_{body}",
+     "line": [
+      [
+       "w",
+       "xiang"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui (je veux bien) ! Merci, professeur !"
+     }
+    },
+    {
+     "vo": "bv_07b_{body}",
+     "line": [
+      [
+       "w",
+       "xie"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Écrire ! Merci, professeur !"
+     },
+     "why": {
+      "fr": "Pour dire oui, on reprend le premier verbe de la question : 你想写字吗 ? → 想 ! (comme 买了吗 ? → 买了 !)"
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "bv_07c_{body}",
+     "line": [
+      [
+       "w",
+       "xiang"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! De rien !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est lui qui te propose quelque chose : 谢谢老师."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bv_08",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "huanying"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Très bien ! Reviens quand tu veux, tu es ici chez toi."
+   },
+   "end": true
+  }
+ ]
+}

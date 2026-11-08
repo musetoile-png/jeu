@@ -1,0 +1,760 @@
+{
+ "id": "bai-rouleau",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le colophon taché"
+ },
+ "place": "bouquinerie",
+ "npc": "bai",
+ "patience": 3,
+ "actors": {
+  "bai": {
+   "name": "白老师",
+   "label": {
+    "fr": "le bouquiniste, ancien professeur de calligraphie"
+   },
+   "portrait": "bai"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "rouleau": "colophon"
+  },
+  "quest": {
+   "id": "rouleau",
+   "step": 2
+  }
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Un vieux monsieur aux lunettes rondes range des livres, un pinceau derrière l'oreille. Salue-le comme 陈爷爷 l'a nommé :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "br_01a_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, Maître Bai !"
+     }
+    },
+    {
+     "vo": "br_01b_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, grand-père Bai !"
+     },
+     "why": {
+      "fr": "陈爷爷 l'appelle 白老师 : un ancien professeur garde son titre, 老师, toute sa vie. C'est la façon la plus respectueuse de le saluer."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "br_01c_{body}",
+     "line": [
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonjour, Maître Bai ! (dans le désordre)"
+     },
+     "why": {
+      "fr": "Le nom de famille vient d'abord, le titre ensuite : 白老师, comme 陈爷爷 ou 王阿姨."
+     },
+     "errorType": "grammar"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "br_02",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour. Viens, fais voir."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tends-lui la section du rouleau :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "br_03a_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "hua_peinture"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Maître Bai, voici ma peinture."
+     }
+    },
+    {
+     "vo": "br_03b_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "shu"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Maître Bai, voici mon livre."
+     },
+     "why": {
+      "fr": "书 shū = un livre. Ce que tu tiens, c'est une peinture : 画 huà."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "br_03c_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "hua_peinture"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Maître Bai, voici votre peinture."
+     },
+     "why": {
+      "fr": "你的 = à toi, à lui ici. Le rouleau est à toi : 我的画."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "br_04",
+   "line": [
+    [
+     "w",
+     "shanghai"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "hua_peinture"
+    ],
+    [
+     "w",
+     "shang"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "shao"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "ji"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Shanghai ! Les caractères sur la peinture… il en manque quelques-uns. (少了 : « il en manque » — le 少 de 多少)"
+   },
+   "expression": "surprise"
+  },
+  {
+   "type": "restore",
+   "actor": "bai",
+   "vo": "br_05",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "À toi d'écrire ceux qui manquent."
+   },
+   "ask": {
+    "fr": "Le colophon du peintre, mangé par les insectes. Quel caractère manque dans la case rouge ?"
+   },
+   "restore": {
+    "line": [
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "zai"
+     ],
+     [
+      "w",
+      "shanghai"
+     ],
+     [
+      "p",
+      "。"
+     ],
+     [
+      "w",
+      "mingtian"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "wo"
+     ],
+     [
+      "w",
+      "qu"
+     ],
+     [
+      "w",
+      "hangzhou"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "« Je suis à Shanghai. Demain, je pars pour Hangzhou. »"
+    },
+    "vo": "br_06",
+    "gaps": [
+     {
+      "at": 1,
+      "options": [
+       {
+        "char": "在",
+        "transcription": "zài",
+        "word": "zai",
+        "ok": true
+       },
+       {
+        "char": "再",
+        "transcription": "zài",
+        "word": "zai_encore",
+        "why": {
+         "fr": "再 zài (再见, 欢迎再来) se prononce exactement comme 在, mais veut dire « encore ». Pour « être à » un endroit : 在, comme dans 在哪儿 ?"
+        },
+        "errorType": "phonetic"
+       },
+       {
+        "char": "是",
+        "transcription": "shì",
+        "word": "shi",
+        "why": {
+         "fr": "是 relie deux noms (这是绿茶). Pour dire où l'on se trouve — le piège du « je suis à » — c'est 在 : 我在上海."
+        },
+        "errorType": "grammar"
+       }
+      ]
+     },
+     {
+      "at": 3,
+      "options": [
+       {
+        "char": "海",
+        "transcription": "hǎi",
+        "word": "shanghai",
+        "ok": true
+       },
+       {
+        "char": "没",
+        "transcription": "méi",
+        "word": "meiyou",
+        "why": {
+         "fr": "没 méi, de 没有 (ne pas avoir) : même clé de l'eau 氵 à gauche, mais 上没 ne veut rien dire. Shanghai, c'est « sur la mer » : 海 hǎi."
+        },
+        "errorType": "graphic"
+       },
+       {
+        "char": "油",
+        "transcription": "yóu",
+        "word": "you",
+        "why": {
+         "fr": "油 yóu, l'huile du wok de 奶奶 : encore la clé de l'eau 氵. Mais la mer de Shanghai s'écrit 海."
+        },
+        "errorType": "graphic"
+       },
+       {
+        "char": "汪",
+        "transcription": "wāng",
+        "word": "wang",
+        "why": {
+         "fr": "汪 wāng, l'aboiement du chien (汪汪) : la clé de l'eau 氵 trompe. 上海 s'écrit avec 海, la mer."
+        },
+        "errorType": "graphic"
+       }
+      ]
+     },
+     {
+      "at": 5,
+      "options": [
+       {
+        "char": "明",
+        "transcription": "míng",
+        "word": "mingtian",
+        "ok": true
+       },
+       {
+        "char": "今",
+        "transcription": "jīn",
+        "word": "jintian",
+        "why": {
+         "fr": "今天 = aujourd'hui. Le voyageur parle du lendemain : 明天. Même 天, autre premier caractère."
+        },
+        "errorType": "collocation"
+       },
+       {
+        "char": "名",
+        "transcription": "míng",
+        "word": "mingzi",
+        "why": {
+         "fr": "名 míng, de 名字 (le nom) : même son que 明, autre caractère. Demain s'écrit 明 — le soleil 日 et la lune 月 côte à côte."
+        },
+        "errorType": "phonetic"
+       }
+      ]
+     },
+     {
+      "at": 9,
+      "options": [
+       {
+        "char": "去",
+        "transcription": "qù",
+        "word": "qu",
+        "ok": true
+       },
+       {
+        "char": "来",
+        "transcription": "lái",
+        "word": "lai",
+        "why": {
+         "fr": "来 = venir (vers ici). Le voyageur quitte Shanghai pour Hangzhou : il y va, 去."
+        },
+        "errorType": "semantic"
+       },
+       {
+        "char": "在",
+        "transcription": "zài",
+        "word": "zai",
+        "why": {
+         "fr": "在杭州 = être à Hangzhou. Demain, il n'y est pas encore : il y va, 去. (在, tu l'as déjà écrit au début de la ligne !)"
+        },
+        "errorType": "grammar"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "br_07",
+   "line": [
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Hangzhou… Alors va à Hangzhou ! (le reste du rouleau a dû prendre le même chemin)"
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "br_08a_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord ! Je vais à Hangzhou !"
+     }
+    },
+    {
+     "vo": "br_08b_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "lai"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord ! Je viens à Hangzhou !"
+     },
+     "why": {
+      "fr": "来 = venir vers celui qui parle. 白老师 et toi êtes à Shanghai : vers Hangzhou, on 去."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "br_08c_{body}",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "D'accord ! Je suis à Hangzhou !"
+     },
+     "why": {
+      "fr": "我在杭州 = je suis à Hangzhou. Tu n'y es pas encore : 我去杭州."
+     },
+     "errorType": "grammar"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "br_09",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "jian"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien. Au revoir ! (再见, « se revoir encore » : voilà où va 再, pas dans le colophon)"
+   },
+   "expression": "joy",
+   "end": true
+  }
+ ]
+}

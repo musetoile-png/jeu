@@ -1,0 +1,558 @@
+{
+ "id": "chen-rouleau",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Qui sait lire un vieux rouleau ?"
+ },
+ "place": "cour",
+ "npc": "chen",
+ "patience": 3,
+ "actors": {
+  "chen": {
+   "name": "陈爷爷",
+   "label": {
+    "fr": "le maître du salon de thé"
+   },
+   "portrait": "chen"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "rouleau": "piste"
+  },
+  "quest": {
+   "id": "rouleau",
+   "step": 1
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "陈爷爷 range son échiquier. Tu sors de ton sac la section du rouleau peint et tu la déroules sur la table. Demande-lui ce que c'est :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cr_01a_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, qu'est-ce que c'est ?"
+     }
+    },
+    {
+     "vo": "cr_01b_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shei"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, qui est-ce ?"
+     },
+     "why": {
+      "fr": "谁 shéi = qui, pour une personne. Pour une chose : 什么 shénme."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "cr_01c_{body}",
+     "line": [
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhege"
+      ],
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Grand-père, combien ça coûte ?"
+     },
+     "why": {
+      "fr": "多少钱 = combien ça coûte : tu ne veux pas le vendre ! Pour savoir ce que c'est : 这是什么？"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cr_02",
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "hua_peinture"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "shanghai"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "hua_peinture"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est une peinture… une peinture de Shanghai !"
+   },
+   "expression": "surprise"
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cr_03",
+   "line": [
+    [
+     "w",
+     "hua_peinture"
+    ],
+    [
+     "w",
+     "shang"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "renshi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Il y a des caractères sur la peinture… Je ne sais pas les lire. (认识 : connaître quelqu'un, ou savoir lire un caractère)"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cr_04",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "bai_xing"
+    ],
+    [
+     "w",
+     "laoshi"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "shu"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Va voir 白老师, Maître Bai. Il a beaucoup de livres. (老师 = professeur : il enseignait la calligraphie)"
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Demande-lui où le trouver :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cr_05a_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "nar"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Où est 白老师 ?"
+     }
+    },
+    {
+     "vo": "cr_05b_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shei"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Qui est 白老师 ?"
+     },
+     "why": {
+      "fr": "Il vient de te le dire : un professeur qui a beaucoup de livres. Ce qui te manque, c'est le lieu : 在哪儿 ?"
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "cr_05c_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "nar"
+      ],
+      [
+       "w",
+       "ma"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Où est 白老师 ? (avec 吗 en trop)"
+     },
+     "why": {
+      "fr": "哪儿 pose déjà la question : pas de 吗 en plus. 白老师在哪儿？"
+     },
+     "errorType": "grammar"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cr_06",
+   "line": [
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Là-bas. (Il tend le bras vers le portail : au bout de la ruelle, tout à gauche.) Vas-y !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie-le :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "cr_07a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci à vous, grand-père !"
+     }
+    },
+    {
+     "vo": "cr_07b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien, grand-père !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢您."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "cr_07c_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yeye"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pardon, grand-père !"
+     },
+     "why": {
+      "fr": "对不起 = pardon. Il t'aide : remercie-le, 谢谢您."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "chen",
+   "vo": "cr_08",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "manzou"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien. Va doucement !"
+   },
+   "expression": "joy",
+   "end": true
+  }
+ ]
+}

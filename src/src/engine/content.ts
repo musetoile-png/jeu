@@ -53,8 +53,37 @@ export interface PickOption {
   caption?: Localized;
 }
 
+/** Caractère proposé pour combler une case d'une ligne abîmée. */
+export interface RestoreOption {
+  /** Le caractère lui-même (un seul). */
+  char: string;
+  /** Sa transcription : cachée au départ, montrée après une première erreur sur la case. */
+  transcription?: string;
+  /** Mot du lexique où le joueur l'a rencontré (carnet, confusions du détour). */
+  word?: string;
+  ok?: boolean;
+  why?: Localized;
+  errorType?: string;
+}
+
+/**
+ * Restauration : une ligne écrite (colophon, enseigne, stèle…) dont des caractères manquent.
+ * `at` = rang du caractère manquant dans la ligne, ponctuation comprise (0 = premier).
+ */
+export interface Restore {
+  line: Token[];
+  gloss: Localized;
+  /** Voix de la lecture complète, une fois la ligne restaurée. */
+  vo?: string;
+  gaps: { at: number; options: RestoreOption[] }[];
+  /** Écrite en colonne, de haut en bas (sinon en ligne). */
+  vertical?: boolean;
+}
+
 export interface Step {
-  type: 'say' | 'choose' | 'pick' | 'cinematic';
+  type: 'say' | 'choose' | 'pick' | 'cinematic' | 'restore';
+  /** Ligne à restaurer (étape « restore »). */
+  restore?: Restore;
   /** Séquence animée plein écran (ex. « valise ») ; les options y sont présentées comme des objets à choisir. */
   cinematic?: string;
   narration?: Localized;
@@ -84,6 +113,8 @@ export interface SceneEnd {
   goto?: { place: string; entrance?: string };
   /** Cartouche affiché au changement (ex. 第二天 / Le lendemain). */
   card?: Localized;
+  /** Fait avancer une quête de fond (questStep[id] = step, index dans quests.json). */
+  quest?: { id: string; step: number };
 }
 
 export interface Scene {
@@ -164,6 +195,8 @@ export interface Hotspot {
   behind?: boolean;
   /** Échelle du sprite (1 par défaut). */
   scale?: number;
+  /** Quand ce point est visible, il remplace celui-ci (même personnage, autre scène : 奶奶 qui se souvient de Léo…). */
+  replaces?: string;
   prompt: Localized;
 }
 
