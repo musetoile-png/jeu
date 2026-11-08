@@ -112,6 +112,26 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
           if (!o.ok && !o.why?.fr) errors.push(`${where(i)} option ${j + 1} : distracteur sans explication`);
         });
       }
+      if (s.type === 'restore') {
+        // ligne abîmée : chaque case a exactement une bonne réponse, qui est bien le caractère à cet endroit
+        const r = s.restore;
+        if (!r?.line || !r.gaps?.length) errors.push(`${where(i)} : étape « restore » sans ligne ni cases`);
+        else {
+          checkLine(L, r.line, `${where(i)} ligne restaurée`);
+          const chars = [...r.line.map((tok) => (tok[0] === 'w' ? (L.byId.get(tok[1])?.target ?? '') : tok[0] === 'v' ? '' : tok[1])).join('')];
+          r.gaps.forEach((g, j) => {
+            const oks = g.options.filter((o) => o.ok);
+            if (oks.length !== 1) errors.push(`${where(i)} case ${j + 1} : ${oks.length} bonne(s) réponse(s), il en faut exactement une`);
+            else if (chars[g.at] !== oks[0].char) errors.push(`${where(i)} case ${j + 1} : le caractère n° ${g.at} de la ligne est « ${chars[g.at] ?? '?'} », pas « ${oks[0].char} »`);
+            g.options.forEach((o, k) => {
+              if (o.word && !L.byId.has(o.word)) errors.push(`${where(i)} case ${j + 1} option ${k + 1} : mot inconnu « ${o.word} »`);
+              else if (o.word && !L.byId.get(o.word).target.includes(o.char)) warnings.push(`${where(i)} case ${j + 1} : « ${o.char} » n'est pas dans le mot ${o.word}`);
+              if (!o.ok && !o.why?.fr) errors.push(`${where(i)} case ${j + 1} option ${k + 1} : distracteur sans explication`);
+              if (!o.ok && !o.errorType) warnings.push(`${where(i)} case ${j + 1} option ${k + 1} : distracteur sans catégorie d'erreur`);
+            });
+          });
+        }
+      }
       if (s.vo && typeof s.vo !== 'string') errors.push(`${where(i)} : vo doit être une clé de fichier`);
       for (const id of [...(s.give ?? []), ...(s.take ?? [])]) if (!items.has(id)) errors.push(`${where(i)} : objet inconnu « ${id} » (items.json)`);
     });

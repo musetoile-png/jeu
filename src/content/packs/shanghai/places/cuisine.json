@@ -71,6 +71,27 @@
       }
     },
     {
+      "id": "nainai_leo",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "nainai-leo",
+      "prompt": {
+        "fr": "montrer la carte de Léo à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "when": {
+        "time": "jour",
+        "quest": "lettre",
+        "courses": "fait",
+        "leo": ""
+      },
+      "replaces": "nainai"
+    },
+    {
       "id": "lantern",
       "kind": "object",
       "x": 1543,

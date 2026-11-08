@@ -21,6 +21,7 @@ export interface LogEvent {
     | 'detour_end'
     | 'photo_taken'
     | 'quest_choice'
+    | 'quest_step'
     | 'errand_ready';
   detail?: string; // ex. rate=0.75 | choice=2 | errorType=semantic
   word?: string;

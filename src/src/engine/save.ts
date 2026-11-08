@@ -63,12 +63,13 @@ export function flag(k: string) {
  * Vrai si toutes les conditions sont remplies.
  * `clé: "valeur"` : le drapeau vaut exactement cela ('' = absent) ;
  * `clé: "!valeur"` : le drapeau vaut autre chose ;
- * `"item:id": "1"` / `""` : l'objet est dans le sac / n'y est pas.
+ * `"item:id": "1"` / `""` : l'objet est dans le sac / n'y est pas ;
+ * `"quest": "lettre"` : la quête de fond choisie dans la valise (rangée dans le profil, pas dans les drapeaux).
  */
 export function matches(when?: Record<string, string>) {
   if (!when) return true;
   return Object.entries(when).every(([k, v]) => {
-    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : flag(k);
+    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : k === 'quest' ? (get().quest ?? '') : flag(k);
     return v.startsWith('!') ? cur !== v.slice(1) : cur === v;
   });
 }
@@ -90,6 +91,16 @@ export function set(values: Record<string, string>) {
 export function setFlags(values: Record<string, string>) {
   Object.assign(get().flags, values);
   persist();
+}
+
+/** Fait avancer une quête de fond à l'étape donnée (jamais en arrière : rejouer une scène ne fait pas reculer). */
+export function setQuestStep(id: string, step: number) {
+  const d = get();
+  d.questStep ??= {};
+  if ((d.questStep[id] ?? 0) >= step) return false;
+  d.questStep[id] = step;
+  persist();
+  return true;
 }
 
 export const hasItem = (id: string) => get().items.includes(id);

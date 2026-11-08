@@ -11,7 +11,7 @@ import type { Ambient, Content, Entrance, Hotspot, Place } from '../engine/conte
 import { assetUrl, loadContent, t } from '../engine/content';
 import { Dialogue } from '../engine/dialogue';
 import { keyOutWhite } from '../engine/keyout';
-import { ensurePlaceholderPerson, ensurePlaceholderPlane } from '../engine/placeholders';
+import { ensurePlaceholderPerson, ensurePlaceholderPlane, placeholderKeys } from '../engine/placeholders';
 import { Puppet } from '../engine/puppet';
 import * as save from '../engine/save';
 import * as ui from '../engine/ui';
@@ -167,7 +167,8 @@ export class World extends Phaser.Scene {
     const zoom = place.zoom ?? 1;
 
     place.planes.forEach((p, i) => {
-      ensurePlaceholderPlane(this, p.image, W, H, i);
+      // décor pas encore peint : papier de riz et nom du lieu à l'encre
+      ensurePlaceholderPlane(this, p.image, W, H, i, place.name[this.content.language.code]);
       const img = this.add.image(0, p.y, p.image).setOrigin(0, 0);
       img.setDepth(p.depth === 'above' ? 2000 : i);
       // Un plan qui ne bouge pas à la vitesse de la caméra doit être un peu plus large que le lieu,
@@ -222,8 +223,10 @@ export class World extends Phaser.Scene {
       s.prompt.destroy();
     }
     this.spots = [];
+    // un point visible peut en remplacer un autre (même personnage, scène de quête à la place de la scène habituelle)
+    const replaced = new Set(place.hotspots.filter((h) => h.replaces && save.matches(h.when)).map((h) => h.replaces));
     for (const h of place.hotspots) {
-      if (!save.matches(h.when)) continue;
+      if (!save.matches(h.when) || replaced.has(h.id)) continue;
       if (h.kind === 'subject') {
         // sujets photo : invisibles hors du viseur
         const obj = this.add.image(h.x, h.y, '__WHITE').setAlpha(0);
@@ -234,11 +237,13 @@ export class World extends Phaser.Scene {
       const closed = h.kind === 'exit' && !(h.to && this.content.places.has(h.to));
       const key = h.sprite ?? `spot_${h.kind}`;
       if (!this.textures.exists(key)) ensurePlaceholderPerson(this, key, h.kind === 'npc' ? '#3b5bd6' : '#d6322a');
+      // personnage pas encore dessiné : sa silhouette de secours prend la taille du joueur (l'échelle du lieu vaut pour l'illustration)
+      const stand = h.kind === 'npc' && placeholderKeys.has(key) ? (this.exitPromptHeight(place) - 40) / this.textures.get(key).getSourceImage().height : undefined;
       const obj = this.add
         .image(h.x, h.y, key)
         .setOrigin(0.5, 1)
         .setDepth(h.behind ? 0.5 : h.y)
-        .setScale(h.scale ?? 1);
+        .setScale(stand ?? h.scale ?? 1);
       if (h.kind === 'exit') obj.setAlpha(0.001);
       // un personnage n'est jamais figé : il respire (étirement très léger depuis les pieds)
       if (h.kind === 'npc') this.tweens.add({ targets: obj, scaleY: obj.scaleY * 1.012, duration: Phaser.Math.Between(1700, 2400), yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
@@ -516,6 +521,10 @@ export class World extends Phaser.Scene {
   private openScene(h: Hotspot) {
     const sc = this.content.scenes.get(h.scene ?? '');
     if (!sc) return;
+    // si l'on parle pendant l'entrée dans un lieu, la mise en scène s'arrête (sinon le panneau resterait caché)
+    this.autoWalk = 0;
+    this.clickTarget = null;
+    if (this.staging) this.stage(false);
     this.busy = true;
     // Le joueur se met de côté pour ne pas masquer son interlocuteur, puis se tourne vers nous.
     const p = this.player;
@@ -713,6 +722,8 @@ export class World extends Phaser.Scene {
     const end = this.content.scenes.get(id)?.onEnd;
     if (!end) return;
     if (end.flags) save.setFlags(end.flags);
+    // la quête de fond avance (panneau Quête, touche J) ; rejouer la scène ne la fait pas reculer
+    if (end.quest && save.setQuestStep(end.quest.id, end.quest.step)) log({ scene: id, step: -1, kind: 'quest_step', detail: `${end.quest.id}=${end.quest.step}` });
     for (const it of end.give ?? []) {
       if (save.hasItem(it)) continue;
       save.addItem(it);

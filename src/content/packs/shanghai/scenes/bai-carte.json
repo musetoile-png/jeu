@@ -1,0 +1,979 @@
+{
+ "id": "bai-carte",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le dos de la carte"
+ },
+ "place": "bouquinerie",
+ "npc": "bai",
+ "patience": 3,
+ "actors": {
+  "bai": {
+   "name": "白老师",
+   "label": {
+    "fr": "le bouquiniste"
+   },
+   "portrait": "bai"
+  }
+ },
+ "objects": {
+  "z_wo": {
+   "word": "wo",
+   "image": ""
+  },
+  "z_qu": {
+   "word": "qu",
+   "image": ""
+  },
+  "z_cha": {
+   "word": "cha",
+   "image": ""
+  },
+  "z_xue": {
+   "word": "xue",
+   "image": ""
+  },
+  "z_hangzhou": {
+   "word": "hangzhou",
+   "image": ""
+  },
+  "z_faguo": {
+   "word": "faguo",
+   "image": ""
+  }
+ },
+ "onEnd": {
+  "flags": {
+   "leo": "carte"
+  },
+  "quest": {
+   "id": "lettre",
+   "step": 2
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu poses la carte de Léo sur le comptoir, côté phrase. Demande à 白老师 :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "bc_01a_{body}",
+     "line": [
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "w",
+       "kan"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "w",
+       "zi"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Professeur, regardez : quels sont ces caractères ?"
+     }
+    },
+    {
+     "vo": "bc_01b_{body}",
+     "line": [
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "w",
+       "kan"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "w",
+       "shu"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Professeur, regardez : c'est quel livre ?"
+     },
+     "why": {
+      "fr": "书 shū, c'est un livre. Là, c'est une carte postale : tu demandes les caractères, 字 zì."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "bc_01c_{body}",
+     "line": [
+      [
+       "w",
+       "laoshi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "w",
+       "zi"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Professeur, vous êtes quel caractère ?"
+     },
+     "why": {
+      "fr": "你是… parle de lui : « tu es quel caractère ? » Montre la carte : 这是什么字 ? Et à un professeur, on dit plutôt 您, la forme polie."
+     },
+     "errorType": "grammar"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_02",
+   "line": [
+    [
+     "w",
+     "mingxinpian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Une carte postale ? Voyons voir."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_03",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "t",
+     "莱奥",
+     "Lái'ào",
+     "Léo"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il sourit.) C'est l'écriture de Léo !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_04",
+   "line": [
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "w",
+     "yiqian"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "zher"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Avant, il venait écrire ici."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_05",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il recopie la phrase en caractères bien droits : 我去杭州学茶。) Je te l'écris. Regarde."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "bai",
+   "vo": "bc_06",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "renshi"
+    ],
+    [
+     "w",
+     "na"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Lequel de ces caractères connais-tu ?"
+   },
+   "ask": {
+    "fr": "Sur la feuille : 我去杭州学茶。  Lequel veut dire « je, moi » ?"
+   },
+   "options": [
+    {
+     "object": "z_wo",
+     "ok": true
+    },
+    {
+     "object": "z_xue",
+     "why": {
+      "fr": "学 xué, tu ne l'as encore jamais vu. « Je », c'est 我 : celui de 我的护照, « mon passeport »."
+     },
+     "errorType": "character"
+    },
+    {
+     "object": "z_hangzhou",
+     "why": {
+      "fr": "杭州 : deux caractères que tu n'as encore jamais vus. « Je », c'est 我, celui de 我叫…"
+     },
+     "errorType": "character"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "bai",
+   "vo": "bc_07",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Oui ! Regarde encore."
+   },
+   "ask": {
+    "fr": "我去杭州学茶。  Le verbe « aller » — celui de 去休息, « va te reposer ! » de 奶奶. Lequel ?"
+   },
+   "options": [
+    {
+     "object": "z_qu",
+     "ok": true
+    },
+    {
+     "object": "z_faguo",
+     "why": {
+      "fr": "Bien vu : 法 cache 去 à sa droite, à côté de l'eau 氵… mais 法国, c'est la France. « Aller » tout seul, c'est 去."
+     },
+     "errorType": "character"
+    },
+    {
+     "object": "z_xue",
+     "why": {
+      "fr": "学 n'est pas « aller »… patience, 白老师 va te l'expliquer. « Aller », c'est 去 : 去休息, 去奶奶那儿."
+     },
+     "errorType": "character"
+    }
+   ]
+  },
+  {
+   "type": "pick",
+   "actor": "bai",
+   "vo": "bc_08",
+   "line": [
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "renshi"
+    ],
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Très bien ! Et celui-là aussi, tu le connais."
+   },
+   "ask": {
+    "fr": "我去杭州学茶。  Le dernier : tu en as acheté chez 陈爷爷, dans la cour. Lequel ?"
+   },
+   "options": [
+    {
+     "object": "z_cha",
+     "ok": true
+    },
+    {
+     "object": "z_xue",
+     "why": {
+      "fr": "学, c'est un enfant (子) sous un toit : l'enfant à l'école. Le thé, c'est 茶, avec l'herbe (艹) en haut — comme sur l'enseigne 茶馆 de 陈爷爷."
+     },
+     "errorType": "character"
+    },
+    {
+     "object": "z_hangzhou",
+     "why": {
+      "fr": "杭州 est un nom de ville. Chez 陈爷爷, tu as acheté du 茶叶 : c'est le caractère 茶."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_09",
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "cha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ça, c'est 杭州, Hangzhou. À Hangzhou, il y a beaucoup de thé."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_10",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "zi"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "xue"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "xue"
+    ],
+    [
+     "w",
+     "zhongwen"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "xue"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "p",
+     "……"
+    ]
+   ],
+   "gloss": {
+    "fr": "Et ce caractère-ci, c'est 学 : apprendre. Apprendre le chinois, apprendre à cuisiner…"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "À toi : lis toute la phrase de Léo à voix haute."
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "bc_11a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "xue"
+      ],
+      [
+       "w",
+       "cha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vais à Hangzhou apprendre le thé."
+     }
+    },
+    {
+     "vo": "bc_11b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "he"
+      ],
+      [
+       "w",
+       "cha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vais à Hangzhou boire du thé."
+     },
+     "why": {
+      "fr": "喝 hē = boire. Sur la carte, c'est 学 xué, apprendre : Léo n'est pas parti boire du thé… il est parti l'apprendre !"
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "bc_11c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "xue"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "cha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "(dans le désordre) J'apprends Hangzhou aller thé."
+     },
+     "why": {
+      "fr": "La phrase suit le voyage : qui (我) → aller où (去杭州) → pour faire quoi (学茶)."
+     },
+     "errorType": "order"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_12",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "pengyou"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est ça. Ton ami est parti à Hangzhou."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_13",
+   "line": [
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "lucha"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "haohe"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le thé vert de Hangzhou… il est délicieux."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Et toi ? Dis-lui ce que tu as envie de faire :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "bc_14a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "xiang"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Moi aussi, je veux aller à Hangzhou !"
+     }
+    },
+    {
+     "vo": "bc_14b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "xiang"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "shanghai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Moi aussi, je veux aller à Shanghai !"
+     },
+     "why": {
+      "fr": "Tu y es déjà, à 上海 ! Léo, lui, est parti à 杭州."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "bc_14c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "xiang"
+      ],
+      [
+       "w",
+       "xue"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Moi aussi, je veux apprendre Hangzhou !"
+     },
+     "why": {
+      "fr": "学杭州, « apprendre Hangzhou »… on n'apprend pas une ville : on y va. 去杭州."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "bc_15",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "manzou"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien ! Va doucement, prends soin de toi."
+   },
+   "end": true
+  }
+ ]
+}

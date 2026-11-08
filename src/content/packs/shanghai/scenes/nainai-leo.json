@@ -1,0 +1,825 @@
+{
+ "id": "nainai-leo",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "奶奶 se souvient"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "leo": "nainai"
+  },
+  "quest": {
+   "id": "lettre",
+   "step": 1
+  },
+  "goto": {
+   "place": "ruelle",
+   "entrance": "porte"
+  },
+  "card": {
+   "zh": "第二天",
+   "fr": "Le lendemain matin"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_01",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle remarque la carte postale dans ta main.) Qu'est-ce que c'est ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "C'est la carte de Léo, ton ami d'enfance. « Ami » se dit 朋友 péngyou. Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nl_02a_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "pengyou"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "mingxinpian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est la carte postale de mon ami."
+     }
+    },
+    {
+     "vo": "nl_02b_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "pengyou"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "mingzi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est le nom de mon ami."
+     },
+     "why": {
+      "fr": "名字 míngzi, c'est le nom. La carte postale, c'est 明信片 míngxìnpiàn : même son míng au début, mais pas le même caractère — 名 (le nom) et 明 (la lumière)."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "nl_02c_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "pengyou"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "mingxinpian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "(dans le désordre) C'est la carte postale ami de moi."
+     },
+     "why": {
+      "fr": "Celui à qui appartient la chose vient d'abord : 我朋友的明信片, « de-mon-ami la carte postale »."
+     },
+     "errorType": "order"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_03",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "pengyou"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "jiao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "w",
+     "mingzi"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ton ami ? Comment il s'appelle ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds : il s'appelle Léo (莱奥 Lái'ào)."
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nl_04a_{body}",
+     "line": [
+      [
+       "w",
+       "ta_m"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "莱奥",
+       "Lái'ào",
+       "Léo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Il s'appelle Léo."
+     }
+    },
+    {
+     "vo": "nl_04b_{body}",
+     "line": [
+      [
+       "w",
+       "ta_f"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "莱奥",
+       "Lái'ào",
+       "Léo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Elle s'appelle Léo."
+     },
+     "why": {
+      "fr": "À l'oral, 他 et 她 se disent tous les deux tā… mais à l'écrit, 她 porte la clé 女, la femme : « elle ». Léo est un garçon : 他."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "nl_04c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "jiao"
+      ],
+      [
+       "t",
+       "莱奥",
+       "Lái'ào",
+       "Léo"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je m'appelle Léo."
+     },
+     "why": {
+      "fr": "我叫…, c'est « je m'appelle ». Tu parles de ton ami : 他叫莱奥."
+     },
+     "errorType": "grammar"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_05",
+   "expression": "surprise",
+   "line": [
+    [
+     "t",
+     "莱奥",
+     "Lái'ào",
+     "Léo"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "t",
+     "莱奥",
+     "Lái'ào",
+     "Léo"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "renshi"
+    ],
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Léo ? … Léo ! Je le connais !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "w",
+     "yiqian"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "zher"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "fan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Avant, il faisait la cuisine ici."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Ici, dans cette cuisine, comme toi ? Fais-le-lui préciser :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nl_07a_{body}",
+     "line": [
+      [
+       "w",
+       "ta_m"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "zher"
+      ],
+      [
+       "w",
+       "zuo"
+      ],
+      [
+       "w",
+       "fan"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Lui aussi, il cuisinait ici ?"
+     }
+    },
+    {
+     "vo": "nl_07b_{body}",
+     "line": [
+      [
+       "w",
+       "ta_m"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "nar_la"
+      ],
+      [
+       "w",
+       "zuo"
+      ],
+      [
+       "w",
+       "fan"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Lui aussi, il cuisinait là-bas ?"
+     },
+     "why": {
+      "fr": "那儿 nàr = là-bas. 奶奶 a dit 这儿 zhèr : ici, dans cette cuisine. 这 (ce…ci, tout près) et 那 (ce…là, au loin) se ressemblent : regarde bien la clé du caractère."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "nl_07c_{body}",
+     "line": [
+      [
+       "w",
+       "ta_m"
+      ],
+      [
+       "w",
+       "ye"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "zher"
+      ],
+      [
+       "w",
+       "chi"
+      ],
+      [
+       "w",
+       "fan"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Lui aussi, il mangeait ici ?"
+     },
+     "why": {
+      "fr": "吃饭, c'est manger. Elle a dit 做饭 : faire la cuisine — ce que tu fais toi-même depuis ce matin !"
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_08",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle tire doucement sur ton tablier.) Oui ! Celui-là, c'était le sien."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu retournes la carte. Au dos, au pinceau, la phrase que tu n'as jamais su lire. Demande-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "nl_09a_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shenme"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, et ça, qu'est-ce que c'est ?"
+     }
+    },
+    {
+     "vo": "nl_09b_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "shei"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, qui est-ce ?"
+     },
+     "why": {
+      "fr": "谁 shéi = qui ? Ce n'est pas une personne, c'est une phrase écrite. Pour une chose : 这是什么 ?"
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "nl_09c_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "nar"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, c'est où ?"
+     },
+     "why": {
+      "fr": "哪儿 = où ? L'endroit, tu le connais : c'est sa ruelle, sur la photo ! Pour la phrase au dos : 这是什么 ?"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_10",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "w",
+     "kan"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "renshi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Voyons… (Elle plisse les yeux devant l'écriture au pinceau, toute en courbes.) Ces caractères-là, je ne les connais pas."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_11",
+   "line": [
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "bai_xing"
+    ],
+    [
+     "w",
+     "laoshi"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ta_m"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "laoshi"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Va chez 白老师, à la bouquinerie au bout de la ruelle ! Lui, il est professeur."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nl_12",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "mingtian"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "xiuxi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Demain. Aujourd'hui : au lit !"
+   },
+   "end": true
+  }
+ ]
+}
