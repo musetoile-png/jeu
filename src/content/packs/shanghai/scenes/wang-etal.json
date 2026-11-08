@@ -336,8 +336,7 @@
      {
       "word": "niunai",
       "foils": [
-       "nainai",
-       "binggan"
+       "nainai"
       ],
       "price": [
        [
@@ -443,7 +442,8 @@
         "kuai"
        ]
       ],
-      "cost": 5
+      "cost": 5,
+      "soon": true
      },
      {
       "word": "binggan",
@@ -461,7 +461,8 @@
         "kuai"
        ]
       ],
-      "cost": 7
+      "cost": 7,
+      "soon": true
      }
     ]
    }

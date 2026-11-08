@@ -71,7 +71,7 @@ const sharesChar = (content: Content, a: string, b: string) => {
  */
 export function planStall(content: Content, st: Stall, drawn: (g: StallGood) => boolean, newPurchase: (word: string) => boolean = () => true): StallRound[] {
   const required = content.language.mastery?.contextsRequired ?? 3;
-  const goods = st.goods.filter((g) => content.lexicon.has(g.word));
+  const goods = st.goods.filter((g) => !g.soon && content.lexicon.has(g.word));
   const count = st.rounds ?? 6;
   const show = Math.max(3, st.show ?? 6);
   const modes = st.modes ?? ['listen', 'read', 'say'];

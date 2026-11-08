@@ -357,7 +357,8 @@
         "kuai"
        ]
       ],
-      "cost": 6
+      "cost": 6,
+      "soon": true
      },
      {
       "word": "putao",
@@ -393,7 +394,8 @@
         "kuai"
        ]
       ],
-      "cost": 5
+      "cost": 5,
+      "soon": true
      },
      {
       "word": "xihongshi",

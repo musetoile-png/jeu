@@ -94,6 +94,8 @@ export interface StallLine {
 /** Un article de l'étal. */
 export interface StallGood {
   word: string;
+  /** Pas encore sur l'étal (voix pas encore enregistrées, par exemple) : ni cible ni distracteur. */
+  soon?: boolean;
   /** Clé d'image (sinon `obj_<word>`, puis l'image de l'objet du sac qui porte ce mot ; à défaut, étiquette peinte). */
   image?: string;
   /** Mots proposés à côté du bon (modes « dire » et « acheter ») : de préférence sur les mêmes caractères. */

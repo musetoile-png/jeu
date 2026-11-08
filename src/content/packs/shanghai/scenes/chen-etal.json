@@ -374,7 +374,6 @@
      {
       "word": "wulongcha",
       "foils": [
-       "longjing",
        "lucha"
       ],
       "price": [
@@ -391,12 +390,12 @@
         "kuai"
        ]
       ],
-      "cost": 40
+      "cost": 40,
+      "soon": true
      },
      {
       "word": "longjing",
       "foils": [
-       "wulongcha",
        "xiaolong"
       ],
       "price": [
@@ -413,12 +412,12 @@
         "kuai"
        ]
       ],
-      "cost": 100
+      "cost": 100,
+      "soon": true
      },
      {
       "word": "chabei",
       "foils": [
-       "chahu",
        "chaye"
       ],
       "price": [
@@ -453,7 +452,8 @@
         "kuai"
        ]
       ],
-      "cost": 60
+      "cost": 60,
+      "soon": true
      }
     ]
    }
