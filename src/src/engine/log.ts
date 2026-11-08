@@ -22,8 +22,9 @@ export interface LogEvent {
     | 'photo_taken'
     | 'quest_choice'
     | 'quest_step'
-    | 'errand_ready';
-  detail?: string; // ex. rate=0.75 | choice=2 | errorType=semantic
+    | 'errand_ready'
+    | 'stall';
+  detail?: string; // ex. rate=0.75 | choice=2 | errorType=semantic | mode=listen;answer=huacha;error=character
   word?: string;
   ok?: boolean;
   /** « connu » si le mot a déjà été rencontré dans un autre contexte, « nouveau » sinon (§12) */

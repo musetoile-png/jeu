@@ -36,7 +36,10 @@
     "bai-voir",
     "bai-carte",
     "chen-rouleau",
-    "bai-rouleau"
+    "bai-rouleau",
+    "wang-etal",
+    "li-etal",
+    "chen-etal"
   ],
   "worlds": {
     "cuisine": {
@@ -134,7 +137,27 @@
       "bai_stand": "art/bai_stand.webp",
       "portrait_bai_neutral": "art/bai_bust_neutral.jpg",
       "portrait_bai_joy": "art/bai_bust_joy.jpg",
-      "portrait_bai_surprise": "art/bai_bust_surprise.jpg"
+      "portrait_bai_surprise": "art/bai_bust_surprise.jpg",
+      "obj_huacha": "art/obj_huacha.webp",
+      "obj_baicha": "art/obj_baicha.webp",
+      "obj_wulongcha": "art/obj_wulongcha.webp",
+      "obj_longjing": "art/obj_longjing.webp",
+      "obj_chabei": "art/obj_chabei.webp",
+      "obj_chahu": "art/obj_chahu.webp",
+      "obj_chengzi": "art/obj_chengzi.webp",
+      "obj_putao": "art/obj_putao.webp",
+      "obj_li_poire": "art/obj_li_poire.webp",
+      "obj_xihongshi": "art/obj_xihongshi.webp",
+      "obj_baicai": "art/obj_baicai.webp",
+      "obj_tudou": "art/obj_tudou.webp",
+      "obj_huanggua": "art/obj_huanggua.webp",
+      "obj_niunai": "art/obj_niunai.webp",
+      "obj_mi": "art/obj_mi.webp",
+      "obj_miantiao": "art/obj_miantiao.webp",
+      "obj_jiangyou": "art/obj_jiangyou.webp",
+      "obj_doufu": "art/obj_doufu.webp",
+      "obj_tang": "art/obj_tang.webp",
+      "obj_binggan": "art/obj_binggan.webp"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [

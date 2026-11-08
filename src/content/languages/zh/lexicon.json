@@ -1632,6 +1632,229 @@
    },
    "pos": "n",
    "level": "nom"
+  },
+  {
+   "id": "huacha",
+   "target": "花茶",
+   "transcription": "huāchá",
+   "gloss": {
+    "fr": "thé aux fleurs (jasmin…)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "baicha",
+   "target": "白茶",
+   "transcription": "báichá",
+   "gloss": {
+    "fr": "thé blanc"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "wulongcha",
+   "target": "乌龙茶",
+   "transcription": "wūlóngchá",
+   "gloss": {
+    "fr": "thé oolong (« dragon noir »)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "longjing",
+   "target": "龙井",
+   "transcription": "Lóngjǐng",
+   "gloss": {
+    "fr": "Longjing, « puits du dragon » : le thé vert de Hangzhou"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "chabei",
+   "target": "茶杯",
+   "transcription": "chábēi",
+   "gloss": {
+    "fr": "tasse à thé"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "chahu",
+   "target": "茶壶",
+   "transcription": "cháhú",
+   "gloss": {
+    "fr": "théière"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "chengzi",
+   "target": "橙子",
+   "transcription": "chéngzi",
+   "gloss": {
+    "fr": "orange (le fruit)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "putao",
+   "target": "葡萄",
+   "transcription": "pútao",
+   "gloss": {
+    "fr": "raisin"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "li_poire",
+   "target": "梨",
+   "transcription": "lí",
+   "gloss": {
+    "fr": "poire"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "xihongshi",
+   "target": "西红柿",
+   "transcription": "xīhóngshì",
+   "gloss": {
+    "fr": "tomate (« kaki rouge de l'Ouest »)"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "baicai",
+   "target": "白菜",
+   "transcription": "báicài",
+   "gloss": {
+    "fr": "chou chinois (« légume blanc »)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "tudou",
+   "target": "土豆",
+   "transcription": "tǔdòu",
+   "gloss": {
+    "fr": "pomme de terre (« haricot de terre »)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "huanggua",
+   "target": "黄瓜",
+   "transcription": "huángguā",
+   "gloss": {
+    "fr": "concombre (« melon jaune »)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "niunai",
+   "target": "牛奶",
+   "transcription": "niúnǎi",
+   "gloss": {
+    "fr": "lait (de vache)"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "mi",
+   "target": "米",
+   "transcription": "mǐ",
+   "gloss": {
+    "fr": "riz (cru, en grains)"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "miantiao",
+   "target": "面条",
+   "transcription": "miàntiáo",
+   "gloss": {
+    "fr": "nouilles"
+   },
+   "pos": "n",
+   "level": "HSK2",
+   "taughtInContext": true
+  },
+  {
+   "id": "jiangyou",
+   "target": "酱油",
+   "transcription": "jiàngyóu",
+   "gloss": {
+    "fr": "sauce soja"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "doufu",
+   "target": "豆腐",
+   "transcription": "dòufu",
+   "gloss": {
+    "fr": "tofu"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "tang",
+   "target": "糖",
+   "transcription": "táng",
+   "gloss": {
+    "fr": "sucre ; bonbon"
+   },
+   "pos": "n",
+   "taughtInContext": true
+  },
+  {
+   "id": "binggan",
+   "target": "饼干",
+   "transcription": "bǐnggān",
+   "gloss": {
+    "fr": "biscuit"
+   },
+   "pos": "n",
+   "level": "HSK4",
+   "taughtInContext": true
+  },
+  {
+   "id": "kankan",
+   "target": "看看",
+   "transcription": "kànkan",
+   "gloss": {
+    "fr": "jeter un œil, regarder un peu"
+   },
+   "pos": "v"
+  },
+  {
+   "id": "xiaci",
+   "target": "下次",
+   "transcription": "xiàcì",
+   "gloss": {
+    "fr": "la prochaine fois"
+   },
+   "pos": "n"
   }
  ]
 }

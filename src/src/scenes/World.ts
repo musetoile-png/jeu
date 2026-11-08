@@ -235,7 +235,9 @@ export class World extends Phaser.Scene {
         continue;
       }
       const closed = h.kind === 'exit' && !(h.to && this.content.places.has(h.to));
-      const key = h.sprite ?? `spot_${h.kind}`;
+      // un étal n'a pas de silhouette : c'est l'étal peint du décor ; seule son étiquette apparaît
+      const bare = h.kind === 'exit' || h.kind === 'stall';
+      const key = h.sprite ?? (h.kind === 'stall' ? '__WHITE' : `spot_${h.kind}`);
       if (!this.textures.exists(key)) ensurePlaceholderPerson(this, key, h.kind === 'npc' ? '#3b5bd6' : '#d6322a');
       // personnage pas encore dessiné : sa silhouette de secours prend la taille du joueur (l'échelle du lieu vaut pour l'illustration)
       const stand = h.kind === 'npc' && placeholderKeys.has(key) ? (this.exitPromptHeight(place) - 40) / this.textures.get(key).getSourceImage().height : undefined;
@@ -244,15 +246,23 @@ export class World extends Phaser.Scene {
         .setOrigin(0.5, 1)
         .setDepth(h.behind ? 0.5 : h.y)
         .setScale(stand ?? h.scale ?? 1);
-      if (h.kind === 'exit') obj.setAlpha(0.001);
+      if (bare) obj.setAlpha(0.001);
       // un personnage n'est jamais figé : il respire (étirement très léger depuis les pieds)
       if (h.kind === 'npc') this.tweens.add({ targets: obj, scaleY: obj.scaleY * 1.012, duration: Phaser.Math.Between(1700, 2400), yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       // une porte fermée affiche une pancarte en chinois : le verrou est une phrase à lire
       const signLine = this.content.pack.closedSign;
       const signText = closed && signLine ? save.resolveLine(this.content, signLine).map((tk) => (tk[0] === 'w' ? (this.content.lexicon.get(tk[1])?.target ?? '') : tk[0] === 'v' ? '' : tk[1])).join('') : '';
-      const verb = closed ? `${this.content.ui.closed ?? '✕'} ${signText}` : h.kind === 'exit' ? (this.content.ui.enter ?? '↑') : this.content.ui.talk;
+      const stallWord = h.kind === 'stall' && h.word ? this.content.lexicon.get(h.word)?.target : undefined;
+      const verb = closed
+        ? `${this.content.ui.closed ?? '✕'} ${signText}`
+        : h.kind === 'exit'
+          ? (this.content.ui.enter ?? '↑')
+          : h.kind === 'stall'
+            ? `${this.content.ui.enter ?? '↑'} ${stallWord ?? ''}`.trim()
+            : this.content.ui.talk;
+      const promptY = Math.max(h.y - (bare ? this.exitPromptHeight(place) : obj.displayHeight) - 16, 48);
       const prompt = this.add
-        .text(h.x, Math.max(h.y - (h.kind === 'exit' ? this.exitPromptHeight(place) : obj.displayHeight) - 16, 48), ` ${verb} · ${t(this.content, h.prompt)} `, {
+        .text(h.x, promptY, ` ${verb} · ${t(this.content, h.prompt)} `, {
           fontFamily: `'Nunito Sans', ${this.content.language.font}`,
           fontSize: '20px',
           color: closed ? '#efe9dc' : '#1b1b2a',
@@ -262,7 +272,7 @@ export class World extends Phaser.Scene {
         .setOrigin(0.5)
         .setDepth(3000)
         .setVisible(false)
-        .setData('y0', Math.max(h.y - (h.kind === 'exit' ? this.exitPromptHeight(place) : obj.displayHeight) - 16, 48));
+        .setData('y0', promptY);
       if (closed && signText) {
         const plaque = this.add
           .text(h.x, h.y - this.exitPromptHeight(place) * 1.15, signText, {
@@ -411,6 +421,7 @@ export class World extends Phaser.Scene {
       if (dir < 0) hit = wx < h.x + 90;
       else if (dir > 0) hit = wx > h.x - 90;
       else if (h.kind === 'exit') hit = Math.abs(wx - h.x) < 110 && wy > h.y - this.exitPromptHeight(this.place) && wy < h.y + 60;
+      else if (h.kind === 'stall') hit = Math.abs(wx - h.x) < (h.radius ?? NEAR) * 0.8 && wy > h.y - this.exitPromptHeight(this.place) - 40 && wy < h.y + 60;
       else hit = Math.abs(wx - h.x) < Math.max(70, s.obj.displayWidth * 0.4) && wy > h.y - s.obj.displayHeight - 20 && wy < h.y + 60;
       const d = Math.abs(wx - h.x);
       if (hit && d < bestD) {
@@ -440,12 +451,13 @@ export class World extends Phaser.Scene {
       this.autoWalk = dir < 0 ? w.xMin - p.x - 600 : w.xMax - p.x + 600;
       return;
     }
-    if (Phaser.Math.Distance.Between(p.x, p.y, h.x, h.y) < NEAR) {
+    const near = h.radius ?? NEAR;
+    if (Phaser.Math.Distance.Between(p.x, p.y, h.x, h.y) < near) {
       this.activate(h);
       return;
     }
     const side = Math.sign(p.x - h.x) || -1;
-    this.autoWalk = Phaser.Math.Clamp(h.x + side * 90, w.xMin, w.xMax) - p.x;
+    this.autoWalk = Phaser.Math.Clamp(h.x + side * Math.min(90, near - 40), w.xMin, w.xMax) - p.x;
     this.clickTarget = h;
   }
 
@@ -473,7 +485,7 @@ export class World extends Phaser.Scene {
   private activate(h: Hotspot) {
     this.clickTarget = null;
     this.showExitBanner(null, 0, 0);
-    if (h.kind === 'npc') this.openScene(h);
+    if (h.kind === 'npc' || h.kind === 'stall') this.openScene(h);
     if (h.kind === 'exit') this.leaveTo(h);
   }
 
@@ -529,11 +541,14 @@ export class World extends Phaser.Scene {
     // Le joueur se met de côté pour ne pas masquer son interlocuteur, puis se tourne vers nous.
     const p = this.player;
     const auto = h.id.startsWith('auto:');
-    const side = p.x <= h.x ? -1 : 1;
-    const x = auto ? p.x : Phaser.Math.Clamp(h.x + side * 300, this.place.walk.xMin, this.place.walk.xMax);
+    // à l'étal, l'interlocuteur est le commerçant, debout à côté
+    const merchant = h.kind === 'stall' ? this.spots.find((s) => s.h.kind === 'npc' && s.h.sprite?.startsWith(sc.npc)) : undefined;
+    const who = merchant?.h ?? h;
+    const side = p.x <= who.x ? -1 : 1;
+    const x = auto ? p.x : Phaser.Math.Clamp(who.x + side * 300, this.place.walk.xMin, this.place.walk.xMax);
     // gros plan : la caméra cadre les deux personnages d'un côté, le panneau d'action se pose de l'autre
-    const panelSide = this.frameDialogue(auto ? [x] : [x, h.x], Math.max(p.y, h.y));
-    const npcSpot = auto ? undefined : this.spots.find((s) => s.h.id === h.id);
+    const panelSide = this.frameDialogue(auto ? [x] : [x, who.x], Math.max(p.y, who.y));
+    const npcSpot = auto ? undefined : (merchant ?? this.spots.find((s) => s.h.id === h.id));
     this.talkTo = npcSpot?.obj;
     if (p instanceof Puppet) p.setFacing(side > 0);
     this.tweens.add({
@@ -1036,6 +1051,9 @@ export class World extends Phaser.Scene {
     const U = this.cursors.up.isDown || this.keys.W.isDown;
     const D = this.cursors.down.isDown || this.keys.S.isDown;
     // marche d'entrée : quelques pas tout seul, interrompue dès que le joueur prend la main
+    // (le compteur suit la distance réellement parcourue : avant, il baissait à 0,8 × la vitesse et un clic lointain
+    // menait 25 % trop loin, au-delà du personnage ou de l'étal visé, qui ne s'ouvrait pas)
+    let autoLeft = Infinity;
     if (this.autoWalk !== 0) {
       if (L || R || U || D) {
         this.autoWalk = 0;
@@ -1043,8 +1061,9 @@ export class World extends Phaser.Scene {
       } else {
         R = this.autoWalk > 0;
         L = this.autoWalk < 0;
-        const stepPx = SPEED * 0.8 * (dt / 1000);
-        this.autoWalk = Math.abs(this.autoWalk) <= stepPx ? 0 : this.autoWalk - Math.sign(this.autoWalk) * stepPx;
+        autoLeft = Math.abs(this.autoWalk);
+        const stepPx = SPEED * (dt / 1000);
+        this.autoWalk = autoLeft <= stepPx ? 0 : this.autoWalk - Math.sign(this.autoWalk) * stepPx;
       }
     }
     if (this.autoWalk === 0 && this.pendingScene) {
@@ -1062,7 +1081,7 @@ export class World extends Phaser.Scene {
     }
     // arrivée terminée (ou le joueur a pris la main) : l'interface revient
     if (this.staging && this.autoWalk === 0) this.stage(false);
-    const vx = ((R ? 1 : 0) - (L ? 1 : 0)) * SPEED * (dt / 1000);
+    const vx = ((R ? 1 : 0) - (L ? 1 : 0)) * Math.min(SPEED * (dt / 1000), autoLeft);
     const vy = ((D ? 1 : 0) - (U ? 1 : 0)) * SPEED * 0.6 * (dt / 1000);
     const w = this.place.walk;
     p.x = Phaser.Math.Clamp(p.x + vx, w.xMin, w.xMax);
@@ -1118,7 +1137,7 @@ export class World extends Phaser.Scene {
         }
         continue;
       }
-      const close = Phaser.Math.Distance.Between(p.x, p.y, s.h.x, s.h.y) < NEAR;
+      const close = Phaser.Math.Distance.Between(p.x, p.y, s.h.x, s.h.y) < (s.h.radius ?? NEAR);
       this.promptOn(s.prompt, close);
       if (close) this.near = s.h;
     }
@@ -1144,7 +1163,7 @@ export class World extends Phaser.Scene {
     if (this.clickTarget && this.autoWalk === 0) {
       const h = this.clickTarget;
       this.clickTarget = null;
-      if (Phaser.Math.Distance.Between(p.x, p.y, h.x, h.y) < NEAR + 20) {
+      if (Phaser.Math.Distance.Between(p.x, p.y, h.x, h.y) < (h.radius ?? NEAR) + 20) {
         this.activate(h);
         return;
       }

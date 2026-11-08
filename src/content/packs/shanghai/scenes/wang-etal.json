@@ -1,0 +1,471 @@
+{
+ "id": "wang-etal",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "L'étal de 王阿姨"
+ },
+ "place": "cour",
+ "npc": "wang",
+ "patience": 3,
+ "actors": {
+  "wang": {
+   "name": "王阿姨",
+   "label": {
+    "fr": "l'épicière"
+   },
+   "portrait": "wang"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "stall",
+   "stall": {
+    "rounds": 6,
+    "show": 6,
+    "modes": [
+     "listen",
+     "read",
+     "say",
+     "buy"
+    ],
+    "context": {
+     "fr": "étal de 王阿姨"
+    },
+    "money": "qian",
+    "lines": {
+     "open": {
+      "vo": "wst_01",
+      "line": [
+       [
+        "w",
+        "lai"
+       ],
+       [
+        "p",
+        "，"
+       ],
+       [
+        "w",
+        "kankan"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Viens, regarde !"
+      }
+     },
+     "offer": [
+      {
+       "vo": "wst_02",
+       "line": [
+        [
+         "w",
+         "zhe"
+        ],
+        [
+         "w",
+         "shi"
+        ],
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "Ça, c'est : {word}."
+       }
+      },
+      {
+       "vo": "wst_03",
+       "line": [
+        [
+         "w",
+         "women"
+        ],
+        [
+         "w",
+         "you_avoir"
+        ],
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "On a : {word}."
+       }
+      },
+      {
+       "vo": "wst_04",
+       "line": [
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "ma"
+        ],
+        [
+         "p",
+         "？"
+        ]
+       ],
+       "gloss": {
+        "fr": "{word} — tu en veux ?"
+       }
+      }
+     ],
+     "ask": {
+      "vo": "wst_05",
+      "line": [
+       [
+        "w",
+        "zhe"
+       ],
+       [
+        "w",
+        "shi"
+       ],
+       [
+        "w",
+        "shenme"
+       ],
+       [
+        "p",
+        "？"
+       ]
+      ],
+      "gloss": {
+       "fr": "Qu'est-ce que c'est ?"
+      }
+     },
+     "want": {
+      "vo": "st_woyao_{body}",
+      "line": [
+       [
+        "w",
+        "wo"
+       ],
+       [
+        "w",
+        "yao"
+       ],
+       [
+        "v",
+        "WORD"
+       ],
+       [
+        "p",
+        "。"
+       ]
+      ],
+      "gloss": {
+       "fr": "Je voudrais : {word}."
+      }
+     },
+     "sold": {
+      "vo": "wst_06",
+      "line": [
+       [
+        "w",
+        "hao"
+       ],
+       [
+        "p",
+        "，"
+       ],
+       [
+        "w",
+        "gei"
+       ],
+       [
+        "w",
+        "ni"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Bien, tiens !"
+      }
+     },
+     "broke": {
+      "vo": "wst_07",
+      "line": [
+       [
+        "w",
+        "meiyou"
+       ],
+       [
+        "w",
+        "qian"
+       ],
+       [
+        "p",
+        "？"
+       ],
+       [
+        "w",
+        "xiaci"
+       ],
+       [
+        "w",
+        "ba"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Pas d'argent ? Ce sera pour la prochaine fois !"
+      }
+     },
+     "bye": {
+      "vo": "wst_08",
+      "line": [
+       [
+        "w",
+        "xiaci"
+       ],
+       [
+        "w",
+        "zai_encore"
+       ],
+       [
+        "w",
+        "lai"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Reviens la prochaine fois !"
+      }
+     }
+    },
+    "goods": [
+     {
+      "word": "jidan",
+      "foils": [
+       "mianbao",
+       "niunai"
+      ],
+      "price": [
+       [
+        "w",
+        "si"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 4
+     },
+     {
+      "word": "mianbao",
+      "foils": [
+       "miantiao",
+       "baozi"
+      ],
+      "price": [
+       [
+        "w",
+        "shi_dix"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 10
+     },
+     {
+      "word": "shui",
+      "foils": [
+       "shu",
+       "shi"
+      ],
+      "price": [
+       [
+        "w",
+        "san"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 3
+     },
+     {
+      "word": "niunai",
+      "foils": [
+       "nainai"
+      ],
+      "price": [
+       [
+        "w",
+        "liu"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 6
+     },
+     {
+      "word": "mi",
+      "foils": [
+       "mifan",
+       "mai"
+      ],
+      "price": [
+       [
+        "w",
+        "er"
+       ],
+       [
+        "w",
+        "shi_dix"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 20
+     },
+     {
+      "word": "miantiao",
+      "foils": [
+       "mianbao",
+       "mifan"
+      ],
+      "price": [
+       [
+        "w",
+        "qi"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 7
+     },
+     {
+      "word": "jiangyou",
+      "foils": [
+       "you",
+       "xiangjiao"
+      ],
+      "price": [
+       [
+        "w",
+        "shi_dix"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 10
+     },
+     {
+      "word": "doufu",
+      "foils": [
+       "tudou",
+       "jidan"
+      ],
+      "price": [
+       [
+        "w",
+        "san"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 3
+     },
+     {
+      "word": "tang",
+      "foils": [
+       "yan",
+       "cha"
+      ],
+      "price": [
+       [
+        "w",
+        "wu"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 5,
+      "soon": true
+     },
+     {
+      "word": "binggan",
+      "foils": [
+       "mianbao",
+       "baozi"
+      ],
+      "price": [
+       [
+        "w",
+        "qi"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 7,
+      "soon": true
+     }
+    ]
+   }
+  }
+ ]
+}

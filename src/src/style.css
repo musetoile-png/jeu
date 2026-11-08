@@ -437,3 +437,64 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
   .restore.vertical { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { .restore, .restore .rc.gap.active, .restore .rc.gap.inked, .restore.done .paper::after { animation: none; } }
+
+/* ---------- Étal libre : jeu de vocabulaire (听 écouter · 读 lire · 说 dire · 买 acheter) ---------- */
+#dlg.stall-mode { width: min(46%, 540px); max-width: min(46%, 540px); max-height: 84%; }
+.stall-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 26px; }
+.stall-tag { font-family: var(--calli); font-size: 20px; color: var(--lantern); letter-spacing: .02em; }
+.stall-tag:empty { visibility: hidden; }
+.stall-pips { display: flex; gap: 6px; }
+.stall-pips i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #b8ad97; background: transparent; transition: background .3s, border-color .3s, transform .3s; }
+.stall-pips i.on { border-color: var(--ink); transform: scale(1.2); }
+.stall-pips i.ok { background: var(--jade); border-color: var(--jade); }
+.stall-pips i.ko { background: var(--lantern); border-color: var(--lantern); }
+.stall-prompt:empty { display: none; }
+.stall-words:empty, .stall-words[hidden] { display: none; }
+/* l'étal : une rangée de cagettes ; chaque article dessiné, ou une étiquette de marché peinte */
+#dlg .stall-board { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 8px 6px 10px; border-radius: 6px;
+  background: linear-gradient(180deg, rgba(120, 82, 40, .08), rgba(120, 82, 40, .2)); box-shadow: inset 0 -5px 0 rgba(91, 58, 34, .35); }
+#dlg .stall-board[data-n='4'], #dlg .stall-board[data-n='5'] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+#dlg .pick.stall-good { position: relative; width: auto; min-width: 0; padding: 0; aspect-ratio: 1; overflow: hidden; display: grid; place-items: center;
+  background: #fffaf0; container-type: inline-size; }
+#dlg .pick.stall-good img { position: absolute; left: 6%; top: 6%; width: 88%; height: 88%; object-fit: contain; }
+#dlg .pick.stall-good:disabled { opacity: .5; }
+#dlg .pick.stall-good.shown:disabled, #dlg .pick.stall-good.right:disabled, #dlg .pick.stall-good.show-answer:disabled { opacity: 1; }
+.stall-good .tag { position: relative; display: grid; place-items: center; width: 88%; aspect-ratio: 1; white-space: nowrap; line-height: 1;
+  font-family: var(--calli); color: #2a1d10; font-size: calc(84cqi / (var(--n, 1) + .45));
+  background: radial-gradient(circle at 50% 9%, #fffaf0 0 4.5%, transparent 5.5%), repeating-linear-gradient(95deg, rgba(255, 255, 255, .07) 0 2px, transparent 2px 6px), linear-gradient(165deg, #e9d09e, #d3ae74);
+  border: 1px solid rgba(110, 75, 30, .45); border-radius: 3px; box-shadow: inset 0 0 12px rgba(120, 80, 30, .28), 0 2px 3px rgba(60, 40, 10, .25); transform: rotate(-2deg); }
+.stall-good:nth-child(even) .tag { transform: rotate(1.6deg); }
+.stall-good .tag::before { content: ''; position: absolute; left: 50%; top: -9%; width: 1px; height: 14%; background: rgba(60, 40, 10, .6); }
+/* l'article que le commerçant montre */
+#dlg .pick.stall-good.shown { outline: 3px solid var(--lantern); outline-offset: 2px; animation: shown 1.4s ease-in-out infinite; }
+@keyframes shown { 50% { transform: translateY(-4px); } }
+/* ton papier : le mot écrit, sans pinyin */
+.stall-slip { align-self: center; display: flex; flex-direction: column; align-items: center; padding: 6px 18px 8px; background: #fffdf6;
+  border: 1px solid var(--paper-2); box-shadow: 0 6px 14px -8px rgba(40, 30, 10, .5); transform: rotate(-1.5deg); }
+.stall-slip small { font-size: 11px; color: var(--mute); }
+.stall-slip b { font-family: var(--zh-font); font-size: 38px; line-height: 1.15; color: var(--ink); letter-spacing: .05em; }
+#dlg .stall-words .w b { font-size: clamp(18px, 2vw, 22px); }
+.stall-summary p { margin: 0 0 6px; font-size: 14px; }
+.stall-words-done { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+.stall-done { display: flex; flex-direction: column; align-items: center; padding: 4px 8px; border-radius: 8px; background: #fffaf0; border-bottom: 3px solid var(--jade); }
+.stall-done.ko { border-bottom-color: var(--lantern); }
+.stall-done .ink b { font-size: 24px; }
+.stall-done small { font-size: 10px; color: var(--lantern); text-transform: uppercase; letter-spacing: .06em; }
+/* un achat qui n'est pas un objet du sac : un petit sac de provisions en papier kraft */
+.flyer.provision { display: grid; place-items: center; width: 64px; height: 72px; padding: 14px 8px 6px; box-sizing: border-box; border-radius: 3px 3px 6px 6px;
+  background: linear-gradient(180deg, #b98f55 0 12%, #d6b47e 12%), #d6b47e; box-shadow: 0 6px 12px rgba(0, 0, 0, .25); }
+.flyer.provision img { width: 100%; height: 100%; object-fit: contain; }
+.flyer.provision b { font-family: var(--calli); font-weight: 400; font-size: 24px; color: #2a1d10; }
+/* petit écran : l'étal sort du cadre et se pose sous la scène, en grand */
+/* l'explication se lit avant le bouton « Continuer » */
+#dlg.stall-mode #dlg-body { display: contents; }
+#dlg.stall-mode .feedback { order: 2; }
+#dlg.stall-mode #dlg-body > button.go { order: 3; }
+@media (max-width: 720px) {
+  #dlg.stall-mode { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 62vh; z-index: 30;
+    background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
+  #dlg .stall-board, #dlg .stall-board[data-n='4'], #dlg .stall-board[data-n='5'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #dlg .pick.stall-good { aspect-ratio: 5 / 4; }
+  .stall-good .tag { width: auto; height: 88%; }
+}
+@media (prefers-reduced-motion: reduce) { #dlg .pick.stall-good.shown { animation: none; } }

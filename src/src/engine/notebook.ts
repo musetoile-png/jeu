@@ -8,6 +8,9 @@ interface Entry {
   contexts: string[];
   ok: number;
   ko: number;
+  /** Dernière bonne / mauvaise réponse (horodatage) : une erreur plus récente qu'un succès rend le mot fragile. */
+  lastOk?: number;
+  lastKo?: number;
 }
 
 const data: Record<string, Entry> = load();
@@ -38,9 +41,25 @@ export function meet(wordId: string, context: string): 'nouveau' | 'connu' {
 
 export function mark(wordId: string, ok: boolean) {
   const e = (data[wordId] ??= { contexts: [], ok: 0, ko: 0 });
-  if (ok) e.ok++;
-  else e.ko++;
+  if (ok) {
+    e.ok++;
+    e.lastOk = Date.now();
+  } else {
+    e.ko++;
+    e.lastKo = Date.now();
+  }
   save();
+}
+
+/** Le mot a-t-il déjà été reconnu dans ce contexte précis ? */
+export function hasContext(wordId: string, context: string) {
+  return data[wordId]?.contexts.includes(context) ?? false;
+}
+
+/** Erreur plus récente que la dernière bonne réponse. */
+export function recentError(wordId: string) {
+  const e = data[wordId];
+  return !!e?.lastKo && e.lastKo > (e.lastOk ?? 0);
 }
 
 export function contexts(wordId: string) {
