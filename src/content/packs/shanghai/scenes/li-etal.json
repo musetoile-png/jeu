@@ -1,0 +1,474 @@
+{
+ "id": "li-etal",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "L'étal de 李叔叔"
+ },
+ "place": "cour",
+ "npc": "li",
+ "patience": 3,
+ "actors": {
+  "li": {
+   "name": "李叔叔",
+   "label": {
+    "fr": "le marchand de fruits"
+   },
+   "portrait": "li"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "stall",
+   "stall": {
+    "rounds": 6,
+    "show": 6,
+    "modes": [
+     "listen",
+     "read",
+     "say",
+     "buy"
+    ],
+    "context": {
+     "fr": "étal de 李叔叔"
+    },
+    "money": "qian",
+    "lines": {
+     "open": {
+      "vo": "lst_01",
+      "line": [
+       [
+        "w",
+        "ni"
+       ],
+       [
+        "w",
+        "kan"
+       ],
+       [
+        "p",
+        "！"
+       ],
+       [
+        "w",
+        "hen"
+       ],
+       [
+        "w",
+        "haochi"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Regarde ! C'est très bon !"
+      }
+     },
+     "offer": [
+      {
+       "vo": "lst_02",
+       "line": [
+        [
+         "w",
+         "zhe"
+        ],
+        [
+         "w",
+         "shi"
+        ],
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "Ça, c'est : {word}."
+       }
+      },
+      {
+       "vo": "lst_03",
+       "line": [
+        [
+         "w",
+         "women"
+        ],
+        [
+         "w",
+         "you_avoir"
+        ],
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "On a : {word}."
+       }
+      },
+      {
+       "vo": "lst_04",
+       "line": [
+        [
+         "v",
+         "WORD"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "ma"
+        ],
+        [
+         "p",
+         "？"
+        ]
+       ],
+       "gloss": {
+        "fr": "{word} — tu en veux ?"
+       }
+      }
+     ],
+     "ask": {
+      "vo": "lst_05",
+      "line": [
+       [
+        "w",
+        "zhe"
+       ],
+       [
+        "w",
+        "shi"
+       ],
+       [
+        "w",
+        "shenme"
+       ],
+       [
+        "p",
+        "？"
+       ]
+      ],
+      "gloss": {
+       "fr": "Qu'est-ce que c'est ?"
+      }
+     },
+     "want": {
+      "vo": "st_woyao_{body}",
+      "line": [
+       [
+        "w",
+        "wo"
+       ],
+       [
+        "w",
+        "yao"
+       ],
+       [
+        "v",
+        "WORD"
+       ],
+       [
+        "p",
+        "。"
+       ]
+      ],
+      "gloss": {
+       "fr": "Je voudrais : {word}."
+      }
+     },
+     "sold": {
+      "vo": "lst_06",
+      "line": [
+       [
+        "w",
+        "hao"
+       ],
+       [
+        "p",
+        "，"
+       ],
+       [
+        "w",
+        "gei"
+       ],
+       [
+        "w",
+        "ni"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Bien, tiens !"
+      }
+     },
+     "broke": {
+      "vo": "lst_07",
+      "line": [
+       [
+        "w",
+        "meiyou"
+       ],
+       [
+        "w",
+        "qian"
+       ],
+       [
+        "p",
+        "？"
+       ],
+       [
+        "w",
+        "xiaci"
+       ],
+       [
+        "w",
+        "ba"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Pas d'argent ? Ce sera pour la prochaine fois !"
+      }
+     },
+     "bye": {
+      "vo": "lst_08",
+      "line": [
+       [
+        "w",
+        "xiaci"
+       ],
+       [
+        "w",
+        "zai_encore"
+       ],
+       [
+        "w",
+        "lai"
+       ],
+       [
+        "p",
+        "！"
+       ]
+      ],
+      "gloss": {
+       "fr": "Reviens la prochaine fois !"
+      }
+     }
+    },
+    "goods": [
+     {
+      "word": "pingguo",
+      "foils": [
+       "putao",
+       "xiangjiao"
+      ],
+      "price": [
+       [
+        "w",
+        "wu"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 5
+     },
+     {
+      "word": "xigua",
+      "foils": [
+       "huanggua",
+       "xihongshi"
+      ],
+      "price": [
+       [
+        "w",
+        "shi_dix"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 10
+     },
+     {
+      "word": "xiangjiao",
+      "foils": [
+       "xiangji",
+       "xigua"
+      ],
+      "price": [
+       [
+        "w",
+        "si"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 4
+     },
+     {
+      "word": "chengzi",
+      "foils": [
+       "benzi",
+       "kuaizi"
+      ],
+      "price": [
+       [
+        "w",
+        "liu"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 6
+     },
+     {
+      "word": "putao",
+      "foils": [
+       "pingguo",
+       "tudou"
+      ],
+      "price": [
+       [
+        "w",
+        "shi_dix"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 10
+     },
+     {
+      "word": "li_poire",
+      "foils": [
+       "li",
+       "li_xing"
+      ],
+      "price": [
+       [
+        "w",
+        "wu"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 5
+     },
+     {
+      "word": "xihongshi",
+      "foils": [
+       "xigua",
+       "hongcha"
+      ],
+      "price": [
+       [
+        "w",
+        "si"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 4
+     },
+     {
+      "word": "baicai",
+      "foils": [
+       "baicha",
+       "cai"
+      ],
+      "price": [
+       [
+        "w",
+        "san"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 3
+     },
+     {
+      "word": "tudou",
+      "foils": [
+       "doufu",
+       "putao"
+      ],
+      "price": [
+       [
+        "w",
+        "san"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 3
+     },
+     {
+      "word": "huanggua",
+      "foils": [
+       "xigua",
+       "huacha"
+      ],
+      "price": [
+       [
+        "w",
+        "san"
+       ],
+       [
+        "w",
+        "kuai"
+       ]
+      ],
+      "cost": 3
+     }
+    ]
+   }
+  }
+ ]
+}

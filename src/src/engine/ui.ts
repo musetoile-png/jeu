@@ -20,7 +20,7 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: 
 }
 
 /** Un mot en grand, à l'encre plus ou moins foncée selon le nombre de contextes (comme le carnet). */
-function inkWord(content: Content, wordId: string, withPinyin = true) {
+export function inkWord(content: Content, wordId: string, withPinyin = true) {
   const e = content.lexicon.get(wordId);
   const req = content.language.mastery?.contextsRequired ?? 3;
   const box = el('span', `ink ink-${notebook.strength(wordId, req)}`);
@@ -183,11 +183,26 @@ export function checkErrands(content: Content) {
 export function flyToBag(content: Content, itemId: string, from?: { x: number; y: number }) {
   const it = content.items.get(itemId);
   const path = it?.image ? content.pack.assets.images[it.image] : undefined;
+  const node = hasAsset(path) ? Object.assign(el('img', 'flyer'), { src: assetUrl(path as string), alt: '' }) : inkWord(content, it?.word ?? itemId, false);
+  fly(node, from);
+}
+
+/**
+ * Un article acheté qui n'est pas un objet du sac : il part au sac dans un petit sac de provisions en papier kraft
+ * (avec son image, ou son caractère au pinceau).
+ */
+export function flyProvision(content: Content, wordId: string, imageUrl?: string, from?: { x: number; y: number }) {
+  const bag = el('span', 'provision');
+  if (imageUrl) bag.append(Object.assign(el('img'), { src: imageUrl, alt: '' }));
+  else bag.append(el('b', '', content.lexicon.get(wordId)?.target ?? ''));
+  fly(bag, from);
+}
+
+function fly(node: HTMLElement, from?: { x: number; y: number }) {
   const bag = document.querySelector<HTMLElement>('[data-panel="bag"]');
   const st = stage().getBoundingClientRect();
   if (!bag) return;
   const b = bag.getBoundingClientRect();
-  const node = hasAsset(path) ? Object.assign(el('img', 'flyer'), { src: assetUrl(path as string), alt: '' }) : inkWord(content, it?.word ?? itemId, false);
   node.classList.add('flyer');
   document.body.append(node);
   const sx = st.left + (from?.x ?? 0.5) * st.width;

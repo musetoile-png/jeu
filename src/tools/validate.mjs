@@ -77,7 +77,8 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
     if (!existsSync(f)) { errors.push(`[${packId}] lieu manquant ${placeId}`); continue; }
     const place = json(f);
     for (const h of place.hotspots) {
-      if (h.kind === 'npc' && !pack.scenes.includes(h.scene)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → scène inconnue ${h.scene}`);
+      if ((h.kind === 'npc' || h.kind === 'stall') && !pack.scenes.includes(h.scene)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → scène inconnue ${h.scene}`);
+      if (h.kind === 'stall' && h.word && !L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] étal ${h.id} → mot inconnu « ${h.word} »`);
       if (h.kind === 'subject') {
         if (!L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] sujet photo ${h.id} → mot inconnu « ${h.word} »`);
         else { const c = L.contexts.get(h.word) ?? new Set(); c.add(`photo:${placeId}:${h.id}`); L.contexts.set(h.word, c); }
@@ -130,6 +131,35 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
               if (!o.ok && !o.errorType) warnings.push(`${where(i)} case ${j + 1} option ${k + 1} : distracteur sans catégorie d'erreur`);
             });
           });
+        }
+      }
+      if (s.type === 'stall') {
+        // étal libre : articles et voisins dans le lexique, répliques valides ; chaque phrase de l'étal est un contexte
+        const st = s.stall;
+        if (!st?.goods?.length || !st.lines?.offer?.length) errors.push(`${where(i)} : étal sans articles ou sans réplique « offer »`);
+        else {
+          const slot = (l) => l.line.some((tok) => tok[0] === 'v' && tok[1] === 'WORD');
+          for (const [k, l] of Object.entries(st.lines)) for (const x of Array.isArray(l) ? l : [l]) {
+            checkLine(L, x.line, `${where(i)} réplique ${k}`);
+            if (['offer', 'want'].includes(k) && !slot(x)) errors.push(`${where(i)} réplique ${k} : il manque la place de l'article ["v", "WORD"]`);
+            if (!['offer', 'want'].includes(k) && slot(x)) warnings.push(`${where(i)} réplique ${k} : place d'article inattendue`);
+          }
+          if (st.modes?.includes('say') && !st.lines.ask) errors.push(`${where(i)} : mode « say » sans réplique « ask »`);
+          if (st.modes?.includes('buy') && !st.lines.want) errors.push(`${where(i)} : mode « buy » sans réplique « want »`);
+          if (st.money && !items.has(st.money)) errors.push(`${where(i)} : argent → objet inconnu « ${st.money} »`);
+          const ctxLabel = st.context?.fr ?? sceneId;
+          for (const g of st.goods) {
+            if (!L.byId.has(g.word)) { errors.push(`${where(i)} : article inconnu « ${g.word} »`); continue; }
+            const foils = (g.foils ?? []).filter((f) => f !== g.word);
+            for (const f of foils) if (!L.byId.has(f)) errors.push(`${where(i)} : ${g.word} → distracteur inconnu « ${f} »`);
+            if (foils.length < 2) warnings.push(`${where(i)} : ${g.word} a moins de deux distracteurs déclarés (complétés par l'étal)`);
+            if (g.price) checkLine(L, g.price, `${where(i)} prix de ${g.word}`);
+            if (g.image && !pack.assets.images[g.image]) warnings.push(`${where(i)} : ${g.word} → image non déclarée ${g.image}`);
+            if (g.item && !items.has(g.item)) errors.push(`${where(i)} : ${g.word} → objet inconnu « ${g.item} »`);
+            const ctx = L.contexts.get(g.word) ?? new Set();
+            for (const l of [...st.lines.offer, st.lines.want].filter(Boolean)) ctx.add(`${ctxLabel} · ${lineText(l.line.map((tok) => (tok[0] === 'v' && tok[1] === 'WORD' ? ['w', g.word] : tok)))}`);
+            L.contexts.set(g.word, ctx);
+          }
         }
       }
       if (s.vo && typeof s.vo !== 'string') errors.push(`${where(i)} : vo doit être une clé de fichier`);

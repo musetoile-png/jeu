@@ -206,6 +206,54 @@
       }
     },
     {
+      "id": "wang_etal",
+      "kind": "stall",
+      "x": 680,
+      "y": 1040,
+      "radius": 85,
+      "scene": "wang-etal",
+      "word": "mianbao",
+      "when": {
+        "vu_wang": "fait",
+        "time": "jour"
+      },
+      "prompt": {
+        "fr": "étal de 王阿姨"
+      }
+    },
+    {
+      "id": "li_etal",
+      "kind": "stall",
+      "x": 1260,
+      "y": 1040,
+      "radius": 85,
+      "scene": "li-etal",
+      "word": "cai",
+      "when": {
+        "vu_li": "fait",
+        "time": "jour"
+      },
+      "prompt": {
+        "fr": "étal de 李叔叔"
+      }
+    },
+    {
+      "id": "chen_etal",
+      "kind": "stall",
+      "x": 1720,
+      "y": 1040,
+      "radius": 85,
+      "scene": "chen-etal",
+      "word": "cha",
+      "when": {
+        "vu_chen": "fait",
+        "time": "jour"
+      },
+      "prompt": {
+        "fr": "étal de 陈爷爷"
+      }
+    },
+    {
       "id": "s_xigua",
       "kind": "subject",
       "x": 1140,

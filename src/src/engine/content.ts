@@ -80,10 +80,70 @@ export interface Restore {
   vertical?: boolean;
 }
 
+/**
+ * Réplique d'étal : une ligne où ['v', 'WORD'] marque la place de l'article.
+ * `vo` ne contient que la partie fixe (« 这是 », « 要吗？ ») : le mot lui-même est joué par son clip `w_<id>`.
+ * Dans la glose, {word} est remplacé par la traduction de l'article.
+ */
+export interface StallLine {
+  vo?: string;
+  line: Token[];
+  gloss: Localized;
+}
+
+/** Un article de l'étal. */
+export interface StallGood {
+  word: string;
+  /** Clé d'image (sinon `obj_<word>`, puis l'image de l'objet du sac qui porte ce mot ; à défaut, étiquette peinte). */
+  image?: string;
+  /** Mots proposés à côté du bon (modes « dire » et « acheter ») : de préférence sur les mêmes caractères. */
+  foils?: string[];
+  /** Prix dit par le commerçant, en mots du lexique (ex. 三十块). */
+  price?: Token[];
+  /** Le même prix en chiffres, pour la traduction (30). */
+  cost?: number;
+  /** Objet du sac reçu à l'achat (sinon celui dont le mot est le même ; à défaut, un petit sac de provisions). */
+  item?: string;
+}
+
+export type StallMode = 'listen' | 'read' | 'say' | 'buy';
+
+/**
+ * Étal libre : mini-jeu de vocabulaire rejouable. Une partie = quelques manches courtes, modes mélangés,
+ * mots tirés en privilégiant ceux qui sont fragiles dans le carnet.
+ */
+export interface Stall {
+  goods: StallGood[];
+  /** Nombre de manches (6 par défaut). */
+  rounds?: number;
+  /** Articles posés sur l'étal à chaque manche (6 par défaut). */
+  show?: number;
+  /** Modes autorisés ; « buy » n'est joué qu'une fois, à la dernière manche. */
+  modes?: StallMode[];
+  /** Nom du contexte noté dans le carnet (« étal de 陈爷爷 »). */
+  context?: Localized;
+  /** Objet du sac qui permet de payer (sans lui, le commerçant dit « la prochaine fois »). */
+  money?: string;
+  lines: {
+    open?: StallLine;
+    /** Le commerçant propose un article (au moins une réplique) : la phrase varie, le contexte aussi. */
+    offer: StallLine[];
+    /** « Qu'est-ce que c'est ? » (mode « dire »). */
+    ask?: StallLine;
+    /** Le joueur demande l'article (mode « acheter »). */
+    want?: StallLine;
+    sold?: StallLine;
+    broke?: StallLine;
+    bye?: StallLine;
+  };
+}
+
 export interface Step {
-  type: 'say' | 'choose' | 'pick' | 'cinematic' | 'restore';
+  type: 'say' | 'choose' | 'pick' | 'cinematic' | 'restore' | 'stall';
   /** Ligne à restaurer (étape « restore »). */
   restore?: Restore;
+  /** Étal libre (étape « stall »). */
+  stall?: Stall;
   /** Séquence animée plein écran (ex. « valise ») ; les options y sont présentées comme des objets à choisir. */
   cinematic?: string;
   narration?: Localized;
@@ -177,7 +237,9 @@ export interface Credit {
 
 export interface Hotspot {
   id: string;
-  kind: 'npc' | 'object' | 'exit' | 'subject';
+  kind: 'npc' | 'object' | 'exit' | 'subject' | 'stall';
+  /** Rayon d'interaction (px du lieu) ; par défaut celui du moteur. */
+  radius?: number;
   /** Visible seulement si les drapeaux correspondent ('' = drapeau absent). */
   when?: Record<string, string>;
   /** Sujet photo : image réelle de l'album (clé d'asset) ; sinon le décor est recadré. */
@@ -187,6 +249,7 @@ export interface Hotspot {
   actor?: string;
   sprite?: string;
   scene?: string;
+  /** Sujet photo : le mot à légender. Étal : le caractère affiché sur l'étiquette (↑ 茶). */
   word?: string;
   to?: string;
   /** Entrée du lieu d'arrivée (sinon son spawn). */

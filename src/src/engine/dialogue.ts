@@ -3,13 +3,14 @@
  * gère les choix, les « pick » (dictée-wok), la patience, l'audio et le journal.
  */
 import { preloadVoices, RATE, speak, speakWords, stop } from './audio';
-import type { Choice, Content, PickOption, Restore, Scene, Step, Token } from './content';
+import type { Choice, Content, PickOption, Restore, Scene, Stall, StallGood, StallLine, Step, Token } from './content';
 import { lineText, lineWords, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
 import { play as sound } from './sfx';
-import { cinematic, flyToBag, toast } from './ui';
+import { explain, fillSlot, fmt, glossOf, imageOf, itemFor, planStall, stallVoKey } from './stall';
+import { cinematic, flyProvision, flyToBag, inkWord, toast } from './ui';
 
 export interface DialogueHost {
   /** Appelé quand la scène se termine (succès) ou est fermée. */
@@ -46,6 +47,11 @@ export class Dialogue {
   private sheet: HTMLElement | null = null;
   /** Cases déjà restaurées, par étape : un détour ou un nouvel affichage ne fait jamais tout recommencer. */
   private restored = new Map<number, Set<number>>();
+
+  /** Étal : 🔊 et 🐢 rejouent la réplique en cours (partie fixe + clip du mot) ; null = la réplique affichée. */
+  private replay: ((rate: number) => void) | null = null;
+  /** Étal : numéro de manche ; une voix enchaînée d'une manche passée ne continue pas dans la suivante. */
+  private stallTurn = 0;
 
   private content: Content;
   private scene: Scene;
@@ -87,8 +93,8 @@ export class Dialogue {
     icon(this.el.normal, '🔊', ui.normal);
     icon(this.el.words, '字', ui.wordByWord);
     icon(this.el.sub, 'FR', ui.subtitles);
-    this.el.slow.onclick = () => this.sayLine(this.words, this.currentVo, RATE.SLOW);
-    this.el.normal.onclick = () => this.sayLine(this.words, this.currentVo, RATE.NORMAL);
+    this.el.slow.onclick = () => (this.replay ? this.replay(RATE.SLOW) : this.sayLine(this.words, this.currentVo, RATE.SLOW));
+    this.el.normal.onclick = () => (this.replay ? this.replay(RATE.NORMAL) : this.sayLine(this.words, this.currentVo, RATE.NORMAL));
     this.el.words.onclick = () => speakWords(content, lineWords(this.words));
     icon(this.el.py, 'pīn', ui.pinyin ?? 'pinyin');
     const pinyinOn = () => {
@@ -201,6 +207,9 @@ export class Dialogue {
   close(success: boolean) {
     stop();
     this.live = false;
+    this.replay = null;
+    this.stallTurn++;
+    this.root.classList.remove('stall-mode');
     document.body.classList.remove('talking');
     document.removeEventListener('keydown', this.keys);
     this.root.hidden = true;
@@ -263,7 +272,8 @@ export class Dialogue {
     return s;
   }
 
-  private showLine(raw: Token[], gloss: string) {
+  /** `meet` : compter les mots au carnet avec cette ligne pour contexte (l'étal le fait lui-même, seulement sur une bonne réponse). */
+  private showLine(raw: Token[], gloss: string, meet = true) {
     const line = save.resolveLine(this.content, raw);
     gloss = save.fill(gloss, this.content);
     this.words = line;
@@ -283,6 +293,7 @@ export class Dialogue {
     void this.bubble.offsetWidth;
     this.bubble.classList.add('pop');
     this.placeBubble();
+    if (!meet) return;
     const ctx = lineText(this.content, line);
     for (const id of lineWords(line)) {
       const status = notebook.meet(id, ctx);
@@ -390,6 +401,7 @@ export class Dialogue {
     if (s.type === 'pick') this.renderPick(s, s.options ?? []);
     if (s.type === 'cinematic') this.renderCinematic(s);
     if (s.type === 'restore' && s.restore) this.renderRestore(s, s.restore);
+    if (s.type === 'stall' && s.stall) this.renderStall(s.stall);
   }
 
   private advance() {
@@ -796,5 +808,388 @@ export class Dialogue {
         grid.appendChild(b);
       });
     body.appendChild(grid);
+  }
+
+  // ---------- Étal libre : jeu de vocabulaire rejouable ----------
+
+  /** Réplique d'étal dans la bulle ; `word` null = l'article est caché (on doit l'entendre). Rien n'est compté au carnet ici. */
+  private stallShow(actor: string, l: StallLine, word: string | null, expression?: string) {
+    this.setActor(actor, expression);
+    const mask: Token = ['t', '……', '', ''];
+    this.showLine(fillSlot(l.line, word ? ['w', word] : mask), glossOf(this.content, l.gloss, word), false);
+  }
+
+  /**
+   * Dit une réplique d'étal d'une seule voix : chaque combinaison « réplique + article » a son propre clip
+   * (`cst_02_huacha`, `st_woyao_huacha_f`), pour ne jamais changer de voix au milieu d'une phrase.
+   * Sans article, le clip de la réplique (`cst_05`). Un clip manquant passe par la synthèse, phrase entière.
+   */
+  private stallSpeak(l: StallLine, word: string | null, rate: number, onEnd?: () => void) {
+    const c = this.content;
+    const turn = this.stallTurn;
+    const hasSlot = l.line.some((x) => x[0] === 'v' && x[1] === 'WORD');
+    const withWord = Boolean(word && hasSlot && c.lexicon.get(word));
+    const line = withWord ? fillSlot(l.line, ['w', word!]) : l.line.filter((x) => !(x[0] === 'v' && x[1] === 'WORD'));
+    const text = lineText(c, save.resolveLine(c, line));
+    const tpl = l.vo ? (withWord ? stallVoKey(l.vo, word!) : l.vo) : undefined;
+    const vo = tpl ? save.fill(tpl, c) : undefined;
+    this.currentVo = vo;
+    speak(c, text, vo, rate, () => {
+      if (this.live && turn === this.stallTurn) onEnd?.();
+    });
+  }
+
+  /** Un article sur l'étal : son image, ou une étiquette de marché peinte (le caractère à l'encre sur un carton). */
+  private stallCard(g: StallGood, url: string | undefined) {
+    const b = document.createElement('button');
+    b.className = 'pick stall-good';
+    b.dataset.word = g.word;
+    if (url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      b.appendChild(img);
+    } else {
+      const target = this.content.lexicon.get(g.word)?.target ?? '?';
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = target;
+      tag.style.setProperty('--n', String([...target].length));
+      b.classList.add('label');
+      b.appendChild(tag);
+    }
+    return b;
+  }
+
+  /**
+   * Étal libre. Une partie = quelques manches courtes, tirées en privilégiant les mots fragiles du carnet :
+   * 听 écouter (toucher l'article entendu), 读 lire (toucher l'article écrit, sans son ni pinyin),
+   * 说 dire (nommer l'article montré, parmi des mots aux mêmes caractères), 买 acheter (une fois, à la fin).
+   * Erreur : explication qui nomme la confusion, patience qui baisse, la bonne réponse est montrée ; on ne recommence jamais.
+   */
+  private renderStall(st0: Stall) {
+    const c = this.content;
+    const ui = c.ui;
+    const L = st0.lines;
+    // un mode sans sa réplique n'est pas jouable
+    const st: Stall = { ...st0, modes: (st0.modes ?? ['listen', 'read', 'say']).filter((m) => (m !== 'say' || !!L.ask) && (m !== 'buy' || !!L.want)) };
+    const npc = this.scene.npc;
+    const who = this.scene.actors[npc]?.name ?? '';
+    const label = t(c, st.context) || this.scene.id;
+    const pic = (g: StallGood) => {
+      const key = imageOf(c, g, (k) => !!this.host.imageUrl(k));
+      return key ? this.host.imageUrl(key) : undefined;
+    };
+    const ctxOf = (l: StallLine, word: string) => `${label} · ${lineText(c, save.resolveLine(c, fillSlot(l.line, ['w', word])))}`;
+    const rounds = planStall(c, st, (g) => !!pic(g), (w) => !L.want || !notebook.hasContext(w, ctxOf(L.want, w)));
+    preloadVoices(
+      c,
+      [L.open, ...L.offer, L.ask, L.want, L.sold, L.broke, L.bye].map((l) => (l?.vo ? save.fill(l.vo, c) : undefined)),
+    );
+    log({ scene: this.scene.id, step: 0, kind: 'stall', detail: `plan=${rounds.map((r) => `${r.mode}:${r.good.word}`).join(',')}` });
+
+    this.root.classList.add('stall-mode');
+    const body = this.el.body;
+    const div = (cls: string) => Object.assign(document.createElement('div'), { className: cls });
+    const head = div('stall-head');
+    const tag = Object.assign(document.createElement('span'), { className: 'stall-tag' });
+    const pips = div('stall-pips');
+    rounds.forEach(() => pips.appendChild(document.createElement('i')));
+    head.append(tag, pips);
+    const ask = div('fr stall-ask');
+    const prompt = div('stall-prompt');
+    const board = div('picks stall-board');
+    const answers = div('choices stall-words');
+    body.append(head, ask, prompt, board, answers);
+
+    const results: { word: string; ok: boolean; fresh: boolean }[] = [];
+    // la phrase du commerçant varie : de préférence une phrase où ce mot n'a pas encore été reconnu
+    const offerFor = (word: string) => {
+      const fresh = L.offer.filter((o) => !notebook.hasContext(word, ctxOf(o, word)));
+      const pool = fresh.length ? fresh : L.offer;
+      return pool[Math.floor(Math.random() * pool.length)];
+    };
+    const meet = (word: string, ctx: string) => {
+      const status = notebook.meet(word, ctx);
+      log({ scene: this.scene.id, step: k, kind: 'word_met', word, context: status, detail: ctx });
+      document.dispatchEvent(new CustomEvent('notebook-changed'));
+    };
+    const rightGloss = (word: string) => {
+      const e = c.lexicon.get(word);
+      return `${e?.target ?? word} ${e?.transcription ?? ''} : ${t(c, e?.gloss)}`;
+    };
+    const go = (text: string, onClick: () => void) => {
+      body.querySelector(':scope > button.go')?.remove();
+      const b = document.createElement('button');
+      b.className = 'go';
+      b.textContent = text;
+      b.onclick = () => {
+        sound('tap');
+        b.remove();
+        onClick();
+      };
+      body.appendChild(b);
+    };
+
+    let k = 0;
+    const next = () => {
+      k++;
+      round();
+    };
+
+    const round = () => {
+      this.stallTurn++;
+      const turn = this.stallTurn;
+      const later = (f: () => void, ms: number) =>
+        setTimeout(() => {
+          if (this.live && turn === this.stallTurn) f();
+        }, ms);
+      body.querySelector(':scope > button.go')?.remove();
+      this.feedback('', '');
+      prompt.innerHTML = '';
+      board.innerHTML = '';
+      answers.innerHTML = '';
+      this.replay = null;
+      const r = rounds[k] as (typeof rounds)[number] | undefined;
+      if (!r) {
+        finish();
+        return;
+      }
+      [...pips.children].forEach((p, j) => p.classList.toggle('on', j === k));
+      const word = r.good.word;
+      const entry = c.lexicon.get(word);
+      tag.textContent = ui[`stallMode_${r.mode}`] ?? r.mode;
+      tag.dataset.mode = r.mode;
+      ask.textContent = fmt(ui[`stallAsk_${r.mode === 'listen' && r.fresh ? 'listenNew' : r.mode}`] ?? '', { who });
+      const cards = new Map<string, HTMLButtonElement>();
+      for (const g of r.board) {
+        const b = this.stallCard(g, pic(g));
+        if (g.word === word) b.dataset.ok = '1';
+        cards.set(g.word, b);
+        board.appendChild(b);
+      }
+      board.dataset.n = String(r.board.length);
+
+      const settle = (ok: boolean, chosen: string, errorType?: string) => {
+        results.push({ word, ok, fresh: r.fresh });
+        pips.children[k]?.classList.add(ok ? 'ok' : 'ko');
+        log({
+          scene: this.scene.id,
+          step: k,
+          kind: 'stall',
+          word,
+          ok,
+          detail: `round=${k + 1};mode=${r.mode};answer=${chosen}${errorType ? `;error=${errorType}` : ''};fresh=${r.fresh ? 1 : 0}`,
+        });
+      };
+      // erreur : explication, patience, le bon article montré ; la manche continue sur un bouton (le temps de lire)
+      const fail = (chosen: string, container: HTMLElement, reveal: () => void, then: () => void) => {
+        const { why, errorType } = explain(c, word, chosen);
+        settle(false, chosen, errorType);
+        this.lose(why, errorType, [word], container);
+        container.querySelectorAll<HTMLElement>('[data-ok="1"]').forEach((x) => x.classList.add('show-answer'));
+        const said = c.lexicon.get(chosen);
+        // on entend d'abord ce qu'on a choisi, puis le commerçant redonne le bon mot
+        if (said && r.mode !== 'buy') speak(c, said.target, `w_${chosen}`, RATE.WORD, () => later(reveal, 350));
+        else later(reveal, 700);
+        go(ui.continue, then);
+      };
+
+      // ----- 听 écouter / 读 lire : toucher le bon article -----
+      if (r.mode === 'listen' || r.mode === 'read') {
+        const tpl = offerFor(word);
+        if (r.mode === 'listen') {
+          this.stallShow(npc, tpl, null);
+          const play = (rate: number) => {
+            log({ scene: this.scene.id, step: k, kind: 'listen', word, detail: `stall:rate=${rate}` });
+            this.stallSpeak(tpl, word, rate);
+          };
+          this.replay = play;
+          const again = document.createElement('button');
+          again.className = 'sm';
+          again.textContent = ui.stallListen ?? '🔊';
+          again.onclick = () => play(RATE.NORMAL);
+          prompt.appendChild(again);
+          later(() => play(RATE.NORMAL), 250);
+        } else {
+          // le papier : le mot écrit, sans son ni pinyin
+          this.bubble.hidden = true;
+          this.replay = () => undefined;
+          const slip = div('stall-slip');
+          slip.append(Object.assign(document.createElement('small'), { textContent: ui.stallSlip ?? '' }), Object.assign(document.createElement('b'), { textContent: entry?.target ?? word }));
+          prompt.appendChild(slip);
+        }
+        for (const [w, b] of cards) {
+          b.onclick = () => {
+            board.querySelectorAll('button').forEach((x) => (x.disabled = true));
+            prompt.querySelectorAll('button').forEach((x) => (x.disabled = true));
+            if (w === word) {
+              b.classList.add('right');
+              settle(true, w);
+              this.stallShow(npc, tpl, word, 'joy');
+              meet(word, ctxOf(tpl, word));
+              this.win(rightGloss(word), [word], () => this.stallSpeak(tpl, word, RATE.NORMAL, () => later(next, 600)));
+            } else {
+              b.classList.remove('wrong');
+              void b.offsetWidth;
+              b.classList.add('wrong');
+              fail(w, board, () => {
+                this.stallShow(npc, tpl, word);
+                this.stallSpeak(tpl, word, RATE.NORMAL);
+              }, next);
+            }
+          };
+        }
+        return;
+      }
+
+      // ----- 说 dire / 买 acheter : le commerçant montre un article, on choisit le mot -----
+      board.querySelectorAll('button').forEach((x) => (x.disabled = true));
+      cards.get(word)?.classList.add('shown');
+      if (r.mode === 'say' && L.ask) {
+        const l = L.ask;
+        this.stallShow(npc, l, null);
+        this.replay = (rate) => this.stallSpeak(l, null, rate);
+        later(() => this.stallSpeak(l, null, RATE.NORMAL), 250);
+      } else {
+        this.bubble.hidden = true;
+        this.replay = () => undefined;
+      }
+      const want = L.want;
+      const purchase = () => {
+        answers.hidden = true;
+        const price = r.good.price ?? [];
+        const pay = () => {
+          const rich = !st.money || save.hasItem(st.money);
+          if (rich) {
+            this.host.onEffect?.('pay');
+            if (L.sold) {
+              this.stallShow(npc, L.sold, null, 'joy');
+              this.stallSpeak(L.sold, null, RATE.NORMAL);
+            }
+            const from = this.host.anchor?.(npc) ?? undefined;
+            const item = itemFor(c, r.good);
+            if (item) {
+              if (!save.hasItem(item.id)) {
+                save.addItem(item.id);
+                log({ scene: this.scene.id, step: k, kind: 'item_get', detail: item.id, word: item.word });
+              }
+              flyToBag(c, item.id, from);
+            } else flyProvision(c, word, pic(r.good), from);
+            toast(c, word, `${ui.stallProvision ?? ui.received ?? '+'} ${t(c, entry?.gloss)}`);
+          } else if (L.broke) {
+            this.stallShow(npc, L.broke, null);
+            this.stallSpeak(L.broke, null, RATE.NORMAL);
+          }
+          log({ scene: this.scene.id, step: k, kind: 'stall', word, detail: `buy=${rich ? 'paid' : 'broke'};price=${r.good.cost ?? ''}` });
+          go(ui.continue, next);
+        };
+        if (price.length) {
+          this.setActor(npc);
+          this.showLine([...price, ['p', '。']], fmt(ui.stallPrice ?? '{n}', { n: String(r.good.cost ?? '') }), false);
+          // le prix, d'une seule voix : clip `<préfixe du commerçant>_prix_<mot>` (« 三十块。 »)
+          const prefix = (L.sold?.vo ?? L.open?.vo ?? '').split('_')[0];
+          const priceLine: Token[] = [...price, ['p', '。']];
+          const turn = this.stallTurn;
+          speak(c, lineText(c, priceLine), prefix ? `${prefix}_prix_${word}` : undefined, RATE.NORMAL, () => {
+            if (this.live && turn === this.stallTurn) later(pay, 400);
+          });
+        } else pay();
+      };
+
+      for (const w of r.words) {
+        const b = document.createElement('button');
+        if (w === word) b.dataset.ok = '1';
+        const shown = r.mode === 'buy' && want ? fillSlot(want.line, ['w', w]) : ([['w', w]] as Token[]);
+        save.resolveLine(c, shown).forEach((tok) => b.appendChild(this.wordEl(tok)));
+        b.onclick = () => {
+          answers.querySelectorAll('button').forEach((x) => (x.disabled = true));
+          if (w === word) {
+            b.classList.add('right');
+            settle(true, w);
+            this.setActor('player');
+            if (r.mode === 'buy' && want) {
+              this.showLine(fillSlot(want.line, ['w', word]), glossOf(c, want.gloss, word), false);
+              meet(word, ctxOf(want, word));
+              this.win(rightGloss(word), [word], () => this.stallSpeak(want, word, RATE.NORMAL, () => later(purchase, 300)));
+            } else {
+              this.showLine([['w', word], ['p', '。']], t(c, entry?.gloss), false);
+              meet(word, `${label} · ${L.ask ? lineText(c, save.resolveLine(c, L.ask.line)) : ''}${entry?.target ?? word}。`);
+              this.win(rightGloss(word), [word], () => {
+                if (entry) speak(c, entry.target, `w_${word}`, RATE.WORD, () => later(next, 700));
+                else later(next, 700);
+              });
+            }
+          } else {
+            b.classList.remove('wrong');
+            void b.offsetWidth;
+            b.classList.add('wrong');
+            if (r.mode === 'buy' && want) {
+              // on entend la demande fautive (dans la bulle du joueur), la bonne est montrée ; l'achat continue avec le bon mot
+              fail(w, answers, () => undefined, purchase);
+              this.setActor('player');
+              this.showLine(fillSlot(want.line, ['w', w]), glossOf(c, want.gloss, w), false);
+              this.stallSpeak(want, w, RATE.NORMAL);
+            } else {
+              const tpl = L.offer[0];
+              fail(w, answers, () => {
+                this.stallShow(npc, tpl, word);
+                this.stallSpeak(tpl, word, RATE.NORMAL);
+              }, next);
+            }
+          }
+        };
+        answers.appendChild(b);
+      }
+      answers.hidden = false;
+    };
+
+    // bilan : mots revus, mots nouveaux ; puis le commerçant dit au revoir et l'on rentre dans la cour
+    const finish = () => {
+      this.stallTurn++;
+      this.replay = null;
+      tag.textContent = '';
+      ask.textContent = '';
+      board.remove();
+      answers.remove();
+      prompt.innerHTML = '';
+      [...pips.children].forEach((p) => p.classList.remove('on'));
+      const words = [...new Map(results.map((x) => [x.word, x])).values()];
+      const fresh = words.filter((x) => x.fresh).length;
+      const seen = words.length - fresh;
+      const sum = div('stall-summary');
+      sum.appendChild(Object.assign(document.createElement('p'), { textContent: fmt(ui.stallSummary ?? '', { seen: String(seen), fresh: String(fresh) }) }));
+      const list = div('stall-words-done');
+      for (const x of words) {
+        const cell = div(`stall-done ${results.some((y) => y.word === x.word && y.ok) ? 'ok' : 'ko'}`);
+        cell.appendChild(inkWord(c, x.word));
+        if (x.fresh) cell.appendChild(Object.assign(document.createElement('small'), { textContent: ui.stallNew ?? '' }));
+        list.appendChild(cell);
+      }
+      sum.appendChild(list);
+      prompt.appendChild(sum);
+      log({
+        scene: this.scene.id,
+        step: rounds.length,
+        kind: 'stall',
+        detail: `summary;rounds=${results.length};ok=${results.filter((x) => x.ok).length};reviewed=${seen};new=${fresh}`,
+      });
+      if (L.bye) {
+        this.stallShow(npc, L.bye, null, 'joy');
+        this.stallSpeak(L.bye, null, RATE.NORMAL);
+      }
+      go(ui.finish, () => this.close(true));
+    };
+
+    if (L.open) {
+      this.stallShow(npc, L.open, null, 'joy');
+      tag.textContent = '';
+      this.stallSpeak(L.open, null, RATE.NORMAL, () => setTimeout(round, 250));
+      // filet : si la voix ne prévient pas de sa fin, la première manche commence quand même
+      const first = this.stallTurn;
+      setTimeout(() => {
+        if (this.live && k === 0 && this.stallTurn === first) round();
+      }, 4500);
+    } else round();
   }
 }
