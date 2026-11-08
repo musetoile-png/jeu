@@ -139,17 +139,22 @@ export class World extends Phaser.Scene {
   // ---------- Lieux ----------
 
   private clearPlace() {
+    // chaque objet du lieu emporte ses animations : une animation qui finit sur un objet détruit fige le jeu
+    const kill = (o: Phaser.GameObjects.GameObject) => {
+      this.tweens.killTweensOf(o);
+      o.destroy();
+    };
     for (const s of this.spots) {
-      s.obj.destroy();
-      s.prompt.destroy();
+      kill(s.obj);
+      kill(s.prompt);
     }
-    for (const o of this.plaques) o.destroy();
+    for (const o of this.plaques) kill(o);
     this.plaques = [];
-    for (const o of this.placeObjects) o.destroy();
+    for (const o of this.placeObjects) kill(o);
     this.placeObjects = [];
     for (const t of this.extraTimers) t.remove();
     this.extraTimers = [];
-    for (const o of this.extras) o.destroy();
+    for (const o of this.extras) kill(o);
     this.extras = [];
     this.planes = [];
     this.spots = [];
@@ -665,7 +670,15 @@ export class World extends Phaser.Scene {
     const bob = this.tweens.add({ targets: img, y: y - Math.max(3, a.height * 0.018), duration: 210, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     const sway = this.tweens.add({ targets: img, angle: { from: -1.2, to: 1.2 }, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     const walk = (toX: number, then: () => void) =>
-      this.tweens.add({ targets: img, x: toX, duration: (Math.abs(toX - img.x) / speed) * 1000, onUpdate: follow, onComplete: then });
+      this.tweens.add({
+        targets: img,
+        x: toX,
+        duration: (Math.abs(toX - img.x) / speed) * 1000,
+        onUpdate: follow,
+        onComplete: () => {
+          if (img.active) then();
+        },
+      });
 
     if (a.kind === 'rest') {
       // le chat traverse à moitié, s'assoit un moment, puis repart
@@ -798,23 +811,78 @@ export class World extends Phaser.Scene {
     }
     // l'illustration court déjà vers la gauche ; la silhouette de secours est dessinée vers la droite
     const real = key === 'dog';
+    // si on a le chien « gueule vide », on voit le portefeuille tomber puis le chien le ramasser
+    const pickUp = real && this.textures.exists('dog_vide') && this.textures.exists('item_qianbao');
     const scale = (this.place.playerScale ?? 1) * (real ? 0.85 : 1.4);
-    const dog = this.add.image(this.place.size.width + 120, p.y + 4, key).setOrigin(0.5, 1).setScale(scale).setDepth(1950).setFlipX(!real);
+    const dog = this.add
+      .image(this.place.size.width + 120, p.y + 4, pickUp ? 'dog_vide' : key)
+      .setOrigin(0.5, 1)
+      .setScale(scale)
+      .setDepth(1950)
+      .setFlipX(!real);
     // assez lent pour qu'on le voie : il arrive en trottant, s'arrête net au portefeuille, repart en courant
     const IN = 2200;
-    const PAUSE = 450;
+    const PAUSE = pickUp ? 900 : 450;
     const OUT = 2600;
+    const bob = this.tweens.add({ targets: dog, y: dog.y - 9, duration: 170, yoyo: true, repeat: -1 });
+
+    if (!pickUp) {
+      this.tweens.chain({
+        targets: dog,
+        tweens: [
+          { x: p.x + 60, duration: IN, ease: 'Sine.easeOut' },
+          { x: p.x + 40, duration: PAUSE, ease: 'Sine.easeInOut', onStart: () => this.cameras.main.shake(180, 0.002) },
+          { x: -220, duration: OUT, ease: 'Sine.easeIn' },
+        ],
+        onComplete: () => {
+          bob.remove();
+          dog.destroy();
+        },
+      });
+      return;
+    }
+
+    // 1. le portefeuille glisse de la poche et tombe devant le joueur
+    const groundX = p.x + 70;
+    const wallet = this.add
+      .image(p.x + 10, p.y - p.displayHeight * 0.42, 'item_qianbao')
+      .setOrigin(0.5, 1)
+      .setDisplaySize(95 * scale, 95 * scale)
+      .setDepth(1949)
+      .setAngle(-20);
+    this.placeObjects.push(wallet);
+    this.tweens.add({ targets: wallet, x: groundX, duration: 520, ease: 'Sine.easeOut' });
+    this.tweens.add({ targets: wallet, y: p.y + 2, angle: 70, duration: 520, ease: 'Bounce.easeOut' });
+
+    // 2. le chien arrive, la gueule juste au-dessus du portefeuille (la tête est au bord gauche de l'image)
+    const mouth = dog.displayWidth * 0.43;
     this.tweens.chain({
       targets: dog,
       tweens: [
-        { x: p.x + 60, duration: IN, ease: 'Sine.easeOut' },
-        { x: p.x + 40, duration: PAUSE, ease: 'Sine.easeInOut', onStart: () => this.cameras.main.shake(180, 0.002) },
+        { x: groundX + mouth, duration: IN, ease: 'Sine.easeOut' },
+        // 3. il plonge la tête, attrape, se redresse
+        {
+          angle: -14,
+          duration: PAUSE / 2,
+          ease: 'Sine.easeIn',
+          onStart: () => bob.pause(),
+          onComplete: () => {
+            this.tweens.killTweensOf(wallet);
+            wallet.destroy();
+            this.placeObjects = this.placeObjects.filter((o) => o !== wallet);
+            dog.setTexture('dog');
+            this.cameras.main.shake(180, 0.002);
+          },
+        },
+        { angle: 0, duration: PAUSE / 2, ease: 'Sine.easeOut', onComplete: () => bob.resume() },
+        // 4. et file au bout de la ruelle
         { x: -220, duration: OUT, ease: 'Sine.easeIn' },
       ],
-      onComplete: () => dog.destroy(),
+      onComplete: () => {
+        bob.remove();
+        dog.destroy();
+      },
     });
-    // petits bonds de course
-    this.tweens.add({ targets: dog, y: dog.y - 9, duration: 170, yoyo: true, repeat: Math.round((IN + PAUSE + OUT) / 340) });
   }
 
   // ---------- Appareil photo ----------
