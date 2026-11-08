@@ -341,10 +341,23 @@ export class Dialogue {
     if (s.highlight) this.host.onEffect?.(`highlight:${s.highlight.join(',')}`);
     if (s.effect) this.host.onEffect?.(s.effect);
 
+    // dernière réplique d'une scène : pas besoin de cliquer « Terminer », le jeu reprend seul
+    // une fois la voix finie et le temps de lire la traduction (le bouton reste pour aller plus vite)
+    const autoEnd = s.type === 'say' && s.end;
+    let ended = false;
+    const at = this.i;
+    const finish = () => {
+      if (ended) return;
+      ended = true;
+      if (this.live && this.i === at) this.close(true);
+    };
+    const readMs = 1200 + Math.min(2500, t(this.content, s.gloss).length * 30);
     if (s.line) {
       this.showLine(s.line, t(this.content, s.gloss));
-      this.sayLine(s.line, s.vo, RATE.NORMAL);
+      this.sayLine(s.line, s.vo, RATE.NORMAL, autoEnd ? () => setTimeout(finish, readMs) : undefined);
     }
+    // filet de sécurité : si la voix ne prévient pas de sa fin (son bloqué), on reprend quand même
+    if (autoEnd) setTimeout(finish, (s.line ? 7000 : 0) + readMs);
 
     if (s.type === 'say') {
       this.exchange(s);
@@ -495,7 +508,16 @@ export class Dialogue {
     }
     const c = document.createElement('div');
     c.className = 'choices';
-    choices.forEach((ch, idx) => {
+    // l'ordre est mélangé : la bonne réponse ne doit pas toujours être la première.
+    // Les choix libres (prénom, nom chinois, pays) gardent leur ordre, qui suit ce que le personnage vient de dire.
+    const order = choices.map((ch, idx) => ({ ch, idx }));
+    if (!s.free) {
+      for (let k = order.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [order[k], order[j]] = [order[j], order[k]];
+      }
+    }
+    order.forEach(({ ch, idx }) => {
       const b = document.createElement('button');
       if (ch.ok || s.free) b.dataset.ok = '1';
       save.resolveLine(this.content, ch.line).forEach((tok) => b.appendChild(this.wordEl(tok)));
