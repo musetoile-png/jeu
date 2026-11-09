@@ -167,11 +167,14 @@ function seal(content: Content, line: Token[]) {
   return s;
 }
 
-export function showQuest(content: Content) {
+/** Panneau Quête ; `focus` : la liste à montrer d'abord (celle qu'on vient de recevoir). */
+export function showQuest(content: Content, focus?: string) {
   const p = panel(content.ui.quest ?? 'Quête');
   const d = save.get();
   // listes en cours (courses, photos) : chaque mot à l'encre, coché quand c'est fait
-  for (const e of [...content.quests.values()].filter((x) => x.kind === 'errand' && save.hasItem(x.item) && save.matches(x.when) && (x.stay || save.flag(x.id) !== 'fait'))) {
+  const lists = [...content.quests.values()].filter((x) => x.kind === 'errand' && save.hasItem(x.item) && save.matches(x.when) && (x.stay || save.flag(x.id) !== 'fait'));
+  lists.sort((a, b) => Number(b.id === focus) - Number(a.id === focus));
+  for (const e of lists) {
     const box = el('div', 'errand');
     const head = el('h3');
     if (e.head) for (const tok of e.head) if (tok[0] === 'w') head.append(inkWord(content, tok[1], false));
@@ -214,6 +217,7 @@ export function showQuest(content: Content) {
     }
     box.append(ul);
     if (e.reward && (save.flag(e.id) === 'pret' || save.flag(e.id) === 'fait')) box.append(seal(content, e.reward.seal));
+    if (e.id === focus) box.classList.add('focus');
     p.append(box);
   }
   const q = d.quest ? content.quests.get(d.quest) : undefined;

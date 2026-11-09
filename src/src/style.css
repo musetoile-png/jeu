@@ -631,6 +631,8 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 #photo-dock > * { pointer-events: auto; }
 .vf-bar { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; }
 .vf-bar button { box-shadow: 0 6px 16px -8px rgba(0, 0, 0, .6); }
+.vf-bar .vf-help { display: none; }
+#photo-dock:has(.coach) .vf-bar .vf-help { display: none !important; }
 #photo-dock .photo-quiz { max-width: min(520px, 80%); box-shadow: 0 14px 34px -14px rgba(20, 14, 4, .7); }
 .photo-quiz > p { margin: 0 0 8px; font-size: 14px; }
 .photo-quiz .picks { justify-content: center; }
@@ -674,15 +676,26 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
   /* téléphone : tout ce qui se lit et se touche passe sous l'image, en grand */
   #photo-dock { position: fixed; inset: auto 8px 8px 8px; z-index: 30; display: flex; flex-direction: column; gap: 8px; }
   #photo-dock > * { position: static; transform: none; width: auto; max-width: none; left: auto; top: auto; right: auto; bottom: auto; }
-  .vf-bar { justify-content: center; }
+  .vf-bar { justify-content: center; flex-wrap: wrap; }
+  .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 14px; color: var(--ink-2); }
   .vf-bar button { font-size: 16px; padding: 11px 18px; }
   .coach { font-size: 15px; }
+  #photo-dock .photo-quiz, #photo-dock .coach { width: auto; max-width: none; }
   .photo-quiz .pick { min-width: 0; flex: 1; }
+  /* les notifications passent en haut de l'écran : sur l'image, elles la cacheraient */
+  .toast { position: fixed; left: 8px; right: 8px; top: 8px; z-index: 40; box-shadow: 0 10px 30px -12px rgba(30, 22, 8, .5); }
   .panel { position: fixed; inset: auto 8px 8px 8px; max-height: 72vh; z-index: 30; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
   /* dialogue : le panneau de réponses sort de l'image et se pose dessous ; la bulle reste sur l'image, sans jamais le couvrir */
   #dlg:not(.stall-mode):not(.task-mode) { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 58vh; z-index: 30;
     background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
   #dlg .choices button { padding-top: 9px; padding-bottom: 9px; }
 }
+/* légende ouverte : on ne déclenche plus, on choisit le mot */
+#photo-dock:has(.photo-quiz) .vf-bar .go { display: none; }
+/* téléphone au doigt : la ligne d'aide au clavier n'a pas de sens (l'aide de la photo est dans le tiroir) */
+@media (max-width: 720px) and (pointer: coarse) { .hint { display: none; } }
+.errand.focus { animation: fbin .5s ease both; }
+/* l'aide de la première photo remplace la ligne d'aide */
+#stage:has(.coach) .hint { opacity: 0; }
 /* la bulle passe sous le panneau d'action quand il n'y a pas la place de l'éviter : les réponses restent touchables */
 .bubble.under { z-index: 5; }

@@ -278,7 +278,7 @@
       },
       "decoys": [
         "chao",
-        "cai"
+        "chi"
       ]
     }
   ],
@@ -329,7 +329,7 @@
       "word": "mao",
       "decoys": [
         "mai",
-        "mama"
+        "hao"
       ],
       "prompt": {
         "fr": "le chat du quartier"

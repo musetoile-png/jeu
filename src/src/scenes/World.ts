@@ -115,8 +115,10 @@ export class World extends Phaser.Scene {
     ensurePlaceholderPerson(this, 'player_1', '#58d6a9', true);
 
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,M,ESC,ONE,TWO,THREE') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,M,ESC') as Record<string, Phaser.Input.Keyboard.Key>;
     this.setHint();
+    // raccourcis lus à l'événement (un appui bref, entre deux images, ne se perd pas)
+    this.input.keyboard!.on('keydown', (e: KeyboardEvent) => this.onShortcut(e));
     // clic / toucher : marcher jusque-là ; sur un personnage ou une porte, y aller puis interagir
     // (appareil sorti : le cadre suit le doigt ou la souris ; un tap ou un clic déclenche)
     this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
@@ -175,10 +177,10 @@ export class World extends Phaser.Scene {
   }
 
   /** Boutons et raccourcis du sac, de la quête, de l'album, de l'appareil photo. */
-  openPanel(which: 'bag' | 'quest' | 'album' | 'photo') {
+  openPanel(which: 'bag' | 'quest' | 'album' | 'photo', focus?: string) {
     if (!this.started || this.busy) return;
     if (which === 'bag') ui.showBag(this.content);
-    if (which === 'quest') ui.showQuest(this.content);
+    if (which === 'quest') ui.showQuest(this.content, focus);
     if (which === 'album') ui.showAlbum(this.content);
     if (which === 'photo') this.togglePhoto();
   }
@@ -862,7 +864,10 @@ export class World extends Phaser.Scene {
       this.autoWalk = Phaser.Math.Clamp(g.walkTo, w.xMin, w.xMax) - this.player.x;
     }
     // première photo réussie et saluée : la liste de photos s'ouvre
-    if (g && id === g.scene) this.time.delayedCall(900, () => this.openPanel('quest'));
+    if (g && id === g.scene) {
+      const list = [...this.content.quests.values()].find((e) => e.list?.some((it) => it.subject === g.subject));
+      this.time.delayedCall(900, () => this.openPanel('quest', list?.id));
+    }
   }
 
   /** Une liste vient d'atteindre son objectif : journal, et pour une liste à récompense, la page d'album et le toast. */
@@ -1107,7 +1112,11 @@ export class World extends Phaser.Scene {
     const closeBtn = document.createElement('button');
     closeBtn.textContent = this.content.ui.photoClose ?? '✕';
     closeBtn.onclick = () => this.togglePhoto();
-    bar.append(shootBtn, closeBtn);
+    // au doigt, la ligne d'aide du haut est masquée : le geste est rappelé ici
+    const tapHelp = document.createElement('p');
+    tapHelp.className = 'vf-help';
+    tapHelp.textContent = this.content.ui.photoTap ?? '';
+    bar.append(tapHelp, shootBtn, closeBtn);
     this.dock().appendChild(bar);
     this.photo = { x: 640, y: 330, w: 420, h: 300, el, bar };
     this.setHint();
@@ -1339,14 +1348,37 @@ export class World extends Phaser.Scene {
     if (!this.place || !this.started) return;
     const g = this.guide();
     const add = (x: number, y: number, big: boolean, follow?: Phaser.GameObjects.Image) => {
-      const img = this.add.image(x, y, this.sparkleKey()).setDepth(2600).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.15).setScale(big ? 1.1 : 0.7);
-      this.tweens.add({ targets: img, alpha: big ? 0.95 : 0.75, scale: big ? 1.6 : 1, angle: 45, duration: big ? 700 : 900, yoyo: true, repeat: -1, delay: Phaser.Math.Between(0, 600), ease: 'Sine.easeInOut' });
+      const img = this.add.image(x, y, this.sparkleKey()).setDepth(2600).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.15).setScale(big ? 0.8 : 0.5);
+      this.tweens.add({ targets: img, alpha: big ? 0.9 : 0.7, scale: big ? 1.2 : 0.8, angle: 45, duration: big ? 700 : 900, yoyo: true, repeat: -1, delay: Phaser.Math.Between(0, 600), ease: 'Sine.easeInOut' });
       this.sparkles.push({ img, follow });
     };
     for (const s of this.subjects()) {
       if (save.hasPhoto(s.id)) continue;
       const guided = !!g && g.subject === s.id;
       if (this.photo || guided) add(s.x, s.y, guided && !this.photo, s.img);
+    }
+  }
+
+  /** Sac, quête, album, appareil, son, Échap ; appareil sorti : Espace déclenche, 1 2 3 légendent. */
+  private onShortcut(e: KeyboardEvent) {
+    if (!this.started || this.busy || e.repeat) return;
+    if (this.photo && e.code === 'Space') {
+      if (!this.photoQuiz) this.shoot();
+      return;
+    }
+    const digit = /^Digit([1-9])$/.exec(e.code);
+    if (this.photoQuiz && digit) {
+      this.photoQuiz.querySelectorAll<HTMLButtonElement>('button.pick')[Number(digit[1]) - 1]?.click();
+      return;
+    }
+    if (e.code === 'KeyI') ui.panelOpen() ? ui.closePanel() : this.openPanel('bag');
+    if (e.code === 'KeyJ') ui.panelOpen() ? ui.closePanel() : this.openPanel('quest');
+    if (e.code === 'KeyO') ui.panelOpen() ? ui.closePanel() : this.openPanel('album');
+    if (e.code === 'KeyP') this.togglePhoto();
+    if (e.code === 'KeyM') document.dispatchEvent(new CustomEvent('toggle-sound'));
+    if (e.code === 'Escape') {
+      ui.closePanel();
+      if (this.photo) this.togglePhoto();
     }
   }
 
@@ -1374,17 +1406,6 @@ export class World extends Phaser.Scene {
       this.playScene(g.scene);
       return;
     }
-    if (!this.busy) {
-      if (JD(this.keys.I)) ui.panelOpen() ? ui.closePanel() : this.openPanel('bag');
-      if (JD(this.keys.J)) ui.panelOpen() ? ui.closePanel() : this.openPanel('quest');
-      if (JD(this.keys.O)) ui.panelOpen() ? ui.closePanel() : this.openPanel('album');
-      if (JD(this.keys.P)) this.togglePhoto();
-      if (JD(this.keys.M)) document.dispatchEvent(new CustomEvent('toggle-sound'));
-      if (JD(this.keys.ESC)) {
-        ui.closePanel();
-        if (this.photo) this.togglePhoto();
-      }
-    }
     if (this.photo) {
       // viseur : les flèches déplacent le cadre, Espace déclenche ; légende ouverte : 1, 2, 3 choisissent
       const f = this.photo;
@@ -1395,13 +1416,9 @@ export class World extends Phaser.Scene {
         if (this.cursors.up.isDown || this.keys.W.isDown) f.y = Math.max(f.h / 2, f.y - sp);
         if (this.cursors.down.isDown || this.keys.S.isDown) f.y = Math.min(720 - f.h / 2, f.y + sp);
         this.placeFrame();
-        if (JD(this.keys.SPACE)) this.shoot();
-      } else {
-        const picks = this.photoQuiz.querySelectorAll<HTMLButtonElement>('button.pick');
-        [this.keys.ONE, this.keys.TWO, this.keys.THREE].forEach((k, i) => {
-          if (JD(k)) picks[i]?.click();
-        });
       }
+      // Espace : déclencher ; 1, 2, 3 : légender (voir onShortcut) ; la touche ne fait pas aussi « parler »
+      JD(this.keys.SPACE);
       if (p instanceof Puppet) p.step(dt, false);
       return;
     }
