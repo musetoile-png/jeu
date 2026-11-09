@@ -17,7 +17,9 @@
     "ruelle",
     "cuisine",
     "cour",
-    "bouquinerie"
+    "bouquinerie",
+    "gare",
+    "train"
   ],
   "scenes": [
     "cuisine-cran1",
@@ -26,6 +28,8 @@
     "prologue-bol",
     "xiaoma-xiangji",
     "xiaoma-regarder",
+    "xiaoma-paizhao",
+    "xiaoma-photos",
     "wang-voir",
     "wang-acheter",
     "li-voir",
@@ -40,7 +44,12 @@
     "bai-rouleau",
     "wang-etal",
     "li-etal",
-    "chen-etal"
+    "chen-etal",
+    "nainai-adieux",
+    "gare-police",
+    "gare-piao",
+    "train-annonce",
+    "train-suite"
   ],
   "worlds": {
     "cuisine": {
@@ -171,7 +180,19 @@
       "xiaolong_stand": "art/xiaolong_stand.webp",
       "portrait_xiaolong_neutral": "art/xiaolong_bust_neutral.jpg",
       "portrait_xiaolong_joy": "art/xiaolong_bust_joy.jpg",
-      "portrait_xiaolong_surprise": "art/xiaolong_bust_surprise.jpg"
+      "portrait_xiaolong_surprise": "art/xiaolong_bust_surprise.jpg",
+      "gare_far": "art/gare_far.jpg",
+      "train_far": "art/train_far.jpg",
+      "depart_hangzhou": "art/depart_hangzhou.jpg",
+      "guichet_stand": "art/guichet_stand.webp",
+      "police_stand": "art/police_stand.webp",
+      "item_piao": "art/item_piao.webp",
+      "portrait_guichet_neutral": "art/guichet_bust_neutral.jpg",
+      "portrait_guichet_joy": "art/guichet_bust_joy.jpg",
+      "portrait_guichet_surprise": "art/guichet_bust_surprise.jpg",
+      "portrait_police_neutral": "art/police_bust_neutral.jpg",
+      "portrait_police_joy": "art/police_bust_joy.jpg",
+      "portrait_police_surprise": "art/police_bust_surprise.jpg"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [
@@ -417,7 +438,29 @@
   ],
   "photo": {
     "item": "xiangji",
-    "credits": "credits.json"
+    "credits": "credits.json",
+    "guide": {
+      "place": "ruelle",
+      "subject": "s_lanterne",
+      "when": {
+        "xiangji": "fait",
+        "photo_guide": "!fait"
+      },
+      "scene": "xiaoma-paizhao",
+      "after": "xiaoma-xiangji",
+      "walkTo": 1250,
+      "text": {
+        "out": {
+          "fr": "小马 te montre la lanterne rouge qui scintille : {word}. Sors l'appareil : touche P, le bouton 📷 Photo sous l'image, ou celui-ci."
+        },
+        "frame": {
+          "fr": "Cadre la lanterne : flèches du clavier, ou glisse la souris ou le doigt sur l'image. Le cadre devient vert quand elle est dedans. Déclenche : Espace, un clic ou un tap sur l'image, ou « Déclencher »."
+        },
+        "name": {
+          "fr": "Légende ta photo : touche le mot que 小马 a dit, {word}. Les trois mots se ressemblent : compare chaque caractère (au clavier : 1, 2, 3)."
+        }
+      }
+    }
   },
   "intro": {
     "image": "intro_avion",

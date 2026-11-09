@@ -158,16 +158,30 @@ export class Dialogue {
         const st = stage.getBoundingClientRect();
         if (sr.left - st.left < W * 0.03 + bw) below = sr.bottom - st.top + 10;
       }
+      const top0 = Math.max(H * 0.05, below);
       this.bubble.style.left = `${Math.round(W * 0.03)}px`;
-      this.bubble.style.top = `${Math.round(Math.max(H * 0.05, below))}px`;
+      this.bubble.style.top = `${Math.round(top0)}px`;
+      this.bubble.classList.toggle('under', this.overPanel(W * 0.03, top0, bw, bh));
       return;
     }
     const hx = a.x * W;
     const left = Math.max(8, Math.min(W - bw - 8, hx - bw / 2));
-    const top = Math.max(8, a.y * H - bh - 18);
+    let top = Math.max(8, a.y * H - bh - 18);
+    // jamais sur les réponses : si la bulle chevauche le panneau d'action, elle remonte au-dessus ;
+    // sans la place, elle passe dessous (les réponses restent touchables, la bulle reste lisible à côté)
+    if (this.overPanel(left, top, bw, bh)) top = Math.max(8, Math.min(top, this.root.getBoundingClientRect().top - stage.getBoundingClientRect().top - bh - 18));
+    this.bubble.classList.toggle('under', this.overPanel(left, top, bw, bh));
     this.bubble.style.left = `${Math.round(left)}px`;
     this.bubble.style.top = `${Math.round(top)}px`;
     this.bubble.style.setProperty('--tail', `${Math.round(Math.max(22, Math.min(bw - 22, hx - left)))}px`);
+  }
+
+  /** La bulle (position dans la scène, px) chevaucherait-elle le panneau d'action ? */
+  private overPanel(left: number, top: number, bw: number, bh: number) {
+    if (this.root.hidden) return false;
+    const st = (this.bubble.parentElement as HTMLElement).getBoundingClientRect();
+    const pr = this.root.getBoundingClientRect();
+    return pr.width > 0 && st.left + left < pr.right && st.left + left + bw > pr.left && st.top + top < pr.bottom && st.top + top + bh > pr.top;
   }
 
   /** Espace / Entrée : continuer ; 1, 2, 3… : choisir une réponse. */
@@ -411,6 +425,12 @@ export class Dialogue {
     this.turn++;
     this.replay = null;
     if (!s) return this.close(true);
+    // étape réservée à une quête, à un nom… : sautée si elle ne concerne pas ce joueur
+    if (s.when && !save.matches(s.when)) {
+      if (s.end) this.close(true);
+      else this.advance();
+      return;
+    }
     // les jeux du service prennent un panneau plus large (et, sur téléphone, sortent sous la scène)
     this.root.classList.toggle('task-mode', ['ticket', 'sequence', 'serve', 'pay'].includes(s.type));
     // une étape sans réplique (choix, wok) garde la question précédente dans la bulle

@@ -1,0 +1,69 @@
+{
+ "id": "xiaoma-paizhao",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "La première photo"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "photo_guide": "fait"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xpz_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "pai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Très bien ! Encore une photo !"
+   },
+   "end": true
+  }
+ ]
+}

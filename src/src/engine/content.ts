@@ -250,6 +250,21 @@ export interface Step {
   /** Objets donnés / repris à cette étape (ids de items.json). */
   give?: string[];
   take?: string[];
+  /** Étape jouée seulement si les drapeaux correspondent (même syntaxe que les points d'interaction : quest, name, item:…). */
+  when?: Record<string, string>;
+}
+
+/** Fin de chapitre : une image plein écran, le titre-carnet, le chapitre achevé, la suite annoncée. */
+export interface Ending {
+  image: string;
+  /** Ligne calligraphiée sur l'image (un proverbe, la dernière phrase du chapitre). */
+  line?: Token[];
+  /** « Fin du chapitre 1 — Premier soir à Shanghai ». */
+  title: Localized;
+  /** « À suivre : Hangzhou ». */
+  next?: Localized;
+  /** Voix de la ligne (clip entier). */
+  vo?: string;
 }
 
 export interface SceneEnd {
@@ -260,6 +275,8 @@ export interface SceneEnd {
   card?: Localized;
   /** Fait avancer une quête de fond (questStep[id] = step, index dans quests.json). */
   quest?: { id: string; step: number };
+  /** Fin de chapitre (après les drapeaux et les objets). */
+  ending?: Ending;
 }
 
 export interface Scene {
@@ -315,9 +332,24 @@ export interface Quest {
   title: Localized;
   pitch: Localized;
   steps?: QuestStep[];
-  /** « errand » : une liste de courses (case cochée quand le drapeau vaut « fait »), en plus de la quête de fond. */
+  /**
+   * « errand » : une liste à cocher (courses, photos), en plus de la quête de fond. Une ligne est cochée quand son drapeau
+   * vaut « fait », ou quand son sujet photo est dans l'album.
+   */
   kind?: 'story' | 'errand';
-  list?: { word: string; flag: string; who?: Localized }[];
+  list?: { word: string; flag?: string; subject?: string; who?: Localized }[];
+  /** Liste : titre écrit dans la langue cible (ex. 拍照), en plus du titre traduit. */
+  head?: Token[];
+  /** Liste : nombre de lignes à cocher pour qu'elle soit « pret » (par défaut toutes). */
+  goal?: number;
+  /** Liste : visible seulement si les drapeaux correspondent (en plus de l'objet dans le sac). */
+  when?: Record<string, string>;
+  /** Liste : reste affichée une fois rendue (« fait »), pour la finir. */
+  stay?: boolean;
+  /** Liste : sans pinyin ni traduction tant que la ligne n'est pas cochée (lire la liste est l'exercice). */
+  readOnly?: boolean;
+  /** Récompense d'une liste complète : une page d'album au sceau rouge. */
+  reward?: { seal: Token[]; caption: Localized; toast?: Localized };
 }
 
 export interface Credit {
@@ -343,6 +375,8 @@ export interface Hotspot {
   scene?: string;
   /** Sujet photo : le mot à légender. Étal : le caractère affiché sur l'étiquette (↑ 茶). */
   word?: string;
+  /** Sujet photo : mots proposés à côté du bon pour la légende (qui partagent un caractère ou un son). */
+  decoys?: string[];
   to?: string;
   /** Entrée du lieu d'arrivée (sinon son spawn). */
   toEntrance?: string;
@@ -414,6 +448,27 @@ export interface Ambient {
   /** Dessiné vers la droite (défaut) ; il est retourné quand il va à gauche. */
   facing?: 'left' | 'right';
   when?: Record<string, string>;
+  /** Sujet photo mobile (le chat) : identifiant du sujet, mot à légender, distracteurs, nom dans l'album. */
+  subject?: string;
+  word?: string;
+  decoys?: string[];
+  prompt?: Localized;
+}
+
+/**
+ * Première photo guidée : tant que `when` correspond, dans le lieu `place`, un panneau d'aide montre les gestes
+ * et le sujet `subject` scintille ; réussir sa photo lance la scène `scene`, puis ouvre le panneau Quête.
+ */
+export interface PhotoGuide {
+  place: string;
+  subject: string;
+  when: Record<string, string>;
+  scene: string;
+  /** Scène après laquelle le joueur fait quelques pas vers le sujet (jusqu'à x = walkTo). */
+  after?: string;
+  walkTo?: number;
+  /** Texte d'aide de chaque étape : sortir l'appareil, cadrer et déclencher, légender ({word} = le mot du sujet). */
+  text: { out: Localized; frame: Localized; name: Localized };
 }
 
 export interface Pack {
@@ -447,7 +502,7 @@ export interface Pack {
   closedSign?: Token[];
   /** Ouverture d'une nouvelle partie : une image plein écran, le nom du lieu en grand, une phrase. */
   intro?: { image: string; word: string; text: Localized };
-  photo?: { item: string; credits?: string };
+  photo?: { item: string; credits?: string; guide?: PhotoGuide };
   /** Monnaie : l'unité (块), les montants dits (nombre → mots), les pièces et billets, l'objet du sac qui la représente. */
   money?: { unit: Token; words: Record<string, Token[]>; coins: number[]; item?: string };
 }

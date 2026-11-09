@@ -1,0 +1,990 @@
+{
+ "id": "gare-piao",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Un billet pour Hangzhou"
+ },
+ "place": "gare",
+ "npc": "guichet",
+ "patience": 3,
+ "actors": {
+  "guichet": {
+   "name": "售票员",
+   "label": {
+    "fr": "la guichetière"
+   },
+   "portrait": "guichet"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_01",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "nar"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour ! Pour où ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "En Chine, chaque billet de 高铁 (le train à grande vitesse) est au nom du voyageur. Demande un billet pour Hangzhou — 票 piào : un billet ; 张 zhāng compte les choses plates (billets, cartes, photos) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gt_02a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "zhang"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "piao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais un billet pour Hangzhou."
+     }
+    },
+    {
+     "vo": "gt_02b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "piao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais un (个) billet pour Hangzhou."
+     },
+     "why": {
+      "fr": "个 compte les œufs, les 包子… Un billet est plat, comme une carte postale : on le compte avec 张. 一张票."
+     },
+     "errorType": "classifier"
+    },
+    {
+     "vo": "gt_02c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "zhang"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "shanghai"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "piao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je voudrais un billet pour Shanghai."
+     },
+     "why": {
+      "fr": "Tu es déjà à 上海 ! Ta route continue vers 杭州."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_03",
+   "line": [
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "ji"
+    ],
+    [
+     "w",
+     "dian"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Pour Hangzhou… tu veux celui de quelle heure ? (几点 : quelle heure)"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Sur le grand écran du hall : 杭州东 10:00. Réponds (点 diǎn : l'heure) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gt_04a_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "dian"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Celui de dix heures."
+     }
+    },
+    {
+     "vo": "gt_04b_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Celui à dix yuans."
+     },
+     "why": {
+      "fr": "块 compte l'argent : « celui à dix yuans » ! L'heure se compte avec 点 : 十点."
+     },
+     "errorType": "classifier"
+    },
+    {
+     "vo": "gt_04c_{body}",
+     "line": [
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "dian"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Celui de quatre heures."
+     },
+     "why": {
+      "fr": "四 sì (quatre) : un « s » sifflant et un ton qui tombe. 十 shí (dix) : un « sh » chuinté et un ton qui monte. L'écran dit 10:00 : 十点."
+     },
+     "errorType": "phonetic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_05",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "huzhao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "kankan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "D'accord. Ton passeport, fais voir."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tends-le-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gt_06a_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "huzhao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tenez, voici mon passeport."
+     }
+    },
+    {
+     "vo": "gt_06b_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "qianbao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tenez, voici mon portefeuille."
+     },
+     "why": {
+      "fr": "Le billet sera à ton nom : c'est le 护照 qui le prouve, pas le 钱包 (lui, ce sera pour payer)."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "gt_06c_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "zhe"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "zhaopian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tenez, voici ma photo."
+     },
+     "why": {
+      "fr": "照片, c'est une photo. Le 护照 a ta photo ET ton nom : même 照, autre mot."
+     },
+     "errorType": "character"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_07",
+   "line": [
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "dian"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "w",
+     "che"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "er"
+    ],
+    [
+     "w",
+     "hao_numero"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Dix heures, voiture 5, place 12. (车 chē : la voiture du train ; 号 hào : le numéro)"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Répète pour vérifier :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gt_08a_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "dian"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "che"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "er"
+      ],
+      [
+       "w",
+       "hao_numero"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dix heures, voiture 5, place 12 ?"
+     }
+    },
+    {
+     "vo": "gt_08b_{body}",
+     "line": [
+      [
+       "w",
+       "si"
+      ],
+      [
+       "w",
+       "dian"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "che"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "er"
+      ],
+      [
+       "w",
+       "hao_numero"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Quatre heures, voiture 5, place 12 ?"
+     },
+     "why": {
+      "fr": "四点, c'est quatre heures : six heures d'attente en plus ! Elle a dit 十 shí : dix heures."
+     },
+     "errorType": "phonetic"
+    },
+    {
+     "vo": "gt_08c_{body}",
+     "line": [
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "dian"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wu"
+      ],
+      [
+       "w",
+       "che"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "er"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "hao_numero"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dix heures, voiture 5, place 20 ?"
+     },
+     "why": {
+      "fr": "二十 = deux dizaines (20). 十二 = dix + deux (12). Comme 十四 et 四十 à la caisse de 奶奶 : l'ordre compte."
+     },
+     "errorType": "order"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_09",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "qi"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "C'est ça. Soixante-treize yuans."
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Ton portefeuille est revenu, avec l'argent dedans. Paie :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gt_10a_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bai"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici cent yuans."
+     }
+    },
+    {
+     "vo": "gt_10b_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "qi"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici soixante-dix yuans."
+     },
+     "why": {
+      "fr": "七十 = 70 : il manque 三 (trois). Elle a dit 七十三 : soixante-treize. Donne plutôt un billet de 一百 (cent)."
+     },
+     "errorType": "number"
+    },
+    {
+     "vo": "gt_10c_{body}",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "san"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "qi"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Voici trente-sept yuans."
+     },
+     "why": {
+      "fr": "三十七 = 37 : les chiffres sont inversés ! 七十三 = sept dizaines (七十) + trois (三)."
+     },
+     "errorType": "order"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_11",
+   "line": [
+    [
+     "w",
+     "zhao"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "er"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "qi"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "piao"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Je te rends vingt-sept yuans. Voici ton billet."
+   },
+   "effect": "pay",
+   "give": [
+    "piao"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "guichet",
+   "vo": "gt_12",
+   "line": [
+    [
+     "w",
+     "manzou"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Au revoir ! (« Marche lentement » : on le dit à qui s'en va.) Les quais, c'est à droite : 检票口, le contrôle des billets."
+   },
+   "expression": "joy",
+   "end": true
+  }
+ ],
+ "onEnd": {
+  "flags": {
+   "billet": "fait"
+  }
+ }
+}

@@ -648,6 +648,116 @@
     "la confiance de 奶奶 (même 钥匙 que la clé de la chambre)",
     "ouvrir le tiroir-caisse : 多少钱？"
    ]
+  },
+  {
+   "id": "piao",
+   "word": "piao",
+   "image": "item_piao",
+   "from": {
+    "fr": "la billetterie de la gare (售票处)"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "shi_dix"
+     ],
+     [
+      "w",
+      "dian"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "wu"
+     ],
+     [
+      "w",
+      "che"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "shi_dix"
+     ],
+     [
+      "w",
+      "er"
+     ],
+     [
+      "w",
+      "hao_numero"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Dix heures, voiture 5, place 12."
+    },
+    "vo": "gt_07"
+   },
+   "reuse": [
+    "le train pour Hangzhou (下一站)",
+    "les billets des villes suivantes (一张票)",
+    "张 : cartes postales, photos"
+   ]
+  },
+  {
+   "id": "baozi",
+   "word": "baozi",
+   "image": "obj_baozi",
+   "from": {
+    "fr": "奶奶, pour la route"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "haha"
+     ],
+     [
+      "p",
+      "！"
+     ],
+     [
+      "w",
+      "baozi"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "gei"
+     ],
+     [
+      "w",
+      "ni"
+     ],
+     [
+      "p",
+      "！"
+     ]
+    ],
+    "gloss": {
+     "fr": "Ha ha ! Des 包子, pour la route !"
+    },
+    "vo": "na_07"
+   },
+   "reuse": [
+    "le goûter du train",
+    "包 : le même que 钱包",
+    "les 小笼包 de Hangzhou"
+   ]
   }
  ]
 }

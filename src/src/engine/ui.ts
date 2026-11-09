@@ -3,12 +3,13 @@
  * Aucun texte de langue cible ici : tout vient du contenu.
  */
 import { speak, RATE } from './audio';
-import type { Content, PickOption, Place, Scene, Step, Token } from './content';
+import type { Content, Ending, PickOption, Place, Quest, Scene, Step, Token } from './content';
 import { assetUrl, lineText, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
 import { play } from './sfx';
+import { fmt } from './stall';
 
 const stage = () => document.getElementById('stage') as HTMLElement;
 
@@ -132,20 +133,91 @@ export function showBag(content: Content) {
   p.append(grid, detail);
 }
 
-export function showQuest(content: Content) {
+/** Réglage pīn du lecteur de scènes (absent = pinyin affiché dans les répliques). */
+function pinyinSetting(): 'on' | 'off' | '' {
+  try {
+    const v = localStorage.getItem('jeu-zh-pinyin');
+    return v === 'on' || v === 'off' ? v : '';
+  } catch {
+    return '';
+  }
+}
+
+function setPinyinSetting(on: boolean) {
+  try {
+    localStorage.setItem('jeu-zh-pinyin', on ? 'on' : 'off');
+  } catch {
+    /* navigation privée : réglage non mémorisé */
+  }
+}
+
+/** Une ligne de liste est-elle cochée ? (drapeau « fait », ou sujet photo dans l'album) */
+const lineDone = (it: NonNullable<Quest['list']>[number]) => (it.subject ? save.hasPhoto(it.subject) : !!it.flag && save.flag(it.flag) === 'fait');
+
+/** Avancement d'une liste : lignes cochées, total, objectif. */
+export function errandProgress(e: Quest) {
+  const list = e.list ?? [];
+  return { n: list.filter(lineDone).length, total: list.length, goal: Math.min(e.goal ?? list.length, list.length) };
+}
+
+/** Sceau rouge (caractères de la récompense, en colonne). */
+function seal(content: Content, line: Token[]) {
+  const s = el('span', 'seal');
+  s.append(el('b', '', lineText(content, line)));
+  return s;
+}
+
+/** Panneau Quête ; `focus` : la liste à montrer d'abord (celle qu'on vient de recevoir). */
+export function showQuest(content: Content, focus?: string) {
   const p = panel(content.ui.quest ?? 'Quête');
   const d = save.get();
-  // listes de courses en cours : chaque mot, à l'encre, coché quand c'est acheté
-  for (const e of [...content.quests.values()].filter((x) => x.kind === 'errand' && save.hasItem(x.item) && save.flag(x.id) !== 'fait')) {
+  // listes en cours (courses, photos) : chaque mot à l'encre, coché quand c'est fait
+  const lists = [...content.quests.values()].filter((x) => x.kind === 'errand' && save.hasItem(x.item) && save.matches(x.when) && (x.stay || save.flag(x.id) !== 'fait'));
+  lists.sort((a, b) => Number(b.id === focus) - Number(a.id === focus));
+  for (const e of lists) {
     const box = el('div', 'errand');
-    box.append(el('h3', '', t(content, e.title)), el('p', 'pitch', t(content, e.pitch)));
+    const head = el('h3');
+    if (e.head) for (const tok of e.head) if (tok[0] === 'w') head.append(inkWord(content, tok[1], false));
+    head.append(el('span', e.head ? 'sub' : '', t(content, e.title)));
+    box.append(head, el('p', 'pitch', t(content, e.pitch)));
+    const prog = errandProgress(e);
+    if (e.goal !== undefined) {
+      const bar = el('p', 'tally', fmt(content.ui.listTally ?? '{n} / {total}', { n: String(prog.n), total: String(prog.total), goal: String(prog.goal) }));
+      box.append(bar);
+    }
+    // liste à lire : sans pinyin tant que le joueur n'a pas allumé pīn ; un bouton pīn le montre (même réglage que les scènes)
+    const readOnly = !!e.readOnly;
     const ul = el('ul', 'checklist');
-    for (const it of e.list ?? []) {
-      const li = el('li', save.flag(it.flag) === 'fait' ? 'done' : '');
-      li.append(el('span', 'tick', save.flag(it.flag) === 'fait' ? '✓' : ''), inkWord(content, it.word), el('small', '', t(content, it.who)));
-      ul.append(li);
+    const draw = () => {
+      ul.replaceChildren();
+      const py = !readOnly || pinyinSetting() === 'on';
+      for (const it of e.list ?? []) {
+        const done = lineDone(it);
+        const li = el('li', done ? 'done' : '');
+        li.append(el('span', 'tick', done ? '✓' : ''), inkWord(content, it.word, py));
+        // la traduction n'apparaît qu'une fois la ligne cochée : avant, c'est au joueur de lire
+        const note = readOnly ? (done ? t(content, content.lexicon.get(it.word)?.gloss) : '') : t(content, it.who);
+        if (note) li.append(el('small', '', note));
+        ul.append(li);
+      }
+    };
+    draw();
+    if (readOnly) {
+      const pyBtn = el('button', 'sm pybtn', 'pīn');
+      pyBtn.title = content.ui.pinyin ?? 'pinyin';
+      const sync = () => pyBtn.setAttribute('aria-pressed', String(pinyinSetting() === 'on'));
+      sync();
+      pyBtn.onclick = () => {
+        setPinyinSetting(pinyinSetting() !== 'on');
+        sync();
+        draw();
+        log({ scene: `liste:${e.id}`, step: 0, kind: 'listen', detail: `pinyin=${pinyinSetting()}` });
+      };
+      head.append(pyBtn);
     }
     box.append(ul);
+    if (e.reward && (save.flag(e.id) === 'pret' || save.flag(e.id) === 'fait')) box.append(seal(content, e.reward.seal));
+    if (e.id === focus) box.classList.add('focus');
     p.append(box);
   }
   const q = d.quest ? content.quests.get(d.quest) : undefined;
@@ -166,17 +238,21 @@ export function showQuest(content: Content) {
   p.append(dl);
 }
 
-/** Une liste de courses complète passe à « pret » (on peut rapporter les achats). Renvoie vrai si ça vient d'arriver. */
-export function checkErrands(content: Content) {
-  let changed = false;
+/**
+ * Une liste qui atteint son objectif passe à « pret » (courses à rapporter, page d'album gagnée).
+ * Renvoie les listes pour lesquelles ça vient d'arriver.
+ */
+export function checkErrands(content: Content): Quest[] {
+  const ready: Quest[] = [];
   for (const e of content.quests.values()) {
-    if (e.kind !== 'errand' || !e.list?.length || save.flag(e.id)) continue;
-    if (e.list.every((it) => save.flag(it.flag) === 'fait')) {
+    if (e.kind !== 'errand' || !e.list?.length || save.flag(e.id) || !save.matches(e.when)) continue;
+    const { n, goal } = errandProgress(e);
+    if (n >= goal) {
       save.setFlags({ [e.id]: 'pret' });
-      changed = true;
+      ready.push(e);
     }
   }
-  return changed;
+  return ready;
 }
 
 /** L'objet reçu vole jusqu'au sac (bouton « Sac » sous le jeu). */
@@ -227,10 +303,23 @@ export function showAlbum(content: Content) {
   const grid = el('div', 'album');
   const album = save.get().album;
   if (!album.length) p.append(el('p', 'detail', content.ui.albumEmpty ?? ''));
+  // page de titre au sceau rouge : la liste de photos est remplie
+  for (const e of content.quests.values()) {
+    if (!e.reward || !(save.flag(e.id) === 'pret' || save.flag(e.id) === 'fait')) continue;
+    const page = el('figure', 'page seal-page');
+    const title = el('div', 'seal-title');
+    for (const tok of e.reward.seal) if (tok[0] === 'w') title.append(inkWord(content, tok[1], false));
+    title.append(seal(content, e.reward.seal));
+    const prog = errandProgress(e);
+    const cap = el('figcaption', '', fmt(t(content, e.reward.caption), { n: String(prog.n), total: String(prog.total) }));
+    page.append(title, cap);
+    grid.append(page);
+  }
   for (const ph of album) {
     const page = el('figure', 'page');
     const place = content.places.get(ph.place);
     const spot = place?.hotspots.find((h) => h.id === ph.subject);
+    const prompt = spot?.prompt ?? place?.ambient?.find((a) => a.subject === ph.subject)?.prompt;
     const real0 = spot?.photo ? content.pack.assets.images[spot.photo] : undefined;
     // une vraie photo ne s'affiche qu'avec son crédit (licences libres : l'auteur doit être cité)
     const real = hasAsset(real0) && spot?.photo && content.credits[spot.photo] ? real0 : undefined;
@@ -241,12 +330,12 @@ export function showAlbum(content: Content) {
       img.alt = '';
       img.onerror = () => {
         img.remove();
-        paintCrop(content, pic, place, ph.rect);
+        paintCrop(content, pic, place, ph.rect, ph.extra);
       };
       pic.append(img);
-    } else paintCrop(content, pic, place, ph.rect);
+    } else paintCrop(content, pic, place, ph.rect, ph.extra);
     const cap = el('figcaption');
-    cap.append(inkWord(content, ph.word), el('span', '', t(content, spot?.prompt)));
+    cap.append(inkWord(content, ph.word), el('span', '', t(content, prompt)));
     const credit = spot?.photo ? content.credits[spot.photo] : undefined;
     if (real && credit) {
       const a = el('a', 'credit', `© ${credit.author} · ${credit.license}`);
@@ -262,7 +351,7 @@ export function showAlbum(content: Content) {
 }
 
 /** Redessine un cadrage à partir des plans du lieu (aucune image stockée dans la sauvegarde). */
-function paintCrop(content: Content, box: HTMLElement, place: Place | undefined, r: { x: number; y: number; w: number; h: number }) {
+function paintCrop(content: Content, box: HTMLElement, place: Place | undefined, r: { x: number; y: number; w: number; h: number }, extra?: save.Photo['extra']) {
   if (!place) return;
   box.classList.add('crop');
   const W = place.size.width;
@@ -278,6 +367,18 @@ function paintCrop(content: Content, box: HTMLElement, place: Place | undefined,
   const px = r.w >= W ? 0 : (r.x / (W - r.w)) * 100;
   const py = r.h >= H ? 0 : (r.y / (H - r.h)) * 100;
   box.style.backgroundPosition = `${px}% ${py}%`;
+  // le chat photographié : son image posée là où il était (la sauvegarde ne garde que sa place)
+  const path = extra ? content.pack.assets.images[extra.image] : undefined;
+  if (extra && path && hasAsset(path)) {
+    const img = el('img', 'extra');
+    img.src = assetUrl(path);
+    img.alt = '';
+    img.style.height = `${(extra.h / r.h) * 100}%`;
+    img.style.left = `${((extra.x - r.x) / r.w) * 100}%`;
+    img.style.top = `${((extra.y - extra.h - r.y) / r.h) * 100}%`;
+    if (extra.flip) img.style.transform = 'translateX(-50%) scaleX(-1)';
+    box.append(img);
+  }
 }
 
 // ---------- Écran titre ----------
@@ -430,6 +531,46 @@ export function cinematic(content: Content, scene: Scene, step: Step, done: (o?:
       items.append(b);
     });
   }, 3100);
+}
+
+/**
+ * Fin de chapitre : l'image de fin avance lentement, une phrase calligraphiée (et sa voix) s'y pose,
+ * puis un cartouche de papier : le titre-carnet (千里, à l'encre du carnet), le chapitre achevé, la suite.
+ * Le bouton ramène à l'écran titre ; la partie est sauvegardée (« Continuer » rouvre le train).
+ */
+export function ending(content: Content, e: Ending) {
+  setAnim('ending', true);
+  const box = el('div', 'cine ending');
+  const path = content.pack.assets.images[e.image];
+  const img = el('div', 'ending-img');
+  if (path && hasAsset(path)) img.style.backgroundImage = `url("${assetUrl(path)}")`;
+  box.append(img);
+  if (e.line) box.append(el('p', 'ending-line', lineText(content, e.line)));
+  const card = el('div', 'ending-card');
+  const zh = el('div', 'ending-title');
+  const title = content.pack.title;
+  for (const tok of title?.line ?? []) if (tok[0] === 'w') zh.append(inkWord(content, tok[1], false));
+  card.append(zh, el('p', 'ending-chapter', t(content, e.title)));
+  if (e.next) card.append(el('p', 'ending-next', t(content, e.next)));
+  const back = el('button', 'go', content.ui.backToTitle);
+  back.onclick = () => {
+    play('tap');
+    // l'écran titre, sans les raccourcis de test de l'adresse
+    location.href = location.pathname;
+  };
+  card.append(back);
+  box.append(card);
+  stage().appendChild(box);
+  requestAnimationFrame(() => {
+    box.classList.add('on');
+  });
+  setTimeout(() => {
+    box.classList.add('line');
+    if (e.line) speak(content, lineText(content, e.line), e.vo, RATE.NORMAL);
+  }, 2200);
+  setTimeout(() => {
+    box.classList.add('card');
+  }, 5200);
 }
 
 /**

@@ -159,6 +159,16 @@ const bare = (s: string) =>
     .toLowerCase()
     .replace(/[^a-z]/g, '');
 
+/** Découpe grossière d'une transcription sans tons en syllabes (dēnglong → deng, long). */
+const SYLLABLE = /(zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])?(iang|iong|uang|ang|eng|ing|ong|uai|iao|ian|uan|ai|ei|ao|ou|an|en|in|un|ia|ie|iu|ua|uo|ui|ue|er|a|o|e|i|u|v)(?![aeiouv])/g;
+const syllables = (s: string): string[] => bare(s.replace(/ü/g, 'v')).match(SYLLABLE) ?? [];
+
+/** Une syllabe commune aux deux transcriptions (sans les tons), ou ''. */
+function sharedSyllable(a: string, b: string) {
+  const sb = syllables(b);
+  return syllables(a).find((x) => sb.includes(x)) ?? '';
+}
+
 function distance(a: string, b: string) {
   const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array<number>(b.length).fill(0)]);
   for (let j = 1; j <= b.length; j++) d[0][j] = j;
@@ -202,6 +212,10 @@ export function explain(content: Content, expected: string, chosen: string): { w
   } else if (distance(bare(vars.pa), bare(vars.pb)) <= Math.max(1, Math.floor(Math.max(bare(vars.pa).length, bare(vars.pb).length) / 3))) {
     errorType = 'phonetic';
     why = fmt(ui.stallSound ?? '{a} {pa} / {b} {pb}.', vars);
+  } else if (sharedSyllable(vars.pa, vars.pb) && ui.stallSyllable) {
+    // 灯笼 dēnglong / 龙井 lóngjǐng : pas de caractère commun, mais un même son (long)
+    errorType = 'phonetic';
+    why = fmt(ui.stallSyllable, { ...vars, s: sharedSyllable(vars.pa, vars.pb) });
   } else {
     errorType = 'semantic';
     return { why: fmt(ui.stallMeaning ?? '{a} : {ga} ; {b} : {gb}.', vars), errorType };

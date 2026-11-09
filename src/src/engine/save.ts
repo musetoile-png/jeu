@@ -11,7 +11,12 @@ export interface Photo {
   /** Rectangle cadré, en coordonnées du lieu : l'album redessine le décor (aucune image stockée). */
   rect: { x: number; y: number; w: number; h: number };
   t: number;
+  /** Sujet mobile (le chat) : son image et sa place au moment de la photo, posées sur le décor recadré. */
+  extra?: { image: string; x: number; y: number; h: number; flip?: boolean };
 }
+
+/** Le sujet est-il déjà dans l'album ? */
+export const hasPhoto = (subject: string) => get().album.some((p) => p.subject === subject);
 
 export interface SaveData {
   profile: { body: 'm' | 'f'; name?: string; country?: string };
@@ -64,12 +69,13 @@ export function flag(k: string) {
  * `clé: "valeur"` : le drapeau vaut exactement cela ('' = absent) ;
  * `clé: "!valeur"` : le drapeau vaut autre chose ;
  * `"item:id": "1"` / `""` : l'objet est dans le sac / n'y est pas ;
- * `"quest": "lettre"` : la quête de fond choisie dans la valise (rangée dans le profil, pas dans les drapeaux).
+ * `"quest": "lettre"` : la quête de fond choisie dans la valise (rangée dans le profil, pas dans les drapeaux) ;
+ * `"name": "an"` : le nom chinois choisi le premier soir (profil).
  */
 export function matches(when?: Record<string, string>) {
   if (!when) return true;
   return Object.entries(when).every(([k, v]) => {
-    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : k === 'quest' ? (get().quest ?? '') : flag(k);
+    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : k === 'quest' ? (get().quest ?? '') : k === 'name' ? (get().profile.name ?? '') : flag(k);
     return v.startsWith('!') ? cur !== v.slice(1) : cur === v;
   });
 }

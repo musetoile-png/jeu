@@ -261,7 +261,11 @@
       "word": "xigua",
       "prompt": {
         "fr": "la pastèque"
-      }
+      },
+      "decoys": [
+        "huanggua",
+        "xihongshi"
+      ]
     },
     {
       "id": "s_cha",
@@ -271,7 +275,11 @@
       "word": "cha",
       "prompt": {
         "fr": "la table à thé"
-      }
+      },
+      "decoys": [
+        "chao",
+        "chi"
+      ]
     }
   ],
   "ambient": [
@@ -316,7 +324,16 @@
       "every": [
         25,
         50
-      ]
+      ],
+      "subject": "chat",
+      "word": "mao",
+      "decoys": [
+        "mai",
+        "hao"
+      ],
+      "prompt": {
+        "fr": "le chat du quartier"
+      }
     },
     {
       "image": "moineaux",

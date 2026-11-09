@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "train",
+  "name": {
+    "zh": "火车",
+    "fr": "Le train pour Hangzhou"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 0.72,
+  "playerScale": 0.9,
+  "planes": [
+    {
+      "image": "train_far",
+      "parallax": 1,
+      "y": 0
+    }
+  ],
+  "walk": {
+    "yMin": 1000,
+    "yMax": 1040,
+    "xMin": 100,
+    "xMax": 1820
+  },
+  "spawn": {
+    "x": 160,
+    "y": 1025,
+    "facing": "right",
+    "walkIn": 560
+  },
+  "hotspots": [],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#58d6a9"
+  ],
+  "onEnter": [
+    {
+      "scene": "train-annonce",
+      "when": {
+        "chapitre1": ""
+      },
+      "delay": 500
+    },
+    {
+      "scene": "train-suite",
+      "when": {
+        "chapitre1": "fini"
+      },
+      "delay": 500
+    }
+  ]
+}

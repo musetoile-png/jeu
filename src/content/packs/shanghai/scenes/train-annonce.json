@@ -1,0 +1,230 @@
+{
+ "id": "train-annonce",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le train pour Hangzhou"
+ },
+ "place": "train",
+ "npc": "annonce",
+ "patience": 3,
+ "actors": {
+  "annonce": {
+   "name": "广播",
+   "label": {
+    "fr": "l'annonce du train"
+   },
+   "portrait": "annonce"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "annonce",
+   "vo": "tr_01",
+   "line": [
+    [
+     "w",
+     "xia"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "zhan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "dong"
+    ],
+    [
+     "w",
+     "zhan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Le train glisse entre les rizières. Une voix, lente :) Prochaine station : Hangzhou-Est."
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Tu as compris l'annonce ? Répète-la pour toi, tout bas :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "tr_02a_{body}",
+     "line": [
+      [
+       "w",
+       "xia"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "zhan"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Prochaine station : Hangzhou !"
+     }
+    },
+    {
+     "vo": "tr_02b_{body}",
+     "line": [
+      [
+       "w",
+       "xiaci"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "La prochaine fois, Hangzhou !"
+     },
+     "why": {
+      "fr": "下次, c'est « la prochaine fois » (下次再来 !). Même 下 (le suivant), mais l'annonce dit 下一站 : la prochaine station (站, comme dans 火车站)."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "tr_02c_{body}",
+     "line": [
+      [
+       "w",
+       "xia"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "zhan"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shanghai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Prochaine station : Shanghai !"
+     },
+     "why": {
+      "fr": "上海, tu viens d'en partir ! L'annonce dit 杭州东站 : Hangzhou-Est."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "end": true
+  }
+ ],
+ "onEnd": {
+  "flags": {
+   "chapitre1": "fini"
+  },
+  "ending": {
+   "image": "depart_hangzhou",
+   "line": [
+    [
+     "w",
+     "qian_mille"
+    ],
+    [
+     "w",
+     "li"
+    ],
+    [
+     "t",
+     "之行",
+     "zhī xíng",
+     "le voyage (de)"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "t",
+     "始于",
+     "shǐ yú",
+     "commence à"
+    ],
+    [
+     "t",
+     "足下",
+     "zú xià",
+     "sous le pied"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "vo": "na_08",
+   "title": {
+    "fr": "Fin du chapitre 1 — Premier soir à Shanghai"
+   },
+   "next": {
+    "fr": "À suivre : Hangzhou 杭州"
+   }
+  }
+ }
+}
