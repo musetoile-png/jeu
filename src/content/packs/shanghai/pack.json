@@ -21,6 +21,7 @@
   ],
   "scenes": [
     "cuisine-cran1",
+    "cuisine-cran2",
     "prologue-chien",
     "prologue-bol",
     "xiaoma-xiangji",
@@ -47,7 +48,8 @@
         "fr": "La cuisine"
       },
       "tiers": {
-        "1": "cuisine-cran1"
+        "1": "cuisine-cran1",
+        "2": "cuisine-cran2"
       }
     }
   },
@@ -157,7 +159,19 @@
       "obj_jiangyou": "art/obj_jiangyou.webp",
       "obj_doufu": "art/obj_doufu.webp",
       "obj_tang": "art/obj_tang.webp",
-      "obj_binggan": "art/obj_binggan.webp"
+      "obj_binggan": "art/obj_binggan.webp",
+      "laowang_stand": "art/laowang_stand.webp",
+      "portrait_laowang_neutral": "art/laowang_bust_neutral.jpg",
+      "portrait_laowang_joy": "art/laowang_bust_joy.jpg",
+      "portrait_laowang_surprise": "art/laowang_bust_surprise.jpg",
+      "xiaomei_stand": "art/xiaomei_stand.webp",
+      "portrait_xiaomei_neutral": "art/xiaomei_bust_neutral.jpg",
+      "portrait_xiaomei_joy": "art/xiaomei_bust_joy.jpg",
+      "portrait_xiaomei_surprise": "art/xiaomei_bust_surprise.jpg",
+      "xiaolong_stand": "art/xiaolong_stand.webp",
+      "portrait_xiaolong_neutral": "art/xiaolong_bust_neutral.jpg",
+      "portrait_xiaolong_joy": "art/xiaolong_bust_joy.jpg",
+      "portrait_xiaolong_surprise": "art/xiaolong_bust_surprise.jpg"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [
@@ -410,6 +424,210 @@
     "word": "shanghai",
     "text": {
       "fr": "Un soir de septembre, l'avion descend sur Shanghai. Mille li depuis chez toi, et tout reste à apprendre."
+    }
+  },
+  "money": {
+    "unit": [
+      "w",
+      "kuai"
+    ],
+    "coins": [
+      1,
+      5,
+      10
+    ],
+    "item": "qian",
+    "words": {
+      "1": [
+        [
+          "w",
+          "yi"
+        ]
+      ],
+      "2": [
+        [
+          "w",
+          "liang"
+        ]
+      ],
+      "3": [
+        [
+          "w",
+          "san"
+        ]
+      ],
+      "4": [
+        [
+          "w",
+          "si"
+        ]
+      ],
+      "5": [
+        [
+          "w",
+          "wu"
+        ]
+      ],
+      "6": [
+        [
+          "w",
+          "liu"
+        ]
+      ],
+      "7": [
+        [
+          "w",
+          "qi"
+        ]
+      ],
+      "8": [
+        [
+          "w",
+          "ba_huit"
+        ]
+      ],
+      "9": [
+        [
+          "w",
+          "jiu"
+        ]
+      ],
+      "10": [
+        [
+          "w",
+          "shi_dix"
+        ]
+      ],
+      "11": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "yi"
+        ]
+      ],
+      "12": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "er"
+        ]
+      ],
+      "13": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "san"
+        ]
+      ],
+      "14": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "si"
+        ]
+      ],
+      "15": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "wu"
+        ]
+      ],
+      "16": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "liu"
+        ]
+      ],
+      "17": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "qi"
+        ]
+      ],
+      "18": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "ba_huit"
+        ]
+      ],
+      "19": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "jiu"
+        ]
+      ],
+      "20": [
+        [
+          "w",
+          "er"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ]
+      ],
+      "30": [
+        [
+          "w",
+          "san"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ]
+      ],
+      "40": [
+        [
+          "w",
+          "si"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ]
+      ],
+      "50": [
+        [
+          "w",
+          "wu"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ]
+      ]
     }
   }
 }

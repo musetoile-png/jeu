@@ -3,13 +3,15 @@
  * gère les choix, les « pick » (dictée-wok), la patience, l'audio et le journal.
  */
 import { preloadVoices, RATE, speak, speakWords, stop } from './audio';
-import type { Choice, Content, PickOption, Restore, Scene, Stall, StallGood, StallLine, Step, Token } from './content';
+import type { Choice, Content, Pay, PickOption, Restore, Said, Scene, Sequence, Serve, Stall, StallGood, StallLine, Step, Ticket, Token } from './content';
 import { lineText, lineWords, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
+import type { TicketPicks } from './service';
+import { addition, makeChange, moneyLine, moneyText, rightPicks, subtraction, ticketLine, total, withAmount, wrongCells } from './service';
 import { play as sound } from './sfx';
-import { explain, fillSlot, fmt, glossOf, imageOf, itemFor, planStall, stallVoKey } from './stall';
+import { explain, fillSlot, fmt, glossOf, imageOf, itemFor, planStall, shuffle, stallVoKey } from './stall';
 import { cinematic, flyProvision, flyToBag, inkWord, toast } from './ui';
 
 export interface DialogueHost {
@@ -53,6 +55,13 @@ export class Dialogue {
   /** Étal : numéro de manche ; une voix enchaînée d'une manche passée ne continue pas dans la suivante. */
   private stallTurn = 0;
 
+  /** Service : tickets remplis (par id), progression de chaque étape (pour reprendre après un détour), caisse. */
+  private tickets = new Map<string, { ticket: Ticket; picks: TicketPicks }>();
+  private progress = new Map<number, { k: number; order?: number[]; results?: boolean[] }>();
+  private till = 0;
+  /** Numéro d'étape affichée : une voix enchaînée d'un affichage passé (avant un détour…) ne continue pas. */
+  private turn = 0;
+
   private content: Content;
   private scene: Scene;
   private host: DialogueHost;
@@ -66,6 +75,7 @@ export class Dialogue {
     this.root.innerHTML = `
       <div class="tools">
         <button class="ic" id="dlg-slow"></button><button class="ic" id="dlg-normal"></button><button class="ic" id="dlg-words"></button><button class="ic" id="dlg-sub"></button><button class="ic" id="dlg-py"></button>
+        <span class="till" id="dlg-till" hidden></span>
         <span class="patience" id="dlg-pat"></span>
       </div>
       <div id="dlg-body"></div>
@@ -81,7 +91,7 @@ export class Dialogue {
       <div class="line" id="dlg-line"></div>
       <div class="fr" id="dlg-fr"></div>`;
     this.bubble.onclick = () => (this.root.querySelector('#dlg-body > button.go') as HTMLButtonElement | null)?.click();
-    for (const id of ['portrait', 'who', 'whofr', 'pat', 'line', 'fr', 'slow', 'normal', 'words', 'sub', 'py', 'body', 'fb'])
+    for (const id of ['portrait', 'who', 'whofr', 'pat', 'till', 'line', 'fr', 'slow', 'normal', 'words', 'sub', 'py', 'body', 'fb'])
       this.el[id] = document.getElementById(`dlg-${id}`) as HTMLElement;
     const ui = content.ui;
     const icon = (el: HTMLElement, glyph: string, label: string) => {
@@ -180,6 +190,7 @@ export class Dialogue {
     this.i = 0;
     this.preload();
     this.setPatience(this.scene.patience);
+    this.setTill(0);
     this.root.hidden = false;
     this.live = true;
     document.body.classList.add('talking');
@@ -209,7 +220,8 @@ export class Dialogue {
     this.live = false;
     this.replay = null;
     this.stallTurn++;
-    this.root.classList.remove('stall-mode');
+    this.turn++;
+    this.root.classList.remove('stall-mode', 'task-mode');
     document.body.classList.remove('talking');
     document.removeEventListener('keydown', this.keys);
     this.root.hidden = true;
@@ -227,6 +239,42 @@ export class Dialogue {
       if (k < n) dot.className = 'on';
       this.el.pat.appendChild(dot);
     }
+  }
+
+  /** Caisse du service : montant affiché dans les outils ; `delta` fait monter un « +7 » ou un « −2 ». */
+  private setTill(delta: number) {
+    const tl = this.scene.till;
+    this.el.till.hidden = !tl;
+    if (!tl) return;
+    this.till += delta;
+    const unit = this.content.pack.money ? lineText(this.content, [this.content.pack.money.unit]) : '';
+    this.el.till.textContent = fmt(this.content.ui.till ?? '{n} / {target}', { n: String(this.till), target: String(tl.target), unit });
+    this.el.till.classList.toggle('neg', this.till < 0);
+    if (!delta) return;
+    const f = document.createElement('i');
+    f.className = `till-float ${delta > 0 ? 'up' : 'down'}`;
+    f.textContent = `${delta > 0 ? '+' : '−'}${Math.abs(delta)}`;
+    this.el.till.appendChild(f);
+    setTimeout(() => f.remove(), 1600);
+    log({ scene: this.scene.id, step: this.i, kind: 'till', detail: `delta=${delta};till=${this.till}` });
+  }
+
+  /** Après `ms`, si l'on est toujours sur le même affichage (ni détour, ni étape suivante entre-temps). */
+  private later(f: () => void, ms: number) {
+    const t0 = this.turn;
+    setTimeout(() => {
+      if (this.live && t0 === this.turn) f();
+    }, ms);
+  }
+
+  /** Une réplique dite d'une seule voix (clip entier), dans la bulle de celui qui parle. */
+  private say(actor: string, l: Said, expression?: string, onEnd?: () => void, rate: number = RATE.NORMAL, meet = true) {
+    this.setActor(actor, expression);
+    this.showLine(l.line, t(this.content, l.gloss), meet);
+    const t0 = this.turn;
+    this.sayLine(l.line, l.vo, rate, () => {
+      if (this.live && t0 === this.turn) onEnd?.();
+    });
   }
 
   private setActor(actorId: string | undefined, expression = 'neutral') {
@@ -360,7 +408,11 @@ export class Dialogue {
     body.innerHTML = '';
     this.feedback('', '');
     this.clearSheet();
+    this.turn++;
+    this.replay = null;
     if (!s) return this.close(true);
+    // les jeux du service prennent un panneau plus large (et, sur téléphone, sortent sous la scène)
+    this.root.classList.toggle('task-mode', ['ticket', 'sequence', 'serve', 'pay'].includes(s.type));
     // une étape sans réplique (choix, wok) garde la question précédente dans la bulle
     if (s.line || s.expression || this.i === 0) this.setActor(s.actor ?? (s.type === 'say' ? undefined : this.scene.npc), s.expression);
     if (s.highlight) this.host.onEffect?.(`highlight:${s.highlight.join(',')}`);
@@ -377,8 +429,11 @@ export class Dialogue {
       if (this.live && this.i === at) this.close(true);
     };
     const readMs = 1200 + Math.min(2500, t(this.content, s.gloss).length * 30);
+    // une commande, une consigne à écouter : la bulle reste vide (……), la voix seule compte
+    const hidden = (s.type === 'ticket' && s.ticket?.hidden !== false) || (s.type === 'sequence' && !!s.sequence?.hidden);
     if (s.line) {
-      this.showLine(s.line, t(this.content, s.gloss));
+      if (hidden) this.showLine(Dialogue.MASK, this.content.ui.heardOnly ?? '…', false);
+      else this.showLine(s.line, t(this.content, s.gloss));
       this.sayLine(s.line, s.vo, RATE.NORMAL, autoEnd ? () => setTimeout(finish, readMs) : undefined);
     }
     // filet de sécurité : si la voix ne prévient pas de sa fin (son bloqué), on reprend quand même
@@ -386,6 +441,7 @@ export class Dialogue {
 
     if (s.type === 'say') {
       this.exchange(s);
+      if (s.wage) this.renderWage();
       const b = document.createElement('button');
       b.className = 'go';
       b.textContent = s.end ? this.content.ui.finish : this.content.ui.continue;
@@ -402,7 +458,14 @@ export class Dialogue {
     if (s.type === 'cinematic') this.renderCinematic(s);
     if (s.type === 'restore' && s.restore) this.renderRestore(s, s.restore);
     if (s.type === 'stall' && s.stall) this.renderStall(s.stall);
+    if (s.type === 'ticket' && s.ticket) this.renderTicket(s, s.ticket);
+    if (s.type === 'sequence' && s.sequence) this.renderSequence(s, s.sequence);
+    if (s.type === 'serve' && s.serve) this.renderServe(s, s.serve);
+    if (s.type === 'pay' && s.pay) this.renderPay(s, s.pay);
   }
+
+  /** Bulle d'une réplique qu'on doit entendre sans la lire. */
+  private static readonly MASK: Token[] = [['t', '……', '', '']];
 
   private advance() {
     this.i++;
@@ -444,6 +507,8 @@ export class Dialogue {
    * chaque bol = un mot entendu, à reconnaître parmi deux caractères, sans pinyin. Puis retour à l'étape.
    */
   private detour(d: NonNullable<Content['pack']['detours']>[string], refill: number) {
+    this.turn++;
+    this.replay = null;
     const body = this.el.body;
     body.innerHTML = '';
     this.feedback('', '');
@@ -808,6 +873,566 @@ export class Dialogue {
         grid.appendChild(b);
       });
     body.appendChild(grid);
+  }
+
+  // ---------- Service : ticket, étapes, plateaux, caisse ----------
+
+  private div(cls: string, text?: string) {
+    const d = document.createElement('div');
+    d.className = cls;
+    if (text !== undefined) d.textContent = text;
+    return d;
+  }
+
+  /** Bouton fait d'une ligne de mots ; un toucher choisit le bouton (les mots ne se jouent pas un à un ici). */
+  private chip(line: Token[], cls: string) {
+    const b = document.createElement('button');
+    b.className = cls;
+    for (const tok of save.resolveLine(this.content, line)) {
+      const w = this.wordEl(tok);
+      w.onclick = null;
+      w.tabIndex = -1;
+      b.appendChild(w);
+    }
+    return b;
+  }
+
+  /** Une ligne de mots affichée (ticket, ardoise), sans bouton. */
+  private lineBox(line: Token[], cls: string) {
+    const d = this.div(cls);
+    for (const tok of save.resolveLine(this.content, line)) d.appendChild(this.wordEl(tok));
+    return d;
+  }
+
+  private goButton(text: string, onClick: () => void) {
+    this.el.body.querySelector(':scope > button.go')?.remove();
+    const b = document.createElement('button');
+    b.className = 'go';
+    b.textContent = text;
+    b.onclick = () => {
+      sound('tap');
+      b.remove();
+      onClick();
+    };
+    this.el.body.appendChild(b);
+    return b;
+  }
+
+  private next(s: Step) {
+    if (s.end) this.close(true);
+    else this.advance();
+  }
+
+  /** Les mots d'une ligne comptent au carnet, avec cette ligne pour contexte (commande servie, consigne retrouvée). */
+  private meetLine(line: Token[]) {
+    const ctx = lineText(this.content, save.resolveLine(this.content, line));
+    for (const id of lineWords(line)) log({ scene: this.scene.id, step: this.i, kind: 'word_met', word: id, context: notebook.meet(id, ctx) });
+    document.dispatchEvent(new CustomEvent('notebook-changed'));
+  }
+
+  /** Ticket rempli par le joueur ; sans ticket (scène commencée au milieu, pour un test), la bonne commande. */
+  private ticketOf(id: string): { ticket: Ticket; picks: TicketPicks } | undefined {
+    const got = this.tickets.get(id);
+    if (got) return got;
+    const tk = this.scene.steps.find((x) => x.ticket?.id === id)?.ticket;
+    return tk ? { ticket: tk, picks: rightPicks(tk) } : undefined;
+  }
+
+  /** Le rival ricane (après la plainte d'un client mal servi, une monnaie fausse). */
+  private mock(unless?: string, after?: () => void) {
+    const m = this.scene.till?.mock;
+    if (!m || m.actor === unless) return;
+    this.say(m.actor, m, 'joy', () => this.later(() => after?.(), 500), RATE.NORMAL, false);
+  }
+
+  /** Une plainte : le client la dit, le rival ricane, puis la bulle revient à la plainte (elle reste lisible). */
+  private complain(actor: string, l: Said) {
+    const back = () => {
+      this.setActor(actor, 'surprise');
+      this.showLine(l.line, t(this.content, l.gloss), false);
+    };
+    this.say(actor, l, 'surprise', () => this.later(() => this.mock(actor, back), 300));
+  }
+
+  /**
+   * Ticket de commande. Le client commande à voix haute (la bulle reste vide) ; le joueur coche, pour chaque élément,
+   * une option par case (quantité + classificateur, plat, précision). « Attendez ! » fait répéter une seule fois.
+   * Aucune correction ici : l'écoute du moment compte, l'erreur se découvrira au service.
+   */
+  private renderTicket(s: Step, tk: Ticket) {
+    const c = this.content;
+    const ui = c.ui;
+    const actor = s.actor ?? this.scene.npc;
+    const who = this.scene.actors[actor]?.name ?? '';
+    const body = this.el.body;
+    const ask = this.div('fr', t(c, s.ask) || fmt(ui.ticketAsk ?? '', { who }));
+    const slip = this.div('tk-slip');
+    slip.appendChild(this.div('tk-head', fmt(ui.ticketHead ?? '', { who })));
+    const picks: (number | undefined)[][] = tk.items.map((it) => it.cells.map(() => undefined));
+    const send = document.createElement('button');
+    send.className = 'go';
+    send.textContent = ui.ticketSend ?? '✓';
+    send.disabled = true;
+    tk.items.forEach((it, i) => {
+      const row = this.div('tk-item');
+      row.appendChild(this.div('tk-n', String(i + 1)));
+      const cells = this.div('tk-cells');
+      it.cells.forEach((cell, j) => {
+        const opts = this.div('tk-cell');
+        opts.dataset.kind = cell.kind ?? '';
+        // l'ordre est mélangé : la position ne doit rien révéler
+        for (const { o, k } of shuffle(cell.options.map((o, k) => ({ o, k })))) {
+          const b = this.chip(o.line, 'tk-chip');
+          b.onclick = () => {
+            sound('tap');
+            picks[i][j] = k;
+            opts.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+            send.disabled = picks.some((r) => r.some((x) => x === undefined));
+          };
+          opts.appendChild(b);
+        }
+        cells.appendChild(opts);
+      });
+      row.appendChild(cells);
+      slip.appendChild(row);
+    });
+
+    // « 等一下 ! » : le client répète une fois, en soupirant ; 🔊 et 🐢 passent par là aussi
+    let waited = false;
+    const wait = this.chip(tk.wait?.line ?? [], 'sm tk-wait');
+    if (!tk.wait) wait.textContent = ui.ticketWait ?? '…';
+    const again = (rate: number) => {
+      if (waited || !tk.again) {
+        this.feedback(fmt(ui.ticketOnce ?? '', { who }), '');
+        return;
+      }
+      waited = true;
+      wait.disabled = true;
+      log({ scene: this.scene.id, step: this.i, kind: 'retry', detail: `ticket=${tk.id};wait;rate=${rate}` });
+      const l = tk.again;
+      const repeat = () => {
+        this.setActor(actor, 'surprise');
+        this.showLine(tk.hidden === false ? l.line : Dialogue.MASK, t(c, l.gloss), false);
+        this.sayLine(l.line, l.vo, rate);
+      };
+      if (tk.wait) this.say('player', tk.wait, undefined, () => this.later(repeat, 250));
+      else repeat();
+    };
+    this.replay = again;
+    wait.onclick = () => again(RATE.NORMAL);
+
+    send.onclick = () => {
+      const p = picks.map((r) => r.map((x) => x ?? 0));
+      this.tickets.set(tk.id, { ticket: tk, picks: p });
+      slip.querySelectorAll('button').forEach((x) => (x.disabled = true));
+      wait.disabled = true;
+      send.disabled = true;
+      // chaque case est journalisée tout de suite (matrice de confusion) ; la correction viendra au service
+      tk.items.forEach((it, i) =>
+        it.cells.forEach((cell, j) => {
+          const o = cell.options[p[i][j]];
+          const right = cell.options.find((x) => x.ok);
+          log({
+            scene: this.scene.id,
+            step: this.i,
+            kind: 'answer',
+            ok: !!o.ok,
+            word: lineWords(right?.line ?? [])[0],
+            detail: `ticket=${tk.id};item=${i + 1};cell=${cell.kind ?? j + 1};answer=${lineText(c, o.line)};expected=${lineText(c, right?.line ?? [])}${o.ok ? '' : `;errorType=${o.errorType ?? '?'}`};waited=${waited ? 1 : 0}`,
+          });
+        }),
+      );
+      sound('page');
+      this.replay = () => undefined;
+      this.feedback(ui.ticketSent ?? '', '');
+      this.later(() => this.next(s), 1100);
+    };
+    const row = this.div('tk-actions');
+    row.append(wait, send);
+    body.append(ask, slip, row);
+  }
+
+  /**
+   * Cartes d'étapes à remettre dans l'ordre de la consigne (先…再…然后…). Chaque toucher est vérifié :
+   * une carte posée trop tôt coûte de la patience, l'explication nomme le mot d'ordre, la bonne carte est montrée.
+   */
+  private renderSequence(s: Step, sq: Sequence) {
+    const c = this.content;
+    const ui = c.ui;
+    const actor = s.actor ?? this.scene.npc;
+    const who = this.scene.actors[actor]?.name ?? '';
+    const n = sq.cards.length;
+    // un ordre mélangé qui n'est pas déjà le bon ; gardé si l'on revient d'un détour
+    let order = shuffle(sq.cards.map((_, k) => k));
+    if (order.every((x, k) => x === k)) order = [...order.slice(1), order[0]];
+    const st = this.progress.get(this.i) ?? { k: 0, order };
+    this.progress.set(this.i, st);
+    const ask = this.div('fr', t(c, s.ask) || fmt(ui.seqAsk ?? '', { who }));
+    const slots = this.div('seq-slots');
+    const pool = this.div('picks seq-pool');
+    const boxes = sq.cards.map((card, k) => {
+      const box = this.div(`seq-slot${k < st.k ? ' filled' : ''}`);
+      box.appendChild(this.div('seq-num', String(k + 1)));
+      if (k < st.k) box.appendChild(this.lineBox(card.line, 'seq-words'));
+      slots.appendChild(box);
+      return box;
+    });
+    this.el.body.append(ask, slots, pool);
+    let revealed = !sq.hidden;
+    const reveal = () => {
+      if (revealed || !s.line) return;
+      revealed = true;
+      this.setActor(actor);
+      this.showLine(s.line, t(c, s.gloss));
+    };
+    // la consigne se réécoute autant qu'on veut : c'est l'ordre qu'il faut retenir
+    if (s.line) this.replay = (rate) => this.sayLine(s.line!, s.vo, rate);
+    const done = () => {
+      reveal();
+      log({ scene: this.scene.id, step: this.i, kind: 'answer', ok: true, detail: 'sequence=complete' });
+      this.goButton(s.end ? ui.finish : ui.continue, () => this.next(s));
+    };
+    if (st.k >= n) {
+      done();
+      return;
+    }
+    for (const idx of st.order ?? []) {
+      if (idx < st.k) continue;
+      const card = sq.cards[idx];
+      const b = this.chip(card.line, 'seq-card');
+      b.dataset.idx = String(idx);
+      b.onclick = () => {
+        const expected = sq.cards[st.k];
+        const ok = idx === st.k;
+        log({
+          scene: this.scene.id,
+          step: this.i,
+          kind: 'answer',
+          ok,
+          word: lineWords(expected.line)[0],
+          detail: `sequence=${st.k + 1};answer=${lineText(c, card.line)};expected=${lineText(c, expected.line)}${ok ? '' : ';errorType=sequence'}`,
+        });
+        pool.querySelectorAll('.show-answer').forEach((x) => x.classList.remove('show-answer'));
+        if (ok) {
+          b.remove();
+          boxes[st.k].classList.add('filled');
+          boxes[st.k].appendChild(this.lineBox(card.line, 'seq-words'));
+          st.k++;
+          this.win(lineText(c, card.line), lineWords(card.line), () => (st.k >= n ? done() : undefined));
+        } else {
+          b.classList.remove('wrong');
+          void b.offsetWidth;
+          b.classList.add('wrong');
+          this.confuse(lineWords(card.line), lineWords(expected.line));
+          reveal();
+          pool.querySelector<HTMLElement>(`[data-idx="${st.k}"]`)?.classList.add('show-answer');
+          this.lose(t(c, expected.why), 'sequence', lineWords(expected.line), pool);
+        }
+      };
+      pool.appendChild(b);
+    }
+  }
+
+  /**
+   * Service : les plateaux (ce que le joueur a écrit sur les tickets) arrivent un à un, dans le désordre ;
+   * on porte chacun à une place, désignée par ce que le client a dit (这儿, 那儿…). Bon plateau, bonne place : merci.
+   * Sinon le client se plaint (sa propre voix), la bulle oppose ce qui est servi à ce qui était commandé,
+   * la caisse perd le plat refait, le rival ricane, la bonne place est montrée ; on passe au plateau suivant.
+   */
+  private renderServe(s: Step, sv: Serve) {
+    const c = this.content;
+    const ui = c.ui;
+    const places = sv.places.filter((p) => this.ticketOf(p.ticket));
+    let order = shuffle(places.map((_, k) => k));
+    const st = this.progress.get(this.i) ?? { k: 0, order };
+    this.progress.set(this.i, st);
+    order = st.order ?? order;
+    const head = this.div('stall-head');
+    const tag = Object.assign(document.createElement('span'), { className: 'stall-tag' });
+    const pips = this.div('stall-pips');
+    order.forEach(() => pips.appendChild(document.createElement('i')));
+    head.append(tag, pips);
+    const ask = this.div('fr');
+    const tray = this.div('tk-slip tray');
+    const row = this.div('serve-places');
+    this.el.body.append(head, ask, tray, row);
+    const results = (st.results ??= []);
+    results.forEach((r, j) => pips.children[j]?.classList.add(r ? 'ok' : 'ko'));
+
+    const show = () => {
+      tray.innerHTML = '';
+      row.innerHTML = '';
+      this.feedback('', '');
+      if (st.k >= order.length) {
+        tag.textContent = '';
+        ask.textContent = ui.serveDone ?? '';
+        tray.remove();
+        this.goButton(s.end ? ui.finish : ui.continue, () => this.next(s));
+        return;
+      }
+      const want = places[order[st.k]];
+      const T = this.ticketOf(want.ticket)!;
+      [...pips.children].forEach((p, j) => p.classList.toggle('on', j === st.k));
+      tag.textContent = fmt(ui.serveTray ?? '{k}/{n}', { k: String(st.k + 1), n: String(order.length) });
+      ask.textContent = t(c, s.ask) || (ui.serveAsk ?? '');
+      tray.appendChild(this.div('tk-head', ui.serveTrayHead ?? ''));
+      tray.appendChild(this.lineBox(ticketLine(T.ticket, T.picks), 'tk-line'));
+      const buttons = places.map((p) => {
+        const b = document.createElement('button');
+        b.className = 'serve-place';
+        b.appendChild(this.lineBox(p.line, 'tk-line'));
+        if (p === want) b.dataset.ok = '1';
+        if (p.caption) b.appendChild(this.div('cap', t(c, p.caption)));
+        b.onclick = () => serve(p, b, want, T, buttons);
+        row.appendChild(b);
+        return b;
+      });
+    };
+
+    const serve = (p: Serve['places'][number], b: HTMLButtonElement, want: Serve['places'][number], T: { ticket: Ticket; picks: TicketPicks }, buttons: HTMLButtonElement[]) => {
+      buttons.forEach((x) => (x.disabled = true));
+      const okPlace = p === want;
+      const bad = wrongCells(T.ticket, T.picks);
+      const right = ticketLine(T.ticket, rightPicks(T.ticket));
+      log({
+        scene: this.scene.id,
+        step: this.i,
+        kind: 'answer',
+        ok: okPlace,
+        word: lineWords(want.line)[0],
+        detail: `serve=${want.ticket};place=${lineText(c, p.line)};expected=${lineText(c, want.line)}${okPlace ? '' : ';errorType=semantic'};ticketErrors=${bad.length}`,
+      });
+      st.k++;
+      // ce que le client voulait (la commande juste) entre au carnet, avec la commande pour contexte
+      this.meetLine(right);
+      if (okPlace && !bad.length) {
+        results.push(true);
+        pips.children[st.k - 1]?.classList.add('ok');
+        b.classList.add('right');
+        const words = [...lineWords(right), ...lineWords(want.line)];
+        let gone = false;
+        const nextTray = () => {
+          if (gone) return;
+          gone = true;
+          show();
+        };
+        this.win(lineText(c, right), words, () => this.say(want.actor, want.thanks, 'joy', () => this.later(nextTray, 500)));
+        // filet : si la voix ne prévient pas de sa fin, le plateau suivant arrive quand même
+        this.later(nextTray, 7000);
+        return;
+      }
+      results.push(false);
+      pips.children[st.k - 1]?.classList.add('ko');
+      b.classList.add('wrong');
+      buttons[places.indexOf(want)]?.classList.add('show-answer');
+      // qui se plaint, et de quoi : le client servi à tort réclame sa propre commande
+      const R = this.ticketOf(p.ticket)!;
+      const [bi, bj] = bad[0] ?? [0, 0];
+      const complaint = !okPlace ? R.ticket.items[0].complaint : (T.ticket.items[bi].cells[bj].complaint ?? T.ticket.items[bi].complaint);
+      // la bulle oppose ce qui est servi à ce qui était commandé
+      const oppose = this.div('oppose');
+      oppose.append(this.div('lbl', ui.serveServed ?? '✗'), this.lineBox(ticketLine(T.ticket, T.picks), 'tk-line served'));
+      oppose.append(this.div('lbl', fmt(ui.serveWanted ?? '✓', { who: this.scene.actors[p.actor]?.name ?? '' })), this.lineBox(ticketLine(R.ticket, rightPicks(R.ticket)), 'tk-line wanted'));
+      tray.appendChild(oppose);
+      const whys = [okPlace ? '' : t(c, want.why), ...bad.map(([i, j]) => t(c, T.ticket.items[i].cells[j].options[T.picks[i][j]].why))].filter(Boolean);
+      const expected: string[] = [];
+      for (const [i, j] of bad) {
+        const cell = T.ticket.items[i].cells[j];
+        const rightOpt = cell.options.find((o) => o.ok);
+        this.confuse(lineWords(cell.options[T.picks[i][j]].line), lineWords(rightOpt?.line ?? []));
+        expected.push(...lineWords(rightOpt?.line ?? []));
+      }
+      if (!okPlace) {
+        this.confuse(lineWords(p.line), lineWords(want.line));
+        expected.push(...lineWords(want.line));
+      }
+      const errorType = !okPlace ? 'semantic' : (T.ticket.items[bi].cells[bj].options[T.picks[bi][bj]].errorType ?? '?');
+      this.setTill(-(sv.penalty ?? 0));
+      this.lose(whys.join(' '), errorType, expected, row);
+      this.complain(p.actor, complaint);
+      this.goButton(ui.continue, show);
+    };
+    show();
+  }
+
+  /** Pièce ou billet (chiffre et montant dit). */
+  private piece(v: number) {
+    const coins = this.content.pack.money?.coins ?? [];
+    const d = this.div(`piece ${coins.length && v === Math.min(...coins) ? 'coin' : 'note'}`);
+    d.dataset.v = String(v);
+    d.append(Object.assign(document.createElement('b'), { textContent: String(v) }), Object.assign(document.createElement('small'), { textContent: moneyText(this.content, v) }));
+    return d;
+  }
+
+  /**
+   * Encaissement : l'ardoise des prix et la commande ; le client demande « combien ? », le joueur choisit le total ;
+   * puis le client tend un billet et le joueur compose la monnaie (pièces et billets du pack).
+   * Erreur : l'addition ou la soustraction, en mots et en chiffres ; une monnaie trop généreuse fait baisser la caisse.
+   */
+  private renderPay(s: Step, py: Pay) {
+    const c = this.content;
+    const ui = c.ui;
+    const actor = s.actor ?? this.scene.npc;
+    const who = this.scene.actors[actor]?.name ?? '';
+    const T = this.ticketOf(py.ticket);
+    if (!T) {
+      this.next(s);
+      return;
+    }
+    const sum = total(T.ticket);
+    const due = py.given.n - sum;
+    const st = this.progress.get(this.i) ?? { k: 0 };
+    this.progress.set(this.i, st);
+    const coins = c.pack.money?.coins ?? [1, 5, 10];
+    const body = this.el.body;
+    // l'ardoise (prix) et la commande de ce client
+    const board = this.div('pay-board');
+    const slate = this.scene.till?.slate;
+    if (slate?.length) {
+      const sl = this.div('slate');
+      for (const l of slate) sl.appendChild(this.lineBox(l, 'slate-line'));
+      board.appendChild(sl);
+    }
+    const slip = this.div('tk-slip pay-order');
+    slip.append(this.div('tk-head', fmt(ui.payOrder ?? '', { who })), this.lineBox(ticketLine(T.ticket, rightPicks(T.ticket)), 'tk-line'));
+    board.appendChild(slip);
+    const ask = this.div('fr');
+    const area = this.div('pay-area');
+    body.append(board, ask, area);
+
+    const stageTotal = () => {
+      ask.textContent = ui.payTotalAsk ?? '';
+      this.say(actor, py.ask);
+      const choices = this.div('choices pay-totals');
+      for (const o of shuffle(py.totals)) {
+        const said = withAmount(c, py.total, o.n);
+        const b = this.chip(said.line, '');
+        if (o.n === sum) b.dataset.ok = '1';
+        b.onclick = () => {
+          choices.querySelectorAll('button').forEach((x) => (x.disabled = true));
+          const ok = o.n === sum;
+          log({ scene: this.scene.id, step: this.i, kind: 'answer', ok, word: lineWords(moneyLine(c, sum))[0], detail: `pay=${py.ticket};total;answer=${o.n};expected=${sum}${ok ? '' : `;errorType=${o.errorType ?? 'number'}`}` });
+          st.k = 1;
+          if (ok) {
+            b.classList.add('right');
+            this.win(addition(c, T.ticket), lineWords(said.line), () => this.say('player', said, undefined, () => this.later(stageChange, 300)));
+          } else {
+            b.classList.add('wrong');
+            this.confuse(lineWords(said.line), lineWords(moneyLine(c, sum)));
+            this.lose(`${addition(c, T.ticket)} ${t(c, o.why)}`.trim(), o.errorType ?? 'number', lineWords(moneyLine(c, sum)), choices);
+            choices.querySelector('[data-ok="1"]')?.classList.add('show-answer');
+            this.say('player', said);
+            this.goButton(ui.continue, stageChange);
+          }
+        };
+        choices.appendChild(b);
+      }
+      area.appendChild(choices);
+    };
+
+    const stageChange = () => {
+      area.innerHTML = '';
+      // le total est dit : l'ardoise se range, il reste à rendre la monnaie
+      board.remove();
+      area.appendChild(this.div('lbl pay-due', fmt(ui.payDue ?? '{words}', { words: moneyText(c, sum), n: String(sum) })));
+      this.feedback('', '');
+      ask.textContent = fmt(ui.payChangeAsk ?? '', { who, paid: moneyText(c, py.given.n) });
+      this.say(actor, py.given);
+      const given = this.div('pay-given');
+      given.append(this.div('lbl', fmt(ui.payGiven ?? '', { who })), this.piece(py.given.n));
+      const trayLbl = this.div('lbl');
+      const tray = this.div('pay-tray');
+      const palette = this.div('pay-coins');
+      const chosen: number[] = [];
+      const send = document.createElement('button');
+      send.className = 'go';
+      send.textContent = ui.paySend ?? '✓';
+      const draw = () => {
+        tray.innerHTML = '';
+        chosen.forEach((v, k) => {
+          const p = this.piece(v);
+          p.onclick = () => {
+            if (send.disabled && chosen.length) return;
+            chosen.splice(k, 1);
+            sound('tap');
+            draw();
+          };
+          tray.appendChild(p);
+        });
+        const n = chosen.reduce((a, b) => a + b, 0);
+        trayLbl.textContent = fmt(ui.payTray ?? '{n}', { n: String(n), words: n ? moneyText(c, n) : '' });
+        send.disabled = !chosen.length;
+      };
+      for (const v of coins) {
+        const b = document.createElement('button');
+        b.className = 'coin-btn';
+        b.appendChild(this.piece(v));
+        b.onclick = () => {
+          sound('tap');
+          chosen.push(v);
+          draw();
+        };
+        palette.appendChild(b);
+      }
+      send.onclick = () => {
+        const giv = chosen.reduce((a, b) => a + b, 0);
+        palette.querySelectorAll('button').forEach((x) => (x.disabled = true));
+        send.disabled = true;
+        const ok = giv === due;
+        log({ scene: this.scene.id, step: this.i, kind: 'answer', ok, word: lineWords(moneyLine(c, due))[0], detail: `pay=${py.ticket};change;given=${py.given.n};total=${sum};answer=${giv};expected=${due}${ok ? '' : ';errorType=number'}` });
+        st.k = 2;
+        const back = withAmount(c, py.change, due);
+        if (ok) {
+          this.setTill(sum);
+          this.win(subtraction(c, py.given.n, sum), lineWords(back.line), () =>
+            this.say('player', back, undefined, () => this.later(() => this.say(actor, py.thanks, 'joy', () => this.later(() => this.next(s), 700)), 250)),
+          );
+          this.goButton(s.end ? ui.finish : ui.continue, () => this.next(s));
+          return;
+        }
+        // trop rendu : la caisse perd la différence ; pas assez : le client réclame, on complète
+        this.setTill(sum - Math.max(0, giv - due));
+        this.confuse(lineWords(moneyLine(c, giv)), lineWords(moneyLine(c, due)));
+        // la bonne monnaie est montrée
+        area.appendChild(this.div('lbl', ui.payRight ?? ''));
+        const show = this.div('pay-tray answer');
+        for (const v of makeChange(due, coins)) show.appendChild(this.piece(v));
+        show.dataset.ok = '1';
+        area.appendChild(show);
+        this.lose(`${subtraction(c, py.given.n, sum)} ${giv > due ? (ui.payOver ?? '') : (ui.payShort ?? '')}`.trim(), 'number', lineWords(moneyLine(c, due)), area);
+        show.classList.add('show-answer');
+        this.complain(actor, py.wrong);
+        this.goButton(s.end ? ui.finish : ui.continue, () => this.next(s));
+      };
+      area.append(given, palette, trayLbl, tray);
+      body.appendChild(send);
+      draw();
+    };
+
+    if (st.k === 0) stageTotal();
+    else if (st.k === 1) stageChange();
+    else this.goButton(s.end ? ui.finish : ui.continue, () => this.next(s));
+  }
+
+  /** Bilan du service : la caisse, la paie (l'argent rejoint le sac). */
+  private renderWage() {
+    const c = this.content;
+    const tl = this.scene.till;
+    if (!tl) return;
+    const w = tl.wage;
+    const pay = w ? Math.max(w.min, w.base - Math.max(0, tl.target - this.till)) : 0;
+    const unit = c.pack.money ? lineText(c, [c.pack.money.unit]) : '';
+    this.el.body.appendChild(this.div('wage', fmt(c.ui.wageSummary ?? '', { till: String(this.till), target: String(tl.target), wage: String(pay), unit })));
+    log({ scene: this.scene.id, step: this.i, kind: 'till', detail: `summary;till=${this.till};target=${tl.target};wage=${pay}` });
+    if (!w || pay <= 0) return;
+    if (w.flag) save.setFlags({ [w.flag]: String(pay) });
+    const item = c.pack.money?.item;
+    if (!item) return;
+    save.addItem(item);
+    flyToBag(c, item, this.host.anchor?.(this.scene.npc) ?? undefined);
+    const it = c.items.get(item);
+    if (it) toast(c, it.word, fmt(c.ui.wageToast ?? '+{n}', { n: String(pay), unit }));
+    log({ scene: this.scene.id, step: this.i, kind: 'item_get', detail: `${item}+${pay}`, word: it?.word });
   }
 
   // ---------- Étal libre : jeu de vocabulaire rejouable ----------

@@ -140,12 +140,95 @@ export interface Stall {
   };
 }
 
+/** Réplique simple (voix d'une seule personne, clip entier). */
+export interface Said {
+  vo?: string;
+  line: Token[];
+  gloss: Localized;
+}
+
+/** Une réponse proposée dans une case de ticket, une carte d'étape… */
+export interface TaskOption {
+  line: Token[];
+  ok?: boolean;
+  why?: Localized;
+  errorType?: string;
+}
+
+/**
+ * Ticket de commande : le client commande (souvent sans texte, à l'oreille), le joueur remplit une case par élément
+ * (quantité + classificateur, plat, précision…). Rien n'est corrigé sur le moment : l'erreur se découvre au service.
+ */
+export interface Ticket {
+  /** Identifiant repris par les étapes « serve » et « pay ». */
+  id: string;
+  /** La commande n'est pas écrite dans la bulle : on l'écoute (par défaut). */
+  hidden?: boolean;
+  /** « Attendez ! » : le joueur peut faire répéter une fois ; le client répète (en soupirant) et ses mots s'affichent. */
+  wait?: Said;
+  again?: Said;
+  items: {
+    /** Nombre d'unités et prix unitaire (pour l'addition à la caisse). */
+    n: number;
+    unit: number;
+    /** Ce que dit le client si cet élément est faux (« je n'en veux pas, je veux… »). */
+    complaint: Said;
+    cells: { kind?: string; options: TaskOption[]; complaint?: Said }[];
+  }[];
+}
+
+/** Cartes d'étapes à remettre dans l'ordre de la consigne (recette, itinéraire…). L'ordre du fichier est le bon. */
+export interface Sequence {
+  hidden?: boolean;
+  cards: { line: Token[]; why: Localized }[];
+}
+
+/** Service : chaque plateau (ticket rempli par le joueur) est porté à une place, désignée par ce qu'a dit le client. */
+export interface Serve {
+  /** Perte de caisse pour un plateau mal servi (plat refait). */
+  penalty?: number;
+  places: {
+    ticket: string;
+    actor: string;
+    line: Token[];
+    caption?: Localized;
+    /** Pourquoi c'est cette place (rappel de ce que le client a dit). */
+    why: Localized;
+    thanks: Said;
+  }[];
+}
+
+/** Encaissement : dire le total (au choix), puis rendre la monnaie avec les pièces et billets de la monnaie du pack. */
+export interface Pay {
+  ticket: string;
+  ask: Said;
+  /** Totaux proposés au joueur (le bon = la somme du ticket). */
+  totals: { n: number; why?: Localized; errorType?: string }[];
+  /**
+   * Répliques du joueur avec un montant : ["v", "AMOUNT"] marque sa place, {n} le remplace dans la voix et la glose
+   * (un clip par montant : `c2_p_kuai_{n}_{body}`). `total` = « 七块。 », `change` = « 找你三块。 ».
+   */
+  total: Said;
+  change: Said;
+  /** Le billet tendu par le client (« 给你十块。 »). */
+  given: Said & { n: number };
+  thanks: Said;
+  /** Monnaie fausse. */
+  wrong: Said;
+}
+
 export interface Step {
-  type: 'say' | 'choose' | 'pick' | 'cinematic' | 'restore' | 'stall';
+  type: 'say' | 'choose' | 'pick' | 'cinematic' | 'restore' | 'stall' | 'ticket' | 'sequence' | 'serve' | 'pay';
   /** Ligne à restaurer (étape « restore »). */
   restore?: Restore;
   /** Étal libre (étape « stall »). */
   stall?: Stall;
+  ticket?: Ticket;
+  sequence?: Sequence;
+  serve?: Serve;
+  pay?: Pay;
+  /** Fin de service : bilan de caisse et paie (scène avec `till`). */
+  wage?: boolean;
   /** Séquence animée plein écran (ex. « valise ») ; les options y sont présentées comme des objets à choisir. */
   cinematic?: string;
   narration?: Localized;
@@ -194,6 +277,13 @@ export interface Scene {
   onEnd?: SceneEnd;
   /** Patience à zéro : détour (mini-révision) puis retour à l'étape. */
   onExhausted?: { detour: string; refill: number };
+  /** Caisse du service : objectif, ardoise des prix, ricanement du rival, paie de fin. */
+  till?: {
+    target: number;
+    slate?: Token[][];
+    mock?: Said & { actor: string };
+    wage?: { base: number; min: number; flag?: string };
+  };
 }
 
 export interface Detour {
@@ -261,7 +351,11 @@ export interface Hotspot {
   /** Échelle du sprite (1 par défaut). */
   scale?: number;
   /** Quand ce point est visible, il remplace celui-ci (même personnage, autre scène : 奶奶 qui se souvient de Léo…). */
-  replaces?: string;
+  replaces?: string | string[];
+  /** Figurant : visible seulement quand ce point-là est visible (les clients qui attendent le service de 奶奶). */
+  with?: string;
+  /** Où se place le joueur pour parler (décalage depuis ce point, px, signé) ; sinon à 300 px, du côté d'où il vient. */
+  playerAt?: number;
   prompt: Localized;
 }
 
@@ -354,6 +448,8 @@ export interface Pack {
   /** Ouverture d'une nouvelle partie : une image plein écran, le nom du lieu en grand, une phrase. */
   intro?: { image: string; word: string; text: Localized };
   photo?: { item: string; credits?: string };
+  /** Monnaie : l'unité (块), les montants dits (nombre → mots), les pièces et billets, l'objet du sac qui la représente. */
+  money?: { unit: Token; words: Record<string, Token[]>; coins: number[]; item?: string };
 }
 
 export interface Content {

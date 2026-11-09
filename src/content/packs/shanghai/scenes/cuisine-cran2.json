@@ -1,0 +1,3139 @@
+{
+ "$schema": "../../../../schemas/scene.schema.json",
+ "id": "cuisine-cran2",
+ "version": "0.1",
+ "language": "zh",
+ "world": "cuisine",
+ "tier": 2,
+ "title": {
+  "fr": "Trois clients à la fois"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  },
+  "laowang": {
+   "name": "老王",
+   "label": {
+    "fr": "un habitué, retraité"
+   },
+   "portrait": "laowang"
+  },
+  "xiaomei": {
+   "name": "小美",
+   "label": {
+    "fr": "une étudiante pressée"
+   },
+   "portrait": "xiaomei"
+  },
+  "xiaolong": {
+   "name": "小龙",
+   "label": {
+    "fr": "le petit-neveu, déguisé en client"
+   },
+   "portrait": "xiaolong"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {},
+ "till": {
+  "target": 30,
+  "slate": [
+   [
+    [
+     "w",
+     "baozi"
+    ],
+    [
+     "w",
+     "liang"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "ge"
+    ]
+   ],
+   [
+    [
+     "w",
+     "miantiao"
+    ],
+    [
+     "w",
+     "shi_dix"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "wan"
+    ]
+   ],
+   [
+    [
+     "w",
+     "tang_soupe"
+    ],
+    [
+     "w",
+     "wu"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "wan"
+    ]
+   ],
+   [
+    [
+     "w",
+     "cha"
+    ],
+    [
+     "w",
+     "san"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bei"
+    ]
+   ],
+   [
+    [
+     "w",
+     "niunai"
+    ],
+    [
+     "w",
+     "si"
+    ],
+    [
+     "w",
+     "kuai"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bei"
+    ]
+   ]
+  ],
+  "mock": {
+   "vo": "c2_xl_haha",
+   "line": [
+    [
+     "w",
+     "haha"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(小龙 ricane.)"
+   },
+   "actor": "xiaolong"
+  },
+  "wage": {
+   "base": 10,
+   "min": 5,
+   "flag": "paie_cran2"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "onEnd": {
+  "flags": {
+   "cran2": "fait"
+  }
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "w",
+     "ren"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Le lendemain, à midi. Trois clients attendent déjà au comptoir.) Te voilà ! Aujourd'hui, il y a beaucoup de monde."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_02",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "xie"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Toi, tu écris (les commandes) ; moi, je cuisine."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_02b",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "laowang"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Un vieil habitué s'approche, son thermos de thé à la main.) Lao Wang, bonjour !"
+   }
+  },
+  {
+   "type": "ticket",
+   "actor": "laowang",
+   "vo": "c2_lw_01",
+   "line": [
+    [
+     "w",
+     "nainai"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "liang"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "baozi"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bei"
+    ],
+    [
+     "w",
+     "hongcha"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bonjour, 奶奶 ! Deux 包子, une tasse de thé rouge."
+   },
+   "ask": {
+    "fr": "老王 commande, comme tous les jours. Écoute, puis remplis son ticket : une case par ligne. Tu peux lui dire 等一下 une fois."
+   },
+   "ticket": {
+    "id": "laowang",
+    "hidden": true,
+    "wait": {
+     "vo": "c2_p_deng_{body}",
+     "line": [
+      [
+       "w",
+       "deng"
+      ],
+      [
+       "w",
+       "yixia"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Un instant ! (Vous pouvez répéter ?)"
+     }
+    },
+    "again": {
+     "vo": "c2_lw_01r",
+     "line": [
+      [
+       "w",
+       "ai_soupir"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "liang"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "w",
+       "baozi"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bei"
+      ],
+      [
+       "w",
+       "hongcha"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "(Il soupire, puis répète, patient.)"
+     }
+    },
+    "items": [
+     {
+      "n": 2,
+      "unit": 2,
+      "complaint": {
+       "vo": "c2_lw_ko1",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "liang"
+        ],
+        [
+         "w",
+         "ge"
+        ],
+        [
+         "w",
+         "baozi"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux deux 包子."
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "er"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "why": {
+           "fr": "Devant un classificateur, « deux » se dit 两 liǎng : 两个包子. 二 èr sert à compter (一、二、三…) et dans les nombres (十二, 二十)."
+          },
+          "errorType": "grammar"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "why": {
+           "fr": "碗 wǎn = un bol (soupe, riz, nouilles). Les 包子 se comptent un par un : 两个包子."
+          },
+          "errorType": "classifier"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "baozi"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "mianbao"
+           ]
+          ],
+          "why": {
+           "fr": "面包 miànbāo = le pain de 王阿姨. Même 包 que 包子 bāozi (les petits pains farcis à la vapeur) : écoute la première syllabe, bāo."
+          },
+          "errorType": "character"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "mifan"
+           ]
+          ],
+          "why": {
+           "fr": "米饭 = le riz cuit (celui du riz sauté d'hier). 老王 a dit 包子 bāozi."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "unit": 3,
+      "complaint": {
+       "vo": "c2_lw_ko2",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "yi"
+        ],
+        [
+         "w",
+         "bei"
+        ],
+        [
+         "w",
+         "hongcha"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux une tasse de thé rouge."
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "why": {
+           "fr": "碗 = un bol. Le thé se boit dans une tasse : 一杯茶. C'est le 杯 de 茶杯, la tasse de 陈爷爷."
+          },
+          "errorType": "classifier"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "why": {
+           "fr": "两杯 = deux tasses. Il a dit 一杯 yì bēi : une seule."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "hongcha"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "lucha"
+           ]
+          ],
+          "why": {
+           "fr": "绿茶 lǜchá = le thé vert. Il a dit 红茶 hóngchá, le « thé rouge » (notre thé noir) : c'est le premier caractère qui compte."
+          },
+          "errorType": "character"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "huacha"
+           ]
+          ],
+          "why": {
+           "fr": "花茶 huāchá = le thé aux fleurs. 红 hóng ≠ 花 huā : écoute le premier caractère."
+          },
+          "errorType": "character"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "laowang",
+   "vo": "c2_lw_02",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zuo_assis"
+    ],
+    [
+     "w",
+     "zher"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il pose son thermos sur la table près du comptoir, comme tous les jours.) Je m'assois ici."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_02c",
+   "line": [
+    [
+     "w",
+     "xiaomei"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Une étudiante du quartier, sac au dos, les yeux sur son téléphone.) Xiao Mei, qu'est-ce que tu veux ?"
+   }
+  },
+  {
+   "type": "ticket",
+   "actor": "xiaomei",
+   "vo": "c2_xm_01",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "wan"
+    ],
+    [
+     "w",
+     "baicai"
+    ],
+    [
+     "w",
+     "doufu"
+    ],
+    [
+     "w",
+     "tang_soupe"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "liang"
+    ],
+    [
+     "w",
+     "ge"
+    ],
+    [
+     "w",
+     "baozi"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "kuai_vite"
+    ],
+    [
+     "w",
+     "yidianr"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Je voudrais un bol de soupe chou-tofu et deux 包子. Un peu vite, s'il vous plaît !"
+   },
+   "ask": {
+    "fr": "小美 est pressée. Écoute sa commande et remplis le ticket."
+   },
+   "ticket": {
+    "id": "xiaomei",
+    "hidden": true,
+    "wait": {
+     "vo": "c2_p_deng_{body}",
+     "line": [
+      [
+       "w",
+       "deng"
+      ],
+      [
+       "w",
+       "yixia"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Un instant ! (Vous pouvez répéter ?)"
+     }
+    },
+    "again": {
+     "vo": "c2_xm_01r",
+     "line": [
+      [
+       "w",
+       "ai_soupir"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "wan"
+      ],
+      [
+       "w",
+       "baicai"
+      ],
+      [
+       "w",
+       "doufu"
+      ],
+      [
+       "w",
+       "tang_soupe"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "liang"
+      ],
+      [
+       "w",
+       "ge"
+      ],
+      [
+       "w",
+       "baozi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "(Elle soupire sans lever les yeux de son téléphone, et répète.)"
+     }
+    },
+    "items": [
+     {
+      "n": 1,
+      "unit": 5,
+      "complaint": {
+       "vo": "c2_xm_ko1",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "baicai"
+        ],
+        [
+         "w",
+         "doufu"
+        ],
+        [
+         "w",
+         "tang_soupe"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux la soupe chou-tofu !"
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "why": {
+           "fr": "杯 bēi = une tasse, un verre : pour boire (茶, 牛奶). La soupe se sert dans un bol : 一碗汤."
+          },
+          "errorType": "classifier"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "why": {
+           "fr": "两碗 = deux bols. Elle a dit 一碗 yì wǎn : un seul."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "baicai"
+           ],
+           [
+            "w",
+            "doufu"
+           ],
+           [
+            "w",
+            "tang_soupe"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "xihongshi"
+           ],
+           [
+            "w",
+            "jidan"
+           ],
+           [
+            "w",
+            "tang_soupe"
+           ]
+          ],
+          "why": {
+           "fr": "西红柿鸡蛋 = tomates et œufs. Elle a dit 白菜豆腐 : chou chinois (de 李叔叔) et tofu (de 王阿姨)."
+          },
+          "errorType": "semantic"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "tudou"
+           ],
+           [
+            "w",
+            "tang_soupe"
+           ]
+          ],
+          "why": {
+           "fr": "土豆 tǔdòu = la pomme de terre. Même 豆 que 豆腐 dòufu, le tofu… mais elle a dit 白菜豆腐汤 : le 豆 vient après 白菜."
+          },
+          "errorType": "character"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 2,
+      "unit": 2,
+      "complaint": {
+       "vo": "c2_xm_ko2",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "liang"
+        ],
+        [
+         "w",
+         "ge"
+        ],
+        [
+         "w",
+         "baozi"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux deux 包子 !"
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "er"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "why": {
+           "fr": "Devant un classificateur, « deux » se dit 两 liǎng : 两个包子. 二 èr sert à compter (一、二、三…) et dans les nombres (十二, 二十)."
+          },
+          "errorType": "grammar"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "liang"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "why": {
+           "fr": "杯 = pour boire. Les 包子 se comptent un par un : 两个."
+          },
+          "errorType": "classifier"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "baozi"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "mianbao"
+           ]
+          ],
+          "why": {
+           "fr": "面包 miànbāo = le pain. Même 包 que 包子 bāozi : écoute la première syllabe."
+          },
+          "errorType": "character"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "binggan"
+           ]
+          ],
+          "why": {
+           "fr": "饼干 bǐnggān = les biscuits de 王阿姨. Elle a dit 包子 bāozi."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "xiaomei",
+   "vo": "c2_xm_02",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "nar_la"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle montre la table du fond, sans lever les yeux de son téléphone.) Je suis là-bas."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "xiaolong",
+   "vo": "c2_xl_00",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "nainai"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "chi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(小龙 entre en riant, un torchon sur l'épaule.) Mamie ! Moi aussi, je veux manger !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_03",
+   "expression": "surprise",
+   "line": [
+    [
+     "w",
+     "xiaolong"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "小龙 ? … Bon, d'accord. (À toi : c'est un client comme les autres.)"
+   }
+  },
+  {
+   "type": "ticket",
+   "actor": "xiaolong",
+   "vo": "c2_xl_01",
+   "line": [
+    [
+     "w",
+     "miantiao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "wan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shao"
+    ],
+    [
+     "w",
+     "yidianr"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "w",
+     "jidan"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "bei"
+    ],
+    [
+     "w",
+     "niunai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Des nouilles, un bol, un peu moins, sans œufs ! Un verre de lait !"
+   },
+   "ask": {
+    "fr": "小龙 commande vite, et dans le désordre — exprès. Écoute bien chaque précision."
+   },
+   "ticket": {
+    "id": "xiaolong",
+    "hidden": true,
+    "wait": {
+     "vo": "c2_p_deng_{body}",
+     "line": [
+      [
+       "w",
+       "deng"
+      ],
+      [
+       "w",
+       "yixia"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Un instant ! (Vous pouvez répéter ?)"
+     }
+    },
+    "again": {
+     "vo": "c2_xl_01r",
+     "line": [
+      [
+       "w",
+       "ai_soupir"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "man"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "miantiao"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "wan"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "shao"
+      ],
+      [
+       "w",
+       "yidianr"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "jidan"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "yi"
+      ],
+      [
+       "w",
+       "bei"
+      ],
+      [
+       "w",
+       "niunai"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "(Il lève les yeux au ciel, se moque de ta lenteur, et répète encore plus vite.)"
+     }
+    },
+    "items": [
+     {
+      "n": 1,
+      "unit": 10,
+      "complaint": {
+       "vo": "c2_xl_ko1",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "miantiao"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux des nouilles !"
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "why": {
+           "fr": "杯 = pour boire. Les nouilles se servent au bol : 一碗面条. (小龙 a dit le plat d'abord, puis 一碗 : il mélange tout exprès.)"
+          },
+          "errorType": "classifier"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "why": {
+           "fr": "个 compte les choses une à une (包子, 鸡蛋). Les nouilles, c'est au bol : 一碗."
+          },
+          "errorType": "classifier"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "miantiao"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "mianbao"
+           ]
+          ],
+          "why": {
+           "fr": "面包 miànbāo = le pain. Même 面 (la farine) que 面条 miàntiáo : c'est le second caractère qui compte, 条 tiáo, les longs brins."
+          },
+          "errorType": "character"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "mifan"
+           ]
+          ],
+          "why": {
+           "fr": "米饭 = le riz. Il a dit 面条 miàntiáo : des nouilles."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       },
+       {
+        "kind": "portion",
+        "complaint": {
+         "vo": "c2_xl_ko_shao",
+         "line": [
+          [
+           "w",
+           "tai"
+          ],
+          [
+           "w",
+           "duo"
+          ],
+          [
+           "w",
+           "le"
+          ],
+          [
+           "p",
+           "！"
+          ],
+          [
+           "w",
+           "wo"
+          ],
+          [
+           "w",
+           "yao"
+          ],
+          [
+           "w",
+           "shao"
+          ],
+          [
+           "w",
+           "yidianr"
+          ],
+          [
+           "p",
+           "！"
+          ]
+         ],
+         "gloss": {
+          "fr": "C'est trop ! J'ai dit un peu moins !"
+         }
+        },
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "shao"
+           ],
+           [
+            "w",
+            "yidianr"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "duo"
+           ],
+           [
+            "w",
+            "yidianr"
+           ]
+          ],
+          "why": {
+           "fr": "多一点儿 = un peu plus. Il a dit 少 shǎo : un peu moins. 多 ≠ 少, comme le sel d'hier (少放 !)."
+          },
+          "errorType": "contrary"
+         }
+        ]
+       },
+       {
+        "kind": "précision",
+        "complaint": {
+         "vo": "c2_xl_ko_dan",
+         "line": [
+          [
+           "w",
+           "wo"
+          ],
+          [
+           "w",
+           "bu"
+          ],
+          [
+           "w",
+           "yao"
+          ],
+          [
+           "w",
+           "jidan"
+          ],
+          [
+           "p",
+           "！"
+          ]
+         ],
+         "gloss": {
+          "fr": "Je ne veux pas d'œufs !"
+         }
+        },
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "bu"
+           ],
+           [
+            "w",
+            "yao"
+           ],
+           [
+            "w",
+            "jidan"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yao"
+           ],
+           [
+            "w",
+            "jidan"
+           ]
+          ],
+          "why": {
+           "fr": "要鸡蛋 = avec des œufs. Il a dit 不要鸡蛋 : 不 bù devant 要, c'est « je n'en veux pas »."
+          },
+          "errorType": "contrary"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "bu"
+           ],
+           [
+            "w",
+            "yao"
+           ],
+           [
+            "w",
+            "cong"
+           ]
+          ],
+          "why": {
+           "fr": "葱 cōng = la ciboule d'hier. C'est 鸡蛋 jīdàn, les œufs, qu'il ne veut pas."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "n": 1,
+      "unit": 4,
+      "complaint": {
+       "vo": "c2_xl_ko2",
+       "line": [
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "bu"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "zhege"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "wo"
+        ],
+        [
+         "w",
+         "yao"
+        ],
+        [
+         "w",
+         "niunai"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Je ne veux pas ça, je veux du lait !"
+       }
+      },
+      "cells": [
+       {
+        "kind": "mesure",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "bei"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "wan"
+           ]
+          ],
+          "why": {
+           "fr": "碗 = un bol. Le lait se boit au verre : 一杯牛奶 (杯 vaut pour les tasses et les verres)."
+          },
+          "errorType": "classifier"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "yi"
+           ],
+           [
+            "w",
+            "ge"
+           ]
+          ],
+          "why": {
+           "fr": "个 compte les choses une à une (包子). Une boisson se compte au verre : 一杯."
+          },
+          "errorType": "classifier"
+         }
+        ]
+       },
+       {
+        "kind": "plat",
+        "options": [
+         {
+          "line": [
+           [
+            "w",
+            "niunai"
+           ]
+          ],
+          "ok": true
+         },
+         {
+          "line": [
+           [
+            "w",
+            "nainai"
+           ]
+          ],
+          "why": {
+           "fr": "奶奶 nǎinai = grand-mère ! 牛奶 niúnǎi = le lait (« lait de vache »). Même 奶, le lait… 小龙 rit déjà."
+          },
+          "errorType": "character"
+         },
+         {
+          "line": [
+           [
+            "w",
+            "lucha"
+           ]
+          ],
+          "why": {
+           "fr": "绿茶 = le thé vert. Il a dit 牛奶 niúnǎi : du lait."
+          },
+          "errorType": "semantic"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "xiaolong",
+   "vo": "c2_xl_02",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zai"
+    ],
+    [
+     "w",
+     "lou"
+    ],
+    [
+     "w",
+     "shang"
+    ],
+    [
+     "w",
+     "chi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il file vers l'escalier.) Je mange en haut !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_04",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "deng"
+    ],
+    [
+     "w",
+     "yixia"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "xian"
+    ],
+    [
+     "w",
+     "zuo"
+    ],
+    [
+     "w",
+     "miantiao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien. Une seconde ! D'abord, les nouilles !"
+   }
+  },
+  {
+   "type": "sequence",
+   "actor": "nainai",
+   "vo": "c2_05",
+   "line": [
+    [
+     "w",
+     "xian"
+    ],
+    [
+     "w",
+     "xi"
+    ],
+    [
+     "w",
+     "cai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "qie"
+    ],
+    [
+     "w",
+     "cai"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ranhou"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "miantiao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "fang"
+    ],
+    [
+     "w",
+     "cong"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "D'abord on lave les légumes, ensuite on les coupe, puis on met les nouilles, et encore la ciboule."
+   },
+   "ask": {
+    "fr": "Écoute 奶奶 (🔊 autant que tu veux), puis touche les étapes dans l'ordre : 先 d'abord, 再 ensuite, 然后 après."
+   },
+   "sequence": {
+    "hidden": true,
+    "cards": [
+     {
+      "line": [
+       [
+        "w",
+        "xi"
+       ],
+       [
+        "w",
+        "cai"
+       ]
+      ],
+      "why": {
+       "fr": "先 xiān = d'abord : 先洗菜, on commence par laver les légumes (洗, comme la vaisselle)."
+      }
+     },
+     {
+      "line": [
+       [
+        "w",
+        "qie"
+       ],
+       [
+        "w",
+        "cai"
+       ]
+      ],
+      "why": {
+       "fr": "再 zài = ensuite : 再切菜, puis on coupe les légumes (切 qiē, couper)."
+      }
+     },
+     {
+      "line": [
+       [
+        "w",
+        "fang"
+       ],
+       [
+        "w",
+        "miantiao"
+       ]
+      ],
+      "why": {
+       "fr": "然后 ránhòu = après ça : 然后放面条, on met les nouilles."
+      }
+     },
+     {
+      "line": [
+       [
+        "w",
+        "fang"
+       ],
+       [
+        "w",
+        "cong"
+       ]
+      ],
+      "why": {
+       "fr": "Et à la fin, encore (再) : 再放葱, la ciboule — comme pour le riz sauté d'hier."
+      }
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_06",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "miantiao"
+    ],
+    [
+     "w",
+     "hao_le"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "re"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "kuai_vite"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Les nouilles sont prêtes ! C'est très chaud ! Vite !"
+   }
+  },
+  {
+   "type": "serve",
+   "ask": {
+    "fr": "À qui est ce plateau ? Porte-le là où le client a dit qu'il s'asseyait."
+   },
+   "serve": {
+    "penalty": 2,
+    "places": [
+     {
+      "ticket": "laowang",
+      "actor": "laowang",
+      "line": [
+       [
+        "w",
+        "zher"
+       ]
+      ],
+      "caption": {
+       "fr": "la table près du comptoir"
+      },
+      "why": {
+       "fr": "Ce plateau est celui de 老王 : il a dit 我坐这儿, « je m'assois ici », à la table près du comptoir."
+      },
+      "thanks": {
+       "vo": "c2_lw_ok",
+       "line": [
+        [
+         "w",
+         "hao"
+        ],
+        [
+         "p",
+         "，"
+        ],
+        [
+         "w",
+         "xiexie"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Parfait, merci !"
+       }
+      }
+     },
+     {
+      "ticket": "xiaomei",
+      "actor": "xiaomei",
+      "line": [
+       [
+        "w",
+        "nar_la"
+       ]
+      ],
+      "caption": {
+       "fr": "la table du fond"
+      },
+      "why": {
+       "fr": "Ce plateau est celui de 小美 : elle a dit 我在那儿, « je suis là-bas », à la table du fond."
+      },
+      "thanks": {
+       "vo": "c2_xm_ok",
+       "line": [
+        [
+         "w",
+         "xiexie"
+        ],
+        [
+         "p",
+         "！"
+        ]
+       ],
+       "gloss": {
+        "fr": "Merci !"
+       }
+      }
+     },
+     {
+      "ticket": "xiaolong",
+      "actor": "xiaolong",
+      "line": [
+       [
+        "w",
+        "lou"
+       ],
+       [
+        "w",
+        "shang"
+       ]
+      ],
+      "caption": {
+       "fr": "l'escalier, en haut"
+      },
+      "why": {
+       "fr": "Ce plateau est celui de 小龙 : il a dit 我在楼上吃, « je mange en haut »."
+      },
+      "thanks": {
+       "vo": "c2_xl_ok",
+       "line": [
+        [
+         "p",
+         "……"
+        ],
+        [
+         "w",
+         "haochi"
+        ],
+        [
+         "p",
+         "。"
+        ]
+       ],
+       "gloss": {
+        "fr": "(À contrecœur.) … C'est bon."
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_07",
+   "line": [
+    [
+     "w",
+     "duoshao"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Les bols sont vides.) Combien ça fait ? À toi !"
+   }
+  },
+  {
+   "type": "pay",
+   "actor": "laowang",
+   "pay": {
+    "ticket": "laowang",
+    "ask": {
+     "vo": "c2_lw_q",
+     "line": [
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien ?"
+     }
+    },
+    "totals": [
+     {
+      "n": 7
+     },
+     {
+      "n": 5,
+      "why": {
+       "fr": "五块, c'est un seul 包子 (两块) et le thé (三块). Il en a pris deux."
+      },
+      "errorType": "number"
+     },
+     {
+      "n": 9,
+      "why": {
+       "fr": "九块 : tu as compté le thé à cinq ? Sur l'ardoise, 茶 三块一杯."
+      },
+      "errorType": "number"
+     }
+    ],
+    "total": {
+     "vo": "c2_p_kuai_{n}_{body}",
+     "line": [
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "{n} yuans."
+     }
+    },
+    "change": {
+     "vo": "c2_p_zhao_{n}_{body}",
+     "line": [
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vous rends {n} yuans."
+     }
+    },
+    "given": {
+     "vo": "c2_lw_gei",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tiens, dix yuans."
+     },
+     "n": 10
+    },
+    "thanks": {
+     "vo": "c2_lw_bye",
+     "line": [
+      [
+       "w",
+       "hao"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "mingtian"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Parfait ! À demain !"
+     }
+    },
+    "wrong": {
+     "vo": "c2_lw_cuo",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "cuo"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Non, ce n'est pas juste."
+     }
+    }
+   }
+  },
+  {
+   "type": "pay",
+   "actor": "xiaomei",
+   "pay": {
+    "ticket": "xiaomei",
+    "ask": {
+     "vo": "c2_xm_q",
+     "line": [
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien ?"
+     }
+    },
+    "totals": [
+     {
+      "n": 9
+     },
+     {
+      "n": 7,
+      "why": {
+       "fr": "七块 = la soupe (五块) et un seul 包子 (两块). Elle en a pris deux."
+      },
+      "errorType": "number"
+     },
+     {
+      "n": 10,
+      "why": {
+       "fr": "十块, c'est le prix d'un bol de nouilles. La soupe : 汤 五块一碗."
+      },
+      "errorType": "number"
+     }
+    ],
+    "total": {
+     "vo": "c2_p_kuai_{n}_{body}",
+     "line": [
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "{n} yuans."
+     }
+    },
+    "change": {
+     "vo": "c2_p_zhao_{n}_{body}",
+     "line": [
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vous rends {n} yuans."
+     }
+    },
+    "given": {
+     "vo": "c2_xm_gei",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "er"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "kuai_vite"
+      ],
+      [
+       "w",
+       "yidianr"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tiens, vingt yuans. Vite !"
+     },
+     "n": 20
+    },
+    "thanks": {
+     "vo": "c2_xm_bye",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci ! Au revoir !"
+     }
+    },
+    "wrong": {
+     "vo": "c2_xm_cuo",
+     "line": [
+      [
+       "w",
+       "bu"
+      ],
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "cuo"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Non ! C'est faux !"
+     }
+    }
+   }
+  },
+  {
+   "type": "pay",
+   "actor": "xiaolong",
+   "pay": {
+    "ticket": "xiaolong",
+    "ask": {
+     "vo": "c2_xl_q",
+     "line": [
+      [
+       "w",
+       "duoshao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "？"
+      ]
+     ],
+     "gloss": {
+      "fr": "Combien ?"
+     }
+    },
+    "totals": [
+     {
+      "n": 14
+     },
+     {
+      "n": 40,
+      "why": {
+       "fr": "四十 sìshí = quatre dizaines. 十四 shísì = dix + quatre : c'est l'ordre qui compte (十 d'abord)."
+      },
+      "errorType": "order"
+     },
+     {
+      "n": 13,
+      "why": {
+       "fr": "十三块 : tu as compté le lait au prix du thé. Sur l'ardoise, 牛奶 四块一杯."
+      },
+      "errorType": "number"
+     }
+    ],
+    "total": {
+     "vo": "c2_p_kuai_{n}_{body}",
+     "line": [
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "{n} yuans."
+     }
+    },
+    "change": {
+     "vo": "c2_p_zhao_{n}_{body}",
+     "line": [
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "v",
+       "AMOUNT"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vous rends {n} yuans."
+     }
+    },
+    "given": {
+     "vo": "c2_xl_gei",
+     "line": [
+      [
+       "w",
+       "gei"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "er"
+      ],
+      [
+       "w",
+       "shi_dix"
+      ],
+      [
+       "w",
+       "kuai"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Tiens, vingt yuans."
+     },
+     "n": 20
+    },
+    "thanks": {
+     "vo": "c2_xl_bye",
+     "line": [
+      [
+       "p",
+       "……"
+      ],
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "… Merci."
+     }
+    },
+    "wrong": {
+     "vo": "c2_xl_cuo",
+     "line": [
+      [
+       "w",
+       "haha"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "cuo"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Ha ha ! Faux !"
+     }
+    }
+   }
+  },
+  {
+   "type": "say",
+   "actor": "xiaolong",
+   "vo": "c2_xl_03",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "zhongwen"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il retire son torchon, un peu vexé.) Bon… ton chinois est pas mal."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "laowang",
+   "vo": "c2_lw_03",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "mingtian"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "lai"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(老王 te fait un clin d'œil.) Tu es bien, toi ! Demain, je reviens."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_08",
+   "expression": "joy",
+   "wage": true,
+   "line": [
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "qian"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Aujourd'hui, c'était bien ! Voici ton argent."
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "c2_09",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "yaoshi"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle te tend une petite clé de cuivre.) Cette clé, je te la donne aussi : c'est celle de la caisse."
+   },
+   "give": [
+    "yaoshi_qian"
+   ],
+   "end": true
+  }
+ ]
+}

@@ -18,7 +18,7 @@ export interface StallRound {
   fresh: boolean;
 }
 
-const shuffle = <T>(a: T[]): T[] => {
+export const shuffle = <T>(a: T[]): T[] => {
   const b = [...a];
   for (let k = b.length - 1; k > 0; k--) {
     const j = Math.floor(Math.random() * (k + 1));

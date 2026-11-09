@@ -23,7 +23,8 @@ export interface LogEvent {
     | 'quest_choice'
     | 'quest_step'
     | 'errand_ready'
-    | 'stall';
+    | 'stall'
+    | 'till';
   detail?: string; // ex. rate=0.75 | choice=2 | errorType=semantic | mode=listen;answer=huacha;error=character
   word?: string;
   ok?: boolean;

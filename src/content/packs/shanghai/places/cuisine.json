@@ -89,7 +89,86 @@
         "courses": "fait",
         "leo": ""
       },
+      "replaces": [
+        "nainai",
+        "nainai_cran2"
+      ]
+    },
+    {
+      "id": "nainai_cran2",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "cuisine-cran2",
+      "prompt": {
+        "fr": "servir le midi avec 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "playerAt": -250,
+      "when": {
+        "time": "jour",
+        "courses": "fait",
+        "cran2": ""
+      },
       "replaces": "nainai"
+    },
+    {
+      "id": "client_laowang",
+      "kind": "npc",
+      "actor": "laowang",
+      "x": 1330,
+      "y": 1030,
+      "sprite": "laowang_stand",
+      "scale": 1.05,
+      "prompt": {
+        "fr": "老王"
+      },
+      "with": "nainai_cran2"
+    },
+    {
+      "id": "client_xiaolong",
+      "kind": "npc",
+      "actor": "xiaolong",
+      "x": 1490,
+      "y": 1030,
+      "sprite": "xiaolong_stand",
+      "scale": 0.95,
+      "prompt": {
+        "fr": "小龙"
+      },
+      "with": "nainai_cran2"
+    },
+    {
+      "id": "client_xiaomei",
+      "kind": "npc",
+      "actor": "xiaomei",
+      "x": 1660,
+      "y": 1030,
+      "sprite": "xiaomei_stand",
+      "scale": 1.0,
+      "prompt": {
+        "fr": "小美"
+      },
+      "with": "nainai_cran2"
+    },
+    {
+      "id": "laowang_habitue",
+      "kind": "npc",
+      "actor": "laowang",
+      "x": 1330,
+      "y": 1030,
+      "sprite": "laowang_stand",
+      "scale": 1.05,
+      "prompt": {
+        "fr": "老王, l'habitué"
+      },
+      "when": {
+        "time": "jour",
+        "cran2": "fait"
+      }
     },
     {
       "id": "lantern",
