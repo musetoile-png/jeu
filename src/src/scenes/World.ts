@@ -7,7 +7,7 @@ import Phaser from 'phaser';
 
 import { KEY } from '../constants';
 import { initVoices } from '../engine/audio';
-import type { Ambient, Content, Entrance, Hotspot, Place } from '../engine/content';
+import type { Ambient, Content, Entrance, Hotspot, Place, Quest } from '../engine/content';
 import { assetUrl, loadContent, t } from '../engine/content';
 import { Dialogue } from '../engine/dialogue';
 import { keyOutWhite } from '../engine/keyout';
@@ -19,11 +19,24 @@ import * as notebook from '../engine/notebook';
 import { log } from '../engine/log';
 import { speak, RATE } from '../engine/audio';
 import * as sfx from '../engine/sfx';
+import { explain, fmt, shuffle } from '../engine/stall';
 
 const SPEED = 260;
 const NEAR = 140;
 /** La caméra regarde un peu devant le joueur, du côté où il va (px à l'écran). */
 const LOOK_AHEAD = 150;
+/** Un toucher qui glisse de moins que ça (px du jeu) est un « tap » : il déclenche l'appareil. */
+const TAP_SLOP = 48;
+
+/** Un sujet photographiable : point du décor, ou animal qui passe (le chat). */
+interface Subject {
+  id: string;
+  x: number;
+  y: number;
+  word: string;
+  decoys?: string[];
+  img?: Phaser.GameObjects.Image;
+}
 
 type Body = Phaser.GameObjects.Sprite | Puppet;
 
@@ -47,7 +60,20 @@ export class World extends Phaser.Scene {
   private pendingScene: NonNullable<Place['onEnter']>[number] | null = null;
   private night: Phaser.GameObjects.GameObject[] = [];
   /** Mode photo : cadre en coordonnées écran (jeu 1280×720), élément HTML du viseur. */
-  private photo: { x: number; y: number; w: number; h: number; el: HTMLElement } | null = null;
+  private photo: { x: number; y: number; w: number; h: number; el: HTMLElement; bar: HTMLElement } | null = null;
+  /** Légende en cours (trois mots à choisir) ; tant qu'elle est ouverte, le cadre ne bouge plus. */
+  private photoQuiz: HTMLElement | null = null;
+  /** Où le doigt (ou la souris) s'est posé dans le viseur : sans glisser, c'est un déclenchement. */
+  private downAt: { x: number; y: number } | null = null;
+  /** Scintillement des sujets pas encore photographiés (et celui qui suit le chat). */
+  private sparkles: { img: Phaser.GameObjects.Image; follow?: Phaser.GameObjects.Image }[] = [];
+  /** Sujets mobiles présents (le chat), avec leur image. */
+  private mobiles: { a: Ambient; img: Phaser.GameObjects.Image }[] = [];
+  /** Panneau d'aide de la première photo et son étape affichée. */
+  private coach: HTMLElement | null = null;
+  private coachPhase: '' | 'out' | 'frame' | 'name' = '';
+  /** La scène de fin de la première photo a été lancée dans ce lieu (pas deux fois de suite). */
+  private guideScenePlayed = false;
   private started = false;
   private plaques: Phaser.GameObjects.Text[] = [];
   /** Une animation de mise en scène est en cours : barres d'interaction masquées. */
@@ -89,12 +115,33 @@ export class World extends Phaser.Scene {
     ensurePlaceholderPerson(this, 'player_1', '#58d6a9', true);
 
     this.cursors = this.input.keyboard!.createCursorKeys();
-    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,M,ESC') as Record<string, Phaser.Input.Keyboard.Key>;
-    document.getElementById('hint')!.textContent = this.content.ui.hintMove;
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,E,P,I,J,O,M,ESC,ONE,TWO,THREE') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.setHint();
     // clic / toucher : marcher jusque-là ; sur un personnage ou une porte, y aller puis interagir
-    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => this.clickTo(ptr.worldX, ptr.worldY));
+    // (appareil sorti : le cadre suit le doigt ou la souris ; un tap ou un clic déclenche)
+    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
+      if (this.photo) {
+        if (!this.photoQuiz) {
+          this.aimAt(ptr.x, ptr.y);
+          this.downAt = { x: ptr.x, y: ptr.y };
+        }
+        return;
+      }
+      this.clickTo(ptr.worldX, ptr.worldY);
+    });
+    this.input.on('pointerup', (ptr: Phaser.Input.Pointer) => {
+      const down = this.downAt;
+      this.downAt = null;
+      if (!this.photo || this.photoQuiz || !down) return;
+      if (Phaser.Math.Distance.Between(down.x, down.y, ptr.x, ptr.y) < TAP_SLOP) this.shoot();
+    });
     this.input.on('pointermove', (ptr: Phaser.Input.Pointer) => {
-      const over = this.started && !this.busy && !this.photo && this.spotAt(ptr.worldX, ptr.worldY);
+      if (this.photo) {
+        if (!this.photoQuiz) this.aimAt(ptr.x, ptr.y);
+        this.game.canvas.style.cursor = 'crosshair';
+        return;
+      }
+      const over = this.started && !this.busy && this.spotAt(ptr.worldX, ptr.worldY);
       this.game.canvas.style.cursor = over ? 'pointer' : '';
     });
     this.cameras.main.setBackgroundColor('#efe9dc');
@@ -156,6 +203,10 @@ export class World extends Phaser.Scene {
     this.extraTimers = [];
     for (const o of this.extras) kill(o);
     this.extras = [];
+    this.mobiles = [];
+    for (const sp of this.sparkles) kill(sp.img);
+    this.sparkles = [];
+    this.guideScenePlayed = false;
     this.planes = [];
     this.spots = [];
   }
@@ -289,6 +340,7 @@ export class World extends Phaser.Scene {
       }
       this.spots.push({ h, obj, prompt });
     }
+    this.refreshSparkles();
   }
 
   /** Personnage posé dans le lieu sans scène à jouer (client qui attend, habitué assis). */
@@ -673,11 +725,17 @@ export class World extends Phaser.Scene {
     const img = this.add.image(startX, y, a.image).setOrigin(0.5, 1).setScale(scale).setFlipX(flip).setDepth(y);
     const shadow = this.add.ellipse(startX, y - 2, a.height * 0.45, a.height * 0.07, 0x2b2b33, 0.16).setDepth(y - 1);
     this.extras.push(img, shadow);
+    // le chat est un sujet photo : il scintille quand l'appareil est sorti
+    if (a.subject && a.word) {
+      this.mobiles.push({ a, img });
+      if (this.photo) this.refreshSparkles();
+    }
     const speed = a.speed ?? 70;
     const done = () => {
       img.destroy();
       shadow.destroy();
       this.extras = this.extras.filter((o) => o !== img && o !== shadow);
+      this.mobiles = this.mobiles.filter((m) => m.img !== img);
     };
     const follow = () => shadow.setX(img.x);
 
@@ -742,8 +800,12 @@ export class World extends Phaser.Scene {
    * cette scène (le policier de la gare qui t'arrête), on la joue avec lui : cadrage, bulle au-dessus de sa tête.
    */
   private playScene(id: string) {
-    const h = this.spots.find((s) => s.h.kind === 'npc' && s.h.scene === id)?.h;
-    if (h) this.openScene(h);
+    // le personnage qui porte la scène, sinon le même personnage posé là en figurant (小马 derrière son étal)
+    const npc = this.content.scenes.get(id)?.npc;
+    const h =
+      this.spots.find((s) => s.h.kind === 'npc' && s.h.scene === id)?.h ??
+      (npc ? this.spots.find((s) => World.isExtra(s.h) && s.h.sprite?.startsWith(npc))?.h : undefined);
+    if (h) this.openScene(h.scene === id ? h : { ...h, scene: id });
     else this.openScene({ id: `auto:${id}`, kind: 'npc', x: this.player.x + 320, y: this.player.y, scene: id, prompt: {} });
   }
 
@@ -762,8 +824,8 @@ export class World extends Phaser.Scene {
       if (item) ui.toast(this.content, item.word, `${this.content.ui.received ?? '+'} ${t(this.content, this.content.lexicon.get(item.word)?.gloss)}`);
       log({ scene: id, step: -1, kind: 'item_get', detail: it, word: item?.word });
     }
-    // liste de courses complète : on peut rapporter les achats
-    if (ui.checkErrands(this.content)) log({ scene: id, step: -1, kind: 'errand_ready' });
+    // liste complète : on peut rapporter les courses ; une page d'album est gagnée
+    for (const e of ui.checkErrands(this.content)) this.errandReady(e, id);
     if (save.get().quest && end.flags?.prologue) log({ scene: id, step: -1, kind: 'quest_choice', detail: save.get().quest });
     if (end.ending) {
       // fin de chapitre : le monde s'arrête, l'image de fin prend tout l'écran (la sauvegarde est déjà à jour)
@@ -793,6 +855,27 @@ export class World extends Phaser.Scene {
       this.buildSpots(this.place);
       this.applyNight(this.place);
     }
+    const g = this.content.pack.photo?.guide;
+    // l'appareil acheté : quelques pas vers ce que 小马 montre, pour l'avoir dans le champ
+    if (g && id === g.after && g.walkTo !== undefined && this.place.id === g.place && this.player) {
+      const w = this.place.walk;
+      this.autoWalk = Phaser.Math.Clamp(g.walkTo, w.xMin, w.xMax) - this.player.x;
+    }
+    // première photo réussie et saluée : la liste de photos s'ouvre
+    if (g && id === g.scene) this.time.delayedCall(900, () => this.openPanel('quest'));
+  }
+
+  /** Une liste vient d'atteindre son objectif : journal, et pour une liste à récompense, la page d'album et le toast. */
+  private errandReady(e: Quest, scene: string) {
+    if (!e.reward) {
+      log({ scene, step: -1, kind: 'errand_ready', detail: e.id });
+      return;
+    }
+    if (save.setQuestStep(e.id, 1)) log({ scene, step: -1, kind: 'quest_step', detail: `${e.id}=pret` });
+    const first = e.reward.seal.find((tok) => tok[0] === 'w');
+    const { n, total } = ui.errandProgress(e);
+    sfx.play('item');
+    this.time.delayedCall(1200, () => ui.toast(this.content, first?.[1] ?? '', fmt(t(this.content, e.reward?.toast), { n: String(n), total: String(total) })));
   }
 
   private effect(fx: string) {
@@ -967,10 +1050,38 @@ export class World extends Phaser.Scene {
 
   // ---------- Appareil photo ----------
 
+  /** Ligne d'aide en haut de l'image : marcher, ou (appareil sorti) cadrer et déclencher. */
+  private setHint() {
+    const h = document.getElementById('hint');
+    if (h) h.textContent = (this.photo ? this.content.ui.photoHelp : this.content.ui.hintMove) ?? '';
+  }
+
+  /**
+   * Tiroir de l'appareil : boutons du viseur, légende, aide de la première photo. Sur grand écran il est posé sur l'image ;
+   * sur téléphone, sous l'image, en grand, pour que rien ne cache ce qu'on photographie.
+   */
+  private dock() {
+    const stage = document.getElementById('stage') as HTMLElement;
+    let d = stage.querySelector<HTMLElement>('#photo-dock');
+    if (!d) {
+      d = document.createElement('div');
+      d.id = 'photo-dock';
+      stage.appendChild(d);
+    }
+    return d;
+  }
+
   private togglePhoto() {
     if (this.photo) {
       this.photo.el.remove();
+      this.photo.bar.remove();
+      this.photoQuiz?.remove();
+      this.photoQuiz = null;
       this.photo = null;
+      this.downAt = null;
+      this.game.canvas.style.cursor = '';
+      this.setHint();
+      this.refreshSparkles();
       return;
     }
     const need = this.content.pack.photo?.item;
@@ -979,11 +1090,37 @@ export class World extends Phaser.Scene {
       if (it) ui.toast(this.content, it.word, this.content.ui.needCamera ?? '');
       return;
     }
+    // on s'arrête pour viser
+    this.autoWalk = 0;
+    this.clickTarget = null;
+    this.showExitBanner(null, 0, 0);
     const el = document.createElement('div');
     el.className = 'viewfinder';
-    el.innerHTML = `<div class="frame"></div><p>${this.content.ui.photoHelp ?? ''}</p>`;
+    el.innerHTML = `<div class="frame"><i></i></div>`;
     document.getElementById('stage')!.appendChild(el);
-    this.photo = { x: 640, y: 330, w: 420, h: 300, el };
+    const bar = document.createElement('div');
+    bar.className = 'vf-bar';
+    const shootBtn = document.createElement('button');
+    shootBtn.className = 'go';
+    shootBtn.textContent = this.content.ui.photoShoot ?? '📷';
+    shootBtn.onclick = () => this.shoot();
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = this.content.ui.photoClose ?? '✕';
+    closeBtn.onclick = () => this.togglePhoto();
+    bar.append(shootBtn, closeBtn);
+    this.dock().appendChild(bar);
+    this.photo = { x: 640, y: 330, w: 420, h: 300, el, bar };
+    this.setHint();
+    this.placeFrame();
+    this.refreshSparkles();
+  }
+
+  /** Le cadre suit la souris ou le doigt (coordonnées du jeu, 1280×720). */
+  private aimAt(x: number, y: number) {
+    const f = this.photo;
+    if (!f) return;
+    f.x = Phaser.Math.Clamp(x, f.w / 2, 1280 - f.w / 2);
+    f.y = Phaser.Math.Clamp(y, f.h / 2, 720 - f.h / 2);
     this.placeFrame();
   }
 
@@ -1005,55 +1142,212 @@ export class World extends Phaser.Scene {
     return { x: v.x + (x - w / 2) * sx, y: v.y + (y - h / 2) * sy, w: w * sx, h: h * sy };
   }
 
-  private subjectInFrame() {
+  /** Sujets photographiables du lieu : points du décor, et le chat s'il passe. */
+  private subjects(): Subject[] {
+    const out: Subject[] = [];
+    for (const s of this.spots) if (s.h.kind === 'subject' && s.h.word) out.push({ id: s.h.id, x: s.h.x, y: s.h.y, word: s.h.word, decoys: s.h.decoys });
+    for (const m of this.mobiles)
+      if (m.img.active && m.a.subject && m.a.word) out.push({ id: m.a.subject, x: m.img.x, y: m.img.y - m.img.displayHeight / 2, word: m.a.word, decoys: m.a.decoys, img: m.img });
+    return out;
+  }
+
+  /** Le sujet dans le cadre (le plus proche du centre s'il y en a plusieurs). */
+  private subjectInFrame(): Subject | undefined {
     const r = this.frameRect();
-    return this.spots.find((s) => s.h.kind === 'subject' && s.h.x > r.x && s.h.x < r.x + r.w && s.h.y > r.y && s.h.y < r.y + r.h)?.h;
+    const cx = r.x + r.w / 2;
+    const cy = r.y + r.h / 2;
+    return this.subjects()
+      .filter((s) => s.x > r.x && s.x < r.x + r.w && s.y > r.y && s.y < r.y + r.h)
+      .sort((a, b) => Phaser.Math.Distance.Between(a.x, a.y, cx, cy) - Phaser.Math.Distance.Between(b.x, b.y, cx, cy))[0];
+  }
+
+  /** Trois mots pour la légende : le bon, et deux voisins qui partagent un caractère ou un son (déclarés par le sujet). */
+  private captionWords(subj: Subject) {
+    const word = subj.word;
+    const lex = this.content.lexicon;
+    const out = (subj.decoys ?? []).filter((w) => w !== word && lex.has(w)).slice(0, 2);
+    if (out.length < 2) {
+      // repli : des noms déjà rencontrés, ceux qui partagent un caractère d'abord
+      const target = lex.get(word)?.target ?? '';
+      const known = notebook.all().filter((w) => w !== word && !out.includes(w) && lex.get(w)?.pos === 'n');
+      const pool = known.length >= 2 ? known : [...lex.keys()].filter((w) => w !== word && !out.includes(w));
+      const shares = (w: string) => [...(lex.get(w)?.target ?? '')].some((c) => target.includes(c));
+      out.push(...shuffle(pool).sort((a, b) => Number(shares(b)) - Number(shares(a))).slice(0, 2 - out.length));
+    }
+    return shuffle([word, ...out]);
   }
 
   private shoot() {
-    if (!this.photo) return;
+    if (!this.photo || this.photoQuiz) return;
     this.cameras.main.flash(160, 255, 255, 255);
+    sfx.play('tap');
     const subj = this.subjectInFrame();
     const rect = this.frameRect();
-    if (!subj?.word) {
-      ui.toast(this.content, 'xiangji', this.content.ui.photoMiss ?? '');
+    if (!subj) {
+      ui.toast(this.content, this.content.items.get(this.content.pack.photo?.item ?? '')?.word ?? '', this.content.ui.photoMiss ?? '');
       return;
     }
-    // nommer la photo : le mot parmi trois, avec des distracteurs pris dans les mots déjà rencontrés
+    // la photo est prise : on fige le chat tel qu'il était, puis on la légende (le mot parmi trois, lu sans pinyin)
+    const extra = subj.img ? { image: subj.img.texture.key, x: subj.img.x, y: subj.img.y, h: subj.img.displayHeight, flip: subj.img.flipX } : undefined;
     const word = subj.word;
-    const known = notebook.all().filter((w) => w !== word && this.content.lexicon.has(w) && this.content.lexicon.get(w)?.pos === 'n');
-    const pool = known.length >= 2 ? known : [...this.content.lexicon.keys()].filter((w) => w !== word);
-    const opts = [word, ...pool.sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5);
+    const scene = `photo:${this.place.id}`;
     const q = document.createElement('div');
     q.className = 'photo-quiz';
-    q.innerHTML = `<p>${this.content.ui.photoName ?? ''}</p>`;
+    const ask = document.createElement('p');
+    ask.textContent = this.content.ui.photoName ?? '';
     const row = document.createElement('div');
     row.className = 'picks';
-    for (const w of opts) {
+    const why = document.createElement('p');
+    why.className = 'why';
+    for (const w of this.captionWords(subj)) {
       const b = document.createElement('button');
       b.className = 'pick hanzi';
       b.innerHTML = `<span class="ph"></span>`;
       b.querySelector('.ph')!.textContent = this.content.lexicon.get(w)?.target ?? w;
       b.onclick = () => {
+        if (b.disabled) return;
         const ok = w === word;
-        log({ scene: `photo:${this.place.id}`, step: 0, kind: 'answer', ok, word, detail: `photo=${subj.id};pick=${w}` });
         if (!ok) {
+          // erreur expliquée : ce qui a trompé (caractère commun, ton, son), puis le bon mot
+          const ex = explain(this.content, word, w);
+          log({ scene, step: 0, kind: 'answer', ok, word, detail: `photo=${subj.id};pick=${w};errorType=${ex.errorType}` });
+          notebook.mark(word, false);
+          sfx.play('bad');
           b.classList.add('nope');
+          b.disabled = true;
+          why.textContent = ex.why;
           return;
         }
+        log({ scene, step: 0, kind: 'answer', ok, word, detail: `photo=${subj.id};pick=${w}` });
+        sfx.play('good');
         const e = this.content.lexicon.get(word);
         if (e) speak(this.content, e.target, `w_${word}`, RATE.WORD);
         notebook.meet(word, `photo:${this.place.id}:${subj.id}`);
-        save.addPhoto({ subject: subj.id, place: this.place.id, word, rect, t: Date.now() });
-        log({ scene: `photo:${this.place.id}`, step: 0, kind: 'photo_taken', word, detail: subj.id });
+        notebook.mark(word, true);
+        save.addPhoto({ subject: subj.id, place: this.place.id, word, rect, t: Date.now(), extra });
+        log({ scene, step: 0, kind: 'photo_taken', word, detail: subj.id });
         document.dispatchEvent(new CustomEvent('notebook-changed'));
-        ui.toast(this.content, word, this.content.ui.photoSaved ?? '');
         q.remove();
+        this.photoQuiz = null;
+        this.afterPhoto(subj);
       };
       row.append(b);
     }
-    q.append(row);
-    this.photo.el.appendChild(q);
+    q.append(ask, row, why);
+    this.dock().appendChild(q);
+    this.photoQuiz = q;
+  }
+
+  /** Photo rangée : la ligne de la liste se coche, l'objectif peut être atteint, la première photo est saluée. */
+  private afterPhoto(subj: Subject) {
+    const list = [...this.content.quests.values()].find(
+      (e) => e.kind === 'errand' && e.list?.some((it) => it.subject === subj.id) && save.hasItem(e.item) && save.matches(e.when),
+    );
+    const prog = list ? ui.errandProgress(list) : undefined;
+    ui.toast(this.content, subj.word, prog ? fmt(this.content.ui.photoTicked ?? '', { n: String(prog.n), total: String(prog.total) }) : (this.content.ui.photoSaved ?? ''));
+    for (const e of ui.checkErrands(this.content)) this.errandReady(e, `photo:${this.place.id}`);
+    this.refreshSparkles();
+    this.placeFrame();
+    // première photo : on range l'appareil, 小马 va réagir
+    const g = this.guide();
+    if (g && subj.id === g.subject)
+      this.time.delayedCall(900, () => {
+        if (this.photo) this.togglePhoto();
+      });
+  }
+
+  /** Première photo guidée en cours dans ce lieu ? */
+  private guide() {
+    const g = this.content.pack.photo?.guide;
+    const need = this.content.pack.photo?.item;
+    return g && this.place?.id === g.place && save.matches(g.when) && (!need || save.hasItem(need)) ? g : undefined;
+  }
+
+  /** Panneau d'aide de la première photo : sortir l'appareil, cadrer et déclencher, légender. */
+  private updateCoach() {
+    const g = this.guide();
+    let phase: '' | 'out' | 'frame' | 'name' = '';
+    if (g && !save.hasPhoto(g.subject) && !this.busy && !this.staging && !this.pendingScene && this.autoWalk === 0 && !ui.panelOpen())
+      phase = !this.photo ? 'out' : this.photoQuiz ? 'name' : 'frame';
+    if (phase === this.coachPhase) return;
+    this.coachPhase = phase;
+    this.coach?.remove();
+    this.coach = null;
+    this.refreshSparkles();
+    if (!g || !phase) return;
+    const ui0 = this.content.ui;
+    const target = this.content.lexicon.get(this.spots.find((s) => s.h.id === g.subject)?.h.word ?? '')?.target ?? '';
+    const c = document.createElement('div');
+    c.className = 'coach';
+    const steps = ['out', 'frame', 'name'];
+    const head = document.createElement('div');
+    head.className = 'coach-head';
+    const title = document.createElement('b');
+    title.textContent = ui0.guideTitle ?? '';
+    const dots = document.createElement('span');
+    dots.className = 'coach-steps';
+    for (const st of steps) dots.append(Object.assign(document.createElement('i'), { className: st === phase ? 'on' : steps.indexOf(st) < steps.indexOf(phase) ? 'ok' : '' }));
+    head.append(title, dots);
+    const text = document.createElement('p');
+    text.textContent = fmt(t(this.content, g.text[phase]), { word: target });
+    c.append(head, text);
+    if (phase === 'out') {
+      const b = document.createElement('button');
+      b.className = 'go';
+      b.textContent = ui0.guideOutBtn ?? '📷';
+      b.onclick = () => this.openPanel('photo');
+      c.append(b);
+    }
+    this.dock().prepend(c);
+    this.coach = c;
+  }
+
+  /** Une petite étoile d'encre dorée, dessinée une fois. */
+  private sparkleKey() {
+    const key = 'photo_sparkle';
+    if (this.textures.exists(key)) return key;
+    const tex = this.textures.createCanvas(key, 64, 64)!;
+    const c = tex.getContext();
+    const g = c.createRadialGradient(32, 32, 2, 32, 32, 30);
+    g.addColorStop(0, 'rgba(255, 244, 200, 0.95)');
+    g.addColorStop(0.35, 'rgba(255, 196, 90, 0.45)');
+    g.addColorStop(1, 'rgba(255, 196, 90, 0)');
+    c.fillStyle = g;
+    c.fillRect(0, 0, 64, 64);
+    c.fillStyle = '#fffaf0';
+    c.beginPath();
+    c.moveTo(32, 4);
+    c.quadraticCurveTo(35, 29, 60, 32);
+    c.quadraticCurveTo(35, 35, 32, 60);
+    c.quadraticCurveTo(29, 35, 4, 32);
+    c.quadraticCurveTo(29, 29, 32, 4);
+    c.fill();
+    tex.refresh();
+    return key;
+  }
+
+  /**
+   * Repère discret : appareil sorti, les sujets pas encore photographiés scintillent (pas ceux déjà dans l'album).
+   * Pendant la première photo, le sujet montré par 小马 scintille même appareil rangé.
+   */
+  private refreshSparkles() {
+    for (const sp of this.sparkles) {
+      this.tweens.killTweensOf(sp.img);
+      sp.img.destroy();
+    }
+    this.sparkles = [];
+    if (!this.place || !this.started) return;
+    const g = this.guide();
+    const add = (x: number, y: number, big: boolean, follow?: Phaser.GameObjects.Image) => {
+      const img = this.add.image(x, y, this.sparkleKey()).setDepth(2600).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.15).setScale(big ? 1.1 : 0.7);
+      this.tweens.add({ targets: img, alpha: big ? 0.95 : 0.75, scale: big ? 1.6 : 1, angle: 45, duration: big ? 700 : 900, yoyo: true, repeat: -1, delay: Phaser.Math.Between(0, 600), ease: 'Sine.easeInOut' });
+      this.sparkles.push({ img, follow });
+    };
+    for (const s of this.subjects()) {
+      if (save.hasPhoto(s.id)) continue;
+      const guided = !!g && g.subject === s.id;
+      if (this.photo || guided) add(s.x, s.y, guided && !this.photo, s.img);
+    }
   }
 
   // ---------- Boucle ----------
@@ -1066,6 +1360,20 @@ export class World extends Phaser.Scene {
     const cam0 = this.cameras.main;
     for (const pl of this.planes) pl.img.x = pl.offset - cam0.scrollX * (pl.parallax - 1);
     const JD = Phaser.Input.Keyboard.JustDown;
+    // le scintillement suit le chat ; il s'éteint quand le chat est parti
+    for (const sp of this.sparkles)
+      if (sp.follow) {
+        if (sp.follow.active) sp.img.setPosition(sp.follow.x, sp.follow.y - sp.follow.displayHeight / 2);
+        else sp.img.setVisible(false);
+      }
+    this.updateCoach();
+    // première photo réussie (même si la partie a été fermée entre-temps) : 小马 réagit
+    const g = this.guide();
+    if (g && !this.guideScenePlayed && save.hasPhoto(g.subject) && !this.busy && !this.photo && !ui.panelOpen() && !this.staging && !this.pendingScene && this.autoWalk === 0) {
+      this.guideScenePlayed = true;
+      this.playScene(g.scene);
+      return;
+    }
     if (!this.busy) {
       if (JD(this.keys.I)) ui.panelOpen() ? ui.closePanel() : this.openPanel('bag');
       if (JD(this.keys.J)) ui.panelOpen() ? ui.closePanel() : this.openPanel('quest');
@@ -1078,15 +1386,22 @@ export class World extends Phaser.Scene {
       }
     }
     if (this.photo) {
-      // viseur : les flèches déplacent le cadre, Espace déclenche
+      // viseur : les flèches déplacent le cadre, Espace déclenche ; légende ouverte : 1, 2, 3 choisissent
       const f = this.photo;
-      const sp = 0.5 * dt;
-      if (this.cursors.left.isDown || this.keys.A.isDown) f.x = Math.max(f.w / 2, f.x - sp);
-      if (this.cursors.right.isDown || this.keys.D.isDown) f.x = Math.min(1280 - f.w / 2, f.x + sp);
-      if (this.cursors.up.isDown || this.keys.W.isDown) f.y = Math.max(f.h / 2, f.y - sp);
-      if (this.cursors.down.isDown || this.keys.S.isDown) f.y = Math.min(720 - f.h / 2, f.y + sp);
-      this.placeFrame();
-      if (JD(this.keys.SPACE) && !f.el.querySelector('.photo-quiz')) this.shoot();
+      if (!this.photoQuiz) {
+        const sp = 0.5 * dt;
+        if (this.cursors.left.isDown || this.keys.A.isDown) f.x = Math.max(f.w / 2, f.x - sp);
+        if (this.cursors.right.isDown || this.keys.D.isDown) f.x = Math.min(1280 - f.w / 2, f.x + sp);
+        if (this.cursors.up.isDown || this.keys.W.isDown) f.y = Math.max(f.h / 2, f.y - sp);
+        if (this.cursors.down.isDown || this.keys.S.isDown) f.y = Math.min(720 - f.h / 2, f.y + sp);
+        this.placeFrame();
+        if (JD(this.keys.SPACE)) this.shoot();
+      } else {
+        const picks = this.photoQuiz.querySelectorAll<HTMLButtonElement>('button.pick');
+        [this.keys.ONE, this.keys.TWO, this.keys.THREE].forEach((k, i) => {
+          if (JD(k)) picks[i]?.click();
+        });
+      }
       if (p instanceof Puppet) p.step(dt, false);
       return;
     }

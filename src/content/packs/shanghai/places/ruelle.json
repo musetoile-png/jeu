@@ -195,6 +195,37 @@
       }
     },
     {
+      "id": "xiaoma_la",
+      "kind": "npc",
+      "x": 1680,
+      "y": 1050,
+      "sprite": "xiaoma_stand",
+      "scale": 0.48,
+      "when": {
+        "xiangji": "fait",
+        "photos_shanghai": "!pret"
+      },
+      "prompt": {
+        "fr": "小马, derrière son étal"
+      }
+    },
+    {
+      "id": "xiaoma_bravo",
+      "kind": "npc",
+      "x": 1680,
+      "y": 1050,
+      "scene": "xiaoma-photos",
+      "sprite": "xiaoma_stand",
+      "scale": 0.48,
+      "when": {
+        "xiangji": "fait",
+        "photos_shanghai": "pret"
+      },
+      "prompt": {
+        "fr": "montrer ta page 上海 à 小马"
+      }
+    },
+    {
       "id": "s_lanterne",
       "kind": "subject",
       "x": 660,
@@ -203,7 +234,11 @@
       "photo": "photo_denglong",
       "prompt": {
         "fr": "la lanterne"
-      }
+      },
+      "decoys": [
+        "deng",
+        "longjing"
+      ]
     },
     {
       "id": "s_baozi",
@@ -213,7 +248,11 @@
       "word": "baozi",
       "prompt": {
         "fr": "les paniers vapeur"
-      }
+      },
+      "decoys": [
+        "qianbao",
+        "benzi"
+      ]
     },
     {
       "id": "s_men",
@@ -224,7 +263,11 @@
       "photo": "photo_shikumen",
       "prompt": {
         "fr": "le portail du lilong"
-      }
+      },
+      "decoys": [
+        "ni_men",
+        "man"
+      ]
     },
     {
       "id": "s_fleurs",
@@ -234,7 +277,11 @@
       "word": "hua_fleur",
       "prompt": {
         "fr": "les fleurs"
-      }
+      },
+      "decoys": [
+        "huacha",
+        "hua_peinture"
+      ]
     },
     {
       "id": "gare",
@@ -359,7 +406,16 @@
       "every": [
         20,
         45
-      ]
+      ],
+      "subject": "chat",
+      "word": "mao",
+      "decoys": [
+        "mai",
+        "mama"
+      ],
+      "prompt": {
+        "fr": "le chat du quartier"
+      }
     },
     {
       "image": "moineaux",

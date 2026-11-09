@@ -123,6 +123,77 @@
      }
     }
    ]
+  },
+  {
+   "id": "photos_shanghai",
+   "kind": "errand",
+   "item": "xiangji",
+   "title": {
+    "fr": "La liste de 小马"
+   },
+   "head": [
+    [
+     "w",
+     "paizhao"
+    ]
+   ],
+   "pitch": {
+    "fr": "小马 a griffonné dans ton carnet ce qu'il faut photographier dans le quartier (la ruelle, la cour, la bouquinerie). Lis la liste : chaque photo bien légendée coche sa ligne. Six sur huit, et ton album gagne sa page au sceau rouge."
+   },
+   "goal": 6,
+   "when": {
+    "photo_guide": "fait"
+   },
+   "stay": true,
+   "readOnly": true,
+   "list": [
+    {
+     "word": "denglong",
+     "subject": "s_lanterne"
+    },
+    {
+     "word": "baozi",
+     "subject": "s_baozi"
+    },
+    {
+     "word": "men",
+     "subject": "s_men"
+    },
+    {
+     "word": "hua_fleur",
+     "subject": "s_fleurs"
+    },
+    {
+     "word": "mao",
+     "subject": "chat"
+    },
+    {
+     "word": "xigua",
+     "subject": "s_xigua"
+    },
+    {
+     "word": "cha",
+     "subject": "s_cha"
+    },
+    {
+     "word": "shu",
+     "subject": "s_shu"
+    }
+   ],
+   "reward": {
+    "seal": [
+     [
+      "w",
+      "shanghai"
+     ]
+    ],
+    "caption": {
+     "fr": "{n} photos sur {total} : le sceau rouge de 小马."
+    },
+    "toast": {
+     "fr": "Ton album a sa page au sceau rouge ({n}/{total}) ! Va la montrer à 小马, dans la ruelle."
+    }
+   }
   }
  ]
 }

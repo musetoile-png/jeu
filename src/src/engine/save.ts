@@ -11,7 +11,12 @@ export interface Photo {
   /** Rectangle cadré, en coordonnées du lieu : l'album redessine le décor (aucune image stockée). */
   rect: { x: number; y: number; w: number; h: number };
   t: number;
+  /** Sujet mobile (le chat) : son image et sa place au moment de la photo, posées sur le décor recadré. */
+  extra?: { image: string; x: number; y: number; h: number; flip?: boolean };
 }
+
+/** Le sujet est-il déjà dans l'album ? */
+export const hasPhoto = (subject: string) => get().album.some((p) => p.subject === subject);
 
 export interface SaveData {
   profile: { body: 'm' | 'f'; name?: string; country?: string };

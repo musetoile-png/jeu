@@ -310,7 +310,33 @@
    },
    "give": [
     "xiangji"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "x_06",
+   "line": [
+    [
+     "w",
+     "pai"
+    ],
+    [
+     "w",
+     "nage"
+    ],
+    [
+     "w",
+     "denglong"
+    ],
+    [
+     "p",
+     "！"
+    ]
    ],
+   "gloss": {
+    "fr": "Photographie cette lanterne-là !"
+   },
    "end": true
   }
  ]

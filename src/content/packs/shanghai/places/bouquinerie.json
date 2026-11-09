@@ -110,7 +110,11 @@
       "word": "shu",
       "prompt": {
         "fr": "les piles de livres"
-      }
+      },
+      "decoys": [
+        "shui",
+        "shushu"
+      ]
     }
   ],
   "palette": [

@@ -28,6 +28,8 @@
     "prologue-bol",
     "xiaoma-xiangji",
     "xiaoma-regarder",
+    "xiaoma-paizhao",
+    "xiaoma-photos",
     "wang-voir",
     "wang-acheter",
     "li-voir",
@@ -436,7 +438,29 @@
   ],
   "photo": {
     "item": "xiangji",
-    "credits": "credits.json"
+    "credits": "credits.json",
+    "guide": {
+      "place": "ruelle",
+      "subject": "s_lanterne",
+      "when": {
+        "xiangji": "fait",
+        "photo_guide": "!fait"
+      },
+      "scene": "xiaoma-paizhao",
+      "after": "xiaoma-xiangji",
+      "walkTo": 1250,
+      "text": {
+        "out": {
+          "fr": "小马 te montre la lanterne rouge qui scintille : {word}. Sors l'appareil : touche P, le bouton 📷 Photo sous l'image, ou celui-ci."
+        },
+        "frame": {
+          "fr": "Cadre la lanterne : flèches du clavier, ou glisse la souris ou le doigt sur l'image. Le cadre devient vert quand elle est dedans. Déclenche : Espace, un clic ou un tap sur l'image, ou « Déclencher »."
+        },
+        "name": {
+          "fr": "Légende ta photo : touche le mot que 小马 a dit, {word}. Les trois mots se ressemblent : compare chaque caractère (au clavier : 1, 2, 3)."
+        }
+      }
+    }
   },
   "intro": {
     "image": "intro_avion",

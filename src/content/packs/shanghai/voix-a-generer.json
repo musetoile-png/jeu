@@ -585,5 +585,18 @@
   {"vo": "w_xia", "speaker": "mot", "text": "下"},
   {"vo": "w_dong", "speaker": "mot", "text": "东"},
   {"vo": "w_yilupingan", "speaker": "mot", "text": "一路平安"},
-  {"vo": "w_an", "speaker": "mot", "text": "安"}
+  {"vo": "w_an", "speaker": "mot", "text": "安"},
+  {"vo": "x_06", "speaker": "xiaoma", "text": "拍那个灯笼！"},
+  {"vo": "xpz_01", "speaker": "xiaoma", "text": "很好！再拍！"},
+  {"vo": "xp_01", "speaker": "xiaoma", "text": "你拍了很多照片！"},
+  {"vo": "xp_02a_m", "speaker": "player", "text": "谢谢！"},
+  {"vo": "xp_02a_f", "speaker": "player", "text": "谢谢！"},
+  {"vo": "xp_02b_m", "speaker": "player", "text": "不客气！"},
+  {"vo": "xp_02b_f", "speaker": "player", "text": "不客气！"},
+  {"vo": "xp_02c_m", "speaker": "player", "text": "对不起！"},
+  {"vo": "xp_02c_f", "speaker": "player", "text": "对不起！"},
+  {"vo": "xp_03", "speaker": "xiaoma", "text": "这个相机，很好吧！"},
+  {"vo": "w_mao", "speaker": "mot", "text": "猫"},
+  {"vo": "w_pai", "speaker": "mot", "text": "拍"},
+  {"vo": "w_nage", "speaker": "mot", "text": "那个"}
 ]

@@ -2205,6 +2205,36 @@
    },
    "pos": "adj",
    "level": "hors-liste"
+  },
+  {
+   "id": "mao",
+   "target": "猫",
+   "transcription": "māo",
+   "gloss": {
+    "fr": "chat"
+   },
+   "pos": "n",
+   "level": "HSK1",
+   "taughtInContext": true
+  },
+  {
+   "id": "pai",
+   "target": "拍",
+   "transcription": "pāi",
+   "gloss": {
+    "fr": "taper ; prendre (en photo) : 拍照, 拍灯笼"
+   },
+   "pos": "v"
+  },
+  {
+   "id": "nage",
+   "target": "那个",
+   "transcription": "nàge",
+   "gloss": {
+    "fr": "celui-là, ce … -là"
+   },
+   "pos": "pron",
+   "level": "HSK1"
   }
  ]
 }

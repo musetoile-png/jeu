@@ -1,0 +1,181 @@
+{
+ "id": "xiaoma-photos",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Les photos du quartier"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "onEnd": {
+  "flags": {
+   "photos_shanghai": "fait"
+  },
+  "quest": {
+   "id": "photos_shanghai",
+   "step": 2
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xp_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "pai"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "duo"
+    ],
+    [
+     "w",
+     "zhaopian"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Tu as pris plein de photos !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Il te fait un compliment. Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "xp_02a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci !"
+     }
+    },
+    {
+     "vo": "xp_02b_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien !"
+     },
+     "why": {
+      "fr": "不客气 = « de rien » : c'est la réponse à un merci. Ici, on te fait un compliment : on dit 谢谢 !"
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "xp_02c_{body}",
+     "line": [
+      [
+       "w",
+       "duibuqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Pardon !"
+     },
+     "why": {
+      "fr": "对不起 = « pardon » : tu n'as rien fait de mal. Un compliment se reçoit avec 谢谢 !"
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xp_03",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "xiangji"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Il est bien, cet appareil, hein !"
+   },
+   "end": true
+  }
+ ]
+}

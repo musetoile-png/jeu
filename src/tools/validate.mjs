@@ -75,7 +75,18 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
     if (pack.money.item && !items.has(pack.money.item)) errors.push(`[${packId}] monnaie → objet inconnu ${pack.money.item}`);
   }
   const questsFile = join(pdir, 'quests.json');
-  if (existsSync(questsFile)) for (const q of json(questsFile).quests) if (!items.has(q.item)) errors.push(`[${packId}] quête ${q.id} → objet inconnu ${q.item}`);
+  const quests = existsSync(questsFile) ? json(questsFile).quests : [];
+  for (const q of quests) if (!items.has(q.item)) errors.push(`[${packId}] quête ${q.id} → objet inconnu ${q.item}`);
+  // sujets photo de tout le paquet (points du décor et animaux qui passent), par lieu
+  const subjects = new Map();
+  // légende d'une photo : le bon mot et deux voisins qui partagent un caractère ou un son
+  const checkDecoys = (word, decoys, where) => {
+    for (const w of decoys ?? []) {
+      if (!L.byId.has(w)) errors.push(`${where} → distracteur inconnu « ${w} »`);
+      else if (w === word) errors.push(`${where} → le distracteur « ${w} » est le bon mot`);
+    }
+    if ((decoys ?? []).length < 2) warnings.push(`${where} : moins de deux distracteurs de légende déclarés (complétés au hasard)`);
+  };
 
   for (const placeId of pack.places) {
     const f = join(pdir, 'places', `${placeId}.json`);
@@ -90,12 +101,46 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
       if (h.sprite && !pack.assets.images[h.sprite]) warnings.push(`[${packId}/${placeId}] hotspot ${h.id} → image non déclarée ${h.sprite}`);
       if (h.kind === 'stall' && h.word && !L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] étal ${h.id} → mot inconnu « ${h.word} »`);
       if (h.kind === 'subject') {
+        subjects.set(h.id, placeId);
         if (!L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] sujet photo ${h.id} → mot inconnu « ${h.word} »`);
         else { const c = L.contexts.get(h.word) ?? new Set(); c.add(`photo:${placeId}:${h.id}`); L.contexts.set(h.word, c); }
+        checkDecoys(h.word, h.decoys, `[${packId}/${placeId}] sujet photo ${h.id}`);
       }
       if (h.kind === 'object' && h.word && !L.byId.has(h.word)) warnings.push(`[${packId}/${placeId}] objet ${h.id} → mot « ${h.word} » absent du lexique`);
     }
     for (const pl of place.planes) if (!pack.assets.images[pl.image]) errors.push(`[${packId}/${placeId}] plan → image non déclarée ${pl.image}`);
+    for (const a of place.ambient ?? []) {
+      if (!pack.assets.images[a.image]) warnings.push(`[${packId}/${placeId}] passant → image non déclarée ${a.image}`);
+      if (!a.subject) continue;
+      subjects.set(a.subject, subjects.get(a.subject) ?? placeId);
+      if (!L.byId.has(a.word)) errors.push(`[${packId}/${placeId}] sujet photo mobile ${a.subject} → mot inconnu « ${a.word} »`);
+      else { const c = L.contexts.get(a.word) ?? new Set(); c.add(`photo:${a.subject}`); L.contexts.set(a.word, c); }
+      checkDecoys(a.word, a.decoys, `[${packId}/${placeId}] sujet photo mobile ${a.subject}`);
+    }
+  }
+
+  // listes à cocher (courses, photos) : chaque ligne a un mot du lexique et un drapeau ou un sujet photo existant
+  for (const q of quests.filter((x) => x.kind === 'errand')) {
+    const w = `[${packId}] liste ${q.id}`;
+    if (!q.list?.length) errors.push(`${w} : liste vide`);
+    for (const [k, it] of (q.list ?? []).entries()) {
+      if (!L.byId.has(it.word)) errors.push(`${w} ligne ${k + 1} : mot inconnu « ${it.word} »`);
+      if (!it.flag && !it.subject) errors.push(`${w} ligne ${k + 1} : ni drapeau ni sujet photo`);
+      if (it.subject && !subjects.has(it.subject)) errors.push(`${w} ligne ${k + 1} : sujet photo inconnu ${it.subject}`);
+    }
+    if (q.goal !== undefined && !(q.goal >= 1 && q.goal <= (q.list ?? []).length)) errors.push(`${w} : objectif ${q.goal} hors de 1…${(q.list ?? []).length}`);
+    if (q.head) checkLine(L, q.head, `${w} titre`);
+    if (q.reward) { checkLine(L, q.reward.seal, `${w} sceau`); if (!q.reward.caption?.fr) errors.push(`${w} : récompense sans légende`); }
+  }
+
+  // première photo guidée
+  const guide = pack.photo?.guide;
+  if (guide) {
+    const w = `[${packId}] photo guidée`;
+    if (!pack.places.includes(guide.place)) errors.push(`${w} : lieu inconnu ${guide.place}`);
+    if (subjects.get(guide.subject) !== guide.place) errors.push(`${w} : sujet ${guide.subject} absent du lieu ${guide.place}`);
+    for (const id of [guide.scene, guide.after].filter(Boolean)) if (!pack.scenes.includes(id)) errors.push(`${w} : scène inconnue ${id}`);
+    for (const k of ['out', 'frame', 'name']) if (!guide.text?.[k]?.fr) errors.push(`${w} : texte d'aide « ${k} » manquant`);
   }
 
   for (const sceneId of pack.scenes) {
