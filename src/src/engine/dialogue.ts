@@ -411,6 +411,11 @@ export class Dialogue {
     this.turn++;
     this.replay = null;
     if (!s) return this.close(true);
+    // étape réservée à une quête, à un nom… : sautée si elle ne concerne pas ce joueur
+    if (s.when && !save.matches(s.when)) {
+      if (s.end) return this.close(true);
+      return this.advance();
+    }
     // les jeux du service prennent un panneau plus large (et, sur téléphone, sortent sous la scène)
     this.root.classList.toggle('task-mode', ['ticket', 'sequence', 'serve', 'pay'].includes(s.type));
     // une étape sans réplique (choix, wok) garde la question précédente dans la bulle

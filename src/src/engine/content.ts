@@ -250,6 +250,21 @@ export interface Step {
   /** Objets donnés / repris à cette étape (ids de items.json). */
   give?: string[];
   take?: string[];
+  /** Étape jouée seulement si les drapeaux correspondent (même syntaxe que les points d'interaction : quest, name, item:…). */
+  when?: Record<string, string>;
+}
+
+/** Fin de chapitre : une image plein écran, le titre-carnet, le chapitre achevé, la suite annoncée. */
+export interface Ending {
+  image: string;
+  /** Ligne calligraphiée sur l'image (un proverbe, la dernière phrase du chapitre). */
+  line?: Token[];
+  /** « Fin du chapitre 1 — Premier soir à Shanghai ». */
+  title: Localized;
+  /** « À suivre : Hangzhou ». */
+  next?: Localized;
+  /** Voix de la ligne (clip entier). */
+  vo?: string;
 }
 
 export interface SceneEnd {
@@ -260,6 +275,8 @@ export interface SceneEnd {
   card?: Localized;
   /** Fait avancer une quête de fond (questStep[id] = step, index dans quests.json). */
   quest?: { id: string; step: number };
+  /** Fin de chapitre (après les drapeaux et les objets). */
+  ending?: Ending;
 }
 
 export interface Scene {

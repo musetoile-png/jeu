@@ -737,9 +737,14 @@ export class World extends Phaser.Scene {
     walk(right ? W + 160 : -160, done);
   }
 
-  /** Lance une scène sans point d'interaction (scène d'arrivée, prologue). */
+  /**
+   * Lance une scène sans que le joueur l'ait demandée (scène d'arrivée, prologue). Si un personnage visible porte
+   * cette scène (le policier de la gare qui t'arrête), on la joue avec lui : cadrage, bulle au-dessus de sa tête.
+   */
   private playScene(id: string) {
-    this.openScene({ id: `auto:${id}`, kind: 'npc', x: this.player.x + 320, y: this.player.y, scene: id, prompt: {} });
+    const h = this.spots.find((s) => s.h.kind === 'npc' && s.h.scene === id)?.h;
+    if (h) this.openScene(h);
+    else this.openScene({ id: `auto:${id}`, kind: 'npc', x: this.player.x + 320, y: this.player.y, scene: id, prompt: {} });
   }
 
   /** Conséquences d'une scène réussie : drapeaux, objets, nouveau lieu, cartouche. */
@@ -760,6 +765,17 @@ export class World extends Phaser.Scene {
     // liste de courses complète : on peut rapporter les achats
     if (ui.checkErrands(this.content)) log({ scene: id, step: -1, kind: 'errand_ready' });
     if (save.get().quest && end.flags?.prologue) log({ scene: id, step: -1, kind: 'quest_choice', detail: save.get().quest });
+    if (end.ending) {
+      // fin de chapitre : le monde s'arrête, l'image de fin prend tout l'écran (la sauvegarde est déjà à jour)
+      const ending = end.ending;
+      this.busy = true;
+      this.stage(true);
+      sfx.ambience(undefined);
+      log({ scene: id, step: -1, kind: 'chapter_end', detail: JSON.stringify(end.flags ?? {}) });
+      this.cameras.main.fadeOut(1400, 0x0b, 0x0e, 0x18);
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => ui.ending(this.content, ending));
+      return;
+    }
     if (end.goto) {
       const go = end.goto;
       this.busy = true;
@@ -782,6 +798,7 @@ export class World extends Phaser.Scene {
     if (fx === 'chao') this.cameras.main.shake(300, 0.004);
     if (fx === 'bowl') this.cameras.main.flash(260, 255, 220, 160);
     if (fx === 'dog') this.dogRuns();
+    if (fx === 'dog_drop') this.dogDrops();
     if (fx === 'pay') this.payAnim();
     if (fx === 'tea') this.steam();
   }
@@ -917,6 +934,42 @@ export class World extends Phaser.Scene {
       onComplete: () => {
         bob.remove();
         dog.destroy();
+      },
+    });
+  }
+
+  /**
+   * À la gare, le chien de la ruelle lâche enfin le portefeuille : il bondit, la gueule se vide,
+   * le portefeuille glisse vers le joueur (puis rejoint le sac, avec l'étape qui le rend).
+   */
+  private dogDrops() {
+    const spot = this.spots.find((s) => s.h.sprite === 'dog');
+    const dog = spot?.obj;
+    if (!dog?.active) return;
+    const y = dog.y;
+    this.tweens.add({ targets: dog, y: y - 26, duration: 160, yoyo: true, repeat: 1, ease: 'Sine.easeOut', onComplete: () => dog.setY(y) });
+    if (this.textures.exists('dog_vide')) dog.setTexture('dog_vide');
+    if (!this.textures.exists('item_qianbao')) return;
+    // la gueule est au bord gauche de l'image (le chien regarde à gauche)
+    const mouthX = dog.x - dog.displayWidth * 0.42;
+    const wallet = this.add
+      .image(mouthX, y - dog.displayHeight * 0.55, 'item_qianbao')
+      .setOrigin(0.5, 1)
+      .setDisplaySize(dog.displayHeight * 0.3, dog.displayHeight * 0.3)
+      .setDepth(y + 1)
+      .setAngle(-20);
+    this.placeObjects.push(wallet);
+    this.tweens.add({ targets: wallet, y, angle: 70, duration: 520, ease: 'Bounce.easeOut' });
+    this.tweens.add({
+      targets: wallet,
+      x: this.player.x,
+      alpha: 0,
+      delay: 900,
+      duration: 700,
+      ease: 'Sine.easeIn',
+      onComplete: () => {
+        wallet.destroy();
+        this.placeObjects = this.placeObjects.filter((o) => o !== wallet);
       },
     });
   }

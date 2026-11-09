@@ -64,12 +64,13 @@ export function flag(k: string) {
  * `clé: "valeur"` : le drapeau vaut exactement cela ('' = absent) ;
  * `clé: "!valeur"` : le drapeau vaut autre chose ;
  * `"item:id": "1"` / `""` : l'objet est dans le sac / n'y est pas ;
- * `"quest": "lettre"` : la quête de fond choisie dans la valise (rangée dans le profil, pas dans les drapeaux).
+ * `"quest": "lettre"` : la quête de fond choisie dans la valise (rangée dans le profil, pas dans les drapeaux) ;
+ * `"name": "an"` : le nom chinois choisi le premier soir (profil).
  */
 export function matches(when?: Record<string, string>) {
   if (!when) return true;
   return Object.entries(when).every(([k, v]) => {
-    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : k === 'quest' ? (get().quest ?? '') : flag(k);
+    const cur = k.startsWith('item:') ? (hasItem(k.slice(5)) ? '1' : '') : k === 'quest' ? (get().quest ?? '') : k === 'name' ? (get().profile.name ?? '') : flag(k);
     return v.startsWith('!') ? cur !== v.slice(1) : cur === v;
   });
 }

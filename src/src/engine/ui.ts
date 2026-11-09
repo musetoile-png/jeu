@@ -3,7 +3,7 @@
  * Aucun texte de langue cible ici : tout vient du contenu.
  */
 import { speak, RATE } from './audio';
-import type { Content, PickOption, Place, Scene, Step, Token } from './content';
+import type { Content, Ending, PickOption, Place, Scene, Step, Token } from './content';
 import { assetUrl, lineText, t } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
@@ -430,6 +430,42 @@ export function cinematic(content: Content, scene: Scene, step: Step, done: (o?:
       items.append(b);
     });
   }, 3100);
+}
+
+/**
+ * Fin de chapitre : l'image de fin avance lentement, une phrase calligraphiée (et sa voix) s'y pose,
+ * puis un cartouche de papier : le titre-carnet (千里, à l'encre du carnet), le chapitre achevé, la suite.
+ * Le bouton ramène à l'écran titre ; la partie est sauvegardée (« Continuer » rouvre le train).
+ */
+export function ending(content: Content, e: Ending) {
+  setAnim('ending', true);
+  const box = el('div', 'cine ending');
+  const path = content.pack.assets.images[e.image];
+  const img = el('div', 'ending-img');
+  if (hasAsset(path)) img.style.backgroundImage = `url("${assetUrl(path as string)}")`;
+  box.append(img);
+  if (e.line) box.append(el('p', 'ending-line', lineText(content, e.line)));
+  const card = el('div', 'ending-card');
+  const zh = el('div', 'ending-title');
+  const title = content.pack.title;
+  for (const tok of title?.line ?? []) if (tok[0] === 'w') zh.append(inkWord(content, tok[1], false));
+  card.append(zh, el('p', 'ending-chapter', t(content, e.title)));
+  if (e.next) card.append(el('p', 'ending-next', t(content, e.next)));
+  const back = el('button', 'go', content.ui.backToTitle ?? '↺');
+  back.onclick = () => {
+    play('tap');
+    // l'écran titre, sans les raccourcis de test de l'adresse
+    location.href = location.pathname;
+  };
+  card.append(back);
+  box.append(card);
+  stage().appendChild(box);
+  requestAnimationFrame(() => box.classList.add('on'));
+  setTimeout(() => {
+    box.classList.add('line');
+    if (e.line) speak(content, lineText(content, e.line), e.vo, RATE.NORMAL);
+  }, 2200);
+  setTimeout(() => box.classList.add('card'), 5200);
 }
 
 /**
