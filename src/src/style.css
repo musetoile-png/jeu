@@ -498,3 +498,96 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
   .stall-good .tag { width: auto; height: 88%; }
 }
 @media (prefers-reduced-motion: reduce) { #dlg .pick.stall-good.shown { animation: none; } }
+
+/* ---------- Service de 奶奶 : ticket, étapes de recette, plateaux, caisse (types d'étape génériques) ---------- */
+#dlg.task-mode { width: min(48%, 560px); max-width: min(48%, 560px); max-height: 86%; }
+#dlg.task-mode #dlg-body { display: contents; }
+#dlg.task-mode .feedback { order: 2; }
+#dlg.task-mode #dlg-body > button.go { order: 3; align-self: flex-end; }
+#dlg .serve-place .tk-line { justify-content: center; }
+.pay-due { font-weight: 700; color: var(--ink) !important; }
+/* la caisse : un petit cartouche dans les outils, un « +7 » qui monte, un « −2 » qui tombe */
+.till { position: relative; margin-left: 6px; padding: 2px 9px; border-radius: 999px; background: #fffaf0; border: 1px solid var(--paper-2);
+  font: 700 12px var(--body); color: var(--jade); white-space: nowrap; }
+.till[hidden] { display: none; }
+.till.neg { color: var(--lantern); }
+.till-float { position: absolute; right: 4px; top: -4px; font-style: normal; font-weight: 700; pointer-events: none; animation: tillup 1.5s ease-out forwards; }
+.till-float.up { color: var(--jade); }
+.till-float.down { color: var(--lantern); animation-name: tilldown; }
+@keyframes tillup { to { transform: translateY(-22px); opacity: 0; } }
+@keyframes tilldown { to { transform: translateY(18px); opacity: 0; } }
+/* le ticket : un papier de commande, une ligne par élément, une rangée de cases */
+.tk-slip { position: relative; padding: 8px 10px 9px 12px; background: #fffdf6; border: 1px solid var(--paper-2); border-left: 4px solid var(--lantern);
+  box-shadow: 0 6px 14px -9px rgba(40, 30, 10, .55); display: flex; flex-direction: column; gap: 6px; }
+.tk-head { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); }
+.tk-item { display: flex; gap: 8px; align-items: flex-start; }
+.tk-n { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--paper-2); font: 700 12px/20px var(--body); text-align: center; margin-top: 6px; }
+.tk-cells { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+.tk-cell { display: flex; flex-wrap: wrap; gap: 5px; padding-bottom: 5px; border-bottom: 1px dashed rgba(90, 80, 60, .2); }
+.tk-cell:last-child { border-bottom: 0; padding-bottom: 0; }
+#dlg .tk-chip, #dlg .seq-card { display: inline-flex; flex-wrap: wrap; gap: 0 2px; align-items: flex-end; padding: 3px 8px; border-radius: 8px; background: #fff; }
+#dlg .tk-chip .w, #dlg .seq-card .w, #dlg .serve-place .w { padding: 0 1px; cursor: inherit; pointer-events: none; }
+#dlg .tk-chip .w b, #dlg .seq-card .w b { font-size: clamp(16px, 1.7vw, 19px); }
+#dlg .tk-chip.on { border-color: var(--ink); background: #fbe9c6; box-shadow: inset 0 -3px 0 var(--amber); }
+#dlg .tk-chip:disabled.on { opacity: 1; }
+.tk-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#dlg .tk-wait { display: inline-flex; align-items: flex-end; gap: 2px; }
+#dlg .tk-wait .w { padding: 0; pointer-events: none; }
+#dlg .tk-wait .w b { font-size: 16px; }
+.tk-line { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: flex-end; }
+.tk-line .w b { font-size: clamp(17px, 1.9vw, 21px); }
+.tray .tk-line { font-family: var(--zh-font); }
+.oppose { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; align-items: end; padding-top: 6px; border-top: 1px dashed rgba(90, 80, 60, .3); }
+.oppose .lbl { font-size: 11px; color: var(--mute); }
+.tk-line.served b { color: var(--lantern); }
+.tk-line.served .w:not(.punct) b { text-decoration: line-through; text-decoration-thickness: 2px; }
+.tk-line.wanted b { color: var(--jade); }
+/* les étapes de la recette : des cases numérotées, des cartes à poser */
+.seq-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.seq-slot { min-height: 54px; border: 2px dashed #c9bea8; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px; background: rgba(255, 255, 255, .35); }
+.seq-slot.filled { border-style: solid; border-color: var(--jade); background: #fffdf6; }
+.seq-num { font: 700 11px var(--body); color: var(--mute); }
+.seq-words { display: flex; gap: 2px; }
+.seq-words .w b { font-size: 17px; }
+#dlg .seq-pool { gap: 6px; }
+/* les places : ce que les clients ont dit */
+.serve-places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+#dlg .serve-place { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; background: #fffdf6; }
+#dlg .serve-place .w b { font-size: clamp(20px, 2.3vw, 26px); }
+#dlg .serve-place .cap { font-size: 11px; color: var(--ink-2); text-align: center; line-height: 1.2; }
+#dlg .serve-place.right { border-color: var(--jade); box-shadow: 0 0 0 2px var(--jade); opacity: 1; }
+#dlg .serve-place.wrong { border-color: var(--lantern); box-shadow: 0 0 0 2px var(--lantern); opacity: 1; }
+/* la caisse : l'ardoise à la craie, la commande, les pièces et billets */
+.pay-board { display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; align-items: start; }
+.slate { padding: 7px 10px 8px; background: #2f3a33; border: 5px solid #7a5a3c; border-radius: 4px; box-shadow: inset 0 0 18px rgba(0, 0, 0, .45); display: flex; flex-direction: column; gap: 1px; }
+.slate .w b { color: #f3eedf; font-family: var(--calli); font-weight: 400; font-size: clamp(16px, 1.7vw, 19px); }
+.slate .w i { color: #b7c2b4; font-size: 10px; }
+.slate .w:hover { background: rgba(255, 255, 255, .08); border-color: transparent; }
+.slate-line { display: flex; flex-wrap: wrap; gap: 0 3px; align-items: flex-end; }
+#dlg .pay-totals { flex-direction: row; flex-wrap: wrap; }
+#dlg .pay-totals button { padding-left: 30px; }
+.pay-area { display: flex; flex-direction: column; gap: 6px; }
+.pay-given { display: flex; align-items: center; gap: 8px; }
+.pay-area .lbl, .pay-given .lbl { font-size: 12px; color: var(--ink-2); }
+.pay-coins { display: flex; gap: 6px; flex-wrap: wrap; }
+#dlg .coin-btn { padding: 3px; background: transparent; border-color: transparent; }
+.pay-tray { display: flex; flex-wrap: wrap; gap: 4px; min-height: 46px; padding: 5px; border-radius: 8px; background: rgba(120, 82, 40, .1); box-shadow: inset 0 -3px 0 rgba(91, 58, 34, .25); }
+.pay-tray .piece { cursor: pointer; }
+.pay-tray.answer { background: rgba(47, 156, 119, .12); }
+.piece { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--body); line-height: 1; user-select: none; }
+.piece b { font-size: 17px; }
+.piece small { font-family: var(--zh-font); font-size: 10px; margin-top: 2px; }
+.piece.coin { width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f6e6b8, #c9a55a 70%); border: 2px solid #a5823c; color: #4a3612; }
+.piece.note { width: 64px; height: 38px; border-radius: 4px; border: 1px solid rgba(0, 0, 0, .25); color: #fff; background: #7a6aa8; box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .22); }
+.piece.note[data-v='5'] { background: #7b5d9c; }
+.piece.note[data-v='10'] { background: #3f6f9a; }
+.piece.note[data-v='20'] { background: #9a6a3f; }
+.piece.note[data-v='50'] { background: #3f8a62; }
+.piece.note[data-v='100'] { background: var(--lantern); }
+.wage { padding: 7px 10px; background: #fffdf6; border-left: 4px solid var(--jade); font-size: 14px; }
+@media (max-width: 720px) {
+  #dlg.task-mode { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 66vh; z-index: 30;
+    background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
+  .seq-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pay-board { grid-template-columns: 1fr; }
+}

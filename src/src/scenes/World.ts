@@ -224,9 +224,10 @@ export class World extends Phaser.Scene {
     }
     this.spots = [];
     // un point visible peut en remplacer un autre (même personnage, scène de quête à la place de la scène habituelle)
-    const replaced = new Set(place.hotspots.filter((h) => h.replaces && save.matches(h.when)).map((h) => h.replaces));
+    const replaced = new Set(place.hotspots.filter((h) => h.replaces && save.matches(h.when)).flatMap((h) => [h.replaces ?? []].flat()));
+    const shown = new Set(place.hotspots.filter((h) => save.matches(h.when) && !replaced.has(h.id)).map((h) => h.id));
     for (const h of place.hotspots) {
-      if (!save.matches(h.when) || replaced.has(h.id)) continue;
+      if (!shown.has(h.id) || (h.with && !shown.has(h.with))) continue;
       if (h.kind === 'subject') {
         // sujets photo : invisibles hors du viseur
         const obj = this.add.image(h.x, h.y, '__WHITE').setAlpha(0);
@@ -288,6 +289,11 @@ export class World extends Phaser.Scene {
       }
       this.spots.push({ h, obj, prompt });
     }
+  }
+
+  /** Personnage posé dans le lieu sans scène à jouer (client qui attend, habitué assis). */
+  private static isExtra(h: Hotspot) {
+    return h.kind === 'npc' && !h.scene;
   }
 
   /** Variante de nuit : voile bleu-encre et halos chauds autour des lanternes. */
@@ -415,7 +421,7 @@ export class World extends Phaser.Scene {
     let bestD = Infinity;
     for (const s of this.spots) {
       const h = s.h;
-      if (h.kind === 'subject' || h.kind === 'object') continue;
+      if (h.kind === 'subject' || h.kind === 'object' || World.isExtra(h)) continue;
       const dir = this.edgeDir(h);
       let hit: boolean;
       if (dir < 0) hit = wx < h.x + 90;
@@ -544,10 +550,14 @@ export class World extends Phaser.Scene {
     // à l'étal, l'interlocuteur est le commerçant, debout à côté
     const merchant = h.kind === 'stall' ? this.spots.find((s) => s.h.kind === 'npc' && s.h.sprite?.startsWith(sc.npc)) : undefined;
     const who = merchant?.h ?? h;
-    const side = p.x <= who.x ? -1 : 1;
-    const x = auto ? p.x : Phaser.Math.Clamp(who.x + side * 300, this.place.walk.xMin, this.place.walk.xMax);
+    const side = h.playerAt ? Math.sign(h.playerAt) : p.x <= who.x ? -1 : 1;
+    const x = auto ? p.x : Phaser.Math.Clamp(who.x + (h.playerAt ?? side * 300), this.place.walk.xMin, this.place.walk.xMax);
+    // les autres personnages de la scène présents dans le lieu (clients…) entrent aussi dans le cadre
+    const cast = Object.keys(sc.actors)
+      .filter((a) => a !== sc.npc && a !== 'player')
+      .flatMap((a) => this.spots.filter((s) => s.h.kind === 'npc' && s.h.sprite?.startsWith(a)).map((s) => s.h.x));
     // gros plan : la caméra cadre les deux personnages d'un côté, le panneau d'action se pose de l'autre
-    const panelSide = this.frameDialogue(auto ? [x] : [x, who.x], Math.max(p.y, who.y));
+    const panelSide = this.frameDialogue(auto ? [x, ...cast] : [x, who.x, ...cast], Math.max(p.y, who.y));
     const npcSpot = auto ? undefined : (merchant ?? this.spots.find((s) => s.h.id === h.id));
     this.talkTo = npcSpot?.obj;
     if (p instanceof Puppet) p.setFacing(side > 0);
@@ -1126,7 +1136,7 @@ export class World extends Phaser.Scene {
     let edge: Hotspot | null = null;
     let edgeDir = 0;
     for (const s of this.spots) {
-      if (s.h.kind === 'subject') continue;
+      if (s.h.kind === 'subject' || World.isExtra(s.h)) continue;
       const dir = this.edgeDir(s.h);
       if (dir) {
         // sortie au bord : pas d'étiquette, c'est la bannière qui parle quand on s'en approche

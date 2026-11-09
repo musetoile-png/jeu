@@ -1855,6 +1855,196 @@
     "fr": "la prochaine fois"
    },
    "pos": "n"
+  },
+  {
+   "id": "bei",
+   "target": "杯",
+   "transcription": "bēi",
+   "gloss": {
+    "fr": "tasse, verre (classificateur des boissons)"
+   },
+   "pos": "cl",
+   "level": "HSK1"
+  },
+  {
+   "id": "liang",
+   "target": "两",
+   "transcription": "liǎng",
+   "gloss": {
+    "fr": "deux (devant un classificateur : 两个, 两块)"
+   },
+   "pos": "num",
+   "level": "HSK2"
+  },
+  {
+   "id": "jiu",
+   "target": "九",
+   "transcription": "jiǔ",
+   "gloss": {
+    "fr": "neuf"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "ba_huit",
+   "target": "八",
+   "transcription": "bā",
+   "gloss": {
+    "fr": "huit"
+   },
+   "pos": "num",
+   "level": "HSK1"
+  },
+  {
+   "id": "zhao",
+   "target": "找",
+   "transcription": "zhǎo",
+   "gloss": {
+    "fr": "rendre (la monnaie) ; chercher"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "deng",
+   "target": "等",
+   "transcription": "děng",
+   "gloss": {
+    "fr": "attendre"
+   },
+   "pos": "v",
+   "level": "HSK2"
+  },
+  {
+   "id": "yixia",
+   "target": "一下",
+   "transcription": "yíxià",
+   "gloss": {
+    "fr": "un instant, un peu"
+   },
+   "pos": "adv",
+   "level": "HSK2"
+  },
+  {
+   "id": "xian",
+   "target": "先",
+   "transcription": "xiān",
+   "gloss": {
+    "fr": "d'abord"
+   },
+   "pos": "adv",
+   "level": "HSK3"
+  },
+  {
+   "id": "ranhou",
+   "target": "然后",
+   "transcription": "ránhòu",
+   "gloss": {
+    "fr": "ensuite, après ça"
+   },
+   "pos": "conj",
+   "level": "HSK3"
+  },
+  {
+   "id": "qie",
+   "target": "切",
+   "transcription": "qiē",
+   "gloss": {
+    "fr": "couper"
+   },
+   "pos": "v",
+   "level": "HSK4"
+  },
+  {
+   "id": "yidianr",
+   "target": "一点儿",
+   "transcription": "yìdiǎnr",
+   "gloss": {
+    "fr": "un peu"
+   },
+   "pos": "adv",
+   "level": "HSK1"
+  },
+  {
+   "id": "kuai_vite",
+   "target": "快",
+   "transcription": "kuài",
+   "gloss": {
+    "fr": "vite, rapide"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "man",
+   "target": "慢",
+   "transcription": "màn",
+   "gloss": {
+    "fr": "lent, lentement"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "cuo",
+   "target": "错",
+   "transcription": "cuò",
+   "gloss": {
+    "fr": "faux, erroné"
+   },
+   "pos": "adj",
+   "level": "HSK2"
+  },
+  {
+   "id": "tang_soupe",
+   "target": "汤",
+   "transcription": "tāng",
+   "gloss": {
+    "fr": "soupe, bouillon"
+   },
+   "pos": "n",
+   "level": "HSK4"
+  },
+  {
+   "id": "zuo_assis",
+   "target": "坐",
+   "transcription": "zuò",
+   "gloss": {
+    "fr": "s'asseoir"
+   },
+   "pos": "v",
+   "level": "HSK1"
+  },
+  {
+   "id": "ai_soupir",
+   "target": "唉",
+   "transcription": "ài",
+   "gloss": {
+    "fr": "(soupir) hélas, bon…"
+   },
+   "pos": "interj",
+   "level": "hors-liste"
+  },
+  {
+   "id": "laowang",
+   "target": "老王",
+   "transcription": "Lǎo Wáng",
+   "gloss": {
+    "fr": "Lao Wang (« le vieux Wang », un habitué)"
+   },
+   "pos": "name",
+   "level": "hors-liste"
+  },
+  {
+   "id": "xiaomei",
+   "target": "小美",
+   "transcription": "Xiǎo Měi",
+   "gloss": {
+    "fr": "Xiao Mei (une étudiante)"
+   },
+   "pos": "name",
+   "level": "hors-liste"
   }
  ]
 }

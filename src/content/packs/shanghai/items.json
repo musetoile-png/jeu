@@ -599,6 +599,55 @@
     "le 龙井 de Hangzhou",
     "offrir du thé à un hôte"
    ]
+  },
+  {
+   "id": "yaoshi_qian",
+   "word": "yaoshi",
+   "image": "item_yaoshi",
+   "from": {
+    "fr": "奶奶, la clé de la caisse"
+   },
+   "usage": {
+    "line": [
+     [
+      "w",
+      "zhege"
+     ],
+     [
+      "w",
+      "yaoshi"
+     ],
+     [
+      "p",
+      "，"
+     ],
+     [
+      "w",
+      "ye"
+     ],
+     [
+      "w",
+      "gei"
+     ],
+     [
+      "w",
+      "ni"
+     ],
+     [
+      "p",
+      "。"
+     ]
+    ],
+    "gloss": {
+     "fr": "Cette clé-là, je te la donne aussi."
+    },
+    "vo": "i_yaoshi_qian"
+   },
+   "reuse": [
+    "tenir la caisse au prochain service",
+    "la confiance de 奶奶 (même 钥匙 que la clé de la chambre)",
+    "ouvrir le tiroir-caisse : 多少钱？"
+   ]
   }
  ]
 }

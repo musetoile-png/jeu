@@ -69,6 +69,11 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
   for (const d of Object.values(pack.detours ?? {})) { checkLine(L, d.go.line, `[${packId}] détour`); checkLine(L, d.back.line, `[${packId}] détour`); }
   if (pack.title) checkLine(L, pack.title.line, `[${packId}] titre`);
   if (pack.closedSign) checkLine(L, pack.closedSign, `[${packId}] pancarte`);
+  if (pack.money) {
+    checkLine(L, [pack.money.unit], `[${packId}] monnaie`);
+    for (const [n, w] of Object.entries(pack.money.words)) checkLine(L, w, `[${packId}] monnaie ${n}`);
+    if (pack.money.item && !items.has(pack.money.item)) errors.push(`[${packId}] monnaie → objet inconnu ${pack.money.item}`);
+  }
   const questsFile = join(pdir, 'quests.json');
   if (existsSync(questsFile)) for (const q of json(questsFile).quests) if (!items.has(q.item)) errors.push(`[${packId}] quête ${q.id} → objet inconnu ${q.item}`);
 
@@ -77,7 +82,12 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
     if (!existsSync(f)) { errors.push(`[${packId}] lieu manquant ${placeId}`); continue; }
     const place = json(f);
     for (const h of place.hotspots) {
-      if ((h.kind === 'npc' || h.kind === 'stall') && !pack.scenes.includes(h.scene)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → scène inconnue ${h.scene}`);
+      // un personnage sans scène est un figurant (client qui attend) ; s'il en a une, elle doit exister
+      if ((h.kind === 'stall' || h.scene !== undefined) && !pack.scenes.includes(h.scene)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → scène inconnue ${h.scene}`);
+      if (h.kind === 'npc' && !h.scene && !h.sprite) warnings.push(`[${packId}/${placeId}] figurant ${h.id} sans sprite`);
+      if (h.with && !place.hotspots.some((x) => x.id === h.with)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → « with » inconnu ${h.with}`);
+      for (const r of [h.replaces ?? []].flat()) if (!place.hotspots.some((x) => x.id === r)) errors.push(`[${packId}/${placeId}] hotspot ${h.id} → « replaces » inconnu ${r}`);
+      if (h.sprite && !pack.assets.images[h.sprite]) warnings.push(`[${packId}/${placeId}] hotspot ${h.id} → image non déclarée ${h.sprite}`);
       if (h.kind === 'stall' && h.word && !L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] étal ${h.id} → mot inconnu « ${h.word} »`);
       if (h.kind === 'subject') {
         if (!L.byId.has(h.word)) errors.push(`[${packId}/${placeId}] sujet photo ${h.id} → mot inconnu « ${h.word} »`);
@@ -162,12 +172,70 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
           }
         }
       }
+      // ---- service : ticket, étapes, plateaux, caisse ----
+      const said = (l, w) => { if (!l?.line) errors.push(`${w} : réplique sans ligne`); else checkLine(L, l.line, w); };
+      const options = (opts, w) => {
+        const oks = opts.filter((o) => o.ok).length;
+        if (oks !== 1) errors.push(`${w} : ${oks} bonne(s) réponse(s), il en faut exactement une`);
+        opts.forEach((o, k) => {
+          checkLine(L, o.line, `${w} option ${k + 1}`);
+          if (!o.ok && !o.why?.fr) errors.push(`${w} option ${k + 1} : distracteur sans explication`);
+          if (!o.ok && !o.errorType) warnings.push(`${w} option ${k + 1} : distracteur sans catégorie d'erreur`);
+        });
+      };
+      const ticketIds = new Set(sc.steps.filter((x) => x.ticket).map((x) => x.ticket.id));
+      if (s.type === 'ticket') {
+        const tk = s.ticket;
+        if (!tk?.id || !tk.items?.length) errors.push(`${where(i)} : ticket sans id ou sans éléments`);
+        else {
+          if (tk.wait) said(tk.wait, `${where(i)} « attendez »`);
+          if (tk.again) said(tk.again, `${where(i)} répétition`);
+          tk.items.forEach((it, j) => {
+            if (!(it.n > 0) || !(it.unit >= 0)) errors.push(`${where(i)} élément ${j + 1} : n et unit (prix unitaire) requis`);
+            said(it.complaint, `${where(i)} élément ${j + 1} plainte`);
+            it.cells.forEach((c, k) => {
+              options(c.options, `${where(i)} élément ${j + 1} case ${k + 1}`);
+              if (c.complaint) said(c.complaint, `${where(i)} élément ${j + 1} case ${k + 1} plainte`);
+            });
+          });
+        }
+      }
+      if (s.type === 'sequence') {
+        if (!s.sequence?.cards?.length) errors.push(`${where(i)} : étapes sans cartes`);
+        else s.sequence.cards.forEach((c, k) => { checkLine(L, c.line, `${where(i)} carte ${k + 1}`); if (!c.why?.fr) errors.push(`${where(i)} carte ${k + 1} : sans explication`); });
+      }
+      if (s.type === 'serve') {
+        for (const [k, p] of (s.serve?.places ?? []).entries()) {
+          if (!ticketIds.has(p.ticket)) errors.push(`${where(i)} place ${k + 1} : ticket inconnu ${p.ticket}`);
+          if (!sc.actors?.[p.actor]) errors.push(`${where(i)} place ${k + 1} : acteur inconnu ${p.actor}`);
+          checkLine(L, p.line, `${where(i)} place ${k + 1}`);
+          said(p.thanks, `${where(i)} place ${k + 1} merci`);
+          if (!p.why?.fr) errors.push(`${where(i)} place ${k + 1} : sans explication`);
+        }
+      }
+      if (s.type === 'pay') {
+        const py = s.pay;
+        const tk = sc.steps.find((x) => x.ticket?.id === py?.ticket)?.ticket;
+        if (!tk) errors.push(`${where(i)} : caisse → ticket inconnu ${py?.ticket}`);
+        else {
+          const sum = tk.items.reduce((a, it) => a + it.n * it.unit, 0);
+          if (py.totals.filter((x) => x.n === sum).length !== 1) errors.push(`${where(i)} : le total juste (${sum}) doit figurer une fois parmi les totaux proposés`);
+          for (const x of py.totals) if (x.n !== sum && !x.why?.fr) warnings.push(`${where(i)} : total ${x.n} sans explication propre (l'addition est montrée)`);
+          if (py.given.n < sum) errors.push(`${where(i)} : le billet (${py.given.n}) ne couvre pas le total (${sum})`);
+          for (const n of [sum, py.given.n, py.given.n - sum, ...py.totals.map((x) => x.n)]) if (n && !pack.money?.words?.[String(n)]) warnings.push(`${where(i)} : montant ${n} sans mots déclarés (pack.money.words)`);
+          for (const k of ['ask', 'given', 'thanks', 'wrong', 'total', 'change']) said(py[k], `${where(i)} ${k}`);
+        }
+      }
       if (s.vo && typeof s.vo !== 'string') errors.push(`${where(i)} : vo doit être une clé de fichier`);
       for (const id of [...(s.give ?? []), ...(s.take ?? [])]) if (!items.has(id)) errors.push(`${where(i)} : objet inconnu « ${id} » (items.json)`);
     });
     for (const id of sc.onEnd?.give ?? []) if (!items.has(id)) errors.push(`[${packId}/${sceneId}] onEnd : objet inconnu « ${id} »`);
     if (sc.onEnd?.goto && !pack.places.includes(sc.onEnd.goto.place)) errors.push(`[${packId}/${sceneId}] onEnd : lieu inconnu ${sc.onEnd.goto.place}`);
     if (sc.onExhausted && !pack.detours?.[sc.onExhausted.detour]) errors.push(`[${packId}/${sceneId}] détour inconnu ${sc.onExhausted.detour}`);
+    if (sc.till) {
+      for (const l of sc.till.slate ?? []) checkLine(L, l, `[${packId}/${sceneId}] ardoise`);
+      if (sc.till.mock) { checkLine(L, sc.till.mock.line, `[${packId}/${sceneId}] ricanement`); if (!sc.actors?.[sc.till.mock.actor]) errors.push(`[${packId}/${sceneId}] ricanement : acteur inconnu ${sc.till.mock.actor}`); }
+    }
   }
 }
 
