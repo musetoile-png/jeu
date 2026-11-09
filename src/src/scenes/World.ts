@@ -773,7 +773,9 @@ export class World extends Phaser.Scene {
       sfx.ambience(undefined);
       log({ scene: id, step: -1, kind: 'chapter_end', detail: JSON.stringify(end.flags ?? {}) });
       this.cameras.main.fadeOut(1400, 0x0b, 0x0e, 0x18);
-      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => ui.ending(this.content, ending));
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+        ui.ending(this.content, ending);
+      });
       return;
     }
     if (end.goto) {
@@ -798,7 +800,7 @@ export class World extends Phaser.Scene {
     if (fx === 'chao') this.cameras.main.shake(300, 0.004);
     if (fx === 'bowl') this.cameras.main.flash(260, 255, 220, 160);
     if (fx === 'dog') this.dogRuns();
-    if (fx === 'dog_drop') this.dogDrops();
+    if (fx === 'dog_jump') this.dogJumps();
     if (fx === 'pay') this.payAnim();
     if (fx === 'tea') this.steam();
   }
@@ -939,37 +941,26 @@ export class World extends Phaser.Scene {
   }
 
   /**
-   * À la gare, le chien de la ruelle lâche enfin le portefeuille : il bondit, la gueule se vide,
-   * le portefeuille glisse vers le joueur (puis rejoint le sac, avec l'étape qui le rend).
+   * À la gare, le chien de la ruelle (attrapé par le policier) bondit une dernière fois vers le portefeuille,
+   * puis revient s'asseoir, penaud.
    */
-  private dogDrops() {
-    const spot = this.spots.find((s) => s.h.sprite === 'dog');
-    const dog = spot?.obj;
+  private dogJumps() {
+    const dog = this.spots.find((s) => s.h.sprite?.startsWith('dog'))?.obj;
     if (!dog?.active) return;
-    const y = dog.y;
-    this.tweens.add({ targets: dog, y: y - 26, duration: 160, yoyo: true, repeat: 1, ease: 'Sine.easeOut', onComplete: () => dog.setY(y) });
-    if (this.textures.exists('dog_vide')) dog.setTexture('dog_vide');
-    if (!this.textures.exists('item_qianbao')) return;
-    // la gueule est au bord gauche de l'image (le chien regarde à gauche)
-    const mouthX = dog.x - dog.displayWidth * 0.42;
-    const wallet = this.add
-      .image(mouthX, y - dog.displayHeight * 0.55, 'item_qianbao')
-      .setOrigin(0.5, 1)
-      .setDisplaySize(dog.displayHeight * 0.3, dog.displayHeight * 0.3)
-      .setDepth(y + 1)
-      .setAngle(-20);
-    this.placeObjects.push(wallet);
-    this.tweens.add({ targets: wallet, y, angle: 70, duration: 520, ease: 'Bounce.easeOut' });
-    this.tweens.add({
-      targets: wallet,
-      x: this.player.x,
-      alpha: 0,
-      delay: 900,
-      duration: 700,
-      ease: 'Sine.easeIn',
+    const { x, y } = dog;
+    this.tweens.killTweensOf(dog);
+    const sy = dog.scaleY;
+    this.tweens.chain({
+      targets: dog,
+      tweens: [
+        { x: x + 90, y: y - 70, duration: 260, ease: 'Sine.easeOut' },
+        { x: x + 150, y, duration: 240, ease: 'Sine.easeIn' },
+        { x: x + 130, y: y - 22, duration: 140, yoyo: true },
+        { x, duration: 900, delay: 350, ease: 'Sine.easeInOut' },
+      ],
       onComplete: () => {
-        wallet.destroy();
-        this.placeObjects = this.placeObjects.filter((o) => o !== wallet);
+        dog.setPosition(x, y).setScale(dog.scaleX, sy);
+        this.tweens.add({ targets: dog, scaleY: sy * 1.012, duration: 2000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       },
     });
   }

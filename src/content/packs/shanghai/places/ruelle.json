@@ -70,6 +70,12 @@
       "y": 1056,
       "facing": "right",
       "walkIn": 260
+    },
+    "gare": {
+      "x": 1820,
+      "y": 1056,
+      "facing": "left",
+      "walkIn": -240
     }
   },
   "hotspots": [
@@ -228,6 +234,20 @@
       "word": "hua_fleur",
       "prompt": {
         "fr": "les fleurs"
+      }
+    },
+    {
+      "id": "gare",
+      "kind": "exit",
+      "x": 1880,
+      "y": 1050,
+      "to": "gare",
+      "toEntrance": "ruelle",
+      "when": {
+        "depart": "adieux"
+      },
+      "prompt": {
+        "fr": "vers la gare (火车站)"
       }
     }
   ],

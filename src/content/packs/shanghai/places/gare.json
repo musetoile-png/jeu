@@ -1,0 +1,228 @@
+{
+  "$schema": "../../../../schemas/place.schema.json",
+  "id": "gare",
+  "name": {
+    "zh": "火车站",
+    "fr": "La gare de Shanghai-Hongqiao"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.55,
+  "planes": [
+    {
+      "image": "gare_far",
+      "parallax": 1,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 318,
+      "y": 495,
+      "text": {
+        "zh": "售票处"
+      },
+      "size": 44
+    },
+    {
+      "x": 1575,
+      "y": 495,
+      "text": {
+        "zh": "检票口"
+      },
+      "size": 44
+    },
+    {
+      "x": 742,
+      "y": 349,
+      "text": {
+        "zh": "杭州东 10:00"
+      },
+      "size": 44,
+      "color": "#ffcf8a"
+    },
+    {
+      "x": 1172,
+      "y": 349,
+      "text": {
+        "zh": "上海虹桥站"
+      },
+      "size": 44,
+      "color": "#ffcf8a"
+    }
+  ],
+  "walk": {
+    "yMin": 1000,
+    "yMax": 1045,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 100,
+    "y": 1030,
+    "facing": "right",
+    "walkIn": 320
+  },
+  "entrances": {
+    "ruelle": {
+      "x": 100,
+      "y": 1030,
+      "facing": "right",
+      "walkIn": 320
+    }
+  },
+  "hotspots": [
+    {
+      "id": "sortie",
+      "kind": "exit",
+      "x": 70,
+      "y": 1035,
+      "to": "ruelle",
+      "toEntrance": "gare",
+      "prompt": {
+        "fr": "retour à la ruelle"
+      }
+    },
+    {
+      "id": "police",
+      "kind": "npc",
+      "actor": "police",
+      "x": 960,
+      "y": 1035,
+      "scene": "gare-police",
+      "sprite": "police_stand",
+      "scale": 0.62,
+      "playerAt": 330,
+      "when": {
+        "portefeuille": ""
+      },
+      "prompt": {
+        "fr": "parler au policier"
+      }
+    },
+    {
+      "id": "chien",
+      "kind": "npc",
+      "actor": "dog",
+      "x": 1130,
+      "y": 1038,
+      "sprite": "dog_vide",
+      "scale": 0.42,
+      "when": {
+        "portefeuille": ""
+      },
+      "prompt": {
+        "fr": "le chien de la ruelle"
+      }
+    },
+    {
+      "id": "guichet",
+      "kind": "npc",
+      "actor": "guichet",
+      "x": 330,
+      "y": 1030,
+      "scene": "gare-piao",
+      "sprite": "guichet_stand",
+      "scale": 0.62,
+      "playerAt": 300,
+      "when": {
+        "portefeuille": "rendu",
+        "item:piao": ""
+      },
+      "prompt": {
+        "fr": "acheter un billet (售票处)"
+      }
+    },
+    {
+      "id": "guichet_apres",
+      "kind": "npc",
+      "actor": "guichet",
+      "x": 330,
+      "y": 1030,
+      "sprite": "guichet_stand",
+      "scale": 0.62,
+      "when": {
+        "item:piao": "1"
+      },
+      "prompt": {
+        "fr": "la guichetière"
+      }
+    },
+    {
+      "id": "guichet_attend",
+      "kind": "npc",
+      "actor": "guichet",
+      "x": 330,
+      "y": 1030,
+      "sprite": "guichet_stand",
+      "scale": 0.62,
+      "when": {
+        "portefeuille": ""
+      },
+      "prompt": {
+        "fr": "la guichetière"
+      }
+    },
+    {
+      "id": "quais",
+      "kind": "exit",
+      "x": 1550,
+      "y": 1035,
+      "to": "train",
+      "when": {
+        "item:piao": "1"
+      },
+      "prompt": {
+        "fr": "vers les quais (检票口)"
+      }
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#58d6a9"
+  ],
+  "onEnter": [
+    {
+      "scene": "gare-police",
+      "when": {
+        "portefeuille": ""
+      },
+      "delay": 300
+    }
+  ],
+  "ambient": [
+    {
+      "image": "passante_courses",
+      "kind": "walk",
+      "y": [
+        1004,
+        1016
+      ],
+      "height": 330,
+      "speed": 70,
+      "every": [
+        14,
+        30
+      ]
+    },
+    {
+      "image": "passant_oiseau",
+      "kind": "walk",
+      "y": [
+        1004,
+        1016
+      ],
+      "height": 330,
+      "speed": 55,
+      "every": [
+        25,
+        50
+      ]
+    }
+  ]
+}

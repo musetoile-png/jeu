@@ -442,7 +442,7 @@ export function ending(content: Content, e: Ending) {
   const box = el('div', 'cine ending');
   const path = content.pack.assets.images[e.image];
   const img = el('div', 'ending-img');
-  if (hasAsset(path)) img.style.backgroundImage = `url("${assetUrl(path as string)}")`;
+  if (path && hasAsset(path)) img.style.backgroundImage = `url("${assetUrl(path)}")`;
   box.append(img);
   if (e.line) box.append(el('p', 'ending-line', lineText(content, e.line)));
   const card = el('div', 'ending-card');
@@ -451,7 +451,7 @@ export function ending(content: Content, e: Ending) {
   for (const tok of title?.line ?? []) if (tok[0] === 'w') zh.append(inkWord(content, tok[1], false));
   card.append(zh, el('p', 'ending-chapter', t(content, e.title)));
   if (e.next) card.append(el('p', 'ending-next', t(content, e.next)));
-  const back = el('button', 'go', content.ui.backToTitle ?? '↺');
+  const back = el('button', 'go', content.ui.backToTitle);
   back.onclick = () => {
     play('tap');
     // l'écran titre, sans les raccourcis de test de l'adresse
@@ -460,12 +460,16 @@ export function ending(content: Content, e: Ending) {
   card.append(back);
   box.append(card);
   stage().appendChild(box);
-  requestAnimationFrame(() => box.classList.add('on'));
+  requestAnimationFrame(() => {
+    box.classList.add('on');
+  });
   setTimeout(() => {
     box.classList.add('line');
     if (e.line) speak(content, lineText(content, e.line), e.vo, RATE.NORMAL);
   }, 2200);
-  setTimeout(() => box.classList.add('card'), 5200);
+  setTimeout(() => {
+    box.classList.add('card');
+  }, 5200);
 }
 
 /**

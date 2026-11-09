@@ -1,0 +1,118 @@
+{
+ "id": "train-suite",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Vers Hangzhou"
+ },
+ "place": "train",
+ "npc": "annonce",
+ "patience": 3,
+ "actors": {
+  "annonce": {
+   "name": "广播",
+   "label": {
+    "fr": "l'annonce du train"
+   },
+   "portrait": "annonce"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "annonce",
+   "vo": "tr_01",
+   "line": [
+    [
+     "w",
+     "xia"
+    ],
+    [
+     "w",
+     "yi"
+    ],
+    [
+     "w",
+     "zhan"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "dong"
+    ],
+    [
+     "w",
+     "zhan"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Prochaine station : Hangzhou-Est."
+   },
+   "end": true
+  }
+ ],
+ "onEnd": {
+  "flags": {
+   "chapitre1": "fini"
+  },
+  "ending": {
+   "image": "depart_hangzhou",
+   "line": [
+    [
+     "w",
+     "qian_mille"
+    ],
+    [
+     "w",
+     "li"
+    ],
+    [
+     "t",
+     "之行",
+     "zhī xíng",
+     "le voyage (de)"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "t",
+     "始于",
+     "shǐ yú",
+     "commence à"
+    ],
+    [
+     "t",
+     "足下",
+     "zú xià",
+     "sous le pied"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "vo": "na_08",
+   "title": {
+    "fr": "Fin du chapitre 1 — Premier soir à Shanghai"
+   },
+   "next": {
+    "fr": "À suivre : Hangzhou 杭州"
+   }
+  }
+ }
+}

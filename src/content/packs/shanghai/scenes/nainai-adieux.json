@@ -1,0 +1,1047 @@
+{
+ "id": "nainai-adieux",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Les adieux de 奶奶"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  },
+  "laowang": {
+   "name": "老王",
+   "label": {
+    "fr": "l'habitué"
+   },
+   "portrait": "laowang"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {
+  "z_qian": {
+   "word": "qian_mille",
+   "image": ""
+  },
+  "z_shi": {
+   "word": "shi_dix",
+   "image": ""
+  },
+  "z_bai": {
+   "word": "bai",
+   "image": ""
+  }
+ },
+ "steps": [
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Ta route continue vers 杭州. Annonce ton départ à 奶奶 (要…了 : « ça va bientôt arriver ») :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "na_01a_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, je vais bientôt partir à Hangzhou."
+     }
+    },
+    {
+     "vo": "na_01b_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, je suis parti·e à Hangzhou."
+     },
+     "why": {
+      "fr": "我去杭州了 : c'est fait, on le dit de quelqu'un qui est déjà parti (他去杭州了 : il est parti à Hangzhou). Toi, tu es encore dans la cuisine : 我要去杭州了, « je vais bientôt partir »."
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "na_01c_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "yao"
+      ],
+      [
+       "w",
+       "lai"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "le"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "奶奶, je vais bientôt venir à Hangzhou."
+     },
+     "why": {
+      "fr": "来, c'est venir vers celui qui parle. 奶奶 est ici, à Shanghai : vers Hangzhou, on s'en va, 去."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_02",
+   "line": [
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "jintian"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle pose sa louche.) Hangzhou ? Aujourd'hui ?"
+   },
+   "expression": "surprise"
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_03l",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "zhao"
+    ],
+    [
+     "t",
+     "莱奥",
+     "Lái'ào",
+     "Léo"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Tu vas retrouver Léo ? (找 zhǎo : chercher)"
+   },
+   "when": {
+    "quest": "lettre"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "na_04la_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "ta_m"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais le chercher à Hangzhou."
+     }
+    },
+    {
+     "vo": "na_04lb_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "ta_f"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais la chercher à Hangzhou."
+     },
+     "why": {
+      "fr": "她, avec la clé 女 (la femme), c'est « elle ». Léo est un garçon : 他. À l'oral, les deux se disent tā : c'est l'écrit qui les sépare."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "na_04c_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais chercher de l'argent à Hangzhou."
+     },
+     "why": {
+      "fr": "找钱, c'est « rendre la monnaie » (à la caisse : 找你三块) ou chercher de l'argent ! Tu pars chercher Léo : 找他."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "when": {
+    "quest": "lettre"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_03r",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "hua_peinture"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle a vu le rouleau dépasser de ton sac.) Ta peinture… elle aussi va à Hangzhou ?"
+   },
+   "when": {
+    "quest": "rouleau"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "na_04ra_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "hua_peinture"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais chercher la peinture à Hangzhou."
+     }
+    },
+    {
+     "vo": "na_04rb_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "shu"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais chercher un livre à Hangzhou."
+     },
+     "why": {
+      "fr": "书 shū, c'est un livre. Ce que tu cherches, c'est la suite du rouleau peint : 画 huà."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "na_04c_{body}",
+     "line": [
+      [
+       "w",
+       "dui"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "zhao"
+      ],
+      [
+       "w",
+       "qian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui ! Je vais chercher de l'argent à Hangzhou."
+     },
+     "why": {
+      "fr": "找钱, c'est « rendre la monnaie » (à la caisse : 找你三块) ou chercher de l'argent ! Tu pars chercher la suite du rouleau : 找画."
+     },
+     "errorType": "semantic"
+    }
+   ],
+   "when": {
+    "quest": "rouleau"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_05",
+   "line": [
+    [
+     "w",
+     "wei"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "e"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Elle sourit : ce sont ses premiers mots, le premier soir.) Hé, tu as faim ?"
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Comme le premier soir… Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "p1_02a_{body}",
+     "line": [
+      [
+       "w",
+       "e"
+      ],
+      [
+       "p",
+       "。"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "e"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Oui, j'ai très faim."
+     }
+    },
+    {
+     "vo": "na_06b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "haochi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis très bon·ne (à manger)."
+     },
+     "why": {
+      "fr": "好吃 se dit de la nourriture : tu viens de dire « je suis délicieux·se » ! Pour la faim : 饿, 很饿."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "na_06c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "hen"
+      ],
+      [
+       "w",
+       "lei"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis très fatigué·e."
+     },
+     "why": {
+      "fr": "累 = fatigué·e. Elle te demande si tu as faim (饿吗 ?) : réponds avec 饿."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_07",
+   "line": [
+    [
+     "w",
+     "haha"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "baozi"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Ha ha ! (Elle glisse un sachet tout chaud dans ton sac.) Des 包子, pour la route !"
+   },
+   "expression": "joy",
+   "give": [
+    "baozi"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_08",
+   "line": [
+    [
+     "w",
+     "qian_mille"
+    ],
+    [
+     "w",
+     "li"
+    ],
+    [
+     "t",
+     "之行",
+     "zhī xíng",
+     "le voyage (de)"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "t",
+     "始于",
+     "shǐ yú",
+     "commence à"
+    ],
+    [
+     "t",
+     "足下",
+     "zú xià",
+     "sous le pied"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "« Un voyage de mille li commence sous tes pieds. » (Proverbe de Laozi. 千 qiān : mille ; 里 lǐ : le li, environ 500 m. Ce sont les deux caractères du titre du jeu.)"
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "nainai",
+   "ask": {
+    "fr": "千里 : « mille li ». Lequel de ces caractères veut dire « mille » ?"
+   },
+   "gloss": {
+    "fr": "千 qiān : mille."
+   },
+   "options": [
+    {
+     "object": "z_qian",
+     "ok": true
+    },
+    {
+     "object": "z_shi",
+     "why": {
+      "fr": "十 shí, c'est dix. 千 lui ressemble : c'est 十 avec un petit trait penché sur la tête… et cent fois plus grand !"
+     },
+     "errorType": "character"
+    },
+    {
+     "object": "z_bai",
+     "why": {
+      "fr": "百 bǎi, c'est cent (一百块 : cent yuans). Mille, c'est dix fois plus : 千."
+     },
+     "errorType": "number"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_09_{name}",
+   "line": [
+    [
+     "v",
+     "NAME"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "yilupingan"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "{NAME}, bon voyage ! (一路平安 : « la paix tout au long de la route »)"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_10",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "mingzi"
+    ],
+    [
+     "w",
+     "li"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "ye"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "an"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Et dans ton nom aussi, il y a 安 : la paix !"
+   },
+   "expression": "joy",
+   "when": {
+    "name": "an"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "laowang",
+   "vo": "na_11",
+   "line": [
+    [
+     "w",
+     "yilupingan"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(老王 lève son thermos de thé.) Bon voyage !"
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Dis-leur au revoir :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "na_12a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "！"
+      ],
+      [
+       "w",
+       "zai_encore"
+      ],
+      [
+       "w",
+       "jian"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, 奶奶 ! Au revoir !"
+     }
+    },
+    {
+     "vo": "na_12b_{body}",
+     "line": [
+      [
+       "w",
+       "nainai"
+      ],
+      [
+       "p",
+       "，"
+      ],
+      [
+       "w",
+       "wanan"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Bonne nuit, 奶奶 !"
+     },
+     "why": {
+      "fr": "晚安 : le même 安 que dans 一路平安… mais 晚安, c'est « bonne nuit », pour aller se coucher. Tu pars en voyage : 再见."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "na_12c_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢奶奶."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "na_13",
+   "line": [
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "huoche"
+    ],
+    [
+     "w",
+     "zhan"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Allez, file à la gare ! (Au bout de la ruelle, à droite : 火车站.)"
+   },
+   "end": true
+  }
+ ],
+ "onEnd": {
+  "flags": {
+   "depart": "adieux"
+  },
+  "goto": {
+   "place": "ruelle",
+   "entrance": "porte"
+  }
+ },
+ "onExhausted": {
+  "detour": "vaisselle",
+  "refill": 2
+ }
+}

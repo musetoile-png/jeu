@@ -17,7 +17,9 @@
     "ruelle",
     "cuisine",
     "cour",
-    "bouquinerie"
+    "bouquinerie",
+    "gare",
+    "train"
   ],
   "scenes": [
     "cuisine-cran1",
@@ -40,7 +42,12 @@
     "bai-rouleau",
     "wang-etal",
     "li-etal",
-    "chen-etal"
+    "chen-etal",
+    "nainai-adieux",
+    "gare-police",
+    "gare-piao",
+    "train-annonce",
+    "train-suite"
   ],
   "worlds": {
     "cuisine": {
@@ -171,7 +178,19 @@
       "xiaolong_stand": "art/xiaolong_stand.webp",
       "portrait_xiaolong_neutral": "art/xiaolong_bust_neutral.jpg",
       "portrait_xiaolong_joy": "art/xiaolong_bust_joy.jpg",
-      "portrait_xiaolong_surprise": "art/xiaolong_bust_surprise.jpg"
+      "portrait_xiaolong_surprise": "art/xiaolong_bust_surprise.jpg",
+      "gare_far": "art/gare_far.jpg",
+      "train_far": "art/train_far.jpg",
+      "depart_hangzhou": "art/depart_hangzhou.jpg",
+      "guichet_stand": "art/guichet_stand.webp",
+      "police_stand": "art/police_stand.webp",
+      "item_piao": "art/item_piao.webp",
+      "portrait_guichet_neutral": "art/guichet_bust_neutral.jpg",
+      "portrait_guichet_joy": "art/guichet_bust_joy.jpg",
+      "portrait_guichet_surprise": "art/guichet_bust_surprise.jpg",
+      "portrait_police_neutral": "art/police_bust_neutral.jpg",
+      "portrait_police_joy": "art/police_bust_joy.jpg",
+      "portrait_police_surprise": "art/police_bust_surprise.jpg"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [

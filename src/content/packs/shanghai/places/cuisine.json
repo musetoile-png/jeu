@@ -191,6 +191,74 @@
         "fr": "sortir dans la ruelle"
       },
       "toEntrance": "porte"
+    },
+    {
+      "id": "nainai_adieux_lettre",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "nainai-adieux",
+      "prompt": {
+        "fr": "dire au revoir à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "playerAt": -250,
+      "when": {
+        "time": "jour",
+        "cran2": "fait",
+        "depart": "",
+        "quest": "lettre",
+        "leo": "carte"
+      },
+      "replaces": "nainai"
+    },
+    {
+      "id": "nainai_adieux_rouleau",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "nainai-adieux",
+      "prompt": {
+        "fr": "dire au revoir à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "playerAt": -250,
+      "when": {
+        "time": "jour",
+        "cran2": "fait",
+        "depart": "",
+        "quest": "rouleau",
+        "rouleau": "colophon"
+      },
+      "replaces": "nainai"
+    },
+    {
+      "id": "nainai_adieux",
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "scene": "nainai-adieux",
+      "prompt": {
+        "fr": "dire au revoir à 奶奶"
+      },
+      "behind": true,
+      "scale": 1.2,
+      "playerAt": -250,
+      "when": {
+        "time": "jour",
+        "cran2": "fait",
+        "depart": "",
+        "quest": ""
+      },
+      "replaces": "nainai"
     }
   ],
   "palette": [

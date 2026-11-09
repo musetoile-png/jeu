@@ -1,0 +1,952 @@
+{
+ "id": "gare-police",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Le chien de la gare"
+ },
+ "place": "gare",
+ "npc": "police",
+ "patience": 3,
+ "actors": {
+  "police": {
+   "name": "警察",
+   "label": {
+    "fr": "le policier de la gare"
+   },
+   "portrait": "police"
+  },
+  "dog": {
+   "name": "狗",
+   "label": {
+    "fr": "le chien de la ruelle"
+   },
+   "portrait": "gou"
+  },
+  "player": {
+   "name": "",
+   "label": {
+    "fr": "toi"
+   },
+   "portrait": "player"
+  }
+ },
+ "objects": {
+  "o_huzhao": {
+   "word": "huzhao",
+   "image": "item_huzhao"
+  },
+  "o_shouji": {
+   "word": "shouji",
+   "image": "item_shouji"
+  },
+  "o_benzi": {
+   "word": "benzi",
+   "image": "item_benzi"
+  }
+ },
+ "steps": [
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_01",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "deng"
+    ],
+    [
+     "w",
+     "yixia"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Un policier de la gare te fait signe. À ses pieds… le chien de la ruelle !) Bonjour ! Attends un instant !"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_02",
+   "line": [
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "jingcha"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "zhe"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "qianbao"
+    ],
+    [
+     "w",
+     "ma"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Je suis de la police. C'est ton portefeuille ? (Il tient un portefeuille rouge, un peu mâchouillé.)"
+   }
+  },
+  {
+   "type": "say",
+   "actor": "dog",
+   "vo": "p0_01",
+   "line": [
+    [
+     "w",
+     "wang"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Le chien remue la queue, très fier de lui.) Ouaf ouaf !"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Ton portefeuille, volé par le chien le premier soir ! Réponds :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gp_03a_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est le mien !"
+     }
+    },
+    {
+     "vo": "gp_03b_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "ni"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est le tien !"
+     },
+     "why": {
+      "fr": "你的 = à toi : tu viens de dire au policier que c'est le sien ! Le portefeuille est à toi : 我的."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "vo": "gp_03c_{body}",
+     "line": [
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "gou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "C'est mon chien !"
+     },
+     "why": {
+      "fr": "是我的狗 = « c'est mon chien ! » Ce chien n'est pas à toi… c'est lui, le voleur. Ce qui est à toi, c'est le portefeuille : 是我的."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_04",
+   "line": [
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "qianbao"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "w",
+     "yanse"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il cache le portefeuille derrière son dos.) Ton portefeuille, il est de quelle couleur ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Décris-le (颜色 yánsè : la couleur ; 色 sè, tout seul, se colle après la couleur) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gp_05a_{body}",
+     "line": [
+      [
+       "w",
+       "hong"
+      ],
+      [
+       "w",
+       "se"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Rouge."
+     }
+    },
+    {
+     "vo": "gp_05b_{body}",
+     "line": [
+      [
+       "w",
+       "hongcha"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Thé rouge."
+     },
+     "why": {
+      "fr": "红茶, c'est le « thé rouge » de 老王 ! Même 红 (rouge), mais pour une couleur, on dit 红色 : rouge-couleur."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "gp_05c_{body}",
+     "line": [
+      [
+       "w",
+       "bai_xing"
+      ],
+      [
+       "w",
+       "se"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Blanc."
+     },
+     "why": {
+      "fr": "白色 = blanc (le 白 de 白菜, le chou « blanc »). Ton portefeuille est rouge : 红色的."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_06",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "limian"
+    ],
+    [
+     "w",
+     "you_avoir"
+    ],
+    [
+     "w",
+     "shenme"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "Exact. Et dedans, il y a quoi ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Qu'est-ce qui prouve qu'il est à toi ? Dedans, il y a ta photo d'identité de rechange (照片 zhàopiàn : le 照 de 护照, le 片 de 明信片)."
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gp_07a_{body}",
+     "line": [
+      [
+       "w",
+       "limian"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "zhaopian"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dedans, il y a ma photo."
+     }
+    },
+    {
+     "vo": "gp_07b_{body}",
+     "line": [
+      [
+       "w",
+       "limian"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "de"
+      ],
+      [
+       "w",
+       "huzhao"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dedans, il y a mon passeport."
+     },
+     "why": {
+      "fr": "护照, c'est ton passeport : il n'est pas dans le portefeuille, il est dans ton sac ! Même 照 que 照片 (la photo), mais un autre mot."
+     },
+     "errorType": "character"
+    },
+    {
+     "vo": "gp_07c_{body}",
+     "line": [
+      [
+       "w",
+       "limian"
+      ],
+      [
+       "w",
+       "you_avoir"
+      ],
+      [
+       "w",
+       "baozi"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Dedans, il y a des 包子."
+     },
+     "why": {
+      "fr": "包子 et 钱包 partagent 包 (une enveloppe, un paquet)… mais un 包子 dans un portefeuille, le chien l'aurait mangé depuis longtemps ! Ce qui prouve que c'est le tien : ta 照片."
+     },
+     "errorType": "character"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_08",
+   "line": [
+    [
+     "w",
+     "zhaopian"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "wo"
+    ],
+    [
+     "w",
+     "kankan"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "huzhao"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Une photo ? Fais-moi voir ton passeport."
+   }
+  },
+  {
+   "type": "pick",
+   "actor": "police",
+   "ask": {
+    "fr": "Montre-lui ton passeport :"
+   },
+   "gloss": {
+    "fr": "护照 hùzhào : le passeport."
+   },
+   "options": [
+    {
+     "object": "o_huzhao",
+     "ok": true
+    },
+    {
+     "object": "o_shouji",
+     "why": {
+      "fr": "手机, c'est ton téléphone (toujours fendu…). Le passeport, c'est 护照 : le 照 de 照片."
+     },
+     "errorType": "semantic"
+    },
+    {
+     "object": "o_benzi",
+     "why": {
+      "fr": "本子, c'est ton carnet. Le passeport, c'est 护照."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_09",
+   "line": [
+    [
+     "w",
+     "dui"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "shi"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Il regarde la photo, puis toi, puis la photo.) Oui, c'est bien toi !"
+   },
+   "expression": "joy"
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_10",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "de"
+    ],
+    [
+     "w",
+     "qianbao"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "gei"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "p",
+     "。"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien ! Ton portefeuille, tiens."
+   },
+   "expression": "joy",
+   "give": [
+    "qianbao"
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "dog",
+   "vo": "p0_01",
+   "line": [
+    [
+     "w",
+     "wang"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "(Le chien bondit vers le portefeuille… une dernière fois.) Ouaf ouaf !"
+   },
+   "effect": "dog_jump"
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_11",
+   "line": [
+    [
+     "w",
+     "gou"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "bu"
+    ],
+    [
+     "w",
+     "yao"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Le chien ! Non, pas touche !"
+   },
+   "expression": "surprise"
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Remercie le policier (à un inconnu en uniforme, on dit 您, comme à 白老师) :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gp_12a_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "nin"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci (à vous) !"
+     }
+    },
+    {
+     "vo": "gp_12b_{body}",
+     "line": [
+      [
+       "w",
+       "xiexie"
+      ],
+      [
+       "w",
+       "gou"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "Merci, le chien !"
+     },
+     "why": {
+      "fr": "Le chien ne mérite pas tant d'honneur : c'est lui, le voleur ! Remercie le policier : 谢谢您."
+     },
+     "errorType": "pragmatic"
+    },
+    {
+     "vo": "gp_12c_{body}",
+     "line": [
+      [
+       "w",
+       "bukeqi"
+      ],
+      [
+       "p",
+       "！"
+      ]
+     ],
+     "gloss": {
+      "fr": "De rien !"
+     },
+     "why": {
+      "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢您."
+     },
+     "errorType": "pragmatic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_13",
+   "line": [
+    [
+     "w",
+     "bukeqi"
+    ],
+    [
+     "p",
+     "。"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "nar"
+    ],
+    [
+     "p",
+     "？"
+    ]
+   ],
+   "gloss": {
+    "fr": "De rien. Tu vas où ?"
+   }
+  },
+  {
+   "type": "choose",
+   "ask": {
+    "fr": "Réponds-lui :"
+   },
+   "choices": [
+    {
+     "ok": true,
+     "vo": "gp_14a_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "qu"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je vais à Hangzhou."
+     }
+    },
+    {
+     "vo": "gp_14b_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "zai"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis à Hangzhou."
+     },
+     "why": {
+      "fr": "我在杭州 = je suis à Hangzhou. Tu es encore à la gare de Shanghai : 我去杭州."
+     },
+     "errorType": "grammar"
+    },
+    {
+     "vo": "gp_14c_{body}",
+     "line": [
+      [
+       "w",
+       "wo"
+      ],
+      [
+       "w",
+       "shi"
+      ],
+      [
+       "w",
+       "hangzhou"
+      ],
+      [
+       "w",
+       "ren"
+      ],
+      [
+       "p",
+       "。"
+      ]
+     ],
+     "gloss": {
+      "fr": "Je suis de Hangzhou."
+     },
+     "why": {
+      "fr": "我是杭州人 = je suis de Hangzhou (comme 我是法国人). Il demande où tu vas : 我去杭州."
+     },
+     "errorType": "semantic"
+    }
+   ]
+  },
+  {
+   "type": "say",
+   "actor": "police",
+   "vo": "gp_15",
+   "line": [
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "yilupingan"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Bien ! Bon voyage ! (Il te montre le guichet, à gauche : 售票处, la billetterie.)"
+   },
+   "expression": "joy",
+   "end": true
+  }
+ ],
+ "onEnd": {
+  "flags": {
+   "portefeuille": "rendu"
+  }
+ }
+}

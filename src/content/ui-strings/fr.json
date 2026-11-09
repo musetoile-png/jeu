@@ -98,5 +98,6 @@
   "wageSummary": "Caisse du jour : {till} / {target} {unit}. Ta paie : {wage} {unit}.",
   "wageToast": "Ta paie : +{n} {unit}",
   "payDue": "À payer : {words} ({n})",
-  "payRight": "La bonne monnaie :"
+  "payRight": "La bonne monnaie :",
+  "backToTitle": "↺ Revenir à l'écran titre"
 }

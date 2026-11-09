@@ -558,7 +558,7 @@
    "target": "里",
    "transcription": "lǐ",
    "gloss": {
-    "fr": "dans, à l'intérieur"
+    "fr": "dans, à l'intérieur ; li (mesure de distance, environ 500 m)"
    },
    "pos": "loc",
    "level": "HSK1"
@@ -2044,6 +2044,166 @@
     "fr": "Xiao Mei (une étudiante)"
    },
    "pos": "name",
+   "level": "hors-liste"
+  },
+  {
+   "id": "jingcha",
+   "target": "警察",
+   "transcription": "jǐngchá",
+   "gloss": {
+    "fr": "policier, police"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "yanse",
+   "target": "颜色",
+   "transcription": "yánsè",
+   "gloss": {
+    "fr": "couleur"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "se",
+   "target": "色",
+   "transcription": "sè",
+   "gloss": {
+    "fr": "couleur (dans 红色, 白色…)"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "limian",
+   "target": "里面",
+   "transcription": "lǐmiàn",
+   "gloss": {
+    "fr": "dedans, à l'intérieur"
+   },
+   "pos": "loc",
+   "level": "HSK1"
+  },
+  {
+   "id": "zhaopian",
+   "target": "照片",
+   "transcription": "zhàopiàn",
+   "gloss": {
+    "fr": "photo (« le morceau 片 qui éclaire 照 »)"
+   },
+   "pos": "n",
+   "level": "HSK3"
+  },
+  {
+   "id": "zhang",
+   "target": "张",
+   "transcription": "zhāng",
+   "gloss": {
+    "fr": "(classificateur des choses plates : billet, carte, photo)"
+   },
+   "pos": "cl",
+   "level": "HSK2"
+  },
+  {
+   "id": "piao",
+   "target": "票",
+   "transcription": "piào",
+   "gloss": {
+    "fr": "billet, ticket"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "dian",
+   "target": "点",
+   "transcription": "diǎn",
+   "gloss": {
+    "fr": "heure (十点 : dix heures)"
+   },
+   "pos": "cl",
+   "level": "HSK1"
+  },
+  {
+   "id": "che",
+   "target": "车",
+   "transcription": "chē",
+   "gloss": {
+    "fr": "véhicule ; voiture (d'un train)"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "hao_numero",
+   "target": "号",
+   "transcription": "hào",
+   "gloss": {
+    "fr": "numéro (de place, de jour)"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "huoche",
+   "target": "火车",
+   "transcription": "huǒchē",
+   "gloss": {
+    "fr": "train (« le char de feu »)"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "zhan",
+   "target": "站",
+   "transcription": "zhàn",
+   "gloss": {
+    "fr": "station, gare"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "xia",
+   "target": "下",
+   "transcription": "xià",
+   "gloss": {
+    "fr": "suivant, prochain ; en bas"
+   },
+   "pos": "n",
+   "level": "HSK1"
+  },
+  {
+   "id": "dong",
+   "target": "东",
+   "transcription": "dōng",
+   "gloss": {
+    "fr": "est (point cardinal)"
+   },
+   "pos": "n",
+   "level": "HSK2"
+  },
+  {
+   "id": "yilupingan",
+   "target": "一路平安",
+   "transcription": "yílù píng'ān",
+   "gloss": {
+    "fr": "bon voyage (« la paix tout au long de la route »)"
+   },
+   "pos": "expr",
+   "level": "hors-liste"
+  },
+  {
+   "id": "an",
+   "target": "安",
+   "transcription": "ān",
+   "gloss": {
+    "fr": "paix, calme (平安, 晚安, 小安)"
+   },
+   "pos": "adj",
    "level": "hors-liste"
   }
  ]

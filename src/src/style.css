@@ -591,3 +591,25 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
   .seq-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pay-board { grid-template-columns: 1fr; }
 }
+
+/* Fin de chapitre : l'image avance, le proverbe s'écrit, puis le cartouche du titre-carnet */
+.cine.ending { background: radial-gradient(ellipse at 50% 30%, #2a3046, #0b0e18 75%); }
+.ending-img { position: absolute; inset: -4%; background-size: cover; background-position: center; transform: scale(1.02); }
+.cine.ending.on .ending-img { animation: ride 16s ease-out forwards; }
+@keyframes ride { from { transform: scale(1.1) translate(3%, 0); } to { transform: scale(1.02) translate(-1%, 0); } }
+.ending-line { position: absolute; left: 6%; right: 6%; top: 7%; margin: 0; text-align: center; color: #f3ead2; letter-spacing: .12em;
+  font: clamp(26px, 5vw, 60px) var(--calli); text-shadow: 0 3px 18px #000; opacity: 0; filter: blur(6px); transition: opacity 2s ease, filter 2s ease; }
+.cine.ending.line .ending-line { opacity: 1; filter: none; }
+.ending-card { position: absolute; left: 50%; bottom: 7%; transform: translate(-50%, 12px); width: min(86%, 520px); box-sizing: border-box; text-align: center;
+  padding: clamp(10px, 2.4vw, 22px) clamp(12px, 3vw, 28px); background: #f4efe3; border-block: 8px solid #6b4b33; box-shadow: 0 24px 50px -20px rgba(0, 0, 0, .8);
+  opacity: 0; transition: opacity 1.6s ease, transform 1.6s ease; pointer-events: none; }
+.cine.ending.card .ending-card { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.ending-title { display: flex; justify-content: center; gap: .1em; font-size: clamp(40px, 8vw, 88px); line-height: 1; }
+.ending-title .ink b { font-family: var(--calli); font-weight: 400; transition: color 2s ease; }
+.ending-chapter { margin: .4em 0 .1em; font: 600 clamp(14px, 2vw, 20px) var(--display); color: var(--ink); }
+.ending-next { margin: 0 0 .7em; font: italic clamp(13px, 1.7vw, 17px) var(--display); color: var(--lantern); }
+@media (prefers-reduced-motion: reduce) { .cine.ending.on .ending-img { animation: none; } }
+/* le titre de l'en-tête suit le carnet, comme l'écran titre */
+h1 .zh b { font-weight: 400; color: var(--lantern); transition: opacity 1.5s ease; }
+h1 .zh .ink-0 b { color: var(--lantern); opacity: .28; } h1 .zh .ink-1 b { color: var(--lantern); opacity: .5; }
+h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color: var(--lantern); opacity: 1; }

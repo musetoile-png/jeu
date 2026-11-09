@@ -28,6 +28,31 @@ const game = new Phaser.Game({
 
 // ---- Interface HTML autour du canvas : carnet de mots, journal ----
 let lastCount = -1;
+
+/**
+ * Titre-carnet dans l'en-tête : chaque caractère du titre (千, 里) prend l'encre du carnet, comme sur l'écran titre :
+ * pâle tant qu'on ne l'a pas rencontré, de plus en plus foncé à chaque nouveau contexte.
+ */
+function inkHeaderTitle(content: Content) {
+  const h = document.querySelector<HTMLElement>('header h1 .zh');
+  const line = content.pack.title?.line;
+  if (!h || !line) return;
+  const required = content.language.mastery?.contextsRequired ?? 3;
+  h.replaceChildren(
+    ...line.map((tok) => {
+      const s = document.createElement('span');
+      const b = document.createElement('b');
+      if (tok[0] === 'w') {
+        const e = content.lexicon.get(tok[1]);
+        s.className = `ink-${String(notebook.strength(tok[1], required))}`;
+        b.textContent = e?.target ?? '';
+        s.title = `${e?.transcription ?? ''} · ${e?.gloss.fr ?? ''} · ${String(notebook.contexts(tok[1]))}/${String(required)}`;
+      } else b.textContent = tok[0] === 'v' ? '' : tok[1];
+      s.append(b);
+      return s;
+    }),
+  );
+}
 function renderNotebook(content: Content) {
   const v = document.getElementById('vocab') as HTMLElement;
   const wc = document.getElementById('wc') as HTMLElement;
@@ -41,6 +66,7 @@ function renderNotebook(content: Content) {
     pill?.classList.add('bump');
   }
   lastCount = ids.length;
+  inkHeaderTitle(content);
   v.innerHTML = '';
   const required = content.language.mastery?.contextsRequired ?? 3;
   for (const id of ids) {

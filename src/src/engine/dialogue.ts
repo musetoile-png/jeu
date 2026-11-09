@@ -413,8 +413,9 @@ export class Dialogue {
     if (!s) return this.close(true);
     // étape réservée à une quête, à un nom… : sautée si elle ne concerne pas ce joueur
     if (s.when && !save.matches(s.when)) {
-      if (s.end) return this.close(true);
-      return this.advance();
+      if (s.end) this.close(true);
+      else this.advance();
+      return;
     }
     // les jeux du service prennent un panneau plus large (et, sur téléphone, sortent sous la scène)
     this.root.classList.toggle('task-mode', ['ticket', 'sequence', 'serve', 'pay'].includes(s.type));
