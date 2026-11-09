@@ -442,8 +442,7 @@
         "kuai"
        ]
       ],
-      "cost": 5,
-      "soon": true
+      "cost": 5
      },
      {
       "word": "binggan",
@@ -461,8 +460,7 @@
         "kuai"
        ]
       ],
-      "cost": 7,
-      "soon": true
+      "cost": 7
      }
     ]
    }

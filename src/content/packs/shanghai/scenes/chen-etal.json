@@ -390,8 +390,7 @@
         "kuai"
        ]
       ],
-      "cost": 40,
-      "soon": true
+      "cost": 40
      },
      {
       "word": "longjing",
@@ -412,8 +411,7 @@
         "kuai"
        ]
       ],
-      "cost": 100,
-      "soon": true
+      "cost": 100
      },
      {
       "word": "chabei",
@@ -452,8 +450,7 @@
         "kuai"
        ]
       ],
-      "cost": 60,
-      "soon": true
+      "cost": 60
      }
     ]
    }
