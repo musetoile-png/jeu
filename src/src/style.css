@@ -613,3 +613,11 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
 h1 .zh b { font-weight: 400; color: var(--lantern); transition: opacity 1.5s ease; }
 h1 .zh .ink-0 b { color: var(--lantern); opacity: .28; } h1 .zh .ink-1 b { color: var(--lantern); opacity: .5; }
 h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color: var(--lantern); opacity: 1; }
+@media (max-width: 720px) {
+  .ending-line { top: 4%; font-size: 18px; }
+  .ending-card { bottom: 4%; width: 78%; padding: 4px 10px 6px; border-block-width: 4px; }
+  .ending-title { font-size: 30px; }
+  .ending-chapter { font-size: 11px; margin: .2em 0 0; }
+  .ending-next { font-size: 11px; margin-bottom: .3em; }
+  .ending-card .go { font-size: 12px; padding: 4px 10px; }
+}
