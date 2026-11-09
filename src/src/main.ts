@@ -26,6 +26,16 @@ const game = new Phaser.Game({
 
 (window as unknown as { __game: Phaser.Game }).__game = game; // aide au test
 
+// Mise en page : en portrait, les panneaux se posent sous l'image et ne doivent jamais la couvrir ; ils savent où elle finit.
+const stageEl = document.getElementById('stage');
+if (stageEl) {
+  const syncStage = () => document.documentElement.style.setProperty('--stage-bottom', `${String(Math.round(stageEl.getBoundingClientRect().bottom))}px`);
+  new ResizeObserver(syncStage).observe(stageEl);
+  window.addEventListener('resize', syncStage);
+  window.visualViewport?.addEventListener('resize', syncStage);
+  syncStage();
+}
+
 // ---- Interface HTML autour du canvas : carnet de mots, journal ----
 let lastCount = -1;
 
