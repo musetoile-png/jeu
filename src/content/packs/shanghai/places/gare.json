@@ -199,10 +199,7 @@
     {
       "image": "passante_courses",
       "kind": "walk",
-      "y": [
-        1004,
-        1016
-      ],
+      "y": [1022, 1040],
       "height": 330,
       "speed": 70,
       "every": [
@@ -213,10 +210,7 @@
     {
       "image": "passant_oiseau",
       "kind": "walk",
-      "y": [
-        1004,
-        1016
-      ],
+      "y": [1022, 1040],
       "height": 330,
       "speed": 55,
       "every": [

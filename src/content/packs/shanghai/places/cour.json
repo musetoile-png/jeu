@@ -286,10 +286,7 @@
     {
       "image": "enfant_moulinet",
       "kind": "walk",
-      "y": [
-        1012,
-        1024
-      ],
+      "y": [1046, 1062],
       "height": 170,
       "speed": 150,
       "every": [
@@ -300,10 +297,7 @@
     {
       "image": "passante_courses",
       "kind": "walk",
-      "y": [
-        1006,
-        1020
-      ],
+      "y": [1044, 1062],
       "height": 262,
       "speed": 62,
       "every": [
@@ -315,10 +309,7 @@
       "image": "chat_marche",
       "restImage": "chat_assis",
       "kind": "rest",
-      "y": [
-        1016,
-        1030
-      ],
+      "y": [1054, 1068],
       "height": 70,
       "speed": 55,
       "every": [
@@ -338,10 +329,7 @@
     {
       "image": "moineaux",
       "kind": "hop",
-      "y": [
-        1024,
-        1032
-      ],
+      "y": [1060, 1072],
       "height": 34,
       "every": [
         12,

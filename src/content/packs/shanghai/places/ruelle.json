@@ -345,10 +345,7 @@
     {
       "image": "passant_oiseau",
       "kind": "walk",
-      "y": [
-        1004,
-        1018
-      ],
+      "y": [1042, 1060],
       "height": 268,
       "speed": 48,
       "every": [
@@ -362,10 +359,7 @@
     {
       "image": "velo",
       "kind": "walk",
-      "y": [
-        1010,
-        1022
-      ],
+      "y": [1046, 1062],
       "height": 280,
       "speed": 190,
       "every": [
@@ -379,10 +373,7 @@
     {
       "image": "passante_courses",
       "kind": "walk",
-      "y": [
-        1006,
-        1020
-      ],
+      "y": [1044, 1062],
       "height": 262,
       "speed": 62,
       "every": [
@@ -397,10 +388,7 @@
       "image": "chat_marche",
       "restImage": "chat_assis",
       "kind": "rest",
-      "y": [
-        1016,
-        1030
-      ],
+      "y": [1054, 1068],
       "height": 70,
       "speed": 55,
       "every": [
@@ -420,10 +408,7 @@
     {
       "image": "moineaux",
       "kind": "hop",
-      "y": [
-        1024,
-        1032
-      ],
+      "y": [1060, 1072],
       "height": 34,
       "every": [
         15,
