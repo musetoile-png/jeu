@@ -60,3 +60,8 @@ export function toCsv(): string {
 export function count() {
   return events.length;
 }
+
+/** Tous les événements (lecture seule), pour le bilan. */
+export function allEvents(): readonly LogEvent[] {
+  return events;
+}

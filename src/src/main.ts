@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 
 import type { Content } from './engine/content';
-import { count, toCsv } from './engine/log';
+import { count } from './engine/log';
+import { buildReport } from './engine/report';
 import * as notebook from './engine/notebook';
 import * as sfx from './engine/sfx';
 import * as scenes from './scenes';
@@ -63,11 +64,27 @@ game.events.once('ready', () => {
     (document.getElementById('wc-label') as HTMLElement).textContent = ui.wordsMet;
     const exp = document.getElementById('export') as HTMLButtonElement;
     exp.textContent = `${ui.exportLog} · ${count()}`;
+    // bilan pour l'enseignante : une page HTML lisible hors ligne, avec le journal brut (CSV) à l'intérieur
     exp.onclick = () => {
-      const blob = new Blob([toCsv()], { type: 'text/csv;charset=utf-8' });
+      let player = '';
+      try {
+        player = localStorage.getItem('jeu-zh-player') ?? '';
+      } catch {
+        /* stockage indisponible */
+      }
+      const typed = window.prompt(ui.exportWho ?? 'Ton prénom ou ton code de joueur :', player);
+      if (typed === null) return;
+      player = typed.trim() || 'anonyme';
+      try {
+        localStorage.setItem('jeu-zh-player', player);
+      } catch {
+        /* stockage indisponible */
+      }
+      const safe = player.replace(/[^\p{L}\p{N}_-]+/gu, '-');
+      const blob = new Blob([buildReport(content, player)], { type: 'text/html;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `journal-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.download = `bilan-mille-li-${safe}-${new Date().toISOString().slice(0, 10)}.html`;
       a.click();
     };
     renderNotebook(content);
