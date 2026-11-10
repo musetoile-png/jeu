@@ -29,7 +29,11 @@ const game = new Phaser.Game({
 // Mise en page : en portrait, les panneaux se posent sous l'image et ne doivent jamais la couvrir ; ils savent où elle finit.
 const stageEl = document.getElementById('stage');
 if (stageEl) {
-  const syncStage = () => document.documentElement.style.setProperty('--stage-bottom', `${String(Math.round(stageEl.getBoundingClientRect().bottom))}px`);
+  const syncStage = () => {
+    const bottom = Math.round(stageEl.getBoundingClientRect().bottom);
+    const root = document.documentElement.style;
+    root.setProperty('--stage-bottom', `${String(bottom)}px`);
+  };
   new ResizeObserver(syncStage).observe(stageEl);
   window.addEventListener('resize', syncStage);
   window.visualViewport?.addEventListener('resize', syncStage);

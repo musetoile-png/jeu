@@ -731,6 +731,10 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 .ending-title { font-size: clamp(28px, 13cqh, 88px); }
 .ending-chapter { font-size: clamp(12px, 3.2cqh, 20px); margin: .3em 0 .1em; }
 .ending-next { font-size: clamp(11px, 2.8cqh, 17px); margin-bottom: .5em; }
+/* ouverture (l'avion sur Shanghai) : proportionnée au cadre, lisible même petit */
+.intro-word b { font-size: clamp(34px, 22cqh, 120px); }
+.intro-word i { font-size: clamp(12px, 4.5cqh, 24px); }
+.intro-line { font-size: clamp(12px, min(2.6cqw, 5.5cqh), 22px); bottom: 6%; }
 /* ligne à restaurer : à la taille du cadre (et non de la fenêtre) */
 @supports (width: 1cqw) {
   .restore .paper { font-size: clamp(20px, calc(50cqw / var(--n, 10)), 60px); }
@@ -773,15 +777,46 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
     width: var(--side); max-width: none; max-height: none; box-sizing: border-box; z-index: 30; }
   #stage > #dlg { overflow: auto; background: #f3ede0; box-shadow: 0 0 0 1px rgba(60, 45, 20, .1), -8px 0 30px -14px rgba(30, 22, 8, .45); }
   #stage > #photo-dock { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+  /* étal et service : plus de place (ils couvrent alors le bord droit de l'image, comme sur ordinateur) */
+  #stage > #dlg.task-mode, #stage > #dlg.stall-mode { width: max(var(--side), 50vw); }
   /* sac, quête, album : toute la fenêtre */
   #stage > .panel { position: fixed; inset: 6px 8px; z-index: 30; }
   #stage > .toast { position: fixed; right: 8px; top: 6px; width: var(--side); box-sizing: border-box; z-index: 40; }
   .nb-pop { position: fixed; left: 8px; right: 8px; top: 6px; bottom: auto; width: auto; max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); }
-  /* la colonne est étroite : l'étal sur trois rangs, la caisse sur une colonne */
+  /* la colonne est étroite : l'étal sur trois rangs, la recette sur deux */
   #dlg .stall-board, #dlg .stall-board[data-n='4'], #dlg .stall-board[data-n='5'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .seq-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pay-board { grid-template-columns: 1fr; }
   .restore, .restore.side-left, .restore.side-right { max-width: calc(100% - 12px); }
+}
+/* colonne étroite (paysage bas) ou petit téléphone : réponses, tickets et caisse serrés, pour tenir sans défiler */
+@media (orientation: landscape) and (max-height: 540px), (max-width: 480px) {
+  #stage > #dlg { padding: 8px 10px; gap: 6px; }
+  #dlg .choices { gap: 5px; }
+  #dlg .choices button { gap: 0 3px; padding: 4px 8px 4px 28px; }
+  #dlg .choices .w, #dlg .seq-card { padding: 1px 2px; }
+  #dlg .choices .w b { font-size: 17px; }
+  #dlg .choices .w i { margin-top: 0; }
+  #dlg .tk-chip { padding: 2px 6px; }
+  #dlg .tk-chip .w b, #dlg .seq-card .w b, .tk-line .w b { font-size: 16px; }
+  .tk-slip { padding: 6px 8px; gap: 4px; }
+  .tk-cell { gap: 4px; padding-bottom: 4px; }
+  #dlg .fr { font-size: 12.5px; }
+  .pay-board { grid-template-columns: 1fr; gap: 6px; }
+  .slate { padding: 4px 8px 5px; border-width: 4px; }
+  .slate-line { gap: 0 1px; }
+  .slate .w { padding: 0 3px; }
+  .slate .w i { margin-top: 0; }
+  .pay-order { padding: 4px 8px; }
+  /* les trois totaux sur une seule rangée */
+  #dlg .pay-totals { flex-wrap: nowrap; gap: 4px; }
+  #dlg .pay-totals button { flex: 1 1 0; flex-wrap: nowrap; justify-content: center; min-width: 0; padding-left: 24px; padding-right: 4px; }
+  #dlg .pay-totals button::before { left: 5px; }
+}
+/* petit téléphone : l'en-tête sur une ligne (le sous-titre s'efface) ; réponses un peu moins hautes */
+@media (max-width: 480px) {
+  header { flex-wrap: nowrap; }
+  h1 small { display: none; }
+  #dlg .choices button { padding-top: 6px; padding-bottom: 6px; }
 }
 @media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
   .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 13px; color: var(--ink-2); }
@@ -790,6 +825,8 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 @media (max-aspect-ratio: 1/1), (orientation: landscape) and (max-height: 540px) {
   #stage > .title-screen { position: fixed; inset: 0; z-index: 50; }
   #photo-dock > * { position: static; transform: none; width: auto; max-width: none; left: auto; top: auto; right: auto; bottom: auto; }
+  /* le tiroir est posé sur la page (et sur la barre du bas) : un fond de papier pour qu'il reste lisible */
+  #photo-dock .vf-bar { background: #f3ede0; border-radius: 12px; padding: 8px; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
   .vf-bar { justify-content: center; flex-wrap: wrap; }
   .photo-quiz .pick { min-width: 0; flex: 1; }
   /* tiroir de l'appareil (téléphone au doigt) : boutons larges */
