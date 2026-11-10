@@ -13,17 +13,20 @@
   --zh-font: 'Noto Sans SC', 'PingFang SC', sans-serif;
   --calli: 'Ma Shan Zheng', var(--zh-font);
 }
+/* La page entière tient dans la fenêtre (voir « Mise en page » en fin de fichier) : en-tête, cadre de jeu, barre du bas. */
 html, body { height: 100%; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body);
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 24px; }
-.wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-h1 { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3vw, 30px); margin: 0; letter-spacing: -.01em; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); box-sizing: border-box; height: 100vh; height: 100dvh;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: max(8px, env(safe-area-inset-top, 0px)); padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)); }
+.wrap { height: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: nowrap; gap: 10px; min-width: 0; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.15; margin: 0; letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 h1 .zh { font-family: var(--calli); font-weight: 400; color: var(--lantern); margin-right: .4em; font-size: 1.25em; }
 .meta { font-size: 13px; color: var(--mute); }
 .pill { background: var(--paper-2); border-radius: 999px; padding: 4px 11px; }
 .pill b { color: var(--jade); }
-#stage { position: relative; width: 100%; aspect-ratio: 16/9; background: #d8d0bf; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(40, 30, 10, .6); }
+#stage { position: relative; width: 100%; aspect-ratio: 16/9; container: stage / size; background: #d8d0bf; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(40, 30, 10, .6); }
 #game, #game canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 .hint { position: absolute; left: 12px; top: 10px; font-size: 12px; color: var(--ink-2); background: rgba(239, 233, 220, .75); padding: 4px 9px; border-radius: 8px; pointer-events: none; }
 
@@ -69,17 +72,21 @@ button.sm { font-size: 12px; padding: 4px 9px; }
 @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 @media (prefers-reduced-motion: reduce) { .shake { animation: none; } }
 
-/* Carnet : l'encre pâlit avec la fragilité du mot */
-details { background: var(--paper-2); border-radius: 12px; padding: 10px 14px; }
-summary { cursor: pointer; color: var(--ink-2); font-size: 14px; }
-.vocab { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+/* Carnet : l'encre pâlit avec la fragilité du mot. Dans la barre du bas ; ouvert, il se déplie au-dessus (défilement interne). */
+details.notebook { position: static; }
+summary { cursor: pointer; color: var(--ink-2); font-size: 12px; list-style: none; background: var(--paper-2); border-radius: 9px; padding: 5px 10px; white-space: nowrap; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: '📖 '; }
+details[open] > summary { background: #fff; box-shadow: 0 0 0 1px var(--amber); }
+.nb-pop { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 35; width: min(100%, 760px); box-sizing: border-box; max-height: min(55vh, 460px); max-height: min(55dvh, 460px); overflow: auto;
+  background: var(--paper-2); border-radius: 12px; padding: 10px 14px; box-shadow: 0 -10px 30px -14px rgba(40, 30, 10, .55); }
+.vocab { display: flex; flex-wrap: wrap; gap: 8px; }
 .vocab .w { border-color: rgba(0, 0, 0, .06); cursor: default; }
 .vocab .w small { font-size: 11px; color: var(--ink-2); }
 .vocab .ink-1 b { color: #b9b4a6; }
 .vocab .ink-2 b { color: #7a7566; }
 .vocab .ink-3 b { color: var(--ink); }
 .legend { font-size: 11px; color: var(--mute); margin: 8px 0 0; }
-footer { display: flex; justify-content: flex-end; }
 
 /* Cartouche d'entrée dans un lieu */
 .placecard { position: absolute; left: 50%; top: 9%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -95,8 +102,9 @@ footer { display: flex; justify-content: flex-end; }
 #dlg .show-answer { outline: 3px solid var(--jade); outline-offset: 2px; animation: hintpulse 1.2s ease-in-out 3; }
 @keyframes hintpulse { 50% { outline-color: transparent; } }
 
-h1 small { font-family: var(--body); font-weight: 400; font-size: .5em; color: var(--mute); }
-footer { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+h1 small { font-family: var(--body); font-weight: 400; font-size: max(12px, .5em); color: var(--mute); }
+footer { position: relative; display: flex; justify-content: flex-end; align-items: center; gap: 6px 8px; flex-wrap: wrap; }
+footer .gamebar { margin-right: auto; }
 .gamebar { display: flex; gap: 6px; flex-wrap: wrap; }
 .gamebar[hidden] { display: none; }
 kbd { font: 11px var(--body); color: var(--mute); border: 1px solid var(--paper-2); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
@@ -322,7 +330,7 @@ body.talking .hint { opacity: 0; }
 
 /* petit écran : le panneau prend toute la largeur, plus bas */
 @media (max-width: 720px) {
-  #dlg, #dlg.side-left, #dlg.side-right { left: 6px; right: 6px; bottom: 6px; width: auto; max-width: none; max-height: 48%; }
+  #dlg, #dlg.side-left, #dlg.side-right { left: 6px; right: 6px; bottom: 6px; width: auto; max-width: none; max-height: 70%; }
   .bubble { max-width: 70%; }
 }
 @media (prefers-reduced-motion: reduce) { .bubble.pop, #dlg { animation: none; } }
@@ -491,8 +499,6 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
 #dlg.stall-mode .feedback { order: 2; }
 #dlg.stall-mode #dlg-body > button.go { order: 3; }
 @media (max-width: 720px) {
-  #dlg.stall-mode { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 62vh; z-index: 30;
-    background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
   #dlg .stall-board, #dlg .stall-board[data-n='4'], #dlg .stall-board[data-n='5'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #dlg .pick.stall-good { aspect-ratio: 5 / 4; }
   .stall-good .tag { width: auto; height: 88%; }
@@ -586,8 +592,6 @@ button:not([disabled]):active { transform: translateY(1px) scale(.97); }
 .piece.note[data-v='100'] { background: var(--lantern); }
 .wage { padding: 7px 10px; background: #fffdf6; border-left: 4px solid var(--jade); font-size: 14px; }
 @media (max-width: 720px) {
-  #dlg.task-mode { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 66vh; z-index: 30;
-    background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
   .seq-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pay-board { grid-template-columns: 1fr; }
 }
@@ -672,30 +676,164 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 .seal-page figcaption { font-style: italic; }
 .page .pic.crop { position: relative; }
 .page .pic img.extra { position: absolute; width: auto; object-fit: contain; transform: translateX(-50%); filter: none; }
-@media (max-width: 720px) {
-  /* téléphone : tout ce qui se lit et se touche passe sous l'image, en grand */
-  #photo-dock { position: fixed; inset: auto 8px 8px 8px; z-index: 30; display: flex; flex-direction: column; gap: 8px; }
-  #photo-dock > * { position: static; transform: none; width: auto; max-width: none; left: auto; top: auto; right: auto; bottom: auto; }
-  .vf-bar { justify-content: center; flex-wrap: wrap; }
-  .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 14px; color: var(--ink-2); }
-  .vf-bar button { font-size: 16px; padding: 11px 18px; }
-  .coach { font-size: 15px; }
-  #photo-dock .photo-quiz, #photo-dock .coach { width: auto; max-width: none; }
-  .photo-quiz .pick { min-width: 0; flex: 1; }
-  /* les notifications passent en haut de l'écran : sur l'image, elles la cacheraient */
-  .toast { position: fixed; left: 8px; right: 8px; top: 8px; z-index: 40; box-shadow: 0 10px 30px -12px rgba(30, 22, 8, .5); }
-  .panel { position: fixed; inset: auto 8px 8px 8px; max-height: 72vh; z-index: 30; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
-  /* dialogue : le panneau de réponses sort de l'image et se pose dessous ; la bulle reste sur l'image, sans jamais le couvrir */
-  #dlg:not(.stall-mode):not(.task-mode) { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; max-width: none; max-height: 58vh; z-index: 30;
-    background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
-  #dlg .choices button { padding-top: 9px; padding-bottom: 9px; }
-}
+/* (téléphone, tablette en portrait : le tiroir de l'appareil, les panneaux et le dialogue passent sous l'image — voir « Mise en page ») */
 /* légende ouverte : on ne déclenche plus, on choisit le mot */
 #photo-dock:has(.photo-quiz) .vf-bar .go { display: none; }
 /* téléphone au doigt : la ligne d'aide au clavier n'a pas de sens (l'aide de la photo est dans le tiroir) */
-@media (max-width: 720px) and (pointer: coarse) { .hint { display: none; } }
+@media (pointer: coarse) { .hint { display: none; } }
 .errand.focus { animation: fbin .5s ease both; }
 /* l'aide de la première photo remplace la ligne d'aide */
 #stage:has(.coach) .hint { opacity: 0; }
 /* la bulle passe sous le panneau d'action quand il n'y a pas la place de l'éviter : les réponses restent touchables */
 .bubble.under { z-index: 5; }
+
+/* ==========================================================================================================
+   Mise en page : tout ce qui sert à jouer tient dans la fenêtre, sans faire défiler la page.
+   - Ordinateur, tablette en paysage : en-tête compact, cadre 16:9 le plus grand possible (largeur ET hauteur),
+     barre du bas sur une ligne ; le dialogue et les panneaux se posent sur le cadre.
+   - Portrait (téléphone, tablette) : cadre en pleine largeur, tout ce qui se lit et se touche passe dessous.
+   - Paysage bas (téléphone couché, fenêtre très basse) : cadre à gauche, colonne à droite pour l'en-tête,
+     la barre, et le dialogue / le tiroir de l'appareil quand ils s'ouvrent.
+   La hauteur de la page est en 100dvh (barres du navigateur mobile déduites), avec 100vh en repli.
+   ========================================================================================================== */
+:root { --chrome: 88px; --side: clamp(230px, 32vw, 330px); }
+/* largeur de la colonne = largeur du cadre tenu en hauteur : l'en-tête et la barre s'alignent sur lui */
+.wrap { width: min(100%, calc((100vh - var(--chrome)) * 16 / 9)); width: min(100%, calc((100dvh - var(--chrome)) * 16 / 9)); }
+.stage-box { flex: 1 1 0; min-height: 0; display: flex; justify-content: center; align-items: flex-start; container-type: size; }
+#stage { flex: none; }
+@supports (width: 1cqh) { #stage { width: min(100cqw, 100cqh * 16 / 9); } }
+@supports not (width: 1cqh) { #stage { width: 100%; max-width: calc((100vh - var(--chrome)) * 16 / 9); } }
+.hint { max-width: calc(100% - 24px); box-sizing: border-box; line-height: 1.35; }
+@media (pointer: coarse) { kbd { display: none; } }
+@media (max-height: 760px) {
+  :root { --chrome: 80px; }
+  h1 { font-size: 20px; }
+  .meta { font-size: 12px; }
+  .pill { padding: 2px 9px; }
+}
+
+/* écran titre : mis à l'échelle de la place qu'il a (le cadre, ou toute la fenêtre sur petit écran) */
+.title-screen { container-type: size; overflow: auto; }
+.title-screen .scroll { padding: clamp(10px, 4cqh, 40px) clamp(12px, 4cqw, 40px); border-block-width: clamp(5px, 1.5cqh, 10px); box-sizing: border-box; }
+.title-zh { font-size: clamp(40px, min(19cqh, 24cqw), 150px); }
+.title-fr { font-size: clamp(18px, 5cqh, 32px); }
+.title-sub { font-size: clamp(13px, 3cqh, 16px); }
+.title-chapter { margin: clamp(4px, 1.5cqh, 10px) 0 clamp(6px, 2.5cqh, 16px); }
+.title-ask { margin: clamp(2px, 1cqh, 6px) 0; }
+.bodies { gap: clamp(8px, 2cqw, 16px); }
+.body { width: auto; min-width: 96px; padding: clamp(4px, 1.2cqh, 10px) 12px; gap: 4px; }
+.body img, .body .silhouette { height: clamp(56px, 22cqh, 170px); width: clamp(36px, 14cqh, 110px); }
+.title-actions { margin-top: clamp(6px, 2cqh, 14px); }
+
+/* fin de chapitre : proportionnée au cadre */
+.ending-line { font-size: clamp(18px, min(5cqw, 9cqh), 60px); top: 5%; }
+.ending-card { bottom: 5%; padding: clamp(6px, 2.6cqh, 22px) clamp(10px, 3cqw, 28px); border-block-width: clamp(4px, 1.1cqh, 8px); }
+.ending-title { font-size: clamp(28px, 13cqh, 88px); }
+.ending-chapter { font-size: clamp(12px, 3.2cqh, 20px); margin: .3em 0 .1em; }
+.ending-next { font-size: clamp(11px, 2.8cqh, 17px); margin-bottom: .5em; }
+/* ouverture (l'avion sur Shanghai) : proportionnée au cadre, lisible même petit */
+.intro-word b { font-size: clamp(34px, 22cqh, 120px); }
+.intro-word i { font-size: clamp(12px, 4.5cqh, 24px); }
+.intro-line { font-size: clamp(12px, min(2.6cqw, 5.5cqh), 22px); bottom: 6%; }
+/* ligne à restaurer : à la taille du cadre (et non de la fenêtre) */
+@supports (width: 1cqw) {
+  .restore .paper { font-size: clamp(20px, calc(50cqw / var(--n, 10)), 60px); }
+  .restore.vertical .paper { font-size: clamp(18px, calc(min(56cqw, 100cqh) * .78 / var(--n, 10)), 56px); }
+}
+
+/* panneaux posés sur le cadre : un peu plus de place quand le cadre est petit */
+.panel { inset: 5% 6%; }
+
+/* ---------- Portrait : le cadre en pleine largeur, le reste dessous ---------- */
+@media (max-aspect-ratio: 1/1) {
+  .wrap { width: 100%; }
+  .stage-box { flex: none; container-type: normal; }
+  #stage { width: 100%; max-width: none; }
+  header { flex-wrap: wrap; row-gap: 2px; }
+  /* dialogue, étal, service, panneaux, tiroir de l'appareil : sous l'image, sans jamais la couvrir */
+  #stage > #dlg, #stage > .panel, #stage > #photo-dock {
+    position: fixed; left: max(8px, env(safe-area-inset-left, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); bottom: max(8px, env(safe-area-inset-bottom, 0px)); top: auto;
+    width: auto; max-width: none; z-index: 30; max-height: max(200px, calc(100vh - var(--stage-bottom, 45vh) - 16px)); max-height: max(200px, calc(100dvh - var(--stage-bottom, 45dvh) - 16px)); }
+  #stage > #dlg, #stage > .panel { overflow: auto; background: #f3ede0; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
+  #stage > #photo-dock { display: flex; flex-direction: column; gap: 8px; }
+  #dlg .choices button { padding-top: 9px; padding-bottom: 9px; }
+  /* les notifications passent en haut de l'écran : sur l'image, elles la cacheraient */
+  #stage > .toast { position: fixed; left: 8px; right: 8px; top: max(8px, env(safe-area-inset-top, 0px)); z-index: 40; box-shadow: 0 10px 30px -12px rgba(30, 22, 8, .5); }
+  .nb-pop { width: 100%; max-height: calc(100vh - var(--stage-bottom, 45vh)); max-height: calc(100dvh - var(--stage-bottom, 45dvh)); }
+}
+
+/* ---------- Paysage bas (téléphone couché) : le cadre à gauche, une colonne à droite ---------- */
+@media (orientation: landscape) and (max-height: 540px) {
+  body { padding: max(6px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+  .wrap { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) var(--side); grid-template-rows: auto minmax(0, 1fr) auto; gap: 6px 8px; }
+  .stage-box { grid-column: 1; grid-row: 1 / -1; align-items: center; }
+  header { grid-column: 2; grid-row: 1; flex-direction: column; align-items: flex-start; gap: 4px; }
+  h1 { white-space: normal; font-size: 18px; }
+  footer { grid-column: 2; grid-row: 3; justify-content: flex-start; }
+  footer .gamebar { margin-right: 0; }
+  /* dialogue et tiroir de l'appareil : dans la colonne, sur toute sa hauteur */
+  #stage > #dlg, #stage > #photo-dock {
+    position: fixed; top: max(6px, env(safe-area-inset-top, 0px)); bottom: max(6px, env(safe-area-inset-bottom, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); left: auto;
+    width: var(--side); max-width: none; max-height: none; box-sizing: border-box; z-index: 30; }
+  #stage > #dlg { overflow: auto; background: #f3ede0; box-shadow: 0 0 0 1px rgba(60, 45, 20, .1), -8px 0 30px -14px rgba(30, 22, 8, .45); }
+  #stage > #photo-dock { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+  /* étal et service : plus de place (ils couvrent alors le bord droit de l'image, comme sur ordinateur) */
+  #stage > #dlg.task-mode, #stage > #dlg.stall-mode { width: max(var(--side), 50vw); }
+  /* sac, quête, album : toute la fenêtre */
+  #stage > .panel { position: fixed; inset: 6px 8px; z-index: 30; }
+  #stage > .toast { position: fixed; right: 8px; top: 6px; width: var(--side); box-sizing: border-box; z-index: 40; }
+  .nb-pop { position: fixed; left: 8px; right: 8px; top: 6px; bottom: auto; width: auto; max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); }
+  /* la colonne est étroite : l'étal sur trois rangs, la recette sur deux */
+  #dlg .stall-board, #dlg .stall-board[data-n='4'], #dlg .stall-board[data-n='5'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .seq-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .restore, .restore.side-left, .restore.side-right { max-width: calc(100% - 12px); }
+}
+/* colonne étroite (paysage bas) ou petit téléphone : réponses, tickets et caisse serrés, pour tenir sans défiler */
+@media (orientation: landscape) and (max-height: 540px), (max-width: 480px) {
+  #stage > #dlg { padding: 8px 10px; gap: 6px; }
+  #dlg .choices { gap: 5px; }
+  #dlg .choices button { gap: 0 3px; padding: 4px 8px 4px 28px; }
+  #dlg .choices .w, #dlg .seq-card { padding: 1px 2px; }
+  #dlg .choices .w b { font-size: 17px; }
+  #dlg .choices .w i { margin-top: 0; }
+  #dlg .tk-chip { padding: 2px 6px; }
+  #dlg .tk-chip .w b, #dlg .seq-card .w b, .tk-line .w b { font-size: 16px; }
+  .tk-slip { padding: 6px 8px; gap: 4px; }
+  .tk-cell { gap: 4px; padding-bottom: 4px; }
+  #dlg .fr { font-size: 12.5px; }
+  .pay-board { grid-template-columns: 1fr; gap: 6px; }
+  .slate { padding: 4px 8px 5px; border-width: 4px; }
+  .slate-line { gap: 0 1px; }
+  .slate .w { padding: 0 3px; }
+  .slate .w i { margin-top: 0; }
+  .pay-order { padding: 4px 8px; }
+  /* les trois totaux sur une seule rangée */
+  #dlg .pay-totals { flex-wrap: nowrap; gap: 4px; }
+  #dlg .pay-totals button { flex: 1 1 0; flex-wrap: nowrap; justify-content: center; min-width: 0; padding-left: 24px; padding-right: 4px; }
+  #dlg .pay-totals button::before { left: 5px; }
+}
+/* petit téléphone : l'en-tête sur une ligne (le sous-titre s'efface) ; réponses un peu moins hautes */
+@media (max-width: 480px) {
+  header { flex-wrap: nowrap; }
+  h1 small { display: none; }
+  #dlg .choices button { padding-top: 6px; padding-bottom: 6px; }
+}
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
+  .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 13px; color: var(--ink-2); }
+}
+/* téléphone ou cadre trop petit : l'écran titre prend toute la fenêtre */
+@media (max-aspect-ratio: 1/1), (orientation: landscape) and (max-height: 540px) {
+  #stage > .title-screen { position: fixed; inset: 0; z-index: 50; }
+  #photo-dock > * { position: static; transform: none; width: auto; max-width: none; left: auto; top: auto; right: auto; bottom: auto; }
+  /* le tiroir est posé sur la page (et sur la barre du bas) : un fond de papier pour qu'il reste lisible */
+  #photo-dock .vf-bar { background: #f3ede0; border-radius: 12px; padding: 8px; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
+  .vf-bar { justify-content: center; flex-wrap: wrap; }
+  .photo-quiz .pick { min-width: 0; flex: 1; }
+  /* tiroir de l'appareil (téléphone au doigt) : boutons larges */
+  .vf-bar button { font-size: 15px; padding: 10px 16px; }
+  .coach { font-size: 14px; }
+  #photo-dock .photo-quiz, #photo-dock .coach { width: auto; max-width: none; }
+}
+@media (max-aspect-ratio: 1/1) and (pointer: coarse) {
+  .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 14px; color: var(--ink-2); }
+}
