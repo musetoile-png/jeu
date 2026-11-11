@@ -153,7 +153,10 @@ export class World extends Phaser.Scene {
     const qs = new URLSearchParams(location.search);
     const jump = qs.get('lieu');
     if (jump && this.content.places.has(jump)) {
-      if (!save.get().profile) save.newGame(qs.get('corps') === 'f' ? 'f' : 'm', this.content.pack.profile?.startItems ?? []);
+      // save.get() fabrique toujours un profil (garçon par défaut) : on teste l'existence d'une vraie partie, et ?corps= l'emporte
+      const corps = qs.get('corps');
+      if (!save.exists()) save.newGame(corps === 'f' ? 'f' : 'm', this.content.pack.profile?.startItems ?? []);
+      else if (corps === 'f' || corps === 'm') save.get().profile.body = corps;
       if (qs.get('temps')) save.setFlags({ time: qs.get('temps')! });
       this.started = true;
       document.dispatchEvent(new CustomEvent('game-started'));
