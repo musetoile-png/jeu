@@ -102,7 +102,17 @@ export class World extends Phaser.Scene {
     const inline = (window as unknown as { __inlineAssets?: Record<string, string> }).__inlineAssets;
     for (const [key, path] of Object.entries(this.content.pack.assets.images)) if (!inline || inline[path]) this.load.image(key, assetUrl(path));
     // Une image manquante ne doit jamais bloquer : on laissera la texture de secours.
-    this.load.on('loaderror', (f: Phaser.Loader.File) => console.warn('image manquante', f.key));
+    // Mais un raté réseau ne doit pas laisser un décor en papier blanc : on retente deux fois, sans le cache.
+    const tries = new Map<string, number>();
+    this.load.on('loaderror', (f: Phaser.Loader.File) => {
+      const n = tries.get(f.key) ?? 0;
+      const path = this.content.pack.assets.images[f.key];
+      if (f.type === 'image' && path && n < 2) {
+        tries.set(f.key, n + 1);
+        console.warn('image ratée, nouvel essai', f.key);
+        this.load.image(f.key, `${assetUrl(path)}${assetUrl(path).includes('?') ? '&' : '?'}r=${Date.now()}`);
+      } else console.warn('image manquante', f.key);
+    });
   }
 
   create() {
@@ -216,9 +226,33 @@ export class World extends Phaser.Scene {
     this.spots = [];
   }
 
+  /** Décors restés en papier (raté réseau au démarrage) : on les recharge et on les remplace dès qu'ils arrivent. */
+  private retried = new Set<string>();
+  private reloadPlanes(keys: string[]) {
+    const images = this.content.pack.assets.images;
+    const todo = keys.filter((k) => placeholderKeys.has(k) && images[k] && !this.retried.has(k));
+    if (!todo.length) return;
+    for (const k of todo) {
+      this.retried.add(k);
+      const k2 = `${k}@retry`;
+      this.load.image(k2, `${assetUrl(images[k])}${assetUrl(images[k]).includes('?') ? '&' : '?'}r=${Date.now()}`);
+      this.load.once(`filecomplete-image-${k2}`, () => {
+        const users = this.children.list.filter((o) => o instanceof Phaser.GameObjects.Image && o.texture.key === k) as Phaser.GameObjects.Image[];
+        users.forEach((o) => o.setTexture(k2));
+        this.textures.remove(k);
+        this.textures.addImage(k, this.textures.get(k2).getSourceImage() as HTMLImageElement);
+        placeholderKeys.delete(k);
+        users.forEach((o) => o.setTexture(k));
+      });
+    }
+    this.load.start();
+  }
+
   private buildPlace(place: Place, at: Entrance) {
     this.clearPlace();
     this.place = place;
+    // après la pose des plans (les textures de secours existent alors) : on retente ceux restés en papier
+    this.time.delayedCall(0, () => this.reloadPlanes(place.planes.map((p) => p.image)));
     const { width: W, height: H } = place.size;
     const zoom = place.zoom ?? 1;
 
