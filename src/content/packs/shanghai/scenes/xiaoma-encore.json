@@ -1,0 +1,64 @@
+{
+ "id": "xiaoma-encore",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "Encore des photos"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xe_01",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "ni_hao"
+    ],
+    [
+     "p",
+     "！"
+    ],
+    [
+     "w",
+     "zai_encore"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "paizhao"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Salut ! Va encore prendre des photos ! (Ta liste de photos : touche J, ou le bouton Quête.)"
+   },
+   "end": true
+  }
+ ]
+}
