@@ -475,6 +475,11 @@ export class World extends Phaser.Scene {
     if (!this.exitBanner || !this.exitBanner.isConnected) {
       this.exitBanner = document.createElement('div');
       this.exitBanner.className = 'exitbanner';
+      // un clic (ou un toucher) sur la bannière fait sortir tout de suite
+      this.exitBanner.addEventListener('click', () => {
+        const target = this.spots.find((sp) => sp.h.id === this.exitBannerFor)?.h;
+        if (target && !this.busy) this.leaveTo(target);
+      });
       stage.appendChild(this.exitBanner);
     }
     const el = this.exitBanner;
@@ -536,7 +541,12 @@ export class World extends Phaser.Scene {
     const p = this.player;
     if (!this.started || this.busy || this.photo || ui.panelOpen() || !p || this.pendingScene) return;
     const w = this.place.walk;
-    const h = this.spotAt(wx, wy);
+    // un clic au sol dans la zone d'une sortie de bord vaut un clic sur la sortie (avant, on s'arrêtait là, bannière à demi pleine)
+    const edgeHit = this.spots.find((s) => {
+      const d = this.edgeDir(s.h);
+      return d !== 0 && (d < 0 ? wx < s.h.x + 230 : wx > s.h.x - 230);
+    });
+    const h = this.spotAt(wx, wy) ?? edgeHit?.h ?? null;
     this.clickTarget = null;
     if (!h) {
       const tx = Phaser.Math.Clamp(wx, w.xMin, w.xMax);
@@ -1578,9 +1588,12 @@ export class World extends Phaser.Scene {
     if (edge) {
       const toward = edgeDir < 0 ? L : R;
       const away = edgeDir < 0 ? R : L;
-      if (toward) this.exitPush += dt;
+      // on avance vers le bord : la jauge monte (deux fois plus vite si l'on bute déjà contre le bord du lieu) ;
+      // on s'arrête : elle reste où elle est (avant, elle se vidait et l'on restait coincé sur la bannière) ;
+      // on fait demi-tour : elle retombe à zéro
+      const atBound = edgeDir < 0 ? p.x <= w.xMin + 1 : p.x >= w.xMax - 1;
+      if (toward) this.exitPush += atBound ? dt * 2 : dt;
       else if (away) this.exitPush = 0;
-      else this.exitPush = Math.max(0, this.exitPush - dt * 0.5);
       const progress = this.exitPush / 700;
       // en s'éloignant du bord (ou en entrant par lui), pas de bannière
       this.showExitBanner(away ? null : edge, edgeDir, progress);

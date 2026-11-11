@@ -355,7 +355,8 @@ span.flyer { width: auto; height: auto; background: #fffaf0; border-radius: 10px
   max-width: min(320px, 60%); padding: 12px 18px 14px; background: rgba(239, 233, 220, .92); border-left: 4px solid var(--lantern); border-radius: 4px;
   box-shadow: 0 10px 30px -18px rgba(40, 30, 10, .7); pointer-events: none; z-index: 6; opacity: 0; transition: opacity .25s ease, transform .25s ease; }
 .exitbanner.right { left: auto; right: 18px; transform: translate(12px, -50%); border-left: 0; border-right: 4px solid var(--lantern); text-align: right; }
-.exitbanner.on { opacity: 1; transform: translate(0, -50%); }
+.exitbanner.on { opacity: 1; transform: translate(0, -50%); pointer-events: auto; cursor: pointer; }
+.exitbanner.on:hover { background: rgba(255, 250, 240, .97); }
 .exitbanner .arrow { font-size: 34px; line-height: 1; color: var(--lantern); animation: exitnudge 1s ease-in-out infinite; }
 .exitbanner.right .arrow { animation-name: exitnudge-r; }
 .exitbanner .txt { display: flex; flex-direction: column; }
