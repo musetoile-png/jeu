@@ -314,7 +314,7 @@
       "price": [
        [
         "w",
-        "san"
+        "si"
        ],
        [
         "w",
@@ -325,7 +325,7 @@
         "kuai"
        ]
       ],
-      "cost": 30
+      "cost": 40
      },
      {
       "word": "huacha",

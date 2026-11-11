@@ -1,0 +1,63 @@
+{
+ "id": "nainai-repos",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "奶奶 à ses fourneaux"
+ },
+ "place": "cuisine",
+ "npc": "nainai",
+ "patience": 3,
+ "actors": {
+  "nainai": {
+   "name": "奶奶",
+   "label": {
+    "fr": "la cuisinière"
+   },
+   "portrait": "nainai"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "nainai",
+   "vo": "nc_07",
+   "line": [
+    [
+     "w",
+     "lei"
+    ],
+    [
+     "w",
+     "le"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "？"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "xiuxi"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Fatigué·e, hein ? Va te reposer !"
+   },
+   "end": true
+  }
+ ]
+}

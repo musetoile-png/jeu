@@ -344,7 +344,7 @@
      "line": [
       [
        "w",
-       "bai_xing"
+       "bai_blanc"
       ],
       [
        "w",
@@ -718,7 +718,7 @@
   {
    "type": "choose",
    "ask": {
-    "fr": "Remercie le policier (à un inconnu en uniforme, on dit 您, comme à 白老师) :"
+    "fr": "Remercie le policier (à un inconnu en uniforme, on dit 您, comme à 陈爷爷) :"
    },
    "choices": [
     {

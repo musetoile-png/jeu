@@ -1,0 +1,64 @@
+{
+ "id": "xiaoma-salut",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "小马 et son vieil appareil"
+ },
+ "place": "ruelle",
+ "npc": "xiaoma",
+ "patience": 3,
+ "actors": {
+  "xiaoma": {
+   "name": "小马",
+   "label": {
+    "fr": "le réparateur"
+   },
+   "portrait": "xiaoma"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "xiaoma",
+   "vo": "xp_03",
+   "expression": "joy",
+   "line": [
+    [
+     "w",
+     "zhege"
+    ],
+    [
+     "w",
+     "xiangji"
+    ],
+    [
+     "p",
+     "，"
+    ],
+    [
+     "w",
+     "hen"
+    ],
+    [
+     "w",
+     "hao"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Il est bien, cet appareil, hein !"
+   },
+   "end": true
+  }
+ ]
+}

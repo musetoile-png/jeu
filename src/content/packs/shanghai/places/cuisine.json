@@ -50,7 +50,8 @@
       "scale": 1.2,
       "when": {
         "time": "jour",
-        "courses": "!pret"
+        "courses": "!pret",
+        "cran2": ""
       }
     },
     {
@@ -91,7 +92,8 @@
       },
       "replaces": [
         "nainai",
-        "nainai_cran2"
+        "nainai_cran2",
+        "nainai_repos"
       ]
     },
     {
@@ -213,7 +215,10 @@
         "quest": "lettre",
         "leo": "carte"
       },
-      "replaces": "nainai"
+      "replaces": [
+        "nainai",
+        "nainai_repos"
+      ]
     },
     {
       "id": "nainai_adieux_rouleau",
@@ -236,7 +241,10 @@
         "quest": "rouleau",
         "rouleau": "colophon"
       },
-      "replaces": "nainai"
+      "replaces": [
+        "nainai",
+        "nainai_repos"
+      ]
     },
     {
       "id": "nainai_adieux",
@@ -258,7 +266,46 @@
         "depart": "",
         "quest": ""
       },
-      "replaces": "nainai"
+      "replaces": [
+        "nainai",
+        "nainai_repos"
+      ]
+    },
+    {
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "behind": true,
+      "scale": 1.2,
+      "id": "nainai_repos",
+      "when": {
+        "time": "jour",
+        "cran2": "fait",
+        "depart": ""
+      },
+      "scene": "nainai-repos",
+      "prompt": {
+        "fr": "奶奶, à ses fourneaux"
+      }
+    },
+    {
+      "kind": "npc",
+      "actor": "nainai",
+      "x": 1060,
+      "y": 940,
+      "sprite": "nainai_stand",
+      "behind": true,
+      "scale": 1.2,
+      "id": "nainai_gare",
+      "when": {
+        "depart": "adieux"
+      },
+      "scene": "nainai-gare",
+      "prompt": {
+        "fr": "奶奶, à ses fourneaux"
+      }
     }
   ],
   "palette": [

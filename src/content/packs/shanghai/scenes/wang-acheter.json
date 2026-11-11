@@ -41,7 +41,8 @@
  },
  "onEnd": {
   "flags": {
-   "epicerie": "fait"
+   "epicerie": "fait",
+   "vu_wang": "fait"
   }
  },
  "onExhausted": {

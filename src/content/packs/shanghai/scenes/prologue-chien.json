@@ -7,7 +7,7 @@
   "fr": "Le chien"
  },
  "place": "ruelle",
- "npc": "gou",
+ "npc": "dog",
  "patience": 3,
  "actors": {
   "nainai": {
@@ -24,7 +24,7 @@
    },
    "portrait": "player"
   },
-  "gou": {
+  "dog": {
    "name": "狗",
    "label": {
     "fr": "un chien"
@@ -41,7 +41,7 @@
  "steps": [
   {
    "type": "say",
-   "actor": "gou",
+   "actor": "dog",
    "vo": "p0_01",
    "line": [
     [

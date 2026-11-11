@@ -1578,10 +1578,20 @@
    "target": "白",
    "transcription": "Bái",
    "gloss": {
-    "fr": "Bai (nom de famille) ; blanc"
+    "fr": "Bai (nom de famille)"
    },
    "pos": "name",
    "level": "nom"
+  },
+  {
+   "id": "bai_blanc",
+   "target": "白",
+   "transcription": "bái",
+   "gloss": {
+    "fr": "blanc"
+   },
+   "pos": "adj",
+   "level": "HSK2"
   },
   {
    "id": "shu",

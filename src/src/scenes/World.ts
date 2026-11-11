@@ -863,7 +863,7 @@ export class World extends Phaser.Scene {
     const npc = this.content.scenes.get(id)?.npc;
     const h =
       this.spots.find((s) => s.h.kind === 'npc' && s.h.scene === id)?.h ??
-      (npc ? this.spots.find((s) => World.isExtra(s.h) && s.h.sprite?.startsWith(npc))?.h : undefined);
+      (npc ? (this.spots.find((s) => World.isExtra(s.h) && s.h.sprite?.startsWith(npc)) ?? this.spots.find((s) => s.h.kind === 'npc' && s.h.sprite?.startsWith(npc)))?.h : undefined);
     if (h) this.openScene(h.scene === id ? h : { ...h, scene: id });
     else this.openScene({ id: `auto:${id}`, kind: 'npc', x: this.player.x + 320, y: this.player.y, scene: id, prompt: {} });
   }

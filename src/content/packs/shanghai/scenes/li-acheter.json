@@ -34,7 +34,8 @@
  },
  "onEnd": {
   "flags": {
-   "fruits": "fait"
+   "fruits": "fait",
+   "vu_li": "fait"
   }
  },
  "onExhausted": {

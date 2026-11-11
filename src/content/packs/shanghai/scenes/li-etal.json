@@ -314,6 +314,10 @@
       "price": [
        [
         "w",
+        "san"
+       ],
+       [
+        "w",
         "shi_dix"
        ],
        [
@@ -321,7 +325,7 @@
         "kuai"
        ]
       ],
-      "cost": 10
+      "cost": 30
      },
      {
       "word": "xiangjiao",

@@ -57,7 +57,7 @@
       ]
      ],
      "gloss": {
-      "fr": "Bonjour, Maître Bai !"
+      "fr": "Bonjour, professeur Bai !"
      }
     },
     {
@@ -109,7 +109,7 @@
       ]
      ],
      "gloss": {
-      "fr": "Bonjour, Maître Bai ! (dans le désordre)"
+      "fr": "Bonjour, professeur Bai ! (dans le désordre)"
      },
      "why": {
       "fr": "Le nom de famille vient d'abord, le titre ensuite : 白老师, comme 陈爷爷 ou 王阿姨."
@@ -143,14 +143,7 @@
      "w",
      "wo"
     ],
-    [
-     "w",
-     "kan"
-    ],
-    [
-     "w",
-     "kan"
-    ],
+    ["w", "kankan"],
     [
      "p",
      "。"
@@ -208,7 +201,7 @@
       ]
      ],
      "gloss": {
-      "fr": "Maître Bai, voici ma peinture."
+      "fr": "Professeur Bai, voici ma peinture."
      }
     },
     {
@@ -252,7 +245,7 @@
       ]
      ],
      "gloss": {
-      "fr": "Maître Bai, voici mon livre."
+      "fr": "Professeur Bai, voici mon livre."
      },
      "why": {
       "fr": "书 shū = un livre. Ce que tu tiens, c'est une peinture : 画 huà."
@@ -300,10 +293,10 @@
       ]
      ],
      "gloss": {
-      "fr": "Maître Bai, voici votre peinture."
+      "fr": "Professeur Bai, voici votre peinture."
      },
      "why": {
-      "fr": "你的 = à toi, à lui ici. Le rouleau est à toi : 我的画."
+      "fr": "你的 = ton, votre : tu lui dis que la peinture est à lui ! Le rouleau est à toi : 我的画."
      },
      "errorType": "semantic"
     }

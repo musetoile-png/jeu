@@ -203,12 +203,28 @@
       "scale": 0.48,
       "when": {
         "xiangji": "fait",
-        "photos_shanghai": "!pret"
+        "photos_shanghai": ""
       },
       "scene": "xiaoma-encore",
       "prompt": {
         "fr": "小马, derrière son étal"
       }
+    },
+    {
+      "kind": "npc",
+      "x": 1680,
+      "y": 1050,
+      "sprite": "xiaoma_stand",
+      "scale": 0.48,
+      "prompt": {
+        "fr": "小马, derrière son étal"
+      },
+      "id": "xiaoma_merci",
+      "when": {
+        "xiangji": "fait",
+        "photos_shanghai": "fait"
+      },
+      "scene": "xiaoma-salut"
     },
     {
       "id": "xiaoma_bravo",
@@ -346,7 +362,10 @@
     {
       "image": "passant_oiseau",
       "kind": "walk",
-      "y": [1042, 1060],
+      "y": [
+        1042,
+        1060
+      ],
       "height": 268,
       "speed": 48,
       "every": [
@@ -360,7 +379,10 @@
     {
       "image": "velo",
       "kind": "walk",
-      "y": [1046, 1062],
+      "y": [
+        1046,
+        1062
+      ],
       "height": 280,
       "speed": 190,
       "every": [
@@ -374,7 +396,10 @@
     {
       "image": "passante_courses",
       "kind": "walk",
-      "y": [1044, 1062],
+      "y": [
+        1044,
+        1062
+      ],
       "height": 262,
       "speed": 62,
       "every": [
@@ -389,7 +414,10 @@
       "image": "chat_marche",
       "restImage": "chat_assis",
       "kind": "rest",
-      "y": [1054, 1068],
+      "y": [
+        1054,
+        1068
+      ],
       "height": 70,
       "speed": 55,
       "every": [
@@ -409,7 +437,10 @@
     {
       "image": "moineaux",
       "kind": "hop",
-      "y": [1060, 1072],
+      "y": [
+        1060,
+        1072
+      ],
       "height": 34,
       "every": [
         15,
