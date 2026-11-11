@@ -114,6 +114,7 @@
       "y": 1040,
       "scene": "li-voir",
       "sprite": "li_stand",
+      "facing": "right",
       "scale": 0.47,
       "when": {
         "cran1": ""
@@ -129,6 +130,7 @@
       "y": 1040,
       "scene": "li-acheter",
       "sprite": "li_stand",
+      "facing": "right",
       "scale": 0.47,
       "when": {
         "cran1": "fait"
@@ -144,6 +146,7 @@
       "y": 1040,
       "scene": "chen-voir",
       "sprite": "chen_stand",
+      "facing": "left",
       "scale": 0.47,
       "when": {
         "cran1": ""
@@ -159,6 +162,7 @@
       "y": 1040,
       "scene": "chen-acheter",
       "sprite": "chen_stand",
+      "facing": "left",
       "scale": 0.47,
       "when": {
         "cran1": "fait"
@@ -174,6 +178,7 @@
       "y": 1040,
       "scene": "chen-rouleau",
       "sprite": "chen_stand",
+      "facing": "left",
       "scale": 0.47,
       "replaces": "chen_voir",
       "when": {
@@ -193,6 +198,7 @@
       "y": 1040,
       "scene": "chen-rouleau",
       "sprite": "chen_stand",
+      "facing": "left",
       "scale": 0.47,
       "replaces": "chen",
       "when": {

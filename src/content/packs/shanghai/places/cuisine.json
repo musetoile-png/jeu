@@ -137,7 +137,7 @@
       "x": 1490,
       "y": 1030,
       "sprite": "xiaolong_stand",
-      "scale": 0.95,
+      "scale": 1.05,
       "prompt": {
         "fr": "小龙"
       },

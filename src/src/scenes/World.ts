@@ -544,9 +544,12 @@ export class World extends Phaser.Scene {
     // un clic au sol dans la zone d'une sortie de bord vaut un clic sur la sortie (avant, on s'arrêtait là, bannière à demi pleine)
     const edgeHit = this.spots.find((s) => {
       const d = this.edgeDir(s.h);
-      return d !== 0 && (d < 0 ? wx < s.h.x + 230 : wx > s.h.x - 230);
+      const zone = s.h.radius ?? 230;
+      return d !== 0 && (d < 0 ? wx < s.h.x + zone : wx > s.h.x - zone);
     });
-    const h = this.spotAt(wx, wy) ?? edgeHit?.h ?? null;
+    // … sauf si l'on clique près de quelqu'un à qui parler (小马 devant la sortie de la gare, le guichet…)
+    const npcClose = this.spots.some((s) => ((s.h.kind === 'npc' && !World.isExtra(s.h)) || s.h.kind === 'stall') && Math.abs(wx - s.h.x) < (s.h.radius ?? NEAR));
+    const h = this.spotAt(wx, wy) ?? (npcClose ? null : edgeHit?.h) ?? null;
     this.clickTarget = null;
     if (!h) {
       const tx = Phaser.Math.Clamp(wx, w.xMin, w.xMax);
@@ -1489,8 +1492,9 @@ export class World extends Phaser.Scene {
       if (p instanceof Puppet && !this.tweens.isTweening(p)) p.step(dt, false);
       return;
     }
-    let L = this.cursors.left.isDown || this.keys.A.isDown;
-    let R = this.cursors.right.isDown || this.keys.D.isDown;
+    // un appui très bref (appuyé et relâché entre deux images, surtout sur une machine lente) compte quand même pour un pas
+    let L = this.cursors.left.isDown || this.keys.A.isDown || JD(this.cursors.left) || JD(this.keys.A);
+    let R = this.cursors.right.isDown || this.keys.D.isDown || JD(this.cursors.right) || JD(this.keys.D);
     const U = this.cursors.up.isDown || this.keys.W.isDown;
     const D = this.cursors.down.isDown || this.keys.S.isDown;
     // marche d'entrée : quelques pas tout seul, interrompue dès que le joueur prend la main
@@ -1569,12 +1573,15 @@ export class World extends Phaser.Scene {
     let edge: Hotspot | null = null;
     let edgeDir = 0;
     for (const s of this.spots) {
+      // un personnage dont on connaît le sens du dessin suit le joueur du regard
+      if (s.h.facing && s.obj instanceof Phaser.GameObjects.Image && Math.abs(p.x - s.h.x) > 40) s.obj.setFlipX((p.x > s.h.x ? 'right' : 'left') !== s.h.facing);
       if (s.h.kind === 'subject' || World.isExtra(s.h)) continue;
       const dir = this.edgeDir(s.h);
       if (dir) {
         // sortie au bord : pas d'étiquette, c'est la bannière qui parle quand on s'en approche
         this.promptOn(s.prompt, false);
-        if (dir < 0 ? p.x < s.h.x + 230 : p.x > s.h.x - 230) {
+        const zone = s.h.radius ?? 230;
+        if (dir < 0 ? p.x < s.h.x + zone : p.x > s.h.x - zone) {
           edge = s.h;
           edgeDir = dir;
         }

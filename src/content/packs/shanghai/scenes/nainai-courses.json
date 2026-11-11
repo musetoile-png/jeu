@@ -476,6 +476,9 @@
    "type": "say",
    "actor": "nainai",
    "vo": "nc_06",
+   "take": [
+    "qingdan"
+   ],
    "expression": "joy",
    "line": [
     [

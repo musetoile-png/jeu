@@ -1,0 +1,64 @@
+{
+ "id": "bai-encore-rouleau",
+ "language": "zh",
+ "world": "quartier",
+ "tier": 1,
+ "title": {
+  "fr": "白老师 et la piste de Hangzhou"
+ },
+ "place": "bouquinerie",
+ "npc": "bai",
+ "patience": 3,
+ "actors": {
+  "bai": {
+   "name": "白老师",
+   "label": {
+    "fr": "le bouquiniste, ancien professeur de calligraphie"
+   },
+   "portrait": "bai"
+  }
+ },
+ "objects": {},
+ "steps": [
+  {
+   "type": "say",
+   "actor": "bai",
+   "vo": "br_07",
+   "line": [
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "p",
+     "……"
+    ],
+    [
+     "w",
+     "ni"
+    ],
+    [
+     "w",
+     "qu"
+    ],
+    [
+     "w",
+     "hangzhou"
+    ],
+    [
+     "w",
+     "ba"
+    ],
+    [
+     "p",
+     "！"
+    ]
+   ],
+   "gloss": {
+    "fr": "Hangzhou… Alors va à Hangzhou ! (le reste du rouleau a dû prendre le même chemin)"
+   },
+   "expression": "joy",
+   "end": true
+  }
+ ]
+}

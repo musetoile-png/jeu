@@ -600,8 +600,27 @@ export class Dialogue {
   /**
    * Détour : à patience zéro, on ne recommence pas. Petite tâche du monde (la vaisselle) :
    * chaque bol = un mot entendu, à reconnaître parmi deux caractères, sans pinyin. Puis retour à l'étape.
+   * La réplique de retour (« 好了！来，做饭！ ») n'est dite que si celui qui envoie au détour est dans la scène
+   * (奶奶, dans sa cuisine) : ailleurs, la scène reprend sans elle, là où elle s'était arrêtée.
    */
   private detour(d: NonNullable<Content['pack']['detours']>[string], refill: number) {
+    // la bulle d'avant le détour : on la remet au retour (une étape sans réplique garde la question précédente)
+    const before = { speaker: this.speaker, words: this.words, fr: this.el.fr.textContent ?? '', vo: this.currentVo, hidden: this.bubble.hidden };
+    const resume = () => {
+      if (!this.live) return;
+      this.confusions = [];
+      if (before.hidden) {
+        this.bubble.hidden = true;
+        this.words = before.words;
+      } else {
+        this.setActor(before.speaker || undefined);
+        this.showLine(before.words, before.fr, false);
+      }
+      this.currentVo = before.vo;
+      this.setPatience(Math.min(refill, this.scene.patience));
+      this.step();
+      this.setPatience(Math.min(refill, this.scene.patience));
+    };
     this.turn++;
     this.replay = null;
     const body = this.el.body;
@@ -637,15 +656,12 @@ export class Dialogue {
       area.innerHTML = '';
       if (k >= todo.length) {
         log({ scene: this.scene.id, step: this.i, kind: 'detour_end' });
+        if (!this.scene.actors[d.actor]) {
+          setTimeout(resume, 600);
+          return;
+        }
         this.showLine(d.back.line, t(this.content, d.back.gloss));
-        this.sayLine(d.back.line, d.back.vo, RATE.NORMAL, () =>
-          setTimeout(() => {
-            this.confusions = [];
-            this.setPatience(Math.min(refill, this.scene.patience));
-            this.step();
-            this.setPatience(Math.min(refill, this.scene.patience));
-          }, 400),
-        );
+        this.sayLine(d.back.line, d.back.vo, RATE.NORMAL, () => setTimeout(resume, 400));
         return;
       }
       const [wrong, target] = todo[k];

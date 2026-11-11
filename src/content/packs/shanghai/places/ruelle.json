@@ -312,7 +312,8 @@
       },
       "prompt": {
         "fr": "vers la gare (火车站)"
-      }
+      },
+      "radius": 150
     }
   ],
   "palette": [

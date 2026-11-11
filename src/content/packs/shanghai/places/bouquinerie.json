@@ -106,6 +106,46 @@
       }
     },
     {
+      "kind": "npc",
+      "actor": "bai",
+      "x": 820,
+      "y": 1030,
+      "sprite": "bai_stand",
+      "facing": "left",
+      "scale": 0.62,
+      "prompt": {
+        "fr": "parler à 白老师"
+      },
+      "id": "bai_apres_lettre",
+      "when": {
+        "leo": "carte"
+      },
+      "scene": "bai-encore-lettre",
+      "replaces": [
+        "bai_voir"
+      ]
+    },
+    {
+      "kind": "npc",
+      "actor": "bai",
+      "x": 820,
+      "y": 1030,
+      "sprite": "bai_stand",
+      "facing": "left",
+      "scale": 0.62,
+      "prompt": {
+        "fr": "parler à 白老师"
+      },
+      "id": "bai_apres_rouleau",
+      "when": {
+        "rouleau": "colophon"
+      },
+      "scene": "bai-encore-rouleau",
+      "replaces": [
+        "bai_voir"
+      ]
+    },
+    {
       "id": "s_shu",
       "kind": "subject",
       "x": 420,

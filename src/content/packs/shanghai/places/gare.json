@@ -85,7 +85,8 @@
       "toEntrance": "gare",
       "prompt": {
         "fr": "retour à la ruelle"
-      }
+      },
+      "radius": 110
     },
     {
       "id": "police",
@@ -95,6 +96,7 @@
       "y": 1035,
       "scene": "gare-police",
       "sprite": "police_stand",
+      "facing": "left",
       "scale": 0.62,
       "playerAt": 330,
       "when": {
@@ -117,7 +119,40 @@
       },
       "prompt": {
         "fr": "le chien de la ruelle"
+      },
+      "facing": "left"
+    },
+    {
+      "id": "police_apres",
+      "kind": "npc",
+      "actor": "police",
+      "x": 960,
+      "y": 1035,
+      "sprite": "police_stand",
+      "facing": "left",
+      "scale": 0.62,
+      "when": {
+        "portefeuille": "rendu"
+      },
+      "prompt": {
+        "fr": "parler au policier"
       }
+    },
+    {
+      "id": "chien_apres",
+      "kind": "npc",
+      "actor": "dog",
+      "x": 1130,
+      "y": 1038,
+      "sprite": "dog_vide",
+      "scale": 0.42,
+      "when": {
+        "portefeuille": "rendu"
+      },
+      "prompt": {
+        "fr": "le chien de la ruelle"
+      },
+      "facing": "left"
     },
     {
       "id": "guichet",
@@ -135,7 +170,8 @@
       },
       "prompt": {
         "fr": "acheter un billet (售票处)"
-      }
+      },
+      "facing": "left"
     },
     {
       "id": "guichet_apres",
@@ -150,7 +186,8 @@
       },
       "prompt": {
         "fr": "la guichetière"
-      }
+      },
+      "facing": "left"
     },
     {
       "id": "guichet_attend",
@@ -165,7 +202,8 @@
       },
       "prompt": {
         "fr": "la guichetière"
-      }
+      },
+      "facing": "left"
     },
     {
       "id": "quais",
@@ -199,7 +237,10 @@
     {
       "image": "passante_courses",
       "kind": "walk",
-      "y": [1022, 1040],
+      "y": [
+        1022,
+        1040
+      ],
       "height": 330,
       "speed": 70,
       "every": [
@@ -210,7 +251,10 @@
     {
       "image": "passant_oiseau",
       "kind": "walk",
-      "y": [1022, 1040],
+      "y": [
+        1022,
+        1040
+      ],
       "height": 330,
       "speed": 55,
       "every": [
