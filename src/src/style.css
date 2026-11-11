@@ -837,3 +837,24 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 @media (max-aspect-ratio: 1/1) and (pointer: coarse) {
   .vf-bar .vf-help { display: block; flex-basis: 100%; margin: 0; text-align: center; font-size: 14px; color: var(--ink-2); }
 }
+
+/* Objet de scène posé à l'écran (la carte de Léo sur le comptoir), en haut, du côté du panneau d'action */
+.prop { position: absolute; top: 2.5cqh; z-index: 5; width: 26cqw; display: flex; flex-direction: column; align-items: center; gap: 1cqh;
+  pointer-events: none; animation: prop-in .6s ease-out both; }
+.prop.side-right { right: 2.5cqw; }
+.prop.side-left { left: 2.5cqw; }
+.prop-card { position: relative; width: 100%; filter: drop-shadow(0 6px 14px rgba(40, 30, 10, .35)); }
+.prop-card img { display: block; width: 100%; height: auto; }
+.prop-card.plain { aspect-ratio: 420 / 290; background: #f3e6c8; border-radius: 6px; }
+/* l'écriture de Léo, à l'encre, sur les lignes d'adresse de la carte (légèrement penchée comme la carte) */
+.prop-hand { position: absolute; left: 61%; top: 37%; width: 32%; transform: rotate(-4deg); text-align: left;
+  font-family: 'Ma Shan Zheng', var(--zh-font, 'Noto Sans SC'), serif; font-size: 1.9cqw; line-height: 1.35; color: #24304a; }
+.prop-card.plain .prop-hand { left: 8%; width: 84%; top: 40%; transform: none; }
+/* la copie au propre de 白老师 : grands caractères bien droits sur une bande de papier */
+.prop-sheet { white-space: nowrap; background: #fffaf0; color: var(--ink); border-radius: 6px; padding: .6cqh 2cqw; box-shadow: 0 6px 16px -8px rgba(40, 30, 10, .5);
+  font-family: var(--zh-font, 'Noto Sans SC'), sans-serif; font-weight: 700; font-size: 2.8cqw; letter-spacing: .1em; line-height: 1.25;
+  animation: prop-in .5s ease-out both; }
+.prop-sheet[hidden] { display: none; }
+@keyframes prop-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+body.anim .prop { opacity: 0; }
+@media (max-aspect-ratio: 1/1) { .prop { width: 34cqw; } .prop-hand { font-size: 2.5cqw; } .prop-sheet { font-size: 3.6cqw; } }

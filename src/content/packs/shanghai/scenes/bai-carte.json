@@ -57,6 +57,14 @@
   "detour": "vaisselle",
   "refill": 2
  },
+ "prop": {
+  "image": "obj_postcard",
+  "text": "我去杭州学茶。",
+  "sheet": {
+   "text": "我去杭州学茶。",
+   "from": 4
+  }
+ },
  "steps": [
   {
    "type": "choose",

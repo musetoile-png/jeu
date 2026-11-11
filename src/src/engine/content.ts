@@ -291,6 +291,11 @@ export interface Scene {
   actors: Record<string, { name: string; label: Localized; portrait: string }>;
   objects: Record<string, { word: string; image: string; label?: Localized }>;
   steps: Step[];
+  /**
+   * Objet posé à l'écran pendant toute la scène (la carte de Léo sur le comptoir) : son image, le texte écrit dessus,
+   * et une copie au propre qui apparaît à partir d'une étape (白老师 recopie la phrase).
+   */
+  prop?: { image: string; text?: string; sheet?: { text: string; from?: number } };
   onEnd?: SceneEnd;
   /** Patience à zéro : détour (mini-révision) puis retour à l'étape. */
   onExhausted?: { detour: string; refill: number };
@@ -390,6 +395,8 @@ export interface Hotspot {
   with?: string;
   /** Où se place le joueur pour parler (décalage depuis ce point, px, signé) ; sinon à 300 px, du côté d'où il vient. */
   playerAt?: number;
+  /** Côté vers lequel regarde le dessin du personnage : il est retourné pour faire face au joueur. */
+  facing?: 'left' | 'right';
   prompt: Localized;
 }
 

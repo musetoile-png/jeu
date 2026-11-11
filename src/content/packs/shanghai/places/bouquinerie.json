@@ -59,6 +59,7 @@
       "y": 1030,
       "scene": "bai-voir",
       "sprite": "bai_stand",
+      "facing": "left",
       "scale": 0.62,
       "when": {
         "leo": "!nainai",
@@ -76,6 +77,7 @@
       "y": 1030,
       "scene": "bai-carte",
       "sprite": "bai_stand",
+      "facing": "left",
       "scale": 0.62,
       "when": {
         "quest": "lettre",
@@ -93,6 +95,7 @@
       "y": 1030,
       "scene": "bai-rouleau",
       "sprite": "bai_stand",
+      "facing": "left",
       "scale": 0.62,
       "when": {
         "quest": "rouleau",

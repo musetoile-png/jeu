@@ -304,6 +304,8 @@ export class World extends Phaser.Scene {
         .setDepth(h.behind ? 0.5 : h.y)
         .setScale(stand ?? h.scale ?? 1);
       if (bare) obj.setAlpha(0.001);
+      // au repos, un personnage regarde vers le milieu du lieu (là où le joueur circule)
+      if (h.kind === 'npc' && h.facing) obj.setFlipX(((this.place.walk.xMin + this.place.walk.xMax) / 2 >= h.x ? 'right' : 'left') !== h.facing);
       // un personnage n'est jamais figé : il respire (étirement très léger depuis les pieds)
       if (h.kind === 'npc') this.tweens.add({ targets: obj, scaleY: obj.scaleY * 1.012, duration: Phaser.Math.Between(1700, 2400), yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       // une porte fermée affiche une pancarte en chinois : le verrou est une phrase à lire
@@ -607,8 +609,13 @@ export class World extends Phaser.Scene {
     // à l'étal, l'interlocuteur est le commerçant, debout à côté
     const merchant = h.kind === 'stall' ? this.spots.find((s) => s.h.kind === 'npc' && s.h.sprite?.startsWith(sc.npc)) : undefined;
     const who = merchant?.h ?? h;
-    const side = h.playerAt ? Math.sign(h.playerAt) : p.x <= who.x ? -1 : 1;
-    const x = auto ? p.x : Phaser.Math.Clamp(who.x + (h.playerAt ?? side * 300), this.place.walk.xMin, this.place.walk.xMax);
+    // tout près de l'interlocuteur (on l'a presque dépassé au clavier), on reste du côté d'où l'on arrivait :
+    // c'est le regard du joueur qui le dit, pas un pixel de part ou d'autre (sinon il sautait de l'autre côté)
+    const facingLeft = p instanceof Puppet ? p.scaleX < 0 : (p as Phaser.GameObjects.Sprite).flipX;
+    const side = h.playerAt ? Math.sign(h.playerAt) : Math.abs(p.x - who.x) < 120 ? (facingLeft ? 1 : -1) : p.x <= who.x ? -1 : 1;
+    // l'écart suit la taille des personnages dans le lieu (petits dans la bouquinerie, grands en cuisine)
+    const gap = Math.round(300 * Math.max(0.65, this.place.playerScale ?? 1));
+    const x = auto ? p.x : Phaser.Math.Clamp(who.x + (h.playerAt ?? side * gap), this.place.walk.xMin, this.place.walk.xMax);
     // les autres personnages de la scène présents dans le lieu (clients…) entrent aussi dans le cadre
     const cast = Object.keys(sc.actors)
       .filter((a) => a !== sc.npc && a !== 'player')
@@ -617,6 +624,9 @@ export class World extends Phaser.Scene {
     const panelSide = this.frameDialogue(auto ? [x, ...cast] : [x, who.x, ...cast], Math.max(p.y, who.y));
     const npcSpot = auto ? undefined : (merchant ?? this.spots.find((s) => s.h.id === h.id));
     this.talkTo = npcSpot?.obj;
+    // l'interlocuteur se tourne vers le joueur (si l'on sait de quel côté regarde son dessin)
+    const look = npcSpot?.h.facing;
+    if (look && npcSpot.obj instanceof Phaser.GameObjects.Image) npcSpot.obj.setFlipX((x > who.x ? 'right' : 'left') !== look);
     if (p instanceof Puppet) p.setFacing(side > 0);
     this.tweens.add({
       targets: p,

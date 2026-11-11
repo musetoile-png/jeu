@@ -61,6 +61,8 @@ export class Dialogue {
   private till = 0;
   /** Numéro d'étape affichée : une voix enchaînée d'un affichage passé (avant un détour…) ne continue pas. */
   private turn = 0;
+  /** Objet posé à l'écran pendant la scène (la carte de Léo…). */
+  private prop: HTMLElement | null = null;
 
   private content: Content;
   private scene: Scene;
@@ -174,6 +176,30 @@ export class Dialogue {
     this.bubble.style.left = `${Math.round(left)}px`;
     this.bubble.style.top = `${Math.round(top)}px`;
     this.bubble.style.setProperty('--tail', `${Math.round(Math.max(22, Math.min(bw - 22, hx - left)))}px`);
+    this.dodgeProp(stage, left, top, bw, bh);
+  }
+
+  /** La carte posée à l'écran laisse la place à la bulle : si elles se chevauchent, la carte passe de l'autre côté. */
+  private dodgeProp(stage: HTMLElement, left: number, top: number, bw: number, bh: number) {
+    const box = this.prop;
+    if (!box || this.bubble.hidden) return;
+    const st = stage.getBoundingClientRect();
+    const area = (r: DOMRect) => {
+      const w = Math.min(st.left + left + bw, r.right) - Math.max(st.left + left, r.left);
+      const h = Math.min(st.top + top + bh, r.bottom) - Math.max(st.top + top, r.top);
+      return w > 0 && h > 0 ? w * h : 0;
+    };
+    const here = area(box.getBoundingClientRect());
+    if (!here) return;
+    const right = box.classList.contains('side-right');
+    // où serait la carte de l'autre côté : même largeur, posée en miroir
+    const r = box.getBoundingClientRect();
+    const dx = right ? st.left + (st.right - r.right) - r.left : st.right - (r.left - st.left) - r.right;
+    const there = area(new DOMRect(r.left + dx, r.top, r.width, r.height));
+    if (there < here) {
+      box.classList.toggle('side-right', !right);
+      box.classList.toggle('side-left', right);
+    }
   }
 
   /** La bulle (position dans la scène, px) chevaucherait-elle le panneau d'action ? */
@@ -216,7 +242,53 @@ export class Dialogue {
     };
     requestAnimationFrame(tick);
     log({ scene: this.scene.id, step: 0, kind: 'scene_start' });
+    this.showProp();
     this.step();
+  }
+
+  /** La carte (ou tout objet de la scène) reste sous les yeux : on la relit pendant les exercices. */
+  private showProp() {
+    this.prop?.remove();
+    this.prop = null;
+    const pr = this.scene.prop;
+    if (!pr) return;
+    const stage = document.getElementById('stage');
+    if (!stage) return;
+    const box = document.createElement('div');
+    box.className = `prop side-${this.host.side ?? 'right'}`;
+    const card = document.createElement('div');
+    card.className = 'prop-card';
+    const url = this.host.imageUrl(pr.image);
+    if (url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      card.append(img);
+    } else card.classList.add('plain');
+    if (pr.text) {
+      const hand = document.createElement('span');
+      hand.className = 'prop-hand';
+      hand.lang = this.content.language.bcp47;
+      hand.textContent = pr.text;
+      card.append(hand);
+    }
+    box.append(card);
+    if (pr.sheet) {
+      const sheet = document.createElement('div');
+      sheet.className = 'prop-sheet';
+      sheet.lang = this.content.language.bcp47;
+      sheet.textContent = pr.sheet.text;
+      sheet.hidden = true;
+      box.append(sheet);
+    }
+    stage.append(box);
+    this.prop = box;
+  }
+
+  /** La copie au propre apparaît à l'étape prévue (et y reste). */
+  private updateProp() {
+    const sheet = this.prop?.querySelector<HTMLElement>('.prop-sheet');
+    if (sheet && sheet.hidden && this.i >= (this.scene.prop?.sheet?.from ?? 0)) sheet.hidden = false;
   }
 
   /**
@@ -241,6 +313,8 @@ export class Dialogue {
     this.root.hidden = true;
     this.bubble.hidden = true;
     this.clearSheet();
+    this.prop?.remove();
+    this.prop = null;
     log({ scene: this.scene.id, step: this.i, kind: 'scene_end', ok: success });
     this.host.onClose(success);
   }
@@ -425,6 +499,7 @@ export class Dialogue {
     this.turn++;
     this.replay = null;
     if (!s) return this.close(true);
+    this.updateProp();
     // étape réservée à une quête, à un nom… : sautée si elle ne concerne pas ce joueur
     if (s.when && !save.matches(s.when)) {
       if (s.end) this.close(true);
