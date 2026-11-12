@@ -72,3 +72,9 @@ Même mesure : voix natives, et faux tons greffés depuis de vraies courbes.
 **Piste retenue** : traiter à part la dernière syllabe (fin de phrase). Reconnaître la voix craquée comme un indice du 3e ton, et corriger la chute de fin de phrase. Côté pédagogie : un exercice « fin de phrase » dédié.
 
 Scripts : `calibrage/moteur-exp.js` (variantes réglables par EXP_INIT et EXP_TRIM), `evaluer-exp.js`, `exporter-contextes.js`, `melodie.py`.
+
+**Fin de phrase : premier essai concluant (12 novembre 2026, nuit).** La mesure par la hauteur seule ne sépare plus les tons en fin de phrase : tout le registre descend (1er ton vers 0, 3e ton plat et bas, 2e ton qui monte depuis très bas). Se référer à la syllabe précédente n'aide pas. On a ajouté des indices de **qualité de voix** : régularité de la vibration (voix craquée), part de voix dans la syllabe, sautillement de la hauteur, chute du volume, durée, distance au plancher de la voix.
+- Dernière syllabe, avec voix modèle : 3e ton reconnu 31 % → **69 %** ; sans voix modèle : 18 % → 53 %. Ensemble des dernières syllabes : 51,7 % → 60,6 % (à exigence égale : 41,3 % → 47,8 %).
+- Au milieu de la phrase, ces indices n'apportent rien : on les réserve à la fin de phrase.
+- Réserve : le test « faux tons greffés » change la hauteur mais garde la qualité de voix d'origine, il pénalise donc ces indices (faux acceptés 21 % → 27 % dans ce test). À revérifier sur de vraies erreurs d'apprenants.
+- Suite : apprendre ces indices sur AISHELL (400 voix) avant de les mettre dans l'atelier.

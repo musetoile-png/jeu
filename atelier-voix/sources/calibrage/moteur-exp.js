@@ -815,6 +815,23 @@
       approximatif = dp.approximatif;
     }
 
+    const stTous = []; for (let i = a; i <= b; i++) if (trames[i].voisee) stTous.push(st(trames[i].f0));
+    stTous.sort((u, v) => u - v);
+    const p5 = stTous.length ? stTous[Math.floor(stTous.length * 0.05)] : 0, p95 = stTous.length ? stTous[Math.floor(stTous.length * 0.95)] : 1;
+    const qualiteDe = (debut, fin, contour) => {
+      const vx = [], ap = [], db = []; let act = 0;
+      for (let i = debut; i < fin; i++) {
+        const t = trames[i]; db.push(20 * Math.log10(t.rms + 1e-7));
+        if (t.rms > seuilParole * 0.5 || t.voisee) act++;
+        if (t.voisee) { vx.push(st(t.f0)); ap.push(t.ap); }
+      }
+      const tiers = Math.max(1, Math.floor(db.length / 3)), moyenne = arr => arr.reduce((x, y) => x + y, 0) / Math.max(1, arr.length);
+      let jit = 0; for (let i = 1; i < vx.length; i++) jit += Math.min(3, Math.abs(vx[i] - vx[i - 1])); jit /= Math.max(1, vx.length - 1);
+      const ampl = Math.max(1, p95 - p5);
+      return [...contour.map(v => (v - p5) / ampl), moyenne(ap), moyenne(ap.slice(-Math.max(1, Math.floor(ap.length / 3)))),
+        vx.length / Math.max(1, act), jit, (moyenne(db.slice(-tiers)) - moyenne(db.slice(0, tiers))) / 10,
+        Math.log(Math.max(1, fin - debut)) / 4, (Math.min(...vx) - p5) / ampl, ampl / 12];
+    };
     const syllabes = phrase.syllabes.map((s, k) => {
       const debut = bornes[k], fin = bornes[k + 1];
       const voix = [];
@@ -858,7 +875,7 @@
         verdict = jugement === 'modele' ? vRef : (rang[vRef] > rang[ev.verdict] ? vRef : ev.verdict);
         if (verdict === 'juste') conseil = null;
       }
-      return Object.assign(base, { contour, contourModele, position, nVoix: voix.length, modele: ev.modele, entendu, verdict, distances: ev.distances, conseil });
+      return Object.assign(base, { contour, contourModele, position, nVoix: voix.length, modele: ev.modele, entendu, verdict, distances: ev.distances, conseil, qualite: qualiteDe(debut, fin, contour) });
     });
 
     // Le score ne compte que les syllabes vraiment jugées : une syllabe « pas entendue » n'est pas une faute de ton
