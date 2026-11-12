@@ -56,3 +56,19 @@ Le passage avant reste disponible dans le moteur (option `classifieur`, fonction
   1 090 enregistrements alignés en 65 s sur 2 processeurs (texte : caractères séparés par des espaces, un dossier par voix).
 - Notes avec les frontières de l'aligneur (`evaluer-mfa.js`, `evaluer-mfa2.js`) : 47,2 % de bons tons natifs (48,9 % avec des formes remesurées), contre 58,4 % (règles seules) et 63,1 % (règles + voix modèle). Faux tons greffés acceptés : 21,2 % / 19,1 % contre 20,1 % / 14,9 %.
   Conclusion : l'aligneur découpe bien les sons, mais ce découpage n'aide pas le jugement des tons tel qu'il est fait aujourd'hui. Son meilleur usage : étiqueter automatiquement un grand corpus de vraies voix (ex. AISHELL-1, Apache 2.0, 400 locuteurs) pour entraîner un classifieur de tons.
+
+## Idées de Manu testées (12 novembre 2026, soir)
+Même mesure : voix natives, et faux tons greffés depuis de vraies courbes.
+
+**1. La mélodie de phrase** (les tons se plient à la phrase ; un modèle appris sur des phrases trouverait ces règles implicites). On a testé des formes de ton qui dépendent du contexte : ton d'avant, ton d'après, fin de phrase, place dans la phrase (la déclinaison), apprises sur les autres voix.
+- Résultat : rien de mieux à exigence égale (règles seules : 51,5 % → 47,8 à 49,3 % ; avec la voix modèle : 63,1 % → 59,4 %). Même sur les données d'apprentissage, le contexte n'explique que 16 % des écarts (erreur de 15,9 à 13,4 demi-tons²).
+- Mais l'idée est déjà dans le module sous sa meilleure forme : la voix modèle, c'est la mélodie de cette phrase précise. C'est elle qui apporte les 5 à 8 points gagnés. Les règles générales demanderaient des milliers de phrases (AISHELL).
+- Où la mélodie de phrase fait vraiment mal : la dernière syllabe. Avec la voix modèle, bons tons en milieu de phrase : 3e ton 80 %, 4e 78 %, 2e 73 %, 1er 63 % ; en fin de phrase : 3e ton 23 %, 2e 31 %, 1er 48 %, 4e 54 %. La chute de fin de phrase et la voix qui grince (« craquée ») sur le 3e ton brouillent la mesure de hauteur.
+
+**2. La réattaque** (recherches sur la dyslexie : repérer le début de la syllabe suivante ; une syllabe = initiale + finale, combinaisons limitées). On a testé un découpage qui sait quelle consonne commence chaque syllabe (sourde : on attend une coupure de voix ; m n l r ou voyelle : on attend un creux d'énergie), et une mesure du ton qui saute la consonne voisée du début.
+- Résultat : +1 point en règles seules (58,4 → 59,7 %), rien avec la voix modèle (62,4 à 62,6 %), faux acceptés inchangés (14,5 à 15,7 %).
+- Les syllabes à initiale m n l r ou voyelle ne sont pas plus mal jugées que les autres. Le découpage n'est donc plus le point faible.
+
+**Piste retenue** : traiter à part la dernière syllabe (fin de phrase). Reconnaître la voix craquée comme un indice du 3e ton, et corriger la chute de fin de phrase. Côté pédagogie : un exercice « fin de phrase » dédié.
+
+Scripts : `calibrage/moteur-exp.js` (variantes réglables par EXP_INIT et EXP_TRIM), `evaluer-exp.js`, `exporter-contextes.js`, `melodie.py`.
