@@ -718,6 +718,32 @@
     return { entendu, verdict, distances, conseil, modele };
   }
 
+  // ---------- Classifieur de tons (petit réseau de neurones appris sur des voix natives) ----------
+  const TONS_CONTEXTE = ['1', '2', '3', '4', '5'];
+  /** Traits d'une syllabe : sa courbe, sa place dans la phrase, et ses voisines (courbes et tons attendus). */
+  function traitsSyllabe(syl, k) {
+    const s = syl[k], c = s.contour;
+    const moy = c.reduce((a, b) => a + b, 0) / 5;
+    const prec = syl[k - 1], suiv = syl[k + 1];
+    const tonDe = x => (x ? (x.tonAttendu === '3b' ? '3' : x.tonAttendu) : null);
+    const unParmi = t => TONS_CONTEXTE.map(x => (x === t ? 1 : 0));
+    return [
+      ...c, moy, c[4] - c[0], Math.max(...c) - Math.min(...c), c[2] - (c[0] + c[4]) / 2,
+      s.position === 'fin' ? 1 : 0, k === 0 ? 1 : 0, Math.log(Math.max(1, s.nVoix || 1)) / 4,
+      prec && prec.contour ? prec.contour[4] : 0, prec && prec.contour ? 1 : 0,
+      suiv && suiv.contour ? suiv.contour[0] : 0, suiv && suiv.contour ? 1 : 0,
+      ...unParmi(tonDe(prec)), ...unParmi(tonDe(suiv))
+    ];
+  }
+  /** Passage avant : traits normalisés -> couche cachée (ReLU) -> 4 probabilités (tons 1 à 4). */
+  function classer(cl, x) {
+    const z = x.map((v, i) => (v - cl.moyenne[i]) / cl.ecart[i]);
+    const h = cl.b1.map((b, j) => { let s = b; for (let i = 0; i < z.length; i++) s += cl.W1[j][i] * z[i]; return Math.max(0, s); });
+    const o = cl.b2.map((b, c) => { let s = b; for (let j = 0; j < h.length; j++) s += cl.W2[c][j] * h[j]; return s; });
+    const m = Math.max(...o), e = o.map(v => Math.exp(v - m)), t = e.reduce((a, b) => a + b, 0);
+    return e.map(v => v / t);
+  }
+
   /**
    * Analyse complète d'un enregistrement.
    * Renvoie { ok, message, duree, registreHz, medianeHz, courbe, syllabes, score, approximatif }.
@@ -809,10 +835,24 @@
         verdict = jugement === 'modele' ? vRef : (rang[vRef] > rang[ev.verdict] ? vRef : ev.verdict);
         if (verdict === 'juste') conseil = null;
       }
-      return Object.assign(base, { contour, contourModele, position, modele: ev.modele, entendu, verdict, distances: ev.distances, conseil });
+      return Object.assign(base, { contour, contourModele, position, nVoix: voix.length, modele: ev.modele, entendu, verdict, distances: ev.distances, conseil });
     });
 
     // Le score ne compte que les syllabes vraiment jugées : une syllabe « pas entendue » n'est pas une faute de ton
+    syllabes.forEach((s, k) => { s.traits = s.contour ? traitsSyllabe(syllabes, k) : null; });
+    if (options.classifieur) {
+      syllabes.forEach(s => {
+        if (!s.traits || s.tonAttendu === '5') return;
+        const pr = classer(options.classifieur, s.traits);
+        const att = Number(s.tonAttendu === '3b' ? '3' : s.tonAttendu) - 1;
+        let meilleur = 0; for (let c = 1; c < 4; c++) if (pr[c] > pr[meilleur]) meilleur = c;
+        s.probabilites = pr;
+        s.entendu = String(meilleur + 1);
+        s.verdict = meilleur === att ? 'juste' : pr[att] >= (options.classifieur.seuilPresque || 0.25) ? 'presque' : 'a_reprendre';
+        const base = s.tonAttendu === '3b' ? '3' : s.tonAttendu;
+        s.conseil = s.verdict === 'juste' ? null : ((CONSEILS[base] && CONSEILS[base][s.entendu]) || 'Écoute le modèle et exagère la forme du ' + NOMS_TONS[s.tonAttendu] + '.');
+      });
+    }
     const notees = syllabes.filter(s => s.verdict === 'juste' || s.verdict === 'presque' || s.verdict === 'a_reprendre');
     const points = notees.reduce((p, s) => p + (s.verdict === 'juste' ? 1 : s.verdict === 'presque' ? 0.5 : 0), 0);
     const score = notees.length ? Math.round(100 * points / notees.length) : 100;
@@ -872,7 +912,7 @@
     version: '0.3.1',
     MODELES, MODELES_PAROLE, NOMS_TONS,
     pinyinAccentue, preparerPhrase, tonsDeSurface,
-    analyser, comparerTexte, preparerModele,
+    analyser, comparerTexte, preparerModele, classer, traitsSyllabe,
     _interne: { reechantillonner, extraireTrames, decouper, decouperDP, distance, evaluerSyllabe, timbre, aligner, SR, HOP }
   };
 

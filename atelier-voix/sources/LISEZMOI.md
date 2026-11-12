@@ -39,3 +39,13 @@ Mesures (voix d'homme jugée avec la voix de femme comme modèle, et inversement
 - tons natifs jugés justes : 58,5 % (sans modèle) -> 61,8 % (avec modèle) ; phrases au-dessus de 80 % : 41 % -> 48 % ;
 - vrais faux tons (voix natives resynthétisées avec un autre ton sur la moitié des syllabes, `fabriquer-faux.py`) : acceptés à tort 11,4 % -> 12,1 %.
 Gain modeste sur la note ; l'apport principal est la mélodie du modèle affichée sous la tienne.
+
+## Essai d'un classifieur de tons appris (12 novembre 2026)
+Petit réseau de neurones (courbe de la syllabe et de ses voisines -> 32 neurones -> 4 tons), validé voix par voix
+(jamais testé sur une voix vue à l'entraînement). Faux tons de contrôle refaits en greffant de vraies courbes natives
+(`python3 fabriquer-faux.py greffe`), car ceux fabriqués avec les formes des règles avantageaient les règles.
+- Avec les tons attendus des voisines comme indice, le réseau « devine » (habitudes de la langue) : 32 % de faux tons acceptés. Indice retiré.
+- Mode voix modèle, à exigence égale : règles 66,5 % de bons tons / 16,4 % de faux acceptés ; réseau 58,2 % / 17,7 %.
+- Mode seul : réseau légèrement meilleur (61,9 % / 21,3 % contre 57,7 % / 20,1 %).
+Conclusion : non intégré. Deux voix de synthèse ne suffisent pas ; il faudra de vraies voix (apprenants, natifs variés).
+Le passage avant reste disponible dans le moteur (option `classifieur`, fonctions `classer` et `traitsSyllabe`).
