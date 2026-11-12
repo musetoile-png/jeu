@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratoire Whisper</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500&display=swap">
+<style>
+/* Page d'essai interne : tableau de mesures, une colonne par méthode de découpage. */
+:root {
+  --papier: #eef0eb; --feuille: #f8f9f6; --encre: #1c2220; --encre-douce: #56605b; --trait: #d3d8d1;
+  --jade: #2d7a66; --ocre: #b07a12; --cinabre: #b4412e;
+  --police-texte: "IBM Plex Sans", system-ui, sans-serif; --police-han: "Noto Serif SC", "SimSun", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --papier: #141917; --feuille: #1c2320; --encre: #e7ebe6; --encre-douce: #a4ada7; --trait: #2f3834;
+  --jade: #5cb79c; --ocre: #e0aa45; --cinabre: #e6735f; color-scheme: dark; } }
+:root[data-theme="dark"] { --papier: #141917; --feuille: #1c2320; --encre: #e7ebe6; --encre-douce: #a4ada7; --trait: #2f3834;
+  --jade: #5cb79c; --ocre: #e0aa45; --cinabre: #e6735f; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--papier); color: var(--encre); font-family: var(--police-texte); line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+.page { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+h2 { margin: 0 0 6px; font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+.petit { color: var(--encre-douce); font-size: 0.92rem; }
+section { background: var(--feuille); border: 1px solid var(--trait); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+button, select { font: inherit; padding: 8px 14px; border-radius: 9px; border: 1px solid var(--trait); background: var(--papier); color: var(--encre); cursor: pointer; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button:focus-visible, select:focus-visible { outline: 3px solid var(--jade); outline-offset: 2px; }
+.ligne { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#etat { font-variant-numeric: tabular-nums; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+th { color: var(--encre-douce); font-weight: 500; }
+.han { font-family: var(--police-han); }
+.num { text-align: right; }
+.mieux { color: var(--jade); font-weight: 600; }
+.moins { color: var(--cinabre); }
+.bilan { font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div>
+    <h1>Laboratoire Whisper</h1>
+    <p class="petit">Page d'essai : Whisper (IA de reconnaissance vocale) repère-t-il mieux les syllabes enchaînées que le module ? Le modèle (environ 80 Mo) se télécharge une seule fois puis reste en mémoire du navigateur.</p>
+  </div>
+
+  <section>
+    <div class="ligne"><button id="charger" type="button">1. Charger Whisper</button><span id="etat" class="petit">Pas encore chargé.</span></div>
+  </section>
+
+  <section>
+    <h2>2. Voix natives du jeu</h2>
+    <p class="petit">Chaque réplique (voix de femme et d'homme) est notée trois fois : découpage du module seul, découpage reporté depuis l'autre voix (modèle), découpage donné par Whisper. Une voix native devrait avoir 100 %.</p>
+    <div class="ligne"><button id="natifs" type="button" disabled>Analyser les 28 enregistrements</button></div>
+    <div class="table"><table id="t-natifs"><thead><tr><th>Réplique</th><th>Voix</th><th>Whisper a entendu</th><th class="num">Module seul</th><th class="num">Voix modèle</th><th class="num">Whisper</th><th class="num">Temps Whisper</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>3. Ta voix</h2>
+    <div class="ligne">
+      <select id="phrase" aria-label="Réplique"></select>
+      <button id="parler" type="button" disabled>Enregistrer</button>
+      <span id="etat-voix" class="petit"></span>
+    </div>
+    <div class="table"><table id="t-voix"><thead><tr><th>Réplique</th><th>Whisper a entendu</th><th>Syllabes (Whisper)</th><th class="num">Module seul</th><th class="num">Voix modèle</th><th class="num">Whisper</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</div>
+
+<script src="sources/moteur-voix.js"></script>
+<script src="audio-modeles.js"></script>
+<script type="module">
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
+env.allowLocalModels = false;
+const M = window.MoteurVoix, AUDIO = window.AUDIO_MODELES || {};
+const $ = id => document.getElementById(id);
+const PHRASES = [
+  ['好。我做什么？', 'hao3 wo3 zuo4 shen2 me5', 'c1_02a'], ['热。很热。', 're4 hen3 re4', 'c1_07a'],
+  ['什么葱？', 'shen2 me5 cong1', 'c1_09a'], ['好了。', 'hao3 le5', 'c1_13a'], ['好吃。', 'hao3 chi1', 'c1_13c'],
+  ['对不起。', 'dui4 bu5 qi3', 'c1_16c'], ['谢谢奶奶！', 'xie4 xie5 nai3 nai5', 'c1_16a'], ['奶奶，你好！', 'nai3 nai5 ni3 hao3', 'c1_20b'],
+  ['好，我去买！', 'hao3 wo3 qu4 mai3', 'c1_20a'], ['不多。', 'bu4 duo1', 'nc_04c'], ['十五块。', 'shi2 wu3 kuai4', 'nc_04b'],
+  ['不是，是绿茶。', 'bu4 shi4 shi4 lv4 cha2', 'nc_05a'], ['谢谢奶奶！晚安！', 'xie4 xie5 nai3 nai5 wan3 an1', 'nc_08a'], ['等一下！', 'deng3 yi2 xia4', 'c2_p_deng']
+];
+let asr = null;
+
+$('charger').addEventListener('click', async () => {
+  $('charger').disabled = true;
+  try {
+    const vus = {};
+    asr = await pipeline('automatic-speech-recognition', 'onnx-community/whisper-base_timestamped', {
+      progress_callback: p => {
+        if (p.status === 'progress' && p.total) { vus[p.file] = [p.loaded, p.total]; }
+        const tot = Object.values(vus).reduce((s, v) => s + v[1], 0), fait = Object.values(vus).reduce((s, v) => s + v[0], 0);
+        if (tot) $('etat').textContent = 'Téléchargement : ' + Math.round(fait / 1e6) + ' / ' + Math.round(tot / 1e6) + ' Mo';
+      }
+    });
+    $('etat').textContent = 'Whisper est prêt.';
+    $('natifs').disabled = false; $('parler').disabled = false;
+  } catch (e) {
+    $('etat').textContent = 'Échec du chargement : ' + e.message; $('charger').disabled = false;
+  }
+});
+
+function octets(url) { const b = atob(url.slice(url.indexOf(',') + 1)), t = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) t[i] = b.charCodeAt(i); return t.buffer; }
+async function decoder16k(buffer) {
+  const ctx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 16000, 16000);
+  const a = await new Promise((ok, ko) => { const p = ctx.decodeAudioData(buffer, ok, ko); if (p && p.then) p.then(ok, ko); });
+  return a.getChannelData(0);
+}
+
+// Whisper -> instants des frontières entre syllabes attendues
+const HAN = /\p{Script=Han}/u;
+async function frontieresWhisper(sig, hanzi) {
+  const t0 = performance.now();
+  const r = await asr(sig, { language: 'chinese', task: 'transcribe', return_timestamps: 'word' });
+  const duree = performance.now() - t0;
+  const cars = [];
+  for (const c of r.chunks || []) {
+    const hs = [...c.text].filter(x => HAN.test(x));
+    const [s, e] = c.timestamp;
+    const fin = e ?? s + 0.2;
+    hs.forEach((h, k) => cars.push({ h, s: s + (fin - s) * k / hs.length, e: s + (fin - s) * (k + 1) / hs.length }));
+  }
+  const attendus = [...hanzi].filter(x => HAN.test(x));
+  const n = attendus.length;
+  let debuts = new Array(n).fill(null);
+  if (cars.length === n) debuts = cars.map(c => c.s);
+  else {
+    // appariement par plus longue sous-suite commune, puis interpolation
+    const L = Array.from({ length: n + 1 }, () => new Array(cars.length + 1).fill(0));
+    for (let i = n - 1; i >= 0; i--) for (let j = cars.length - 1; j >= 0; j--)
+      L[i][j] = attendus[i] === cars[j].h ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    let i = 0, j = 0;
+    while (i < n && j < cars.length) { if (attendus[i] === cars[j].h) { debuts[i] = cars[j].s; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+  }
+  const connus = debuts.map((d, k) => [k, d]).filter(x => x[1] !== null);
+  if (connus.length < 2) return { texte: r.text, frontieres: null, duree, cars };
+  for (let k = 0; k < n; k++) if (debuts[k] === null) {
+    const avant = connus.filter(x => x[0] < k).pop(), apres = connus.find(x => x[0] > k);
+    if (avant && apres) debuts[k] = avant[1] + (apres[1] - avant[1]) * (k - avant[0]) / (apres[0] - avant[0]);
+    else if (avant) debuts[k] = avant[1] + 0.2 * (k - avant[0]);
+    else debuts[k] = apres[1] - 0.2 * (apres[0] - k);
+  }
+  return { texte: r.text, frontieres: debuts.slice(1), duree, cars };
+}
+
+const pct = r => (r && r.ok ? r.score + ' %' : '—');
+const classe = (x, ref) => (x && ref && x.ok && ref.ok ? (x.score > ref.score ? 'mieux' : x.score < ref.score ? 'moins' : '') : '');
+function cellule(tr, texte, cls) { const td = document.createElement('td'); td.textContent = texte; if (cls) td.className = cls; tr.append(td); return td; }
+
+$('natifs').addEventListener('click', async () => {
+  $('natifs').disabled = true;
+  const corps = $('t-natifs').tBodies[0]; corps.innerHTML = '';
+  const somme = { seul: [], modele: [], whisper: [] };
+  for (const [hanzi, pinyin, vo] of PHRASES) {
+    const p = M.preparerPhrase({ hanzi, pinyin });
+    for (const v of ['f', 'm']) {
+      const autre = v === 'f' ? 'm' : 'f';
+      if (!AUDIO[vo] || !AUDIO[vo][v] || !AUDIO[vo][autre]) continue;
+      const sig = await decoder16k(octets(AUDIO[vo][v]));
+      const modele = M.preparerModele(await decoder16k(octets(AUDIO[vo][autre])), 16000, p);
+      const w = await frontieresWhisper(sig, hanzi);
+      const rSeul = M.analyser(sig, 16000, p);
+      const rMod = M.analyser(sig, 16000, p, { modele, jugement: 'modele' });
+      const rW = w.frontieres ? M.analyser(sig, 16000, p, { frontieresSec: w.frontieres }) : null;
+      if (rSeul.ok) somme.seul.push(rSeul.score); if (rMod.ok) somme.modele.push(rMod.score); if (rW && rW.ok) somme.whisper.push(rW.score);
+      const tr = document.createElement('tr');
+      cellule(tr, hanzi, 'han'); cellule(tr, v === 'f' ? 'femme' : 'homme'); cellule(tr, w.texte.trim(), 'han');
+      cellule(tr, pct(rSeul), 'num'); cellule(tr, pct(rMod), 'num ' + classe(rMod, rSeul)); cellule(tr, pct(rW), 'num ' + classe(rW, rSeul));
+      cellule(tr, Math.round(w.duree) + ' ms', 'num');
+      corps.append(tr);
+    }
+  }
+  const moy = a => (a.length ? Math.round(a.reduce((s, x) => s + x, 0) / a.length) + ' %' : '—');
+  const tr = document.createElement('tr'); tr.className = 'bilan';
+  cellule(tr, 'Moyenne'); cellule(tr, ''); cellule(tr, '');
+  cellule(tr, moy(somme.seul), 'num'); cellule(tr, moy(somme.modele), 'num'); cellule(tr, moy(somme.whisper), 'num'); cellule(tr, '');
+  corps.append(tr);
+  $('natifs').disabled = false;
+});
+
+// ---------- Ta voix ----------
+PHRASES.forEach(([h], i) => { const o = document.createElement('option'); o.value = i; o.textContent = h; $('phrase').append(o); });
+let enCours = null;
+$('parler').addEventListener('click', async () => {
+  if (enCours) return arreter();
+  let flux;
+  try { flux = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
+  catch (e) { $('etat-voix').textContent = 'Micro inaccessible (' + e.name + ').'; return; }
+  const ctx = new AudioContext(), src = ctx.createMediaStreamSource(flux), proc = ctx.createScriptProcessor(4096, 1, 1);
+  const morceaux = [], t0 = performance.now(); let bruit = null, parle = false, dernier = 0;
+  proc.onaudioprocess = e => {
+    const d = e.inputBuffer.getChannelData(0); morceaux.push(new Float32Array(d));
+    let s = 0; for (const x of d) s += x * x; const rms = Math.sqrt(s / d.length), t = performance.now() - t0;
+    if (t < 300) { bruit = bruit === null ? rms : Math.min(bruit, rms); return; }
+    if (rms > Math.max(0.008, (bruit || 0.001) * 4)) { parle = true; dernier = t; }
+    if ((parle && t - dernier > 1200) || t > 8000) arreter();
+  };
+  src.connect(proc); proc.connect(ctx.destination);
+  enCours = { ctx, flux, src, proc, morceaux };
+  $('parler').textContent = 'Stop'; $('etat-voix').textContent = 'Je t\'écoute…';
+});
+async function arreter() {
+  const { ctx, flux, src, proc, morceaux } = enCours; enCours = null;
+  proc.onaudioprocess = null; src.disconnect(); proc.disconnect(); flux.getTracks().forEach(t => t.stop());
+  const sr = ctx.sampleRate; ctx.close();
+  $('parler').textContent = 'Enregistrer'; $('etat-voix').textContent = 'Analyse…';
+  const n = morceaux.reduce((s, m) => s + m.length, 0), brut = new Float32Array(n); let o = 0; for (const m of morceaux) { brut.set(m, o); o += m.length; }
+  // ramène à 16 kHz pour Whisper
+  const off = new OfflineAudioContext(1, Math.ceil(n * 16000 / sr), 16000);
+  const tampon = off.createBuffer(1, n, sr); tampon.copyToChannel(brut, 0);
+  const s = off.createBufferSource(); s.buffer = tampon; s.connect(off.destination); s.start();
+  const sig = (await off.startRendering()).getChannelData(0);
+  const [hanzi, pinyin, vo] = PHRASES[Number($('phrase').value)];
+  const p = M.preparerPhrase({ hanzi, pinyin });
+  const modele = AUDIO[vo] ? M.preparerModele(await decoder16k(octets(AUDIO[vo].m || AUDIO[vo].f)), 16000, p) : null;
+  const w = await frontieresWhisper(sig, hanzi);
+  const rSeul = M.analyser(sig, 16000, p), rMod = M.analyser(sig, 16000, p, { modele, jugement: 'modele' });
+  const rW = w.frontieres ? M.analyser(sig, 16000, p, { frontieresSec: w.frontieres }) : null;
+  const tr = document.createElement('tr');
+  cellule(tr, hanzi, 'han'); cellule(tr, w.texte.trim(), 'han');
+  cellule(tr, w.cars.map(c => c.h + ' ' + c.s.toFixed(2)).join(' · '), 'han');
+  cellule(tr, pct(rSeul), 'num'); cellule(tr, pct(rMod), 'num ' + classe(rMod, rSeul)); cellule(tr, pct(rW), 'num ' + classe(rW, rSeul));
+  $('t-voix').tBodies[0].prepend(tr);
+  $('etat-voix').textContent = '';
+}
+</script>
+</body>
+</html>
