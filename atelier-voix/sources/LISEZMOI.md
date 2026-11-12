@@ -17,3 +17,15 @@ const r = MoteurVoix.analyser(signalFloat32, frequence, phrase, { registreHz });
 // r.score : % de tons justes ; r.medianeHz : à mémoriser pour apprendre la voix du joueur
 ```
 Dans la page, l'appel passe par un objet `evaluateur` : un service spécialisé (SpeechSuper, TonePerfect) pourra le remplacer sans toucher au reste.
+
+## Calibrage sur voix natives (version 0.2, 12 novembre 2026)
+Le dossier `calibrage/` passe les 651 répliques ElevenLabs du jeu (`src/public/assets/audio/vo/zh`, textes tirés des scènes) dans le moteur :
+`python3 extraire.py` (corpus + conversion en PCM 16 kHz avec ffmpeg), puis `node evaluer.js` et `node roc.js`.
+Un contrôle inverse fait juger les mêmes voix contre des tons volontairement faux, pour vérifier que le moteur ne devient pas complaisant.
+
+| Version | Tons natifs jugés justes | Score médian par phrase (natifs) | Faux tons acceptés à tort |
+|---|---|---|---|
+| 0.1 (formes des manuels, découpage par creux d'énergie) | 30 % | 38 % | 15 % |
+| 0.2 (découpage par programmation dynamique, formes mesurées milieu / fin de phrase) | 57 % | 70 % | 13 % |
+
+Limite : un natif obtient encore autour de 70 % ; le moteur reste sévère, surtout sur le 3e ton en fin de phrase et le 1er ton.

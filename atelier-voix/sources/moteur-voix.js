@@ -26,7 +26,7 @@
   const SR = 16000;            // fréquence de travail
   const HOP = 160;             // pas entre deux trames : 10 ms
   const W = 400;               // fenêtre d'intégration : 25 ms
-  const FMIN = 70, FMAX = 450; // plage de hauteur d'une voix parlée
+  const FMIN = 60, FMAX = 450; // plage de hauteur d'une voix parlée (3e ton grave compris)
   const TAU_MIN = Math.floor(SR / FMAX);
   const TAU_MAX = Math.ceil(SR / FMIN);
   const TRAME = W + TAU_MAX;
@@ -39,6 +39,30 @@
     '3':  [-2.5, -4.5, -5, -2.5, 1.5],    // plonge puis remonte (3e ton complet, « 214 »)
     '3b': [-2.5, -4, -5, -5, -5],         // reste bas (3e ton au milieu d'une phrase)
     '4':  [3, 2.5, 1, -1, -3.5]           // tombe
+  };
+
+  // Formes mesurées sur 651 répliques en voix chinoise native (voix ElevenLabs du jeu), 12 novembre 2026.
+  // En parole réelle, les tons sont moins amples qu'en citation et la voix descend en fin de phrase.
+  // 'mil' : syllabe au milieu de la phrase ; 'fin' : dernière syllabe ou syllabe avant une ponctuation.
+  // '3r' : 3e ton « complet » des manuels (descend puis remonte), accepté en fin de phrase.
+  const MODELES_PAROLE = {
+    mil: {
+      '1': [1.5, 1.6, 1.8, 1.7, 1.4],
+      '2': [-1.0, -0.7, 0.1, 0.8, 1.1],
+      '3': [-1.0, -1.7, -2.1, -2.0, -2.0],
+      '4': [4.0, 3.7, 2.5, 1.4, 0.6]
+    },
+    fin: {
+      '1': [0.1, 0.2, 0.3, 0.3, 0.6],
+      '2': [-4.1, -4.2, -2.4, -1.1, -0.5],
+      '3': [-1.3, -1.9, -1.7, -1.6, -1.2],
+      '3r': [-2.0, -3.6, -4.0, -2.0, 1.2],
+      '4': [2.5, 2.1, 0.0, -1.7, -2.0],
+      // Formes « du dictionnaire », celles d'un mot dit seul : acceptées aussi en fin de phrase
+      '1c': [2.5, 2.5, 2.5, 2.5, 2.5],
+      '2c': [-1.5, -1.5, -0.5, 1, 2.5],
+      '4c': [3, 2.5, 1, -1, -3.5]
+    }
   };
 
   // ---------- Pinyin ----------
@@ -170,7 +194,7 @@
     }
     let meilleur = -1;
     for (let tau = TAU_MIN; tau <= TAU_MAX; tau++) {
-      if (cm[tau] < 0.15) {
+      if (cm[tau] < 0.2) {
         while (tau + 1 <= TAU_MAX && cm[tau + 1] < cm[tau]) tau++;
         meilleur = tau;
         break;
@@ -179,7 +203,7 @@
     if (meilleur < 0) {
       let m = Infinity;
       for (let tau = TAU_MIN; tau <= TAU_MAX; tau++) if (cm[tau] < m) { m = cm[tau]; meilleur = tau; }
-      if (cm[meilleur] > 0.35) return { f0: 0, ap: cm[meilleur] };
+      if (cm[meilleur] > 0.5) return { f0: 0, ap: cm[meilleur] };
     }
     let t = meilleur;
     if (meilleur > TAU_MIN && meilleur < TAU_MAX) {
@@ -220,18 +244,23 @@
       if (tr.rms < seuilVoix) continue;
       const r = yin(x, i * HOP, d, cm);
       tr.ap = r.ap;
-      if (r.f0 >= FMIN && r.f0 <= FMAX && r.ap < 0.3) { tr.f0 = r.f0; tr.voisee = true; }
+      // Voix grinçante (fin de 3e ton) : périodicité faible mais énergie nette, on l'accepte
+      const limite = tr.rms > seuilParole ? 0.45 : 0.3;
+      if (r.f0 >= FMIN && r.f0 <= FMAX && r.ap < limite) { tr.f0 = r.f0; tr.voisee = true; }
     }
 
-    // Corrige les sauts d'octave autour de la hauteur médiane
-    const med = mediane(trames.filter(t => t.voisee).map(t => t.f0));
-    if (med > 0) {
-      for (const tr of trames) {
-        if (!tr.voisee) continue;
-        if (tr.f0 > 1.75 * med) tr.f0 /= 2;
-        else if (tr.f0 < 0.6 * med) tr.f0 *= 2;
-        if (tr.f0 < FMIN || tr.f0 > FMAX) { tr.voisee = false; tr.f0 = 0; }
-      }
+    // Corrige les sauts d'octave par continuité avec les trames voisines
+    const brutes = trames.map(t => t.f0);
+    for (let k = 0; k < n; k++) {
+      const tr = trames[k];
+      if (!tr.voisee) continue;
+      const voisins = [];
+      for (let m = k - 10; m <= k + 10; m++) if (m !== k && m >= 0 && m < n && trames[m].voisee) voisins.push(brutes[m]);
+      if (voisins.length < 4) continue;
+      const loc = mediane(voisins);
+      if (tr.f0 > 1.8 * loc) tr.f0 /= 2;
+      else if (tr.f0 < 0.56 * loc) tr.f0 *= 2;
+      if (tr.f0 < FMIN || tr.f0 > FMAX) { tr.voisee = false; tr.f0 = 0; }
     }
     // Retire les îlots de voix trop courts (bruits, clics)
     let i = 0;
@@ -253,7 +282,126 @@
     return { trames, seuilParole, seuilVoix, bruit, crete };
   }
 
-  /** Découpe la zone de parole en n syllabes, d'après les creux d'énergie et les coupures de voix. */
+  /**
+   * Découpe la zone de parole [a, b] en syllabes par programmation dynamique.
+   * Récompense : frontières dans un creux d'énergie, une consonne sourde, un silence, un saut de hauteur ;
+   * pénalité : durée éloignée de la durée attendue (ton neutre court, syllabe finale allongée) ;
+   * la ponctuation attire la frontière dans un silence.
+   */
+  function decouperDP(trames, a, b, syllabes, seuilParole) {
+    const n = syllabes.length;
+    if (n <= 1) return { frontieres: [], approximatif: false };
+    const F = b - a + 1;
+    const E = [], actif = [], voix = [];
+    for (let i = a; i <= b; i++) {
+      E.push(20 * Math.log10(trames[i].rms + 1e-7));
+      actif.push(trames[i].rms > seuilParole * 0.5 || trames[i].voisee);
+      voix.push(trames[i].voisee);
+    }
+    const Es = E.map((_, i) => { let s = 0, c = 0; for (let k = i - 2; k <= i + 2; k++) if (k >= 0 && k < F) { s += E[k]; c++; } return s / c; });
+    // Longueur du silence qui contient chaque trame
+    const silence = new Array(F).fill(0);
+    for (let i = 0; i < F;) {
+      if (actif[i]) { i++; continue; }
+      let j = i; while (j < F && !actif[j]) j++;
+      for (let k = i; k < j; k++) silence[k] = j - i;
+      i = j;
+    }
+    // Intérêt d'une frontière placée au début de la trame i
+    const B = new Float64Array(F + 1);
+    for (let i = 1; i < F; i++) {
+      let maxG = -Infinity, maxD = -Infinity;
+      for (let k = Math.max(0, i - 12); k <= i; k++) maxG = Math.max(maxG, Es[k]);
+      for (let k = i; k <= Math.min(F - 1, i + 12); k++) maxD = Math.max(maxD, Es[k]);
+      let s = 0.12 * Math.max(0, Math.min(maxG, maxD) - Es[i]);
+      if (!voix[i]) s += 1;
+      if (!voix[i - 1] && voix[i]) s += 0.8;
+      if (silence[i] > 0) s += 1 + Math.min(3, silence[i] / 8);
+      if (voix[i] && voix[i - 1]) {
+        const saut = Math.abs(12 * Math.log2(trames[a + i].f0 / trames[a + i - 1].f0));
+        if (saut > 1.2) s += Math.min(2, saut / 1.5);
+      }
+      B[i] = s;
+    }
+    // Durées attendues (en trames actives)
+    const cumActif = new Int32Array(F + 1), cumVoix = new Int32Array(F + 1);
+    for (let i = 0; i < F; i++) { cumActif[i + 1] = cumActif[i] + (actif[i] ? 1 : 0); cumVoix[i + 1] = cumVoix[i] + (voix[i] ? 1 : 0); }
+    const poids = syllabes.map((s, k) => {
+      let w = s.surface === '5' ? 0.55 : 1;
+      const finale = k === n - 1 || s.pauseApres;
+      if (finale) w *= s.surface === '3' ? 1.45 : 1.2;
+      return w;
+    });
+    const somme = poids.reduce((x, y) => x + y, 0);
+    const attendu = poids.map(w => Math.max(4, cumActif[F] * w / somme));
+    // Silences longs à l'intérieur d'une syllabe : à éviter
+    const cumLongSil = new Int32Array(F + 1);
+    for (let i = 0; i < F; i++) cumLongSil[i + 1] = cumLongSil[i] + (silence[i] >= 15 ? 1 : 0);
+
+    // Ressemblance d'un morceau à un ton quelconque (indice neutre : ne favorise pas le ton attendu)
+    const stVoix = [];
+    const med = mediane(trames.slice(a, b + 1).filter(t => t.voisee).map(t => t.f0)) || 1;
+    for (let i = a; i <= b; i++) stVoix.push(trames[i].voisee ? 12 * Math.log2(trames[i].f0 / med) : null);
+    const memo = new Map();
+    const formeTon = (s, e) => {
+      const cle = s * 4096 + e;
+      if (memo.has(cle)) return memo.get(cle);
+      const v = [];
+      for (let i = s; i < e; i++) if (stVoix[i] !== null) v.push(stVoix[i]);
+      let r = 0;
+      if (v.length >= 5) {
+        const coeur = v.slice(Math.floor(v.length * 0.15), Math.ceil(v.length * 0.9));
+        const c5 = versCinqPoints(coeur.length >= 4 ? coeur : v);
+        let m = Infinity;
+        for (const cle2 of Object.keys(MODELES)) m = Math.min(m, distance(c5, MODELES[cle2], 0.15));
+        r = m;
+      }
+      memo.set(cle, r);
+      return r;
+    };
+
+    const cout = (k, s, e) => {
+      const act = cumActif[e] - cumActif[s];
+      const vx = cumVoix[e] - cumVoix[s];
+      let c = 0;
+      if (act < 4) c += 30;
+      if (vx < 3) c += syllabes[k].surface === '5' ? 2 : 8;
+      c += 3 * Math.log(Math.max(act, 1) / attendu[k]) ** 2;
+      const silInterne = cumLongSil[e] - cumLongSil[s];
+      if (silInterne > 0 && !(syllabes[k].pauseApres && e === F)) c += 0.15 * silInterne;
+      return c;
+    };
+    // D[k][e] : meilleur coût pour placer les k premières syllabes sur [0, e)
+    const INF = 1e18;
+    const D = Array.from({ length: n + 1 }, () => new Float64Array(F + 1).fill(INF));
+    const P = Array.from({ length: n + 1 }, () => new Int32Array(F + 1).fill(-1));
+    D[0][0] = 0;
+    for (let k = 1; k <= n; k++) {
+      const finK = k === n;
+      for (let e = finK ? F : 1; e <= F; e++) {
+        if (!finK && e === F) continue;
+        let meilleur = INF, arg = -1;
+        const plusLong = Math.ceil(attendu[k - 1] * 3.5) + 40;
+        for (let s = Math.max(k - 1, e - plusLong); s < e; s++) {
+          if (D[k - 1][s] >= INF) continue;
+          let c = D[k - 1][s] + cout(k - 1, s, e);
+          if (!finK) {
+            c -= B[e];
+            if (syllabes[k - 1].pauseApres && silence[e] >= 10) c -= 4;
+          }
+          if (c < meilleur) { meilleur = c; arg = s; }
+        }
+        D[k][e] = meilleur; P[k][e] = arg;
+      }
+    }
+    const frontieres = [];
+    let e = F;
+    for (let k = n; k >= 1; k--) { const s = P[k][e]; if (k > 1) frontieres.unshift(a + s); e = s; }
+    const approximatif = frontieres.some((f, k) => (cumVoix[f - a] - cumVoix[k ? frontieres[k - 1] - a : 0]) < 3);
+    return { frontieres, approximatif };
+  }
+
+  /** Ancien découpage (creux d'énergie), gardé pour comparaison. */
   function decouper(trames, a, b, n) {
     if (n <= 1) return { frontieres: [], approximatif: false };
     const E = trames.map(t => 20 * Math.log10(t.rms + 1e-7));
@@ -361,26 +509,29 @@
 
   const NOMS_TONS = { '1': '1er ton', '2': '2e ton', '3': '3e ton', '3b': '3e ton', '4': '4e ton', '5': 'ton neutre' };
 
-  function evaluerSyllabe(contour, attendu, poidsNiveau) {
+  /** Juge une syllabe. position : 'mil' (milieu de phrase) ou 'fin' (avant une ponctuation ou en fin). */
+  function evaluerSyllabe(contour, attendu, poidsNiveau, position) {
+    const modeles = MODELES_PAROLE[position === 'fin' ? 'fin' : 'mil'];
     const distances = {};
-    for (const cle of Object.keys(MODELES)) distances[cle] = distance(contour, MODELES[cle], poidsNiveau);
+    for (const cle of Object.keys(modeles)) distances[cle] = distance(contour, modeles[cle], poidsNiveau);
     const ordre = Object.keys(distances).sort((x, y) => distances[x] - distances[y]);
     const meilleur = ordre[0];
-    const entendu = meilleur === '3b' ? '3' : meilleur;
-    if (attendu === '5') return { entendu, verdict: 'neutre', distances };
-    const acceptes = ACCEPTES[attendu];
+    const entendu = meilleur === '3r' ? '3' : meilleur.replace('c', '');
+    const attenduBase = attendu === '3b' ? '3' : attendu;
+    const modele = modeles[attenduBase] || null;
+    if (attendu === '5') return { entendu, verdict: 'neutre', distances, modele: null };
+    const acceptes = (attenduBase === '3' ? ['3', '3r'] : [attenduBase, attenduBase + 'c']).filter(c => c in modeles);
     const dAttendu = Math.min(...acceptes.map(c => distances[c]));
     let verdict;
     if (acceptes.includes(meilleur)) verdict = 'juste';
-    else if (dAttendu <= distances[meilleur] * 1.25 + 0.3) verdict = 'presque';
+    else if (dAttendu <= Math.max(distances[meilleur], 0.05) * 1.3) verdict = 'presque';
     else verdict = 'a_reprendre';
-    const attenduBase = attendu === '3b' ? '3' : attendu;
     let conseil = null;
     if (verdict !== 'juste') {
       conseil = (CONSEILS[attenduBase] && CONSEILS[attenduBase][entendu]) ||
         'Écoute le modèle et exagère la forme du ' + NOMS_TONS[attendu] + '.';
     }
-    return { entendu, verdict, distances, conseil };
+    return { entendu, verdict, distances, conseil, modele };
   }
 
   /**
@@ -414,7 +565,7 @@
     const poidsNiveau = registreConnu ? 0.35 : 0.35 * Math.min(1, Math.max(0, nbNotees - 1) / 3);
     const st = f => 12 * Math.log2(f / reference);
 
-    const { frontieres, approximatif } = decouper(trames, a, b, n);
+    const { frontieres, approximatif } = decouperDP(trames, a, b, phrase.syllabes, seuilParole);
     const bornes = [a, ...frontieres, b + 1];
 
     const syllabes = phrase.syllabes.map((s, k) => {
@@ -431,11 +582,13 @@
       }
       const coeur = voix.slice(Math.floor(voix.length * 0.15), Math.ceil(voix.length * 0.9));
       const contour = versCinqPoints(coeur.length >= 4 ? coeur : voix);
-      const ev = evaluerSyllabe(contour, s.surface, poidsNiveau);
-      return Object.assign(base, { contour, entendu: ev.entendu, verdict: ev.verdict, distances: ev.distances, conseil: ev.conseil });
+      const position = (k === phrase.syllabes.length - 1 || s.pauseApres) ? 'fin' : 'mil';
+      const ev = evaluerSyllabe(contour, s.surface, poidsNiveau, position);
+      return Object.assign(base, { contour, position, modele: ev.modele, entendu: ev.entendu, verdict: ev.verdict, distances: ev.distances, conseil: ev.conseil });
     });
 
-    const notees = syllabes.filter(s => s.verdict !== 'neutre');
+    // Le score ne compte que les syllabes vraiment jugées : une syllabe « pas entendue » n'est pas une faute de ton
+    const notees = syllabes.filter(s => s.verdict === 'juste' || s.verdict === 'presque' || s.verdict === 'a_reprendre');
     const points = notees.reduce((p, s) => p + (s.verdict === 'juste' ? 1 : s.verdict === 'presque' ? 0.5 : 0), 0);
     const score = notees.length ? Math.round(100 * points / notees.length) : 100;
 
@@ -488,8 +641,8 @@
   }
 
   const MoteurVoix = {
-    version: '0.1.0',
-    MODELES, NOMS_TONS,
+    version: '0.2.0',
+    MODELES, MODELES_PAROLE, NOMS_TONS,
     pinyinAccentue, preparerPhrase, tonsDeSurface,
     analyser, comparerTexte,
     _interne: { reechantillonner, extraireTrames, decouper, distance, evaluerSyllabe, SR, HOP }

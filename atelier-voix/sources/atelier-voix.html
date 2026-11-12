@@ -583,7 +583,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       tons.textContent = s.pinyin + ' · attendu : ' + M.NOMS_TONS[s.tonAttendu] +
         (s.entendu && s.verdict !== 'neutre' && s.verdict !== 'juste' ? ' · entendu : ' + M.NOMS_TONS[s.entendu] : '');
       c.append(hz, v, tons);
-      if (s.contour && s.tonAttendu !== '5') c.append(miniCourbe(s.contour, M.MODELES[s.tonAttendu]));
+      if (s.contour && s.modele) c.append(miniCourbe(s.contour, s.modele));
       if (s.conseil) { const p = document.createElement('p'); p.textContent = s.conseil; c.append(p); }
       cartes.append(c);
     }
@@ -651,8 +651,8 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       g.textAlign = 'center';
       g.font = '18px ' + getComputedStyle(document.documentElement).getPropertyValue('--police-han');
       g.fillText(s.h, (xa + xb) / 2, 14);
-      if (s.tonAttendu !== '5') {
-        const m = M.MODELES[s.tonAttendu];
+      if (s.modele) {
+        const m = s.modele;
         const largeur = xb - xa, marge = largeur * 0.15;
         g.strokeStyle = couleur(COULEUR_VERDICT[s.verdict]) || douce;
         g.lineWidth = 2; g.setLineDash([5, 4]);
