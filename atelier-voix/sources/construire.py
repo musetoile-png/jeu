@@ -1,6 +1,20 @@
 # Construit les deux versions : fichier autonome (dist/atelier-voix.html) et page pour l'artefact Claude.
-import re
+import re, json, base64, os
+# Voix modèles : enregistrements natifs du jeu (ElevenLabs), intégrés en base64
+VO = '/home/claude/jeu/src/public/assets/audio/vo/zh/'
 html = open('atelier-voix.html').read()
+codes = sorted(set(re.findall(r"vo: '([^']+)'", html)))
+audio = {}
+for c in codes:
+    for v in ('f', 'm'):
+        f = VO + c + '_' + v + '.mp3'
+        if os.path.exists(f):
+            audio.setdefault(c, {})[v] = 'data:audio/mpeg;base64,' + base64.b64encode(open(f, 'rb').read()).decode()
+manquants = [c for c in codes if c not in audio]
+assert not manquants, manquants
+audio_js = 'window.AUDIO_MODELES = ' + json.dumps(audio) + ';'
+open('audio-modeles.js', 'w').write(audio_js)
+html = html.replace('<script src="audio-modeles.js"></script>', '<script>\n' + audio_js + '\n</script>')
 js = open('moteur-voix.js').read()
 html = html.replace('<script src="moteur-voix.js"></script>', '<script>\n' + js + '\n</script>')
 open('dist/atelier-voix.html', 'w').write(html)

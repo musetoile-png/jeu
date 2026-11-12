@@ -76,6 +76,10 @@ h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; colo
 .notes { margin: 0; padding: 0; list-style: none; font-size: 0.9rem; color: var(--encre-douce); text-align: center; }
 
 .commandes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+.voix-choix { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.92rem; color: var(--encre-douce); }
+.puce-texte { font: inherit; font-size: 0.92rem; padding: 3px 12px; border-radius: 999px; border: 1px solid var(--trait); background: var(--feuille); color: var(--encre); cursor: pointer; }
+.puce-texte[aria-pressed="true"] { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+.puce-texte:focus-visible { outline: 3px solid var(--jade); outline-offset: 2px; }
 .avis { background: var(--ocre-pale); color: var(--encre); border-radius: 10px; padding: 10px 14px; font-size: 0.92rem; max-width: 62ch; margin: 0; }
 label.action { display: inline-flex; align-items: center; font-weight: 500; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--trait); background: var(--papier); color: var(--encre); cursor: pointer; }
 label.action:hover { border-color: var(--encre-douce); }
@@ -153,7 +157,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       <div class="puces" id="puces-mots"></div>
     </div>
     <div>
-      <h2>Phrases de la cuisine de 奶奶</h2>
+      <h2>Répliques du jeu, avec leur voix native</h2>
       <div class="puces" id="puces-phrases"></div>
     </div>
   </section>
@@ -166,6 +170,11 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       <button class="action" id="modele" type="button">Écouter le modèle</button>
       <button id="parler" type="button" aria-label="Parler"><span class="han">说</span><span id="parler-texte">Parler</span></button>
       <button class="action" id="reecouter" type="button" disabled>Réécouter ma voix</button>
+    </div>
+    <div class="voix-choix" id="choix-voix" hidden>
+      <span>Voix modèle :</span>
+      <button class="puce-texte" type="button" data-voix="f" aria-pressed="false">femme</button>
+      <button class="puce-texte" type="button" data-voix="m" aria-pressed="false">homme</button>
     </div>
     <p class="avis" id="avis-micro" hidden></p>
     <div class="commandes">
@@ -182,7 +191,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
     </div>
     <div class="graphe-boite">
       <canvas id="graphe" aria-label="Courbe de hauteur de ta voix comparée aux tons attendus"></canvas>
-      <div class="legende"><span>Ta voix</span><span class="modele">Forme attendue du ton</span></div>
+      <div class="legende"><span>Ta voix</span><span class="modele" id="legende-modele">Forme attendue du ton</span></div>
     </div>
     <div class="cartes" id="cartes"></div>
   </section>
@@ -215,6 +224,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
 </div>
 
 <script src="moteur-voix.js"></script>
+<script src="audio-modeles.js"></script>
 <script>
 (function () {
   'use strict';
@@ -229,18 +239,22 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
     { hanzi: '少', pinyin: 'shao3', fr: 'peu' }, { hanzi: '碗', pinyin: 'wan3', fr: 'bol' },
     { hanzi: '菜', pinyin: 'cai4', fr: 'légume, plat' }
   ];
+  // Répliques que le joueur prononce dans le jeu ; « vo » = enregistrement natif ElevenLabs (voix de femme _f, d'homme _m)
   const PHRASES = [
-    { hanzi: '好。我做什么？', pinyin: 'hao3 wo3 zuo4 shen2 me5', fr: 'D\'accord. Je fais quoi ?' },
-    { hanzi: '这是油。', pinyin: 'zhe4 shi4 you2', fr: 'Ça, c\'est l\'huile.' },
-    { hanzi: '放油。', pinyin: 'fang4 you2', fr: 'Mets l\'huile.' },
-    { hanzi: '热。很热。', pinyin: 're4 hen3 re4', fr: 'Oui, très chaud.' },
-    { hanzi: '多放米饭。', pinyin: 'duo1 fang4 mi3 fan4', fr: 'Mets beaucoup de riz.' },
-    { hanzi: '什么菜？', pinyin: 'shen2 me5 cai4', fr: 'Quel légume ?' },
-    { hanzi: '少放盐。', pinyin: 'shao3 fang4 yan2', fr: 'Mets peu de sel.' },
-    { hanzi: '好了。', pinyin: 'hao3 le5', fr: 'C\'est prêt.' },
-    { hanzi: '放碗里。', pinyin: 'fang4 wan3 li3', fr: 'Mets-le dans le bol.' },
-    { hanzi: '谢谢奶奶！', pinyin: 'xie4 xie5 nai3 nai5', fr: 'Merci, Mamie !' },
-    { hanzi: '奶奶，明天见！', pinyin: 'nai3 nai5 ming2 tian1 jian4', fr: 'À demain, Mamie !' }
+    { hanzi: '好。我做什么？', pinyin: 'hao3 wo3 zuo4 shen2 me5', fr: 'D\'accord. Je fais quoi ?', vo: 'c1_02a' },
+    { hanzi: '热。很热。', pinyin: 're4 hen3 re4', fr: 'Oui, très chaud.', vo: 'c1_07a' },
+    { hanzi: '什么葱？', pinyin: 'shen2 me5 cong1', fr: 'Quelle ciboule ?', vo: 'c1_09a' },
+    { hanzi: '好了。', pinyin: 'hao3 le5', fr: 'C\'est prêt.', vo: 'c1_13a' },
+    { hanzi: '好吃。', pinyin: 'hao3 chi1', fr: 'C\'est bon (au goût).', vo: 'c1_13c' },
+    { hanzi: '对不起。', pinyin: 'dui4 bu5 qi3', fr: 'Pardon.', vo: 'c1_16c' },
+    { hanzi: '谢谢奶奶！', pinyin: 'xie4 xie5 nai3 nai5', fr: 'Merci, 奶奶 !', vo: 'c1_16a' },
+    { hanzi: '奶奶，你好！', pinyin: 'nai3 nai5 ni3 hao3', fr: '奶奶, bonjour !', vo: 'c1_20b' },
+    { hanzi: '好，我去买！', pinyin: 'hao3 wo3 qu4 mai3', fr: 'D\'accord, je vais les acheter !', vo: 'c1_20a' },
+    { hanzi: '不多。', pinyin: 'bu4 duo1', fr: 'Pas beaucoup.', vo: 'nc_04c' },
+    { hanzi: '十五块。', pinyin: 'shi2 wu3 kuai4', fr: 'Quinze yuans.', vo: 'nc_04b' },
+    { hanzi: '不是，是绿茶。', pinyin: 'bu4 shi4 shi4 lv4 cha2', fr: 'Non, c\'est du thé vert.', vo: 'nc_05a' },
+    { hanzi: '谢谢奶奶！晚安！', pinyin: 'xie4 xie5 nai3 nai5 wan3 an1', fr: 'Merci, 奶奶 ! Bonne nuit !', vo: 'nc_08a' },
+    { hanzi: '等一下！', pinyin: 'deng3 yi2 xia4', fr: 'Un instant !', vo: 'c2_p_deng' }
   ];
 
   // ---------- Mémoire locale (préférences et voix du joueur) ----------
@@ -263,7 +277,10 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
   // ---------- Évaluateur (interchangeable plus tard avec un service spécialisé) ----------
   const evaluateur = {
     nom: 'analyse sur l\'appareil',
-    evaluer: async ({ signal, sr, phrase, registreHz }) => M.analyser(signal, sr, phrase, { registreHz })
+    evaluer: async ({ signal, sr, phrase, registreHz }) => {
+      const modele = await modeleCourant();
+      return M.analyser(signal, sr, phrase, { registreHz, modele, jugement: 'modele' });
+    }
   };
 
   // ---------- Affichage de la phrase ----------
@@ -303,6 +320,9 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
 
   function choisir(p, bouton) {
     phrase = M.preparerPhrase(p);
+    phraseSource = p;
+    majVoixModele();
+    modeleCourant();
     document.querySelectorAll('.puce').forEach(b => b.setAttribute('aria-pressed', b === bouton ? 'true' : 'false'));
     preparerAffichage();
   }
@@ -327,13 +347,69 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
     $('etat').classList.toggle('erreur', !!erreur);
   }
 
-  // ---------- Modèle sonore (voix de l'appareil) ----------
+  // ---------- Voix modèle (enregistrement natif du jeu) ----------
+  const AUDIO = window.AUDIO_MODELES || {};
+  let voixModele = lire('atelierVoix.voixModele', 'm');
+  let phraseSource = null;
+  const cacheModeles = {};
+  function audioModele() {
+    const a = phraseSource && phraseSource.vo && AUDIO[phraseSource.vo];
+    return a ? (a[voixModele] || a.m || a.f) : null;
+  }
+  function octets(url) {
+    // Les voix sont intégrées à la page (base64) : pas de téléchargement, ça marche aussi hors ligne
+    const b64 = url.slice(url.indexOf(',') + 1);
+    const bin = atob(b64);
+    const tab = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) tab[i] = bin.charCodeAt(i);
+    return tab.buffer;
+  }
+  async function decoder(url) {
+    const Hors = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    const donnees = octets(url);
+    const ctx = new Hors(1, 16000, 16000);
+    const audio = await new Promise((ok, ko) => { const p = ctx.decodeAudioData(donnees, ok, ko); if (p && p.then) p.then(ok, ko); });
+    return { signal: audio.getChannelData(0), sr: audio.sampleRate };
+  }
+  async function modeleCourant() {
+    const url = audioModele();
+    if (!url) return null;
+    const cle = phraseSource.vo + '_' + voixModele;
+    if (!(cle in cacheModeles)) {
+      cacheModeles[cle] = decoder(url).then(a => M.preparerModele(a.signal, a.sr, phrase)).catch(() => null);
+    }
+    return cacheModeles[cle];
+  }
+  function majVoixModele() {
+    document.querySelectorAll('[data-voix]').forEach(b => b.setAttribute('aria-pressed', b.dataset.voix === voixModele ? 'true' : 'false'));
+    $('choix-voix').hidden = !audioModele();
+  }
+  document.querySelectorAll('[data-voix]').forEach(b => b.addEventListener('click', () => {
+    voixModele = b.dataset.voix; ecrire('atelierVoix.voixModele', voixModele); majVoixModele(); modeleCourant();
+  }));
+
+  // ---------- Modèle sonore de secours (voix de l'appareil) ----------
   function voixChinoise() {
     if (!('speechSynthesis' in window)) return null;
     const voix = speechSynthesis.getVoices();
     return voix.find(v => /^zh[-_]CN/i.test(v.lang)) || voix.find(v => /^zh/i.test(v.lang)) || null;
   }
+  let lecteur = null;
   $('modele').addEventListener('click', () => {
+    const url = audioModele();
+    if (url) {
+      try {
+        if (lecteur) { try { lecteur.stop(); } catch (e) { /* déjà arrêté */ } }
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const fin = () => ctx.close();
+        new Promise((ok, ko) => { const p = ctx.decodeAudioData(octets(url), ok, ko); if (p && p.then) p.then(ok, ko); }).then(tampon => {
+          const src = ctx.createBufferSource();
+          src.buffer = tampon; src.connect(ctx.destination); src.onended = fin; src.start();
+          lecteur = src;
+        }).catch(() => { fin(); etat('Je n\'arrive pas à lire la voix modèle sur cet appareil.', true); });
+      } catch (e) { etat('Je n\'arrive pas à lire la voix modèle sur cet appareil.', true); }
+      return;
+    }
     const v = voixChinoise();
     if (!v) { etat('Aucune voix chinoise n\'est installée sur cet appareil. Dans le jeu, le modèle sera la voix ElevenLabs.', true); return; }
     speechSynthesis.cancel();
@@ -540,6 +616,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
     dernierResultat = r;
     $('resultat').hidden = false;
     $('score').textContent = r.score + ' %';
+    $('legende-modele').textContent = r.alignement === 'modele' ? 'Mélodie de la voix modèle (' + (voixModele === 'f' ? 'femme' : 'homme') + '), ramenée à ta hauteur de voix' : 'Forme attendue du ton';
     $('phrase').classList.add('revele');
 
     document.querySelectorAll('#phrase .syl[data-index]').forEach(el => {
@@ -583,7 +660,8 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       tons.textContent = s.pinyin + ' · attendu : ' + M.NOMS_TONS[s.tonAttendu] +
         (s.entendu && s.verdict !== 'neutre' && s.verdict !== 'juste' ? ' · entendu : ' + M.NOMS_TONS[s.entendu] : '');
       c.append(hz, v, tons);
-      if (s.contour && s.modele) c.append(miniCourbe(s.contour, s.modele));
+      const reference = s.contourModele || s.modele;
+      if (s.contour && reference) c.append(miniCourbe(s.contour, reference));
       if (s.conseil) { const p = document.createElement('p'); p.textContent = s.conseil; c.append(p); }
       cartes.append(c);
     }
@@ -651,7 +729,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       g.textAlign = 'center';
       g.font = '18px ' + getComputedStyle(document.documentElement).getPropertyValue('--police-han');
       g.fillText(s.h, (xa + xb) / 2, 14);
-      if (s.modele) {
+      if (s.modele && r.alignement !== 'modele') {
         const m = s.modele;
         const largeur = xb - xa, marge = largeur * 0.15;
         g.strokeStyle = couleur(COULEUR_VERDICT[s.verdict]) || douce;
@@ -662,6 +740,19 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
       }
     });
     g.setLineDash([]);
+
+    if (r.alignement === 'modele') {
+      g.strokeStyle = douce; g.lineWidth = 2; g.setLineDash([6, 4]);
+      g.beginPath();
+      let leveM = true;
+      for (const p of r.courbe) {
+        if (p.modele === null || p.modele === undefined) { leveM = true; continue; }
+        const px = x(p.t), py = y(p.modele);
+        if (leveM) { g.moveTo(px, py); leveM = false; } else g.lineTo(px, py);
+      }
+      g.stroke();
+      g.setLineDash([]);
+    }
 
     g.strokeStyle = encre; g.lineWidth = 3; g.lineCap = 'round'; g.lineJoin = 'round';
     g.beginPath();
@@ -698,7 +789,7 @@ footer p { margin: 0 0 8px; max-width: 65ch; }
   afficherRegistre();
   majBoutonPinyin();
   if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
-  choisir(PHRASES[6], document.querySelectorAll('#puces-phrases .puce')[6]);
+  choisir(PHRASES[1], document.querySelectorAll('#puces-phrases .puce')[1]);
   if (!microDispo.ok) { signalerSansMicro(microDispo.message); $('parler').disabled = true; }
 })();
 </script>

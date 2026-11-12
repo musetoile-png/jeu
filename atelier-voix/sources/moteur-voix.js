@@ -288,7 +288,7 @@
    * pénalité : durée éloignée de la durée attendue (ton neutre court, syllabe finale allongée) ;
    * la ponctuation attire la frontière dans un silence.
    */
-  function decouperDP(trames, a, b, syllabes, seuilParole) {
+  function decouperDP(trames, a, b, syllabes, seuilParole, guideTons) {
     const n = syllabes.length;
     if (n <= 1) return { frontieres: [], approximatif: false };
     const F = b - a + 1;
@@ -343,8 +343,8 @@
     const med = mediane(trames.slice(a, b + 1).filter(t => t.voisee).map(t => t.f0)) || 1;
     for (let i = a; i <= b; i++) stVoix.push(trames[i].voisee ? 12 * Math.log2(trames[i].f0 / med) : null);
     const memo = new Map();
-    const formeTon = (s, e) => {
-      const cle = s * 4096 + e;
+    const formeTon = (s, e, modele) => {
+      const cle = s * 4096 + e + (modele ? modele.join() : '');
       if (memo.has(cle)) return memo.get(cle);
       const v = [];
       for (let i = s; i < e; i++) if (stVoix[i] !== null) v.push(stVoix[i]);
@@ -353,7 +353,8 @@
         const coeur = v.slice(Math.floor(v.length * 0.15), Math.ceil(v.length * 0.9));
         const c5 = versCinqPoints(coeur.length >= 4 ? coeur : v);
         let m = Infinity;
-        for (const cle2 of Object.keys(MODELES)) m = Math.min(m, distance(c5, MODELES[cle2], 0.15));
+        if (modele) m = distance(c5, modele, 0.35);
+        else for (const cle2 of Object.keys(MODELES)) m = Math.min(m, distance(c5, MODELES[cle2], 0.15));
         r = m;
       }
       memo.set(cle, r);
@@ -366,6 +367,12 @@
       let c = 0;
       if (act < 4) c += 30;
       if (vx < 3) c += syllabes[k].surface === '5' ? 2 : 8;
+      if (guideTons && syllabes[k].surface !== '5') {
+        const pos = (k === n - 1 || syllabes[k].pauseApres) ? 'fin' : 'mil';
+        const base = syllabes[k].surface === '3b' ? '3' : syllabes[k].surface;
+        const modele = MODELES_PAROLE[pos][base];
+        if (modele) c += 1.5 * formeTon(s, e, modele);
+      }
       c += 3 * Math.log(Math.max(act, 1) / attendu[k]) ** 2;
       const silInterne = cumLongSil[e] - cumLongSil[s];
       if (silInterne > 0 && !(syllabes[k].pauseApres && e === F)) c += 0.15 * silInterne;
@@ -399,6 +406,175 @@
     for (let k = n; k >= 1; k--) { const s = P[k][e]; if (k > 1) frontieres.unshift(a + s); e = s; }
     const approximatif = frontieres.some((f, k) => (cumVoix[f - a] - cumVoix[k ? frontieres[k - 1] - a : 0]) < 3);
     return { frontieres, approximatif };
+  }
+
+  // ---------- Timbre de la voix (coefficients MFCC), trame par trame ----------
+  const NFFT = 512, NMEL = 26, NCEP = 13;
+  const FENETRE = Float32Array.from({ length: W }, (_, i) => 0.54 - 0.46 * Math.cos(2 * Math.PI * i / (W - 1)));
+  const BANC_MEL = (() => {
+    const mel = f => 2595 * Math.log10(1 + f / 700), inv = m => 700 * (10 ** (m / 2595) - 1);
+    const m0 = mel(80), m1 = mel(7600);
+    const pts = Array.from({ length: NMEL + 2 }, (_, i) => Math.floor((NFFT + 1) * inv(m0 + (m1 - m0) * i / (NMEL + 1)) / SR));
+    return Array.from({ length: NMEL }, (_, k) => {
+      const f = new Float32Array(NFFT / 2 + 1);
+      for (let j = pts[k]; j < pts[k + 1]; j++) f[j] = (j - pts[k]) / Math.max(1, pts[k + 1] - pts[k]);
+      for (let j = pts[k + 1]; j <= pts[k + 2]; j++) f[j] = (pts[k + 2] - j) / Math.max(1, pts[k + 2] - pts[k + 1]);
+      return f;
+    });
+  })();
+
+  function fft(re, im) {
+    const n = re.length;
+    for (let i = 1, j = 0; i < n; i++) {
+      let bit = n >> 1;
+      for (; j & bit; bit >>= 1) j ^= bit;
+      j ^= bit;
+      if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; }
+    }
+    for (let len = 2; len <= n; len <<= 1) {
+      const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+      for (let i = 0; i < n; i += len) {
+        let cr = 1, ci = 0;
+        for (let k = 0; k < len / 2; k++) {
+          const ar = re[i + k], ai = im[i + k];
+          const br = re[i + k + len / 2] * cr - im[i + k + len / 2] * ci;
+          const bi = re[i + k + len / 2] * ci + im[i + k + len / 2] * cr;
+          re[i + k] = ar + br; im[i + k] = ai + bi;
+          re[i + k + len / 2] = ar - br; im[i + k + len / 2] = ai - bi;
+          const t = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = t;
+        }
+      }
+    }
+  }
+
+  /** Coefficients MFCC des trames [a, b], normalisés sur la phrase (moyenne 0, écart 1 par coefficient). */
+  function timbre(x, a, b) {
+    const res = [];
+    const re = new Float64Array(NFFT), im = new Float64Array(NFFT), logMel = new Float64Array(NMEL);
+    for (let i = a; i <= b; i++) {
+      re.fill(0); im.fill(0);
+      const s = i * HOP;
+      for (let j = 0; j < W; j++) re[j] = (x[s + j] - 0.97 * (s + j > 0 ? x[s + j - 1] : 0)) * FENETRE[j];
+      fft(re, im);
+      for (let k = 0; k < NMEL; k++) {
+        let e = 0; const f = BANC_MEL[k];
+        for (let j = 0; j <= NFFT / 2; j++) if (f[j]) e += f[j] * (re[j] * re[j] + im[j] * im[j]);
+        logMel[k] = Math.log(e + 1e-10);
+      }
+      const c = new Float64Array(NCEP);
+      for (let q = 0; q < NCEP; q++) {
+        let v = 0;
+        for (let k = 0; k < NMEL; k++) v += logMel[k] * Math.cos(Math.PI * q * (k + 0.5) / NMEL);
+        c[q] = v;
+      }
+      res.push(c);
+    }
+    for (let q = 0; q < NCEP; q++) {
+      let m = 0; for (const c of res) m += c[q]; m /= res.length;
+      let v = 0; for (const c of res) v += (c[q] - m) ** 2; v = Math.sqrt(v / res.length) || 1;
+      for (const c of res) c[q] = (c[q] - m) / v;
+    }
+    return res;
+  }
+
+  /**
+   * Aligne deux phrases dans le temps (DTW) sur le timbre : consonnes et voyelles, pas la hauteur.
+   * Une erreur de ton ne fausse donc pas l'alignement. Renvoie le chemin [[i, j], ...].
+   */
+  function aligner(A, B, voixA, voixB) {
+    const N = A.length, Mn = B.length;
+    const d = (i, j) => {
+      let s = 0;
+      for (let q = 0; q < NCEP; q++) { const w = q === 0 ? 0.5 : 1; s += w * (A[i][q] - B[j][q]) ** 2; }
+      if (voixA[i] !== voixB[j]) s += 2;
+      return Math.sqrt(s);
+    };
+    const D = Array.from({ length: N }, () => new Float64Array(Mn).fill(Infinity));
+    const bande = Math.max(15, Math.round(0.35 * Math.max(N, Mn)));
+    const PEN = 0.6;
+    for (let i = 0; i < N; i++) {
+      const centre = Math.round(i * (Mn - 1) / Math.max(1, N - 1));
+      for (let j = Math.max(0, centre - bande); j <= Math.min(Mn - 1, centre + bande); j++) {
+        const c = d(i, j);
+        if (i === 0 && j === 0) { D[0][0] = c; continue; }
+        let m = Infinity;
+        if (i > 0 && j > 0) m = D[i - 1][j - 1];
+        if (i > 0) m = Math.min(m, D[i - 1][j] + PEN);
+        if (j > 0) m = Math.min(m, D[i][j - 1] + PEN);
+        D[i][j] = c + m;
+      }
+    }
+    if (!isFinite(D[N - 1][Mn - 1])) return null;
+    const chemin = [];
+    let i = N - 1, j = Mn - 1;
+    chemin.push([i, j]);
+    while (i > 0 || j > 0) {
+      const diag = i > 0 && j > 0 ? D[i - 1][j - 1] : Infinity;
+      const haut = i > 0 ? D[i - 1][j] + PEN : Infinity;
+      const gauche = j > 0 ? D[i][j - 1] + PEN : Infinity;
+      if (diag <= haut && diag <= gauche) { i--; j--; } else if (haut <= gauche) i--; else j--;
+      chemin.push([i, j]);
+    }
+    return chemin.reverse();
+  }
+
+  function zoneParole(trames, seuilParole) {
+    let a = trames.findIndex(t => t.rms > seuilParole);
+    let b = -1;
+    for (let i = trames.length - 1; i >= 0; i--) if (trames[i].rms > seuilParole) { b = i; break; }
+    if (a < 0) return null;
+    return { a: Math.max(0, a - 2), b: Math.min(trames.length - 1, b + 2) };
+  }
+
+  /**
+   * Prépare une voix modèle (réplique native de la même phrase) : timbre, mélodie et frontières des syllabes.
+   * Les tons de la voix modèle sont justes : son découpage peut donc s'aider des tons attendus.
+   */
+  function preparerModele(signal, srEntree, phrase) {
+    const x = reechantillonner(signal, srEntree);
+    const { trames, seuilParole } = extraireTrames(x);
+    const z = zoneParole(trames, seuilParole);
+    if (!z) return null;
+    const { frontieres } = decouperDP(trames, z.a, z.b, phrase.syllabes, seuilParole, true);
+    const med = mediane(trames.filter(t => t.voisee).map(t => t.f0)) || 1;
+    return {
+      a: z.a, b: z.b,
+      bornes: [z.a, ...frontieres, z.b + 1],
+      mfcc: timbre(x, z.a, z.b),
+      voix: trames.slice(z.a, z.b + 1).map(t => t.voisee),
+      st: trames.slice(z.a, z.b + 1).map(t => (t.voisee ? 12 * Math.log2(t.f0 / med) : null)),
+      nb: phrase.syllabes.length
+    };
+  }
+
+  /** Reporte les frontières de la voix modèle sur l'enregistrement du joueur. */
+  function bornesParModele(x, trames, a, b, modele) {
+    const A = timbre(x, a, b);
+    const voixA = trames.slice(a, b + 1).map(t => t.voisee);
+    const N = A.length, Mn = modele.mfcc.length;
+    if (N < 5 || N > 3.5 * Mn || Mn > 3.5 * N) return null;
+    const chemin = aligner(A, modele.mfcc, voixA, modele.voix);
+    if (!chemin) return null;
+    const versJoueur = new Int32Array(Mn).fill(-1);
+    for (const [i, j] of chemin) if (versJoueur[j] < 0) versJoueur[j] = i;
+    const bornes = modele.bornes.map((mb, k) => {
+      if (k === 0) return a;
+      if (k === modele.bornes.length - 1) return b + 1;
+      return a + versJoueur[Math.min(Mn - 1, Math.max(0, mb - modele.a))];
+    });
+    for (let k = 1; k < bornes.length; k++) if (bornes[k] <= bornes[k - 1] + 2) bornes[k] = bornes[k - 1] + 3;
+    if (bornes[bornes.length - 1] > b + 1) return null;
+    // Mélodie du modèle, recalée sur le temps du joueur
+    const melodie = new Array(N).fill(null);
+    for (const [i, j] of chemin) if (melodie[i] === null && modele.st[j] !== null) melodie[i] = modele.st[j];
+    // Retire les décrochages isolés (bords de voisement) pour l'affichage
+    const propre = melodie.map((v, i) => {
+      if (v === null) return null;
+      const voisins = [];
+      for (let k = i - 5; k <= i + 5; k++) if (k !== i && melodie[k] !== null && melodie[k] !== undefined) voisins.push(melodie[k]);
+      return voisins.length >= 3 && Math.abs(v - mediane(voisins)) > 4 ? null : v;
+    });
+    return { bornes, melodie: propre };
   }
 
   /** Ancien découpage (creux d'énergie), gardé pour comparaison. */
@@ -565,8 +741,16 @@
     const poidsNiveau = registreConnu ? 0.35 : 0.35 * Math.min(1, Math.max(0, nbNotees - 1) / 3);
     const st = f => 12 * Math.log2(f / reference);
 
-    const { frontieres, approximatif } = decouperDP(trames, a, b, phrase.syllabes, seuilParole);
-    const bornes = [a, ...frontieres, b + 1];
+    let bornes = null, approximatif = false, melodieModele = null, alignement = 'seul';
+    if (options.modele && options.modele.nb === n) {
+      const r = bornesParModele(x, trames, a, b, options.modele);
+      if (r) { bornes = r.bornes; melodieModele = r.melodie; alignement = 'modele'; }
+    }
+    if (!bornes) {
+      const dp = decouperDP(trames, a, b, phrase.syllabes, seuilParole);
+      bornes = [a, ...dp.frontieres, b + 1];
+      approximatif = dp.approximatif;
+    }
 
     const syllabes = phrase.syllabes.map((s, k) => {
       const debut = bornes[k], fin = bornes[k + 1];
@@ -584,7 +768,34 @@
       const contour = versCinqPoints(coeur.length >= 4 ? coeur : voix);
       const position = (k === phrase.syllabes.length - 1 || s.pauseApres) ? 'fin' : 'mil';
       const ev = evaluerSyllabe(contour, s.surface, poidsNiveau, position);
-      return Object.assign(base, { contour, position, modele: ev.modele, entendu: ev.entendu, verdict: ev.verdict, distances: ev.distances, conseil: ev.conseil });
+      // Comparaison directe avec la même syllabe chez la voix modèle
+      let contourModele = null;
+      if (alignement === 'modele' && s.surface !== '5') {
+        const mo = options.modele, v = [];
+        for (let j = mo.bornes[k]; j < mo.bornes[k + 1]; j++) { const y = mo.st[j - mo.a]; if (y !== null && y !== undefined) v.push(y); }
+        if (v.length >= 5) {
+          const c = v.slice(Math.floor(v.length * 0.15), Math.ceil(v.length * 0.9));
+          contourModele = versCinqPoints(c.length >= 4 ? c : v);
+        }
+      }
+      let verdict = ev.verdict, entendu = ev.entendu, conseil = ev.conseil;
+      const jugement = options.jugement || 'les_deux';
+      if (contourModele && jugement !== 'gabarits') {
+        const modeles = MODELES_PAROLE[position];
+        const baseAtt = s.surface === '3b' ? '3' : s.surface;
+        const dRef = distance(contour, contourModele, poidsNiveau);
+        let dAutres = Infinity;
+        for (const [cle, gab] of Object.entries(modeles)) {
+          const cb = cle === '3r' ? '3' : cle.replace('c', '');
+          if (cb !== baseAtt) dAutres = Math.min(dAutres, distance(contour, gab, poidsNiveau));
+        }
+        const ratio = dRef / Math.max(dAutres, 0.05);
+        const vRef = ratio <= 1 ? 'juste' : ratio <= 1.3 ? 'presque' : 'a_reprendre';
+        const rang = { juste: 2, presque: 1, a_reprendre: 0 };
+        verdict = jugement === 'modele' ? vRef : (rang[vRef] > rang[ev.verdict] ? vRef : ev.verdict);
+        if (verdict === 'juste') conseil = null;
+      }
+      return Object.assign(base, { contour, contourModele, position, modele: ev.modele, entendu, verdict, distances: ev.distances, conseil });
     });
 
     // Le score ne compte que les syllabes vraiment jugées : une syllabe « pas entendue » n'est pas une faute de ton
@@ -596,7 +807,9 @@
     const courbe = [];
     for (let i = Math.max(0, a - marge); i <= Math.min(trames.length - 1, b + marge); i++) {
       const t = trames[i];
-      courbe.push({ t: t.t, st: t.voisee ? st(t.f0) : null, db: 20 * Math.log10(t.rms + 1e-7) });
+      const m = melodieModele && i >= a && i <= b ? melodieModele[i - a] : null;
+      courbe.push({ t: t.t, st: t.voisee ? st(t.f0) : null, db: 20 * Math.log10(t.rms + 1e-7),
+        modele: m === null ? null : m + 12 * Math.log2(medianeHz / reference) });
     }
 
     return {
@@ -609,7 +822,8 @@
       courbe,
       syllabes,
       score,
-      approximatif
+      approximatif,
+      alignement
     };
   }
 
@@ -641,11 +855,11 @@
   }
 
   const MoteurVoix = {
-    version: '0.2.0',
+    version: '0.3.0',
     MODELES, MODELES_PAROLE, NOMS_TONS,
     pinyinAccentue, preparerPhrase, tonsDeSurface,
-    analyser, comparerTexte,
-    _interne: { reechantillonner, extraireTrames, decouper, distance, evaluerSyllabe, SR, HOP }
+    analyser, comparerTexte, preparerModele,
+    _interne: { reechantillonner, extraireTrames, decouper, decouperDP, distance, evaluerSyllabe, timbre, aligner, SR, HOP }
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = MoteurVoix;

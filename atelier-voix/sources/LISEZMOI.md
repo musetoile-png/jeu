@@ -29,3 +29,13 @@ Un contrôle inverse fait juger les mêmes voix contre des tons volontairement f
 | 0.2 (découpage par programmation dynamique, formes mesurées milieu / fin de phrase) | 57 % | 70 % | 13 % |
 
 Limite : un natif obtient encore autour de 70 % ; le moteur reste sévère, surtout sur le 3e ton en fin de phrase et le 1er ton.
+
+## Version 0.3 : comparaison avec la voix modèle (12 novembre 2026)
+Les phrases de l'atelier sont des répliques du joueur dans le jeu, avec leur voix ElevenLabs (femme ou homme), intégrées à la page.
+Le moteur aligne l'enregistrement du joueur sur la voix modèle grâce au timbre (MFCC + DTW : consonnes et voyelles, pas la hauteur),
+reporte les frontières de syllabes du modèle et compare chaque syllabe à celle du modèle. Le graphe superpose la mélodie du modèle.
+
+Mesures (voix d'homme jugée avec la voix de femme comme modèle, et inversement, 452 enregistrements) :
+- tons natifs jugés justes : 58,5 % (sans modèle) -> 61,8 % (avec modèle) ; phrases au-dessus de 80 % : 41 % -> 48 % ;
+- vrais faux tons (voix natives resynthétisées avec un autre ton sur la moitié des syllabes, `fabriquer-faux.py`) : acceptés à tort 11,4 % -> 12,1 %.
+Gain modeste sur la note ; l'apport principal est la mélodie du modèle affichée sous la tienne.
