@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier de la voix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Mise en page : une colonne étroite, comme une feuille d'exercice ; la phrase au centre, le retour dessous. */
+:root {
+  --papier: #eef0eb;
+  --feuille: #f8f9f6;
+  --encre: #1c2220;
+  --encre-douce: #56605b;
+  --trait: #d3d8d1;
+  --jade: #2d7a66;
+  --jade-pale: #dcebe5;
+  --ocre: #b07a12;
+  --ocre-pale: #f3e6c8;
+  --cinabre: #b4412e;
+  --cinabre-pale: #f4dcd6;
+  --gris: #8a938e;
+  --police-texte: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --police-han: "Noto Serif SC", "Songti SC", "SimSun", "Noto Serif CJK SC", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #141917; --feuille: #1c2320; --encre: #e7ebe6; --encre-douce: #a4ada7; --trait: #2f3834;
+    --jade: #5cb79c; --jade-pale: #1d3a31; --ocre: #e0aa45; --ocre-pale: #3a2f17;
+    --cinabre: #e6735f; --cinabre-pale: #42231d; --gris: #7d8781; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #141917; --feuille: #1c2320; --encre: #e7ebe6; --encre-douce: #a4ada7; --trait: #2f3834;
+  --jade: #5cb79c; --jade-pale: #1d3a31; --ocre: #e0aa45; --ocre-pale: #3a2f17;
+  --cinabre: #e6735f; --cinabre-pale: #42231d; --gris: #7d8781; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--papier); color: var(--encre); font-family: var(--police-texte); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(20px, env(safe-area-inset-top, 0px)) 48px;
+}
+.page { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+h1 { font-size: 1.6rem; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+h1 .han { font-family: var(--police-han); font-weight: 700; color: var(--jade); margin-right: 8px; }
+.sous-titre { color: var(--encre-douce); margin: 0; font-size: 0.95rem; }
+h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--encre-douce); margin: 0 0 8px; font-weight: 600; }
+
+.choix { display: flex; flex-direction: column; gap: 12px; }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puce {
+  font: inherit; font-family: var(--police-han); font-size: 1.05rem; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid var(--trait); background: var(--feuille); color: var(--encre); cursor: pointer;
+}
+.puce:hover { border-color: var(--jade); }
+.puce[aria-pressed="true"] { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+
+.scene { background: var(--feuille); border: 1px solid var(--trait); border-radius: 14px; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.phrase { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 6px; }
+.syl { display: flex; flex-direction: column; align-items: center; min-width: 2.6em; }
+.syl .py { font-size: 1rem; color: var(--encre-douce); min-height: 1.5em; }
+.pinyin-cache .syl .py { visibility: hidden; }
+.pinyin-cache.revele .syl .py { visibility: visible; }
+.syl .hz { font-family: var(--police-han); font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1.15; padding: 0 2px; border-bottom: 3px solid transparent; }
+.syl.ponct .hz { color: var(--encre-douce); }
+.syl.juste .hz { color: var(--jade); border-color: var(--jade); }
+.syl.presque .hz { color: var(--ocre); border-color: var(--ocre); }
+.syl.a_reprendre .hz { color: var(--cinabre); border-color: var(--cinabre); }
+.syl.inaudible .hz { border-bottom-style: dashed; border-color: var(--gris); }
+.traduction { color: var(--encre-douce); margin: 0; text-align: center; }
+.notes { margin: 0; padding: 0; list-style: none; font-size: 0.9rem; color: var(--encre-douce); text-align: center; }
+
+.commandes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+.avis { background: var(--ocre-pale); color: var(--encre); border-radius: 10px; padding: 10px 14px; font-size: 0.92rem; max-width: 62ch; margin: 0; }
+label.action { display: inline-flex; align-items: center; font-weight: 500; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--trait); background: var(--papier); color: var(--encre); cursor: pointer; }
+label.action:hover { border-color: var(--encre-douce); }
+label.action:focus-within { outline: 3px solid var(--jade); outline-offset: 2px; }
+.sans-micro label.fichier { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+.cache-visuel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0; }
+button.action {
+  font: inherit; font-weight: 500; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--trait);
+  background: var(--papier); color: var(--encre); cursor: pointer;
+}
+button.action:hover:not(:disabled) { border-color: var(--encre-douce); }
+button.action:disabled { opacity: 0.5; cursor: not-allowed; }
+#parler {
+  font: inherit; font-weight: 600; font-size: 1.05rem; width: 8.5rem; height: 8.5rem; border-radius: 50%;
+  border: none; background: var(--cinabre); color: #fff; cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px; box-shadow: 0 0 0 0 var(--cinabre-pale); transition: box-shadow 120ms;
+}
+#parler .han { font-family: var(--police-han); font-size: 2rem; line-height: 1; }
+#parler.ecoute { background: var(--encre); }
+#parler:disabled { opacity: 0.6; cursor: wait; }
+button:focus-visible, .puce:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid var(--jade); outline-offset: 2px; }
+.etat { min-height: 1.5em; color: var(--encre-douce); text-align: center; margin: 0; font-size: 0.95rem; }
+.etat.erreur { color: var(--cinabre); }
+
+.resultat { display: flex; flex-direction: column; gap: 16px; }
+.bilan { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.score { font-size: 2.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.compris { color: var(--encre-douce); }
+.compris .han { font-family: var(--police-han); color: var(--encre); font-size: 1.15rem; }
+.compris .manque { color: var(--cinabre); text-decoration: underline wavy; }
+.graphe-boite { background: var(--feuille); border: 1px solid var(--trait); border-radius: 14px; padding: 12px; overflow-x: auto; }
+canvas { display: block; width: 100%; height: 240px; }
+.legende { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; color: var(--encre-douce); margin-top: 6px; }
+.legende span::before { content: ""; display: inline-block; width: 18px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 3px solid var(--encre); }
+.legende span.modele::before { border-top: 2px dashed var(--encre-douce); }
+
+.cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.carte { background: var(--feuille); border: 1px solid var(--trait); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
+.carte .hz { font-family: var(--police-han); font-size: 2rem; grid-row: span 2; }
+.carte .verdict { justify-self: start; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.carte.juste .verdict { background: var(--jade-pale); color: var(--jade); }
+.carte.presque .verdict { background: var(--ocre-pale); color: var(--ocre); }
+.carte.a_reprendre .verdict { background: var(--cinabre-pale); color: var(--cinabre); }
+.carte.neutre .verdict, .carte.inaudible .verdict { background: var(--papier); color: var(--encre-douce); }
+.carte .tons { font-size: 0.85rem; color: var(--encre-douce); }
+.carte svg { grid-column: 1 / -1; width: 100%; height: 72px; }
+.carte p { grid-column: 1 / -1; margin: 0; font-size: 0.9rem; min-width: 0; }
+
+details { background: var(--feuille); border: 1px solid var(--trait); border-radius: 12px; padding: 12px 16px; }
+summary { cursor: pointer; font-weight: 500; }
+details[open] summary { margin-bottom: 10px; }
+.reglages { display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; }
+.reglages label { display: flex; gap: 8px; align-items: flex-start; }
+.ligne-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.ligne-form input[type=text] { font: inherit; padding: 8px 10px; border: 1px solid var(--trait); border-radius: 8px; background: var(--papier); color: var(--encre); flex: 1 1 180px; min-width: 0; }
+#perso-hanzi { font-family: var(--police-han); }
+.petit { font-size: 0.88rem; color: var(--encre-douce); margin: 0; }
+footer { font-size: 0.88rem; color: var(--encre-douce); }
+footer p { margin: 0 0 8px; max-width: 65ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <h1><span class="han">千里</span>Atelier de la voix</h1>
+      <p class="sous-titre">Prototype : dis la phrase, le jeu écoute tes tons syllabe par syllabe.</p>
+    </div>
+  </header>
+
+  <section class="choix" aria-label="Choisir une phrase">
+    <div>
+      <h2>Mots</h2>
+      <div class="puces" id="puces-mots"></div>
+    </div>
+    <div>
+      <h2>Phrases de la cuisine de 奶奶</h2>
+      <div class="puces" id="puces-phrases"></div>
+    </div>
+  </section>
+
+  <section class="scene" aria-live="polite">
+    <div class="phrase pinyin-cache" id="phrase"></div>
+    <p class="traduction" id="traduction"></p>
+    <ul class="notes" id="notes"></ul>
+    <div class="commandes">
+      <button class="action" id="modele" type="button">Écouter le modèle</button>
+      <button id="parler" type="button" aria-label="Parler"><span class="han">说</span><span id="parler-texte">Parler</span></button>
+      <button class="action" id="reecouter" type="button" disabled>Réécouter ma voix</button>
+    </div>
+    <p class="avis" id="avis-micro" hidden></p>
+    <div class="commandes">
+      <label class="action fichier"><input type="file" id="fichier-audio" accept="audio/*" capture class="cache-visuel">Utiliser un enregistrement</label>
+      <button class="action" id="bascule-pinyin" type="button">Afficher le pinyin</button>
+    </div>
+    <p class="etat" id="etat">Appuie sur « Parler », dis la phrase, puis tais-toi : l'écoute s'arrête toute seule.</p>
+  </section>
+
+  <section class="resultat" id="resultat" hidden>
+    <div class="bilan">
+      <span><span class="score" id="score"></span> <span class="petit">de tons justes</span></span>
+      <span class="compris" id="compris"></span>
+    </div>
+    <div class="graphe-boite">
+      <canvas id="graphe" aria-label="Courbe de hauteur de ta voix comparée aux tons attendus"></canvas>
+      <div class="legende"><span>Ta voix</span><span class="modele">Forme attendue du ton</span></div>
+    </div>
+    <div class="cartes" id="cartes"></div>
+  </section>
+
+  <details>
+    <summary>Réglages et phrase personnalisée</summary>
+    <div class="reglages">
+      <label><input type="checkbox" id="opt-reco" checked>
+        <span>Vérifier aussi les mots prononcés. Le navigateur envoie alors l'enregistrement à son service de reconnaissance (Google dans Chrome). L'analyse des tons, elle, reste sur l'appareil.</span></label>
+      <p class="petit" id="info-registre"></p>
+      <div><button class="action" id="oublier-voix" type="button">Oublier ma voix</button></div>
+      <div>
+        <h2>Ta phrase</h2>
+        <div class="ligne-form">
+          <input type="text" id="perso-hanzi" placeholder="我要一杯茶。" aria-label="Caractères">
+          <input type="text" id="perso-pinyin" placeholder="wo3 yao4 yi1 bei1 cha2" aria-label="Pinyin avec chiffres">
+          <button class="action" id="perso-ok" type="button">Essayer</button>
+        </div>
+        <p class="petit">Pinyin avec le numéro du ton après chaque syllabe (5 ou rien pour le ton neutre). Les règles de changement de ton sont appliquées toutes seules.</p>
+        <p class="petit" id="perso-erreur" role="alert"></p>
+      </div>
+    </div>
+  </details>
+
+  <footer>
+    <p>L'analyse mesure la hauteur de ta voix toutes les 10 ms, découpe la phrase en syllabes et compare chaque courbe aux formes des quatre tons, en tenant compte des changements de ton (不, 一, deux 3e tons qui se suivent, 3e ton au milieu de la phrase). Le ton neutre n'est pas noté.</p>
+    <p>Sans micro en direct, tu peux t'enregistrer avec le dictaphone de ton téléphone ou de ton ordinateur, puis choisir le fichier avec « Utiliser un enregistrement » : l'analyse est la même.</p>
+    <p>C'est un premier prototype : il se trompe parfois sur le découpage quand on enchaîne très vite, et il devient plus juste au fil des enregistrements, car il apprend la hauteur moyenne de ta voix. Le modèle à écouter utilise la voix chinoise de ton appareil ; dans le jeu, ce sera la voix ElevenLabs.</p>
+  </footer>
+</div>
+
+<script>
+/*
+ * Moteur de voix — Mille li (千里)
+ * ---------------------------------
+ * Analyse une phrase chinoise prononcée par le joueur :
+ *   1. hauteur de la voix trame par trame (algorithme YIN),
+ *   2. découpage de l'enregistrement en syllabes,
+ *   3. tons attendus (avec les règles de changement de ton : 不, 一, 3e + 3e, 3e ton « demi »),
+ *   4. ton entendu pour chaque syllabe et verdict (juste / presque / à reprendre),
+ *   5. comparaison du texte reconnu (si un service de reconnaissance l'a fourni).
+ *
+ * Tout tourne sur l'appareil : aucun réseau, aucune dépendance.
+ * Fonctionne dans le navigateur (window.MoteurVoix) et sous Node (require).
+ *
+ * Entrée principale : MoteurVoix.analyser(signal, frequenceEchantillonnage, phrase, options)
+ *   signal  : Float32Array mono, valeurs entre -1 et 1
+ *   phrase  : objet renvoyé par MoteurVoix.preparerPhrase({ hanzi, pinyin, fr })
+ *   options : { registreHz }  (hauteur moyenne habituelle du joueur, si connue)
+ *
+ * Ce moteur est une première brique « locale ». Il est pensé pour être remplacé ou complété
+ * plus tard par un service spécialisé (SpeechSuper, TonePerfect…) derrière la même interface.
+ */
+(function (racine) {
+  'use strict';
+
+  // ---------- Réglages ----------
+  const SR = 16000;            // fréquence de travail
+  const HOP = 160;             // pas entre deux trames : 10 ms
+  const W = 400;               // fenêtre d'intégration : 25 ms
+  const FMIN = 70, FMAX = 450; // plage de hauteur d'une voix parlée
+  const TAU_MIN = Math.floor(SR / FMAX);
+  const TAU_MAX = Math.ceil(SR / FMIN);
+  const TRAME = W + TAU_MAX;
+  const DUREE_MIN_SYLLABE = 8; // en trames (80 ms)
+
+  // Formes de référence des tons, en demi-tons autour du milieu de la voix, sur 5 points.
+  const MODELES = {
+    '1':  [2.5, 2.5, 2.5, 2.5, 2.5],      // haut et plat
+    '2':  [-1.5, -1.5, -0.5, 1, 2.5],     // monte
+    '3':  [-2.5, -4.5, -5, -2.5, 1.5],    // plonge puis remonte (3e ton complet, « 214 »)
+    '3b': [-2.5, -4, -5, -5, -5],         // reste bas (3e ton au milieu d'une phrase)
+    '4':  [3, 2.5, 1, -1, -3.5]           // tombe
+  };
+
+  // ---------- Pinyin ----------
+  const MARQUES = {
+    a: ['a', 'ā', 'á', 'ǎ', 'à'], e: ['e', 'ē', 'é', 'ě', 'è'], i: ['i', 'ī', 'í', 'ǐ', 'ì'],
+    o: ['o', 'ō', 'ó', 'ǒ', 'ò'], u: ['u', 'ū', 'ú', 'ǔ', 'ù'], 'ü': ['ü', 'ǖ', 'ǘ', 'ǚ', 'ǜ']
+  };
+
+  /** "hao3" → "hǎo", "lv4" → "lǜ", "me5" ou "me" → "me" */
+  function pinyinAccentue(syllabe) {
+    const m = /^([a-zü:v]+?)([1-5])?$/i.exec(syllabe.trim());
+    if (!m) return syllabe;
+    let base = m[1].toLowerCase().replace(/v|u:/g, 'ü');
+    const ton = m[2] ? Number(m[2]) : 5;
+    if (ton === 5) return base;
+    let cible;
+    if (base.includes('a')) cible = base.indexOf('a');
+    else if (base.includes('e')) cible = base.indexOf('e');
+    else if (base.includes('ou')) cible = base.indexOf('o');
+    else {
+      for (let i = base.length - 1; i >= 0; i--) {
+        if ('iouü'.includes(base[i])) { cible = i; break; }
+      }
+    }
+    if (cible === undefined) return base;
+    const v = base[cible];
+    return base.slice(0, cible) + MARQUES[v][ton] + base.slice(cible + 1);
+  }
+
+  const EST_HAN = /\p{Script=Han}/u;
+  const EST_PAUSE = /[，。！？、；：,.!?;:…]/;
+
+  /**
+   * Prépare une phrase : associe chaque caractère à sa syllabe et calcule les tons à prononcer.
+   * phrase = { hanzi: "很热。", pinyin: "hen3 re4", fr: "Très chaud." }
+   */
+  function preparerPhrase(phrase) {
+    const caracteres = [];
+    const pauseApres = [];
+    for (const c of phrase.hanzi) {
+      if (EST_HAN.test(c)) { caracteres.push(c); pauseApres.push(false); }
+      else if (EST_PAUSE.test(c) && caracteres.length) pauseApres[pauseApres.length - 1] = true;
+    }
+    const syllabesPinyin = phrase.pinyin.trim().split(/\s+/);
+    if (syllabesPinyin.length !== caracteres.length) {
+      throw new Error('« ' + phrase.hanzi + ' » : ' + caracteres.length + ' caractères mais ' +
+        syllabesPinyin.length + ' syllabes de pinyin.');
+    }
+    const syllabes = caracteres.map((h, i) => {
+      const m = /([1-5])$/.exec(syllabesPinyin[i]);
+      const ton = m ? Number(m[1]) : 5;
+      return { h, p: syllabesPinyin[i], affichage: pinyinAccentue(syllabesPinyin[i]), ton, pauseApres: pauseApres[i] };
+    });
+    const surface = tonsDeSurface(syllabes);
+    syllabes.forEach((s, i) => { s.surface = surface.tons[i]; s.note = surface.notes[i]; });
+    return Object.assign({}, phrase, { syllabes });
+  }
+
+  /** Règles de changement de ton (sandhi). Renvoie les tons réellement prononcés. */
+  function tonsDeSurface(syl) {
+    const n = syl.length;
+    const tons = syl.map(s => s.ton);
+    const notes = syl.map(() => null);
+    const suivant = i => (i + 1 < n && !syl[i].pauseApres) ? syl[i + 1] : null;
+
+    for (let i = 0; i < n; i++) {
+      const s = suivant(i);
+      if (syl[i].h === '不' && s && s.ton === 4) {
+        tons[i] = 2; notes[i] = '不 se prononce « bú » devant un 4e ton.';
+      }
+      if (syl[i].h === '一') {
+        if (!s) { tons[i] = 1; }
+        else if (s.h === '个' || s.ton === 4) { tons[i] = 2; notes[i] = '一 se prononce « yí » devant un 4e ton (et devant 个).'; }
+        else if (s.ton >= 1 && s.ton <= 3) { tons[i] = 4; notes[i] = '一 se prononce « yì » devant un 1er, 2e ou 3e ton.'; }
+      }
+    }
+    for (let i = 0; i < n - 1; i++) {
+      if (tons[i] === 3 && tons[i + 1] === 3 && !syl[i].pauseApres) {
+        tons[i] = 2; notes[i] = 'Deux 3e tons de suite : le premier se prononce comme un 2e ton.';
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      if (tons[i] === 3 && i < n - 1 && !syl[i].pauseApres) {
+        tons[i] = '3b';
+        if (!notes[i]) notes[i] = 'Au milieu de la phrase, le 3e ton reste en bas, sans remonter.';
+      }
+    }
+    return { tons: tons.map(String), notes };
+  }
+
+  // ---------- Signal ----------
+  function reechantillonner(x, srEntree) {
+    if (srEntree === SR) return Float32Array.from(x);
+    const ratio = srEntree / SR;
+    const k = Math.max(1, Math.round(ratio));
+    const lisse = new Float32Array(x.length);
+    let acc = 0;
+    for (let i = 0; i < x.length; i++) {
+      acc += x[i];
+      if (i >= k) acc -= x[i - k];
+      lisse[i] = acc / Math.min(i + 1, k);
+    }
+    const n = Math.floor(x.length / ratio);
+    const y = new Float32Array(n);
+    for (let j = 0; j < n; j++) {
+      const p = j * ratio + (k - 1) / 2;
+      const i0 = Math.min(x.length - 1, Math.floor(p));
+      const f = p - i0;
+      const a = lisse[i0], b = lisse[Math.min(i0 + 1, x.length - 1)];
+      y[j] = a + (b - a) * f;
+    }
+    return y;
+  }
+
+  function yin(x, debut, d, cm) {
+    for (let tau = 1; tau <= TAU_MAX; tau++) {
+      let s = 0;
+      for (let j = 0; j < W; j++) {
+        const diff = x[debut + j] - x[debut + j + tau];
+        s += diff * diff;
+      }
+      d[tau] = s;
+    }
+    let cumul = 0;
+    cm[0] = 1;
+    for (let tau = 1; tau <= TAU_MAX; tau++) {
+      cumul += d[tau];
+      cm[tau] = cumul > 0 ? d[tau] * tau / cumul : 1;
+    }
+    let meilleur = -1;
+    for (let tau = TAU_MIN; tau <= TAU_MAX; tau++) {
+      if (cm[tau] < 0.15) {
+        while (tau + 1 <= TAU_MAX && cm[tau + 1] < cm[tau]) tau++;
+        meilleur = tau;
+        break;
+      }
+    }
+    if (meilleur < 0) {
+      let m = Infinity;
+      for (let tau = TAU_MIN; tau <= TAU_MAX; tau++) if (cm[tau] < m) { m = cm[tau]; meilleur = tau; }
+      if (cm[meilleur] > 0.35) return { f0: 0, ap: cm[meilleur] };
+    }
+    let t = meilleur;
+    if (meilleur > TAU_MIN && meilleur < TAU_MAX) {
+      const a = cm[meilleur - 1], b = cm[meilleur], c = cm[meilleur + 1];
+      const den = a - 2 * b + c;
+      if (den > 0) t = meilleur + 0.5 * (a - c) / den;
+    }
+    return { f0: SR / t, ap: cm[meilleur] };
+  }
+
+  function percentile(valeurs, p) {
+    if (!valeurs.length) return 0;
+    const v = Array.from(valeurs).sort((a, b) => a - b);
+    return v[Math.min(v.length - 1, Math.max(0, Math.round(p * (v.length - 1))))];
+  }
+
+  function mediane(v) { return percentile(v, 0.5); }
+
+  /** Trames de 10 ms : énergie, hauteur, voisement. */
+  function extraireTrames(x) {
+    const n = Math.max(0, Math.floor((x.length - TRAME) / HOP) + 1);
+    const trames = [];
+    for (let i = 0; i < n; i++) {
+      const s = i * HOP;
+      let e = 0;
+      for (let j = 0; j < W; j++) e += x[s + j] * x[s + j];
+      trames.push({ t: (s + W / 2) / SR, rms: Math.sqrt(e / W), f0: 0, ap: 1, voisee: false });
+    }
+    const rmsTous = trames.map(t => t.rms);
+    const bruit = Math.max(percentile(rmsTous, 0.1), 1e-5);
+    const crete = percentile(rmsTous, 0.98);
+    const seuilParole = Math.max(bruit * 4, crete * 0.08, 2e-4);
+    const seuilVoix = Math.max(bruit * 3, crete * 0.05, 1.5e-4);
+
+    const d = new Float64Array(TAU_MAX + 1), cm = new Float64Array(TAU_MAX + 1);
+    for (let i = 0; i < n; i++) {
+      const tr = trames[i];
+      if (tr.rms < seuilVoix) continue;
+      const r = yin(x, i * HOP, d, cm);
+      tr.ap = r.ap;
+      if (r.f0 >= FMIN && r.f0 <= FMAX && r.ap < 0.3) { tr.f0 = r.f0; tr.voisee = true; }
+    }
+
+    // Corrige les sauts d'octave autour de la hauteur médiane
+    const med = mediane(trames.filter(t => t.voisee).map(t => t.f0));
+    if (med > 0) {
+      for (const tr of trames) {
+        if (!tr.voisee) continue;
+        if (tr.f0 > 1.75 * med) tr.f0 /= 2;
+        else if (tr.f0 < 0.6 * med) tr.f0 *= 2;
+        if (tr.f0 < FMIN || tr.f0 > FMAX) { tr.voisee = false; tr.f0 = 0; }
+      }
+    }
+    // Retire les îlots de voix trop courts (bruits, clics)
+    let i = 0;
+    while (i < n) {
+      if (!trames[i].voisee) { i++; continue; }
+      let j = i;
+      while (j < n && trames[j].voisee) j++;
+      if (j - i < 3) for (let k = i; k < j; k++) { trames[k].voisee = false; trames[k].f0 = 0; }
+      i = j;
+    }
+    // Lissage médian sur 5 trames, à l'intérieur des passages voisés
+    const brut = trames.map(t => t.f0);
+    for (let k = 0; k < n; k++) {
+      if (!trames[k].voisee) continue;
+      const voisins = [];
+      for (let m = k - 2; m <= k + 2; m++) if (m >= 0 && m < n && trames[m].voisee) voisins.push(brut[m]);
+      trames[k].f0 = mediane(voisins);
+    }
+    return { trames, seuilParole, seuilVoix, bruit, crete };
+  }
+
+  /** Découpe la zone de parole en n syllabes, d'après les creux d'énergie et les coupures de voix. */
+  function decouper(trames, a, b, n) {
+    if (n <= 1) return { frontieres: [], approximatif: false };
+    const E = trames.map(t => 20 * Math.log10(t.rms + 1e-7));
+    const Es = E.map((_, i) => {
+      let s = 0, c = 0;
+      for (let k = i - 2; k <= i + 2; k++) if (k >= a && k <= b) { s += E[k]; c++; }
+      return c ? s / c : E[i];
+    });
+    const candidats = [];
+    const portee = 15;
+    for (let i = a + DUREE_MIN_SYLLABE; i <= b - DUREE_MIN_SYLLABE; i++) {
+      const creux = Es[i] <= Es[i - 1] && Es[i] <= Es[i + 1];
+      let voixAvant = false, voixApres = false;
+      for (let k = Math.max(a, i - portee); k < i; k++) if (trames[k].voisee) { voixAvant = true; break; }
+      for (let k = i + 1; k <= Math.min(b, i + portee); k++) if (trames[k].voisee) { voixApres = true; break; }
+      const coupure = !trames[i].voisee && voixAvant && voixApres;
+      if (!creux && !coupure) continue;
+      let maxG = -Infinity, maxD = -Infinity;
+      for (let k = Math.max(a, i - portee); k <= i; k++) maxG = Math.max(maxG, Es[k]);
+      for (let k = i; k <= Math.min(b, i + portee); k++) maxD = Math.max(maxD, Es[k]);
+      let force = Math.min(maxG, maxD) - Es[i];
+      if (coupure) force += 6;
+      // Saut de hauteur entre deux trames voisées : indice d'un changement de syllabe
+      if (trames[i].voisee && trames[i + 1].voisee) {
+        const saut = Math.abs(12 * Math.log2(trames[i + 1].f0 / trames[i].f0));
+        if (saut > 2.5) force += 3;
+      }
+      if (force > 0.5) candidats.push({ i, force });
+    }
+    // Plusieurs trames d'une même coupure : on garde le centre
+    candidats.sort((x, y) => y.force - x.force);
+    const choisies = [];
+    for (const c of candidats) {
+      if (choisies.length >= n - 1) break;
+      if (choisies.every(f => Math.abs(f - c.i) >= DUREE_MIN_SYLLABE)) choisies.push(c.i);
+    }
+    let approximatif = false;
+    while (choisies.length < n - 1) {
+      approximatif = true;
+      const bornes = [a, ...choisies.slice().sort((x, y) => x - y), b + 1];
+      let plusLong = 0, debut = a;
+      for (let k = 0; k < bornes.length - 1; k++) {
+        if (bornes[k + 1] - bornes[k] > plusLong) { plusLong = bornes[k + 1] - bornes[k]; debut = bornes[k]; }
+      }
+      choisies.push(debut + Math.floor(plusLong / 2));
+    }
+    choisies.sort((x, y) => x - y);
+    return { frontieres: choisies, approximatif };
+  }
+
+  function versCinqPoints(valeurs) {
+    const res = [];
+    for (let k = 0; k < 5; k++) {
+      const p = (k / 4) * (valeurs.length - 1);
+      const i0 = Math.floor(p), f = p - i0;
+      const a = valeurs[i0], b = valeurs[Math.min(valeurs.length - 1, i0 + 1)];
+      res.push(a + (b - a) * f);
+    }
+    return res;
+  }
+
+  function moyenne(v) { return v.reduce((s, x) => s + x, 0) / v.length; }
+
+  /** Distance entre un contour mesuré et un modèle : forme (avec ampleur ajustable) + niveau. */
+  function distance(contour, modele, poidsNiveau) {
+    if (poidsNiveau === undefined) poidsNiveau = 0.35;
+    const mu = moyenne(contour), mt = moyenne(modele);
+    const cu = contour.map(x => x - mu), ct = modele.map(x => x - mt);
+    const ctct = ct.reduce((s, x) => s + x * x, 0);
+    let echelle = 1;
+    if (ctct > 1e-6) {
+      echelle = cu.reduce((s, x, k) => s + x * ct[k], 0) / ctct;
+      echelle = Math.min(1.6, Math.max(0.5, echelle));
+    }
+    let forme = 0;
+    for (let k = 0; k < 5; k++) forme += (cu[k] - echelle * ct[k]) ** 2;
+    forme = Math.sqrt(forme / 5);
+    return forme + poidsNiveau * Math.abs(mu - mt);
+  }
+
+  const ACCEPTES = { '1': ['1'], '2': ['2'], '3': ['3', '3b'], '3b': ['3b', '3'], '4': ['4'] };
+
+  const CONSEILS = {
+    '1': {
+      '2': 'Le 1er ton ne monte pas : pars haut et tiens la note.',
+      '3': 'Le 1er ton est haut : place ta voix plus haut, comme une note tenue.',
+      '4': 'Le 1er ton reste haut et plat : ne laisse pas la voix retomber.'
+    },
+    '2': {
+      '1': 'Le 2e ton monte : pars du milieu et monte, comme un « hein ? » étonné.',
+      '3': 'Pas de creux : monte franchement dès le début.',
+      '4': 'Tu descends au lieu de monter. Le 2e ton monte, comme « hein ? ».'
+    },
+    '3': {
+      '1': 'Trop haut : le 3e ton est le plus grave, descends dans le bas de ta voix.',
+      '2': 'Commence plus bas : le 3e ton plonge d\'abord.',
+      '4': 'Ne pars pas d\'en haut : le 3e ton part du milieu et descend tout en bas.'
+    },
+    '4': {
+      '1': 'Le 4e ton tombe franchement, comme un « Non ! » ferme.',
+      '2': 'Tu montes au lieu de descendre : le 4e ton tombe, comme « Non ! ».',
+      '3': 'Pars plus haut : le 4e ton commence en haut et tombe d\'un coup.'
+    }
+  };
+
+  const NOMS_TONS = { '1': '1er ton', '2': '2e ton', '3': '3e ton', '3b': '3e ton', '4': '4e ton', '5': 'ton neutre' };
+
+  function evaluerSyllabe(contour, attendu, poidsNiveau) {
+    const distances = {};
+    for (const cle of Object.keys(MODELES)) distances[cle] = distance(contour, MODELES[cle], poidsNiveau);
+    const ordre = Object.keys(distances).sort((x, y) => distances[x] - distances[y]);
+    const meilleur = ordre[0];
+    const entendu = meilleur === '3b' ? '3' : meilleur;
+    if (attendu === '5') return { entendu, verdict: 'neutre', distances };
+    const acceptes = ACCEPTES[attendu];
+    const dAttendu = Math.min(...acceptes.map(c => distances[c]));
+    let verdict;
+    if (acceptes.includes(meilleur)) verdict = 'juste';
+    else if (dAttendu <= distances[meilleur] * 1.25 + 0.3) verdict = 'presque';
+    else verdict = 'a_reprendre';
+    const attenduBase = attendu === '3b' ? '3' : attendu;
+    let conseil = null;
+    if (verdict !== 'juste') {
+      conseil = (CONSEILS[attenduBase] && CONSEILS[attenduBase][entendu]) ||
+        'Écoute le modèle et exagère la forme du ' + NOMS_TONS[attendu] + '.';
+    }
+    return { entendu, verdict, distances, conseil };
+  }
+
+  /**
+   * Analyse complète d'un enregistrement.
+   * Renvoie { ok, message, duree, registreHz, medianeHz, courbe, syllabes, score, approximatif }.
+   */
+  function analyser(signal, srEntree, phrase, options) {
+    options = options || {};
+    const x = reechantillonner(signal, srEntree);
+    const { trames, seuilParole } = extraireTrames(x);
+    const n = phrase.syllabes.length;
+
+    let a = trames.findIndex(t => t.rms > seuilParole);
+    let b = -1;
+    for (let i = trames.length - 1; i >= 0; i--) if (trames[i].rms > seuilParole) { b = i; break; }
+    const voisees = trames.filter(t => t.voisee);
+    if (a < 0 || voisees.length < 5) {
+      return { ok: false, message: 'Je n\'ai rien entendu de clair. Rapproche-toi du micro et parle un peu plus fort.' };
+    }
+    a = Math.max(0, a - 2); b = Math.min(trames.length - 1, b + 2);
+    if ((b - a + 1) < n * 6) {
+      return { ok: false, message: 'L\'enregistrement est trop court pour ' + n + ' syllabes. Reprends en articulant chaque syllabe.' };
+    }
+
+    const medianeHz = mediane(voisees.map(t => t.f0));
+    const registreConnu = options.registreHz && options.registreHz > 0;
+    const reference = registreConnu ? options.registreHz : medianeHz;
+    // Le niveau (haut / bas) n'est fiable que si l'on connaît la voix du joueur
+    // ou si la phrase est assez longue pour que sa médiane serve de repère.
+    const nbNotees = phrase.syllabes.filter(s => s.surface !== '5').length;
+    const poidsNiveau = registreConnu ? 0.35 : 0.35 * Math.min(1, Math.max(0, nbNotees - 1) / 3);
+    const st = f => 12 * Math.log2(f / reference);
+
+    const { frontieres, approximatif } = decouper(trames, a, b, n);
+    const bornes = [a, ...frontieres, b + 1];
+
+    const syllabes = phrase.syllabes.map((s, k) => {
+      const debut = bornes[k], fin = bornes[k + 1];
+      const voix = [];
+      for (let i = debut; i < fin; i++) if (trames[i].voisee) voix.push(st(trames[i].f0));
+      const base = {
+        h: s.h, pinyin: s.affichage, tonLexical: String(s.ton), tonAttendu: s.surface, note: s.note,
+        debut: trames[debut].t, fin: trames[Math.min(fin, trames.length) - 1].t
+      };
+      if (voix.length < 6) {
+        return Object.assign(base, { verdict: s.surface === '5' ? 'neutre' : 'inaudible', contour: null, entendu: null,
+          conseil: s.surface === '5' ? null : 'Syllabe trop courte ou trop faible : tiens la voyelle un peu plus longtemps.' });
+      }
+      const coeur = voix.slice(Math.floor(voix.length * 0.15), Math.ceil(voix.length * 0.9));
+      const contour = versCinqPoints(coeur.length >= 4 ? coeur : voix);
+      const ev = evaluerSyllabe(contour, s.surface, poidsNiveau);
+      return Object.assign(base, { contour, entendu: ev.entendu, verdict: ev.verdict, distances: ev.distances, conseil: ev.conseil });
+    });
+
+    const notees = syllabes.filter(s => s.verdict !== 'neutre');
+    const points = notees.reduce((p, s) => p + (s.verdict === 'juste' ? 1 : s.verdict === 'presque' ? 0.5 : 0), 0);
+    const score = notees.length ? Math.round(100 * points / notees.length) : 100;
+
+    const marge = 5;
+    const courbe = [];
+    for (let i = Math.max(0, a - marge); i <= Math.min(trames.length - 1, b + marge); i++) {
+      const t = trames[i];
+      courbe.push({ t: t.t, st: t.voisee ? st(t.f0) : null, db: 20 * Math.log10(t.rms + 1e-7) });
+    }
+
+    return {
+      ok: true,
+      duree: x.length / SR,
+      debutParole: trames[a].t,
+      finParole: trames[b].t,
+      registreHz: reference,
+      medianeHz,
+      courbe,
+      syllabes,
+      score,
+      approximatif
+    };
+  }
+
+  // ---------- Texte ----------
+  function nettoyer(texte) { return [...(texte || '')].filter(c => EST_HAN.test(c)); }
+
+  /** Compare le texte attendu au texte reconnu, caractère par caractère (plus longue sous-suite commune). */
+  function comparerTexte(attendu, entendu) {
+    const a = nettoyer(attendu), b = nettoyer(entendu);
+    const L = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+    for (let i = a.length - 1; i >= 0; i--) {
+      for (let j = b.length - 1; j >= 0; j--) {
+        L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+      }
+    }
+    const trouves = new Array(a.length).fill(false);
+    let i = 0, j = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] === b[j]) { trouves[i] = true; i++; j++; }
+      else if (L[i + 1][j] >= L[i][j + 1]) i++;
+      else j++;
+    }
+    const nb = trouves.filter(Boolean).length;
+    return {
+      caracteres: a.map((c, k) => ({ c, trouve: trouves[k] })),
+      taux: a.length ? nb / a.length : 0,
+      entendu: b.join('')
+    };
+  }
+
+  const MoteurVoix = {
+    version: '0.1.0',
+    MODELES, NOMS_TONS,
+    pinyinAccentue, preparerPhrase, tonsDeSurface,
+    analyser, comparerTexte,
+    _interne: { reechantillonner, extraireTrames, decouper, distance, evaluerSyllabe, SR, HOP }
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = MoteurVoix;
+  else racine.MoteurVoix = MoteurVoix;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const M = window.MoteurVoix;
+  const $ = id => document.getElementById(id);
+
+  // ---------- Contenu ----------
+  const MOTS = [
+    { hanzi: '油', pinyin: 'you2', fr: 'huile' }, { hanzi: '水', pinyin: 'shui3', fr: 'eau' },
+    { hanzi: '盐', pinyin: 'yan2', fr: 'sel' }, { hanzi: '热', pinyin: 're4', fr: 'chaud' },
+    { hanzi: '冷', pinyin: 'leng3', fr: 'froid' }, { hanzi: '多', pinyin: 'duo1', fr: 'beaucoup' },
+    { hanzi: '少', pinyin: 'shao3', fr: 'peu' }, { hanzi: '碗', pinyin: 'wan3', fr: 'bol' },
+    { hanzi: '菜', pinyin: 'cai4', fr: 'légume, plat' }
+  ];
+  const PHRASES = [
+    { hanzi: '好。我做什么？', pinyin: 'hao3 wo3 zuo4 shen2 me5', fr: 'D\'accord. Je fais quoi ?' },
+    { hanzi: '这是油。', pinyin: 'zhe4 shi4 you2', fr: 'Ça, c\'est l\'huile.' },
+    { hanzi: '放油。', pinyin: 'fang4 you2', fr: 'Mets l\'huile.' },
+    { hanzi: '热。很热。', pinyin: 're4 hen3 re4', fr: 'Oui, très chaud.' },
+    { hanzi: '多放米饭。', pinyin: 'duo1 fang4 mi3 fan4', fr: 'Mets beaucoup de riz.' },
+    { hanzi: '什么菜？', pinyin: 'shen2 me5 cai4', fr: 'Quel légume ?' },
+    { hanzi: '少放盐。', pinyin: 'shao3 fang4 yan2', fr: 'Mets peu de sel.' },
+    { hanzi: '好了。', pinyin: 'hao3 le5', fr: 'C\'est prêt.' },
+    { hanzi: '放碗里。', pinyin: 'fang4 wan3 li3', fr: 'Mets-le dans le bol.' },
+    { hanzi: '谢谢奶奶！', pinyin: 'xie4 xie5 nai3 nai5', fr: 'Merci, Mamie !' },
+    { hanzi: '奶奶，明天见！', pinyin: 'nai3 nai5 ming2 tian1 jian4', fr: 'À demain, Mamie !' }
+  ];
+
+  // ---------- Mémoire locale (préférences et voix du joueur) ----------
+  const lire = (cle, defaut) => { try { const v = localStorage.getItem(cle); return v === null ? defaut : JSON.parse(v); } catch (e) { return defaut; } };
+  const ecrire = (cle, v) => { try { localStorage.setItem(cle, JSON.stringify(v)); } catch (e) { /* stockage indisponible */ } };
+
+  let historiqueVoix = lire('atelierVoix.registre', []);
+  const registreConnu = () => {
+    if (historiqueVoix.length < 3) return undefined;
+    const v = historiqueVoix.slice().sort((a, b) => a - b);
+    return v[Math.floor(v.length / 2)];
+  };
+  function afficherRegistre() {
+    const r = registreConnu();
+    $('info-registre').textContent = r
+      ? 'Hauteur moyenne de ta voix : ' + Math.round(r) + ' Hz (d\'après ' + historiqueVoix.length + ' enregistrements). Elle sert à juger si un ton est haut ou bas.'
+      : 'L\'atelier apprend la hauteur de ta voix : après 3 enregistrements, il jugera mieux si un ton est haut ou bas (' + historiqueVoix.length + '/3).';
+  }
+
+  // ---------- Évaluateur (interchangeable plus tard avec un service spécialisé) ----------
+  const evaluateur = {
+    nom: 'analyse sur l\'appareil',
+    evaluer: async ({ signal, sr, phrase, registreHz }) => M.analyser(signal, sr, phrase, { registreHz })
+  };
+
+  // ---------- Affichage de la phrase ----------
+  let phrase = null;
+  let pinyinVisible = lire('atelierVoix.pinyin', false);
+
+  function preparerAffichage() {
+    const boite = $('phrase');
+    boite.innerHTML = '';
+    let k = 0;
+    for (const c of phrase.hanzi) {
+      const el = document.createElement('div');
+      const py = document.createElement('span'); py.className = 'py';
+      const hz = document.createElement('span'); hz.className = 'hz'; hz.textContent = c;
+      if (/\p{Script=Han}/u.test(c)) {
+        el.className = 'syl';
+        el.dataset.index = k;
+        py.textContent = phrase.syllabes[k].affichage;
+        k++;
+      } else {
+        el.className = 'syl ponct';
+      }
+      el.append(py, hz);
+      boite.append(el);
+    }
+    boite.classList.toggle('pinyin-cache', !pinyinVisible);
+    boite.classList.remove('revele');
+    $('traduction').textContent = phrase.fr || '';
+    const notes = phrase.syllabes.filter(s => s.note).map(s => s.h + ' : ' + s.note);
+    $('notes').innerHTML = '';
+    for (const n of [...new Set(notes)]) { const li = document.createElement('li'); li.textContent = n; $('notes').append(li); }
+    $('resultat').hidden = true;
+    $('reecouter').disabled = true;
+    dernierEnregistrement = null;
+    etat(messageAccueil());
+  }
+
+  function choisir(p, bouton) {
+    phrase = M.preparerPhrase(p);
+    document.querySelectorAll('.puce').forEach(b => b.setAttribute('aria-pressed', b === bouton ? 'true' : 'false'));
+    preparerAffichage();
+  }
+
+  function remplirPuces(liste, conteneur) {
+    for (const p of liste) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'puce'; b.textContent = p.hanzi.replace(/[。！？]$/, '');
+      b.title = p.fr; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => choisir(p, b));
+      conteneur.append(b);
+    }
+  }
+
+  function majBoutonPinyin() {
+    $('bascule-pinyin').textContent = pinyinVisible ? 'Masquer le pinyin' : 'Afficher le pinyin';
+    $('phrase').classList.toggle('pinyin-cache', !pinyinVisible);
+  }
+
+  function etat(texte, erreur) {
+    $('etat').textContent = texte;
+    $('etat').classList.toggle('erreur', !!erreur);
+  }
+
+  // ---------- Modèle sonore (voix de l'appareil) ----------
+  function voixChinoise() {
+    if (!('speechSynthesis' in window)) return null;
+    const voix = speechSynthesis.getVoices();
+    return voix.find(v => /^zh[-_]CN/i.test(v.lang)) || voix.find(v => /^zh/i.test(v.lang)) || null;
+  }
+  $('modele').addEventListener('click', () => {
+    const v = voixChinoise();
+    if (!v) { etat('Aucune voix chinoise n\'est installée sur cet appareil. Dans le jeu, le modèle sera la voix ElevenLabs.', true); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(phrase.hanzi);
+    u.voice = v; u.lang = v.lang; u.rate = 0.7;
+    speechSynthesis.speak(u);
+  });
+
+  // ---------- Enregistrement ----------
+  let enCours = null;
+  let dernierEnregistrement = null;
+  const RECO = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  // ---------- Diagnostic du micro ----------
+  const DANS_UN_CADRE = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  const MSG_CADRE = 'Ici, le micro en direct est bloqué : la page est affichée dans un cadre protégé (aperçu dans Claude, page partagée). ' +
+    'Enregistre-toi avec le dictaphone de ton téléphone ou de ton ordinateur, puis choisis le fichier avec « Utiliser un enregistrement ». ' +
+    'Pour le micro en direct, ouvre le fichier atelier-voix.html directement dans Chrome ou Edge.';
+
+  function verifierMicro() {
+    if (!window.isSecureContext) return { ok: false, message: 'Le navigateur bloque le micro sur cette adresse non sécurisée. Ouvre le fichier directement dans Chrome ou Edge, ou utilise un enregistrement.' };
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return { ok: false, message: DANS_UN_CADRE ? MSG_CADRE : 'Ce navigateur ne donne pas accès au micro. Ouvre la page dans Chrome ou Edge, ou utilise un enregistrement.' };
+    const politique = document.permissionsPolicy || document.featurePolicy;
+    try {
+      if (politique && politique.allowsFeature && !politique.allowsFeature('microphone')) return { ok: false, message: MSG_CADRE };
+    } catch (e) { /* information indisponible */ }
+    return { ok: true };
+  }
+
+  function messageErreurMicro(e) {
+    const nom = e && e.name;
+    if (nom === 'NotAllowedError' || nom === 'SecurityError') {
+      return DANS_UN_CADRE ? MSG_CADRE
+        : 'Le micro a été refusé pour cette page. Clique sur l\'icône à gauche de l\'adresse, autorise le micro, puis réessaie. Sinon, utilise un enregistrement.';
+    }
+    if (nom === 'NotFoundError' || nom === 'OverconstrainedError') return 'Aucun micro n\'est détecté. Branche un micro ou un casque, ou utilise un enregistrement.';
+    if (nom === 'NotReadableError' || nom === 'AbortError') return 'Le micro est déjà utilisé par une autre application (visio, enregistreur). Ferme-la, puis réessaie.';
+    return 'Le micro ne répond pas (' + (nom || 'erreur inconnue') + '). Utilise un enregistrement en attendant.';
+  }
+
+  const microDispo = verifierMicro();
+  function messageAccueil() {
+    return microDispo.ok
+      ? 'Appuie sur « Parler », dis la phrase, puis tais-toi : l\'écoute s\'arrête toute seule.'
+      : 'Enregistre-toi en disant la phrase, puis choisis le fichier avec « Utiliser un enregistrement ».';
+  }
+  function signalerSansMicro(message) {
+    $('avis-micro').textContent = message;
+    $('avis-micro').hidden = false;
+    document.querySelector('.scene').classList.add('sans-micro');
+  }
+
+  async function demarrer() {
+    if (!microDispo.ok) { signalerSansMicro(microDispo.message); return; }
+    let flux;
+    try {
+      flux = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    } catch (e) {
+      signalerSansMicro(messageErreurMicro(e));
+      etat('Le micro n\'est pas accessible : voir l\'explication ci-dessus.', true);
+      return;
+    }
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = ctx.createMediaStreamSource(flux);
+    const proc = ctx.createScriptProcessor(4096, 1, 1);
+    const morceaux = [];
+    const debut = performance.now();
+    let bruit = null, parle = false, dernierSon = 0;
+
+    proc.onaudioprocess = e => {
+      const d = e.inputBuffer.getChannelData(0);
+      morceaux.push(new Float32Array(d));
+      let s = 0; for (let i = 0; i < d.length; i++) s += d[i] * d[i];
+      const rms = Math.sqrt(s / d.length);
+      const t = performance.now() - debut;
+      if (t < 300) { bruit = bruit === null ? rms : Math.min(bruit, rms); return; }
+      const seuil = Math.max(0.008, (bruit || 0.001) * 4);
+      $('parler').style.boxShadow = '0 0 0 ' + Math.min(18, Math.round(rms * 400)) + 'px var(--cinabre-pale)';
+      if (rms > seuil) { parle = true; dernierSon = t; }
+      if ((parle && t - dernierSon > 1200) || t > 8000) arreter();
+    };
+    source.connect(proc);
+    proc.connect(ctx.destination);
+
+    let reco = null, textesReconnus = [];
+    if (RECO && $('opt-reco').checked) {
+      try {
+        reco = new RECO();
+        reco.lang = 'zh-CN'; reco.interimResults = false; reco.maxAlternatives = 5; reco.continuous = false;
+        reco.onresult = ev => {
+          for (const r of ev.results) for (const alt of r) textesReconnus.push(alt.transcript);
+        };
+        reco.onerror = () => { /* la reconnaissance est un plus : on continue sans */ };
+        reco.start();
+      } catch (e) { reco = null; }
+    }
+
+    enCours = { ctx, flux, source, proc, morceaux, reco, textesReconnus };
+    $('parler').classList.add('ecoute');
+    $('parler-texte').textContent = 'Stop';
+    etat('Je t\'écoute…');
+  }
+
+  async function arreter() {
+    if (!enCours) return;
+    const { ctx, flux, source, proc, morceaux, reco, textesReconnus } = enCours;
+    enCours = null;
+    proc.onaudioprocess = null;
+    try { source.disconnect(); proc.disconnect(); } catch (e) { /* déjà déconnecté */ }
+    flux.getTracks().forEach(t => t.stop());
+    const sr = ctx.sampleRate;
+    ctx.close();
+    $('parler').classList.remove('ecoute');
+    $('parler').style.boxShadow = '';
+    $('parler-texte').textContent = 'Parler';
+    $('parler').disabled = true;
+    etat('J\'analyse…');
+
+    const total = morceaux.reduce((s, m) => s + m.length, 0);
+    const signal = new Float32Array(total);
+    let o = 0; for (const m of morceaux) { signal.set(m, o); o += m.length; }
+
+    // Laisse à la reconnaissance le temps de répondre
+    if (reco) {
+      await new Promise(res => {
+        let fini = false;
+        const fin = () => { if (!fini) { fini = true; res(); } };
+        reco.onend = fin;
+        try { reco.stop(); } catch (e) { fin(); }
+        setTimeout(fin, 2500);
+      });
+    }
+    await analyserEnregistrement(signal, sr, reco ? textesReconnus : null);
+  }
+
+  async function analyserEnregistrement(signal, sr, textes) {
+    $('parler').disabled = true;
+    etat('J\'analyse…');
+    dernierEnregistrement = { signal, sr };
+    $('reecouter').disabled = false;
+    try {
+      const r = await evaluateur.evaluer({ signal, sr, phrase, registreHz: registreConnu() });
+      if (!r.ok) { etat(r.message, true); $('resultat').hidden = true; }
+      else {
+        historiqueVoix.push(r.medianeHz);
+        historiqueVoix = historiqueVoix.slice(-12);
+        ecrire('atelierVoix.registre', historiqueVoix);
+        afficherRegistre();
+        afficherResultat(r, textes);
+      }
+    } catch (e) {
+      etat('L\'analyse a échoué : ' + e.message, true);
+    }
+    $('parler').disabled = !microDispo.ok;
+  }
+
+  // ---------- Enregistrement fait ailleurs (dictaphone, fichier) ----------
+  $('fichier-audio').addEventListener('change', async () => {
+    const f = $('fichier-audio').files[0];
+    $('fichier-audio').value = '';
+    if (!f) return;
+    if (f.size > 25e6) { etat('Ce fichier est trop lourd. Garde un enregistrement court, juste la phrase.', true); return; }
+    etat('Je lis l\'enregistrement…');
+    let ctx = null;
+    try {
+      const donnees = await f.arrayBuffer();
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const audio = await new Promise((ok, ko) => {
+        const p = ctx.decodeAudioData(donnees, ok, ko);
+        if (p && p.then) p.then(ok, ko);
+      });
+      if (audio.duration > 30) { etat('L\'enregistrement dure plus de 30 secondes. Garde seulement la phrase.', true); return; }
+      const signal = new Float32Array(audio.length);
+      for (let c = 0; c < audio.numberOfChannels; c++) {
+        const d = audio.getChannelData(c);
+        for (let i = 0; i < d.length; i++) signal[i] += d[i] / audio.numberOfChannels;
+      }
+      await analyserEnregistrement(signal, audio.sampleRate, null);
+    } catch (e) {
+      etat('Je n\'arrive pas à lire ce fichier. Essaie un format audio courant : m4a, mp3, wav ou ogg.', true);
+    } finally {
+      if (ctx) ctx.close();
+    }
+  });
+
+  $('parler').addEventListener('click', () => { enCours ? arreter() : demarrer(); });
+
+  $('reecouter').addEventListener('click', () => {
+    if (!dernierEnregistrement) return;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const tampon = ctx.createBuffer(1, dernierEnregistrement.signal.length, dernierEnregistrement.sr);
+    tampon.copyToChannel(dernierEnregistrement.signal, 0);
+    const src = ctx.createBufferSource();
+    src.buffer = tampon; src.connect(ctx.destination);
+    src.onended = () => ctx.close();
+    src.start();
+  });
+
+  // ---------- Résultat ----------
+  const LIBELLES = { juste: 'Juste', presque: 'Presque', a_reprendre: 'À reprendre', neutre: 'Ton neutre', inaudible: 'Pas entendu' };
+  let dernierResultat = null;
+
+  function afficherResultat(r, textes) {
+    dernierResultat = r;
+    $('resultat').hidden = false;
+    $('score').textContent = r.score + ' %';
+    $('phrase').classList.add('revele');
+
+    document.querySelectorAll('#phrase .syl[data-index]').forEach(el => {
+      const s = r.syllabes[Number(el.dataset.index)];
+      el.classList.remove('juste', 'presque', 'a_reprendre', 'neutre', 'inaudible');
+      el.classList.add(s.verdict);
+    });
+
+    const compris = $('compris');
+    compris.innerHTML = '';
+    if (textes === null) {
+      compris.textContent = '';
+    } else if (!textes.length) {
+      compris.textContent = 'Les mots n\'ont pas pu être vérifiés cette fois.';
+    } else {
+      let meilleur = null;
+      for (const t of textes) {
+        const c = M.comparerTexte(phrase.hanzi, t);
+        if (!meilleur || c.taux > meilleur.taux) meilleur = c;
+      }
+      compris.append('J\'ai compris : ');
+      const han = document.createElement('span'); han.className = 'han';
+      han.textContent = meilleur.entendu || '…';
+      compris.append(han);
+      const manquants = meilleur.caracteres.filter(c => !c.trouve).map(c => c.c);
+      if (manquants.length) {
+        compris.append(' · pas reconnu : ');
+        const m = document.createElement('span'); m.className = 'han manque'; m.textContent = manquants.join(' ');
+        compris.append(m);
+      }
+    }
+
+    const cartes = $('cartes');
+    cartes.innerHTML = '';
+    for (const s of r.syllabes) {
+      const c = document.createElement('div');
+      c.className = 'carte ' + s.verdict;
+      const hz = document.createElement('span'); hz.className = 'hz'; hz.textContent = s.h;
+      const v = document.createElement('span'); v.className = 'verdict'; v.textContent = LIBELLES[s.verdict];
+      const tons = document.createElement('span'); tons.className = 'tons';
+      tons.textContent = s.pinyin + ' · attendu : ' + M.NOMS_TONS[s.tonAttendu] +
+        (s.entendu && s.verdict !== 'neutre' && s.verdict !== 'juste' ? ' · entendu : ' + M.NOMS_TONS[s.entendu] : '');
+      c.append(hz, v, tons);
+      if (s.contour && s.tonAttendu !== '5') c.append(miniCourbe(s.contour, M.MODELES[s.tonAttendu]));
+      if (s.conseil) { const p = document.createElement('p'); p.textContent = s.conseil; c.append(p); }
+      cartes.append(c);
+    }
+
+    etat(r.approximatif
+      ? 'Analyse faite. Le découpage en syllabes est approximatif : articule un peu plus chaque syllabe.'
+      : (r.score >= 80 ? 'Très bien ! Essaie sans le pinyin, ou passe à la phrase suivante.' : 'Regarde les syllabes en couleur, écoute le modèle et recommence.'));
+    dessinerGraphe();
+  }
+
+  const couleur = nom => getComputedStyle(document.documentElement).getPropertyValue(nom).trim();
+  const COULEUR_VERDICT = { juste: '--jade', presque: '--ocre', a_reprendre: '--cinabre', neutre: '--gris', inaudible: '--gris' };
+
+  function miniCourbe(contour, modele) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 72');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    const tous = contour.concat(modele);
+    const centre = (Math.max(...tous) + Math.min(...tous)) / 2;
+    const y = st => 36 - (st - centre) * 4.5;
+    const ligne = (pts, attr) => {
+      const p = document.createElementNS(ns, 'polyline');
+      p.setAttribute('points', pts.map((v, k) => (8 + k * 21) + ',' + y(v).toFixed(1)).join(' '));
+      p.setAttribute('fill', 'none');
+      for (const [a, val] of Object.entries(attr)) p.setAttribute(a, val);
+      svg.append(p);
+    };
+    ligne(modele, { stroke: 'var(--encre-douce)', 'stroke-width': '1.5', 'stroke-dasharray': '4 3', 'vector-effect': 'non-scaling-stroke' });
+    ligne(contour, { stroke: 'var(--encre)', 'stroke-width': '3', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
+    return svg;
+  }
+
+  function dessinerGraphe() {
+    const r = dernierResultat;
+    if (!r) return;
+    const cv = $('graphe');
+    const dpr = window.devicePixelRatio || 1;
+    const L = cv.clientWidth, H = cv.clientHeight;
+    cv.width = Math.round(L * dpr); cv.height = Math.round(H * dpr);
+    const g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, L, H);
+
+    const t0 = r.debutParole - 0.08, t1 = r.finParole + 0.08;
+    const gauche = 46, droite = 8, haut = 34, bas = 14;
+    const x = t => gauche + (t - t0) / (t1 - t0) * (L - gauche - droite);
+    const STMAX = 7, STMIN = -9;
+    const y = st => haut + (STMAX - Math.max(STMIN, Math.min(STMAX, st))) / (STMAX - STMIN) * (H - haut - bas);
+
+    const encre = couleur('--encre'), douce = couleur('--encre-douce'), trait = couleur('--trait'), papier = couleur('--papier');
+    g.font = '12px ' + getComputedStyle(document.body).fontFamily;
+    g.textBaseline = 'middle';
+    for (const [st, nom] of [[4, 'haut'], [0, 'milieu'], [-5, 'bas']]) {
+      g.strokeStyle = trait; g.lineWidth = 1; g.setLineDash([]);
+      g.beginPath(); g.moveTo(gauche, y(st)); g.lineTo(L - droite, y(st)); g.stroke();
+      g.fillStyle = douce; g.textAlign = 'right'; g.fillText(nom, gauche - 6, y(st));
+    }
+
+    r.syllabes.forEach((s, k) => {
+      const xa = x(s.debut), xb = x(s.fin);
+      if (k % 2 === 1) { g.fillStyle = papier; g.globalAlpha = 0.7; g.fillRect(xa, haut - 4, xb - xa, H - haut - bas + 4); g.globalAlpha = 1; }
+      g.fillStyle = couleur(COULEUR_VERDICT[s.verdict]) || encre;
+      g.textAlign = 'center';
+      g.font = '18px ' + getComputedStyle(document.documentElement).getPropertyValue('--police-han');
+      g.fillText(s.h, (xa + xb) / 2, 14);
+      if (s.tonAttendu !== '5') {
+        const m = M.MODELES[s.tonAttendu];
+        const largeur = xb - xa, marge = largeur * 0.15;
+        g.strokeStyle = couleur(COULEUR_VERDICT[s.verdict]) || douce;
+        g.lineWidth = 2; g.setLineDash([5, 4]);
+        g.beginPath();
+        m.forEach((v, i) => { const px = xa + marge + i / 4 * (largeur - 2 * marge); i ? g.lineTo(px, y(v)) : g.moveTo(px, y(v)); });
+        g.stroke();
+      }
+    });
+    g.setLineDash([]);
+
+    g.strokeStyle = encre; g.lineWidth = 3; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.beginPath();
+    let leve = true;
+    for (const p of r.courbe) {
+      if (p.st === null) { leve = true; continue; }
+      const px = x(p.t), py = y(p.st);
+      if (leve) { g.moveTo(px, py); leve = false; } else g.lineTo(px, py);
+    }
+    g.stroke();
+  }
+
+  window.addEventListener('resize', dessinerGraphe);
+  if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', dessinerGraphe);
+
+  // ---------- Réglages ----------
+  $('bascule-pinyin').addEventListener('click', () => { pinyinVisible = !pinyinVisible; ecrire('atelierVoix.pinyin', pinyinVisible); majBoutonPinyin(); });
+  $('opt-reco').checked = lire('atelierVoix.reco', true) && !!RECO;
+  $('opt-reco').disabled = !RECO;
+  $('opt-reco').addEventListener('change', () => ecrire('atelierVoix.reco', $('opt-reco').checked));
+  $('oublier-voix').addEventListener('click', () => { historiqueVoix = []; ecrire('atelierVoix.registre', []); afficherRegistre(); });
+  $('perso-ok').addEventListener('click', () => {
+    $('perso-erreur').textContent = '';
+    try {
+      const p = { hanzi: $('perso-hanzi').value.trim(), pinyin: $('perso-pinyin').value.trim(), fr: 'Ta phrase' };
+      if (!p.hanzi || !p.pinyin) throw new Error('Remplis les caractères et le pinyin.');
+      choisir(p, null);
+    } catch (e) { $('perso-erreur').textContent = e.message; }
+  });
+
+  // ---------- Démarrage ----------
+  remplirPuces(MOTS, $('puces-mots'));
+  remplirPuces(PHRASES, $('puces-phrases'));
+  afficherRegistre();
+  majBoutonPinyin();
+  if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
+  choisir(PHRASES[6], document.querySelectorAll('#puces-phrases .puce')[6]);
+  if (!microDispo.ok) { signalerSansMicro(microDispo.message); $('parler').disabled = true; }
+})();
+</script>
+</body>
+</html>
