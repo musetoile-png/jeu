@@ -694,8 +694,8 @@
   const NOMS_TONS = { '1': '1er ton', '2': '2e ton', '3': '3e ton', '3b': '3e ton', '4': '4e ton', '5': 'ton neutre' };
 
   /** Juge une syllabe. position : 'mil' (milieu de phrase) ou 'fin' (avant une ponctuation ou en fin). */
-  function evaluerSyllabe(contour, attendu, poidsNiveau, position) {
-    const modeles = MODELES_PAROLE[position === 'fin' ? 'fin' : 'mil'];
+  function evaluerSyllabe(contour, attendu, poidsNiveau, position, jeu) {
+    const modeles = (jeu || MODELES_PAROLE)[position === 'fin' ? 'fin' : 'mil'];
     const distances = {};
     for (const cle of Object.keys(modeles)) distances[cle] = distance(contour, modeles[cle], poidsNiveau);
     const ordre = Object.keys(distances).sort((x, y) => distances[x] - distances[y]);
@@ -807,7 +807,7 @@
       const coeur = voix.slice(Math.floor(voix.length * 0.15), Math.ceil(voix.length * 0.9));
       const contour = versCinqPoints(coeur.length >= 4 ? coeur : voix);
       const position = (k === phrase.syllabes.length - 1 || s.pauseApres) ? 'fin' : 'mil';
-      const ev = evaluerSyllabe(contour, s.surface, poidsNiveau, position);
+      const ev = evaluerSyllabe(contour, s.surface, poidsNiveau, position, options.modelesParole);
       // Comparaison directe avec la même syllabe chez la voix modèle
       let contourModele = null;
       if (alignement === 'modele' && s.surface !== '5') {

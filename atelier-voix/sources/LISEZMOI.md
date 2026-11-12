@@ -49,3 +49,10 @@ Petit réseau de neurones (courbe de la syllabe et de ses voisines -> 32 neurone
 - Mode seul : réseau légèrement meilleur (61,9 % / 21,3 % contre 57,7 % / 20,1 %).
 Conclusion : non intégré. Deux voix de synthèse ne suffisent pas ; il faudra de vraies voix (apprenants, natifs variés).
 Le passage avant reste disponible dans le moteur (option `classifieur`, fonctions `classer` et `traitsSyllabe`).
+
+## Réseau plus grand et Montreal Forced Aligner (12 novembre 2026)
+- Taille du réseau (`taille-reseau.py`) : de 8 à 512 neurones, aucun gain (55,9 à 57,2 % de bons tons à 16,4 % de faux acceptés, contre 66,5 % pour les règles + voix modèle). Même sur ses propres données d'entraînement, le réseau plafonne à 73 % : la limite vient des courbes données en entrée (découpage, information), pas de la taille.
+- Montreal Forced Aligner 3.4.3 installé avec micromamba (conda-forge), modèle acoustique `mandarin_mfa` v3.0.0 et dictionnaire `mandarin_mfa` (dépôt MontrealCorpusTools/mfa-models). Besoin aussi de `pip install spacy-pkuseg dragonmapper hanziconv`.
+  1 090 enregistrements alignés en 65 s sur 2 processeurs (texte : caractères séparés par des espaces, un dossier par voix).
+- Notes avec les frontières de l'aligneur (`evaluer-mfa.js`, `evaluer-mfa2.js`) : 47,2 % de bons tons natifs (48,9 % avec des formes remesurées), contre 58,4 % (règles seules) et 63,1 % (règles + voix modèle). Faux tons greffés acceptés : 21,2 % / 19,1 % contre 20,1 % / 14,9 %.
+  Conclusion : l'aligneur découpe bien les sons, mais ce découpage n'aide pas le jugement des tons tel qu'il est fait aujourd'hui. Son meilleur usage : étiqueter automatiquement un grand corpus de vraies voix (ex. AISHELL-1, Apache 2.0, 400 locuteurs) pour entraîner un classifieur de tons.
