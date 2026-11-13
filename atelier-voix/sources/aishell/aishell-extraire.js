@@ -32,7 +32,7 @@ for (const f of fichiers) {
     const sy = p.syllabes[k];
     if (sy.surface === '5' || !s.contour || !s.traits) return;
     lignes.push(JSON.stringify({ loc, sexe, uid, k, n: p.syllabes.length, p: sy.p, att: Number(b(sy.surface)), pos: s.position,
-      regles: s.verdict, traits: s.traits.slice(0, 16).map(v => Math.round(v * 1000) / 1000) }));
+      regles: s.verdict, q: s.qualite ? s.qualite.map(v => Math.round(v * 1000) / 1000) : null, traits: s.traits.slice(0, 16).map(v => Math.round(v * 1000) / 1000) }));
   });
 }
 fs.appendFileSync(sortie, lignes.length ? lignes.join('\n') + '\n' : '');
