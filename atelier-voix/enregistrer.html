@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Voix pour l'atelier — 千里</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --papier: #f7f2e8; --carte: #fffdf8; --encre: #2a2622; --doux: #6d655c; --trait: #ddd3c3;
+    --vermillon: #b8432a; --vermillon-pale: #f6e1da; --jade: #2f6f5f; --jade-pale: #dcebe5; --ombre: rgba(60, 40, 20, .08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --papier: #1d1b19; --carte: #262320; --encre: #efe9df; --doux: #b3aa9e; --trait: #3e3933;
+      --vermillon: #e0765c; --vermillon-pale: #3d2620; --jade: #6fb7a2; --jade-pale: #1f332d; --ombre: rgba(0, 0, 0, .3); color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papier); color: var(--encre); font: 16px/1.5 Inter, system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 20px; }
+  header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  header .sceau { font-family: 'Noto Serif SC', serif; font-size: 30px; color: var(--vermillon); }
+  header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+  .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 22px; box-shadow: 0 2px 10px var(--ombre); display: flex; flex-direction: column; gap: 14px; }
+  h2 { margin: 0; font-size: 18px; }
+  p { margin: 0; }
+  .doux { color: var(--doux); font-size: 14px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
+  input[type=text] { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--trait); background: var(--papier); color: var(--encre); }
+  .choix { display: flex; gap: 10px; flex-wrap: wrap; }
+  .choix button[aria-pressed=true] { background: var(--encre); color: var(--carte); border-color: var(--encre); }
+  .case { flex-direction: row; align-items: flex-start; gap: 10px; font-weight: 400; }
+  .case input { margin-top: 4px; width: 18px; height: 18px; }
+  button { font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--trait); background: var(--carte); color: var(--encre); cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  .principal { background: var(--vermillon); border-color: var(--vermillon); color: #fff; }
+  .rangee { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .rangee .pousse { margin-left: auto; }
+  .progres { display: flex; gap: 4px; flex-wrap: wrap; }
+  .progres span { width: 14px; height: 14px; border-radius: 4px; background: var(--trait); }
+  .progres span.fait { background: var(--jade); }
+  .progres span.ici { outline: 2px solid var(--vermillon); outline-offset: 1px; }
+  .phrase { font-family: 'Noto Serif SC', serif; font-size: clamp(34px, 9vw, 52px); line-height: 1.2; letter-spacing: .04em; }
+  .pinyin { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 20px; }
+  .pinyin span { padding: 2px 6px; border-radius: 6px; }
+  .pinyin .cible { background: var(--vermillon-pale); color: var(--vermillon); font-weight: 700; outline: 2px solid var(--vermillon); }
+  .pinyin .marque { background: var(--jade-pale); color: var(--jade); font-weight: 700; }
+  .pinyin.cliquable span { cursor: pointer; border: 1px dashed var(--trait); }
+  .consigne { border-left: 4px solid var(--vermillon); padding: 10px 14px; background: var(--vermillon-pale); border-radius: 0 10px 10px 0; font-size: 17px; }
+  .consigne.juste { border-color: var(--jade); background: var(--jade-pale); }
+  .enreg { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  #bouton-enreg { width: 112px; height: 112px; flex: none; border-radius: 50%; font-size: 14px; line-height: 1.25; padding: 8px; background: var(--vermillon); color: #fff; border: none; box-shadow: 0 4px 14px var(--ombre); }
+  #bouton-enreg.actif { background: var(--encre); color: var(--carte); animation: pouls 1.2s infinite; }
+  @keyframes pouls { 50% { transform: scale(1.06); } }
+  .niveau { flex: 1; min-width: 140px; height: 12px; background: var(--trait); border-radius: 6px; overflow: hidden; }
+  .niveau div { height: 100%; width: 0; background: var(--jade); transition: width .08s; }
+  .etat { min-height: 1.5em; font-size: 14px; color: var(--doux); }
+  .etat.erreur { color: var(--vermillon); font-weight: 600; }
+  kbd { font: 12px ui-monospace, monospace; border: 1px solid var(--trait); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header><span class="sceau">千里</span><h1>Voix pour l'atelier des tons</h1></header>
+
+  <!-- Accueil -->
+  <section class="carte" id="accueil">
+    <h2>Bienvenue</h2>
+    <p>Cette page enregistre ta voix sur les phrases du jeu, dites justes, puis avec un ton faux <strong>exprès</strong>. Ces enregistrements servent uniquement à vérifier si le module reconnaît bien les tons et à l'améliorer.</p>
+    <p class="doux">Compte 15 à 20 minutes. Tout reste dans ton navigateur jusqu'à la fin : tu télécharges alors un fichier .zip à envoyer à Manu. Tu peux t'arrêter et reprendre plus tard sur le même appareil.</p>
+    <label>Ton prénom <input type="text" id="prenom" autocomplete="given-name" placeholder="ex. Nuwa"></label>
+    <div><p style="font-weight:500;margin-bottom:6px">Ta voix</p>
+      <div class="choix" id="choix-voix"><button data-v="f" aria-pressed="false">Voix de femme</button><button data-v="m" aria-pressed="false">Voix d'homme</button></div></div>
+    <div><p style="font-weight:500;margin-bottom:6px">Le chinois et toi</p>
+      <div class="choix" id="choix-role"><button data-r="natif" aria-pressed="false">C'est ma langue maternelle</button><button data-r="apprenant" aria-pressed="false">Je l'apprends</button></div></div>
+    <label class="case"><input type="checkbox" id="accord"> J'accepte que ces enregistrements servent à tester et entraîner le module de reconnaissance des tons du jeu « 千里 Mille li ».</label>
+    <div class="rangee"><button class="principal" id="commencer" disabled>Commencer</button><span class="etat" id="etat-accueil"></span></div>
+  </section>
+
+  <!-- Séance -->
+  <section class="carte" id="seance" hidden>
+    <div class="rangee"><span class="doux" id="ou"></span><span class="pousse doux">Touche <kbd>Espace</kbd> : enregistrer / arrêter</span></div>
+    <div class="progres" id="progres" aria-hidden="true"></div>
+    <div class="phrase" id="phrase"></div>
+    <div class="pinyin" id="pinyin"></div>
+    <p class="doux" id="sens"></p>
+    <div class="rangee"><button id="ecouter">▶ Écouter le modèle</button><span class="doux" id="note-modele"></span></div>
+    <div class="consigne" id="consigne"></div>
+    <div class="enreg">
+      <button id="bouton-enreg" aria-label="Enregistrer">● Enregistrer</button>
+      <div class="niveau" aria-hidden="true"><div id="niveau"></div></div>
+    </div>
+    <p class="etat" id="etat"></p>
+    <div class="rangee">
+      <button id="precedent">← Précédent</button>
+      <button id="reecouter" disabled>▶ Réécouter ma prise</button>
+      <button class="principal pousse" id="suivant" disabled>Suivant →</button>
+    </div>
+  </section>
+
+  <!-- Fin -->
+  <section class="carte" id="fin" hidden>
+    <h2>Merci !</h2>
+    <p id="bilan"></p>
+    <div class="rangee"><button class="principal" id="telecharger">Télécharger mes enregistrements (.zip)</button><button id="revenir">Revenir aux phrases</button></div>
+    <p class="doux">Envoie ensuite ce fichier à Manu, par e-mail ou par un service d'envoi de fichiers. Tes enregistrements restent aussi dans ce navigateur, au cas où.</p>
+  </section>
+  <p class="doux" id="pied" hidden><button id="tout-telecharger">Télécharger ce qui est déjà enregistré</button></p>
+</main>
+
+<script src="sources/moteur-voix.js"></script>
+<script src="audio-modeles.js"></script>
+<script>
+(() => {
+  'use strict';
+  const M = window.MoteurVoix, $ = id => document.getElementById(id);
+  const PHRASES = [
+    { hanzi: '好。我做什么？', pinyin: 'hao3 wo3 zuo4 shen2 me5', fr: 'D\'accord. Je fais quoi ?', vo: 'c1_02a' },
+    { hanzi: '热。很热。', pinyin: 're4 hen3 re4', fr: 'Oui, très chaud.', vo: 'c1_07a' },
+    { hanzi: '什么葱？', pinyin: 'shen2 me5 cong1', fr: 'Quelle ciboule ?', vo: 'c1_09a' },
+    { hanzi: '好了。', pinyin: 'hao3 le5', fr: 'C\'est prêt.', vo: 'c1_13a' },
+    { hanzi: '好吃。', pinyin: 'hao3 chi1', fr: 'C\'est bon (au goût).', vo: 'c1_13c' },
+    { hanzi: '对不起。', pinyin: 'dui4 bu5 qi3', fr: 'Pardon.', vo: 'c1_16c' },
+    { hanzi: '谢谢奶奶！', pinyin: 'xie4 xie5 nai3 nai5', fr: 'Merci, 奶奶 !', vo: 'c1_16a' },
+    { hanzi: '奶奶，你好！', pinyin: 'nai3 nai5 ni3 hao3', fr: '奶奶, bonjour !', vo: 'c1_20b' },
+    { hanzi: '好，我去买！', pinyin: 'hao3 wo3 qu4 mai3', fr: 'D\'accord, je vais les acheter !', vo: 'c1_20a' },
+    { hanzi: '不多。', pinyin: 'bu4 duo1', fr: 'Pas beaucoup.', vo: 'nc_04c' },
+    { hanzi: '十五块。', pinyin: 'shi2 wu3 kuai4', fr: 'Quinze yuans.', vo: 'nc_04b' },
+    { hanzi: '不是，是绿茶。', pinyin: 'bu4 shi4 shi4 lv4 cha2', fr: 'Non, c\'est du thé vert.', vo: 'nc_05a' },
+    { hanzi: '谢谢奶奶！晚安！', pinyin: 'xie4 xie5 nai3 nai5 wan3 an1', fr: 'Merci, 奶奶 ! Bonne nuit !', vo: 'nc_08a' },
+    { hanzi: '等一下！', pinyin: 'deng3 yi2 xia4', fr: 'Un instant !', vo: 'c2_p_deng' }
+  ];
+  const NOM_TON = { 1: '1er ton (haut et plat)', 2: '2e ton (montant)', 3: '3e ton (bas, creusé)', 4: '4e ton (descendant)' };
+  const FAUX = { 1: [4, 2], 2: [3, 1], 3: [2, 4], 4: [1, 2] };   // confusions fréquentes chez les apprenants
+
+  // ---------- Profil ----------
+  const lireLS = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const ecrireLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* rien */ } };
+  const profil = lireLS('millili.enreg.profil', { prenom: '', voix: '', role: '' });
+  $('prenom').value = profil.prenom || '';
+  const majAccueil = () => {
+    document.querySelectorAll('#choix-voix button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === profil.voix));
+    document.querySelectorAll('#choix-role button').forEach(b => b.setAttribute('aria-pressed', b.dataset.r === profil.role));
+    $('commencer').disabled = !($('prenom').value.trim() && profil.voix && profil.role && $('accord').checked);
+  };
+  document.querySelectorAll('#choix-voix button').forEach(b => b.onclick = () => { profil.voix = b.dataset.v; majAccueil(); });
+  document.querySelectorAll('#choix-role button').forEach(b => b.onclick = () => { profil.role = b.dataset.r; majAccueil(); });
+  $('prenom').oninput = majAccueil; $('accord').onchange = majAccueil; majAccueil();
+  const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'anonyme';
+
+  // ---------- Les étapes : pour chaque phrase, une prise juste puis des fautes voulues ----------
+  let etapes = [];
+  function construireEtapes() {
+    etapes = [];
+    PHRASES.forEach((ph, i) => {
+      const p = M.preparerPhrase(ph);
+      const surf = p.syllabes.map(s => String(s.surface).replace('b', ''));
+      const tonals = surf.map((t, k) => (t !== '5' ? k : -1)).filter(k => k >= 0);
+      const base = { i, vo: ph.vo, p, surf };
+      if (profil.role === 'natif') {
+        etapes.push({ ...base, type: 'juste' });
+        const k1 = tonals[i % tonals.length], k2 = tonals[(i + 1) % tonals.length];
+        etapes.push({ ...base, type: 'faux', k: k1, ton: FAUX[surf[k1]][0] });
+        etapes.push({ ...base, type: 'faux', k: k2, ton: FAUX[surf[k2]][1] });
+        etapes.push({ ...base, type: 'eleve' });
+      } else {
+        etapes.push({ ...base, type: 'naturel' });
+        const k1 = tonals[i % tonals.length];
+        etapes.push({ ...base, type: 'faux', k: k1, ton: FAUX[surf[k1]][0] });
+      }
+    });
+  }
+  const cle = (e, j) => `${slug(profil.prenom)}|${e.vo}|${j}`;
+
+  // ---------- Stockage local (IndexedDB) ----------
+  let base = null;
+  const ouvrirBase = () => new Promise(ok => {
+    try { const r = indexedDB.open('millili-enregistrements', 1); r.onupgradeneeded = () => r.result.createObjectStore('prises'); r.onsuccess = () => ok(r.result); r.onerror = () => ok(null); }
+    catch (e) { ok(null); }
+  });
+  const memoire = {};   // copie en mémoire si IndexedDB est indisponible
+  async function sauver(k, v) { memoire[k] = v; if (!base) return; try { await new Promise((ok, ko) => { const t = base.transaction('prises', 'readwrite'); t.objectStore('prises').put(v, k); t.oncomplete = ok; t.onerror = ko; }); } catch (e) { /* rien */ } }
+  async function toutLire() {
+    if (!base) return { ...memoire };
+    try {
+      return await new Promise((ok, ko) => {
+        const out = {}, t = base.transaction('prises', 'readonly'), r = t.objectStore('prises').openCursor();
+        r.onsuccess = () => { const c = r.result; if (c) { out[c.key] = c.value; c.continue(); } else ok({ ...out, ...memoire }); };
+        r.onerror = ko;
+      });
+    } catch (e) { return { ...memoire }; }
+  }
+
+  // ---------- Affichage d'une étape ----------
+  let n = 0, prises = {};
+  function afficher() {
+    const e = etapes[n], ph = PHRASES[e.i];
+    $('ou').textContent = `Phrase ${e.i + 1} / ${PHRASES.length} · prise ${n + 1} / ${etapes.length}`;
+    $('progres').innerHTML = etapes.map((x, j) => `<span class="${prises[cle(x, j)] ? 'fait' : ''} ${j === n ? 'ici' : ''}"></span>`).join('');
+    $('phrase').textContent = ph.hanzi;
+    $('sens').textContent = ph.fr;
+    const pin = $('pinyin'); pin.innerHTML = ''; pin.classList.toggle('cliquable', e.type === 'eleve');
+    const deja = prises[cle(e, n)];
+    const marquees = new Set(deja && deja.meta.syllabesFausses || []);
+    e.p.syllabes.forEach((s, k) => {
+      const sp = document.createElement('span');
+      const base = s.p.replace(/[1-5]$/, '');
+      sp.textContent = e.type === 'faux' && k === e.k ? M.pinyinAccentue(base + e.ton) : M.pinyinAccentue(base + e.surf[k]);
+      if (e.type === 'faux' && k === e.k) sp.className = 'cible';
+      if (e.type === 'eleve') {
+        if (marquees.has(k)) sp.className = 'marque';
+        sp.onclick = () => { if (!prises[cle(e, n)]) return; sp.classList.toggle('marque'); enregistrerMarques(); };
+      }
+      pin.appendChild(sp);
+    });
+    const c = $('consigne'); c.className = 'consigne' + (e.type === 'juste' || e.type === 'naturel' ? ' juste' : '');
+    const h = e.type === 'faux' ? e.p.syllabes[e.k].h : '';
+    c.innerHTML = {
+      juste: 'Dis la phrase <strong>naturellement et juste</strong>, comme tu la dirais à quelqu\'un.',
+      naturel: 'Dis la phrase <strong>du mieux que tu peux</strong>. Tu peux écouter le modèle avant.',
+      faux: e.type !== 'faux' ? '' : `Dis la phrase en prononçant 「${h}」 au <strong>${NOM_TON[e.ton]}</strong>, comme écrit en rouge, au lieu de ${M.pinyinAccentue(e.p.syllabes[e.k].p.replace(/[1-5]$/, '') + e.surf[e.k])}. Le reste de la phrase reste juste.`,
+      eleve: 'Dis la phrase <strong>comme un élève français débutant</strong> pourrait la dire, avec ses erreurs typiques. Ensuite, <strong>touche les syllabes</strong> que tu as volontairement faussées.'
+    }[e.type];
+    $('reecouter').disabled = !deja; $('suivant').disabled = !deja; $('precedent').disabled = n === 0;
+    $('suivant').textContent = n === etapes.length - 1 ? 'Terminer →' : 'Suivant →';
+    $('etat').className = 'etat'; $('etat').textContent = deja ? (e.type === 'eleve' && !marquees.size ? 'Prise enregistrée. Touche les syllabes faussées, puis « Suivant ».' : 'Prise enregistrée. Tu peux la réécouter, la refaire, ou passer à la suite.') : '';
+    const url = window.AUDIO_MODELES && AUDIO_MODELES[e.vo] && (AUDIO_MODELES[e.vo][profil.voix] || AUDIO_MODELES[e.vo].f || AUDIO_MODELES[e.vo].m);
+    $('ecouter').disabled = !url; $('note-modele').textContent = url ? '' : 'pas de modèle pour cette phrase';
+  }
+  async function enregistrerMarques() {
+    const e = etapes[n], k = cle(e, n), pr = prises[k]; if (!pr) return;
+    pr.meta.syllabesFausses = [...$('pinyin').children].map((s, i) => (s.classList.contains('marque') ? i : -1)).filter(i => i >= 0);
+    await sauver(k, pr); afficher();
+  }
+  $('ecouter').onclick = () => {
+    const e = etapes[n], url = AUDIO_MODELES[e.vo][profil.voix] || AUDIO_MODELES[e.vo].f || AUDIO_MODELES[e.vo].m;
+    try { new Audio(url).play(); } catch (err) { /* rien */ }
+  };
+
+  // ---------- Micro ----------
+  let flux = null, ctx = null, proc = null, source = null, morceaux = [], actif = false, debutT = 0;
+  async function preparerMicro() {
+    if (flux) return true;
+    if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { erreur('Ce navigateur ne donne pas accès au micro. Ouvre la page dans Chrome, Edge, Firefox ou Safari récent.'); return false; }
+    try { flux = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } }); }
+    catch (e) { erreur('Le micro a été refusé. Clique sur l\'icône à gauche de l\'adresse, autorise le micro, puis réessaie.'); return false; }
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    source = ctx.createMediaStreamSource(flux);
+    proc = ctx.createScriptProcessor(4096, 1, 1);
+    proc.onaudioprocess = ev => {
+      const d = ev.inputBuffer.getChannelData(0);
+      let m = 0; for (let i = 0; i < d.length; i++) m = Math.max(m, Math.abs(d[i]));
+      $('niveau').style.width = Math.min(100, m * 140) + '%';
+      if (actif) morceaux.push(new Float32Array(d));
+    };
+    source.connect(proc); proc.connect(ctx.destination);
+    return true;
+  }
+  const erreur = msg => { $('etat').className = 'etat erreur'; $('etat').textContent = msg; };
+  async function basculer() {
+    if (!actif) {
+      if (!(await preparerMicro())) return;
+      if (ctx.state === 'suspended') await ctx.resume();
+      morceaux = []; actif = true; debutT = performance.now();
+      $('bouton-enreg').classList.add('actif'); $('bouton-enreg').textContent = '■ Arrêter';
+      $('etat').className = 'etat'; $('etat').textContent = 'J\'écoute… arrête quand tu as fini.';
+      return;
+    }
+    actif = false; $('bouton-enreg').classList.remove('actif'); $('bouton-enreg').textContent = '● Enregistrer';
+    const total = morceaux.reduce((s, m) => s + m.length, 0);
+    if (total < ctx.sampleRate * 0.4) { erreur('Prise trop courte, recommence.'); return; }
+    const brut = new Float32Array(total); let o = 0; for (const m of morceaux) { brut.set(m, o); o += m.length; }
+    const sig = await en16k(brut, ctx.sampleRate);
+    let crete = 0; for (const v of sig) crete = Math.max(crete, Math.abs(v));
+    if (crete < 0.02) { erreur('Je n\'entends presque rien : rapproche-toi du micro et recommence.'); return; }
+    const e = etapes[n], k = cle(e, n);
+    const tonsVises = e.type === 'faux' ? e.surf.map((t, j) => (j === e.k ? String(e.ton) : t)) : e.surf.slice();
+    const pr = {
+      pcm: floatEnInt16(sig).buffer,
+      meta: { prenom: profil.prenom, voix: profil.voix, role: profil.role, vo: e.vo, hanzi: PHRASES[e.i].hanzi, pinyin: PHRASES[e.i].pinyin,
+        tonsAttendus: e.surf, consigne: e.type, syllabeFaussee: e.type === 'faux' ? e.k : null, tonVise: e.type === 'faux' ? e.ton : null,
+        tonsVises: e.type === 'eleve' || e.type === 'naturel' ? null : tonsVises, syllabesFausses: e.type === 'eleve' ? [] : null,
+        duree: +(sig.length / 16000).toFixed(2), date: new Date().toISOString(), appareil: navigator.userAgent }
+    };
+    prises[k] = pr; await sauver(k, pr);
+    $('pied').hidden = false; afficher();
+  }
+  async function en16k(x, sr) {
+    if (sr === 16000) return x;
+    const Hors = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    const oc = new Hors(1, Math.ceil(x.length * 16000 / sr), 16000);
+    const b = oc.createBuffer(1, x.length, sr); b.getChannelData(0).set(x);
+    const s = oc.createBufferSource(); s.buffer = b; s.connect(oc.destination); s.start();
+    return (await oc.startRendering()).getChannelData(0);
+  }
+  const floatEnInt16 = x => { const y = new Int16Array(x.length); for (let i = 0; i < x.length; i++) y[i] = Math.max(-32768, Math.min(32767, Math.round(x[i] * 32767))); return y; };
+  $('bouton-enreg').onclick = basculer;
+  document.addEventListener('keydown', ev => {
+    if (ev.code === 'Space' && !$('seance').hidden && document.activeElement.tagName !== 'INPUT') { ev.preventDefault(); basculer(); }
+  });
+  $('reecouter').onclick = () => {
+    const pr = prises[cle(etapes[n], n)]; if (!pr) return;
+    const url = URL.createObjectURL(new Blob([wav(new Int16Array(pr.pcm))], { type: 'audio/wav' }));
+    new Audio(url).play();
+  };
+  $('precedent').onclick = () => { if (n > 0) { n--; afficher(); } };
+  $('suivant').onclick = () => { if (n < etapes.length - 1) { n++; afficher(); } else terminer(); };
+  $('revenir').onclick = () => { $('fin').hidden = true; $('seance').hidden = false; afficher(); };
+
+  // ---------- Fichiers ----------
+  function wav(pcm) {
+    const b = new ArrayBuffer(44 + pcm.length * 2), v = new DataView(b), w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    w(0, 'RIFF'); v.setUint32(4, 36 + pcm.length * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 16000, true); v.setUint32(28, 32000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, pcm.length * 2, true);
+    new Int16Array(b, 44).set(pcm); return b;
+  }
+  const TCRC = new Uint32Array(256).map((_, k) => { let c = k; for (let j = 0; j < 8; j++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = u => { let c = 0xFFFFFFFF; for (let i = 0; i < u.length; i++) c = TCRC[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  function zip(fichiers) {
+    const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+    for (const [nom, donnees] of fichiers) {
+      const d = donnees instanceof Uint8Array ? donnees : new Uint8Array(donnees), nm = enc.encode(nom), c = crc32(d);
+      const h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint32(14, c, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, nm.length, true);
+      parts.push(new Uint8Array(h.buffer), nm, d);
+      const e = new DataView(new ArrayBuffer(46)); e.setUint32(0, 0x02014b50, true); e.setUint16(4, 20, true); e.setUint16(6, 20, true); e.setUint16(8, 0x0800, true); e.setUint32(16, c, true); e.setUint32(20, d.length, true); e.setUint32(24, d.length, true); e.setUint16(28, nm.length, true); e.setUint32(42, off, true);
+      central.push(new Uint8Array(e.buffer), nm); off += 30 + nm.length + d.length;
+    }
+    const taille = central.reduce((s, x) => s + x.length, 0), f = new DataView(new ArrayBuffer(22));
+    f.setUint32(0, 0x06054b50, true); f.setUint16(8, fichiers.length, true); f.setUint16(10, fichiers.length, true); f.setUint32(12, taille, true); f.setUint32(16, off, true);
+    return new Blob([...parts, ...central, new Uint8Array(f.buffer)], { type: 'application/zip' });
+  }
+  async function telecharger() {
+    const tout = await toutLire(), moi = slug(profil.prenom) + '|';
+    const cles = Object.keys(tout).filter(k => k.startsWith(moi)).sort();
+    if (!cles.length) { erreur('Aucune prise à télécharger pour l\'instant.'); return; }
+    const fichiers = [], etiquettes = [];
+    cles.forEach(k => {
+      const [, vo, j] = k.split('|'), pr = tout[k], m = pr.meta;
+      const nom = `${slug(m.prenom)}_${vo}_${String(j).padStart(2, '0')}_${m.consigne}${m.consigne === 'faux' ? `_s${m.syllabeFaussee}t${m.tonVise}` : ''}.wav`;
+      fichiers.push([nom, wav(new Int16Array(pr.pcm))]); etiquettes.push({ fichier: nom, ...m });
+    });
+    fichiers.push(['etiquettes.json', new TextEncoder().encode(JSON.stringify(etiquettes, null, 1))]);
+    fichiers.push(['LISEZMOI.txt', new TextEncoder().encode(`Enregistrements pour l'atelier des tons (千里 Mille li)\nLocuteur : ${profil.prenom} (${profil.voix === 'f' ? 'voix de femme' : 'voix d\'homme'}, ${profil.role === 'natif' ? 'langue maternelle' : 'apprenant'})\nPrises : ${cles.length}\nFormat : WAV 16 kHz mono 16 bits. Détail de chaque prise dans etiquettes.json.\n`)]);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(zip(fichiers));
+    a.download = `millili-voix-${slug(profil.prenom)}-${new Date().toISOString().slice(0, 10)}.zip`; document.body.appendChild(a); a.click(); a.remove();
+  }
+  $('telecharger').onclick = telecharger; $('tout-telecharger').onclick = telecharger;
+  function terminer() {
+    const faites = etapes.filter((e, j) => prises[cle(e, j)]).length;
+    $('bilan').textContent = `${faites} prise${faites > 1 ? 's' : ''} sur ${etapes.length}. Merci pour ta voix !` + (faites < etapes.length ? ' Les prises manquantes ne sont pas un problème : tout ce qui est enregistré sert.' : '');
+    $('seance').hidden = true; $('fin').hidden = false;
+  }
+
+  // ---------- Démarrage ----------
+  $('commencer').onclick = async () => {
+    profil.prenom = $('prenom').value.trim(); ecrireLS('millili.enreg.profil', profil);
+    construireEtapes();
+    base = await ouvrirBase();
+    const tout = await toutLire(); prises = {};
+    etapes.forEach((e, j) => { const k = cle(e, j); if (tout[k]) prises[k] = tout[k]; });
+    n = etapes.findIndex((e, j) => !prises[cle(e, j)]); if (n < 0) n = 0;
+    $('accueil').hidden = true; $('seance').hidden = false; $('pied').hidden = !Object.keys(prises).length;
+    if (!(await preparerMicro())) { $('etat').className = 'etat erreur'; }
+    afficher();
+  };
+})();
+</script>
+</body>
+</html>
