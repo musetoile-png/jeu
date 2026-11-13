@@ -1,0 +1,15 @@
+entraînement 166097 syllabes (120 voix), test 40859 (30 voix)
+époque 1: perte 1.190, voix jamais entendues 51.9% (fin de phrase 47.7%), 58 s
+époque 2: perte 1.079, voix jamais entendues 59.5% (fin de phrase 57.8%), 54 s
+époque 3: perte 1.044, voix jamais entendues 58.7% (fin de phrase 58.9%), 53 s
+époque 4: perte 1.019, voix jamais entendues 61.2% (fin de phrase 62.5%), 53 s
+époque 5: perte 0.999, voix jamais entendues 62.4% (fin de phrase 64.3%), 54 s
+époque 6: perte 0.978, voix jamais entendues 62.9% (fin de phrase 64.7%), 54 s
+époque 7: perte 0.956, voix jamais entendues 63.2% (fin de phrase 65.3%), 53 s
+époque 8: perte 0.940, voix jamais entendues 63.7% (fin de phrase 66.0%), 53 s
+seul   tout module  57.4% / 20.1% | oreille seule :  67.7% / 30.5% ; à exigence égale  59.6% | syllabes intactes resynthétisées  57.8% | module ET oreille>-2 :  57.1% / 19.9% | module ET oreille>-1 :  55.3% / 17.2%
+seul   mil  module  61.8% / 19.3% | oreille seule :  68.5% / 28.2% ; à exigence égale  63.3% | syllabes intactes resynthétisées  57.3% | module ET oreille>-2 :  61.6% / 19.2% | module ET oreille>-1 :  59.6% / 16.9%
+seul   fin  module  45.4% / 21.9% | oreille seule :  65.4% / 36.3% ; à exigence égale  52.9% | syllabes intactes resynthétisées  59.2% | module ET oreille>-2 :  45.0% / 21.9% | module ET oreille>-1 :  43.6% / 17.7%
+modele tout module  63.1% / 14.9% | oreille seule :  72.1% / 35.5% ; à exigence égale  54.8% | syllabes intactes resynthétisées  61.7% | module ET oreille>-2 :  62.1% / 14.1% | module ET oreille>-1 :  58.6% / 12.3%
+modele mil  module  72.5% / 16.4% | oreille seule :  73.3% / 33.7% ; à exigence égale  60.7% | syllabes intactes resynthétisées  61.7% | module ET oreille>-2 :  71.5% / 16.0% | module ET oreille>-1 :  67.4% / 13.6%
+modele fin  module  36.7% / 11.2% | oreille seule :  68.9% / 40.0% ; à exigence égale  42.6% | syllabes intactes resynthétisées  61.8% | module ET oreille>-2 :  35.9% /  9.3% | module ET oreille>-1 :  34.1% /  8.8%
