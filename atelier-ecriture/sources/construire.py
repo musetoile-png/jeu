@@ -182,8 +182,14 @@ embarques = sorted(f[:-5] for f in os.listdir(dest) if f.endswith('.json'))
 sans_traits = [d['c'] for d in sortie if d['c'] not in embarques]
 sortie = [d for d in sortie if d['c'] in embarques]
 
+# pinyin de citation de chaque caractère embarqué (sert à l'import Excel ou Anki quand la fiche n'en donne pas)
+py_cars = {d['c']: d['pinyin'] for d in sortie}
+for c in embarques:
+    if c not in py_cars:
+        py_cars[c] = hsk_py.get(c) or (lazy_pinyin(c, style=Style.TONE)[0] if lazy_pinyin else '')
 js = '// Généré par sources/construire.py — ne pas éditer à la main.\n'
 js += 'window.CARACTERES = ' + json.dumps(sortie, ensure_ascii=False, separators=(',', ':')) + ';\n'
+js += 'window.PINYIN_CARS = ' + json.dumps(py_cars, ensure_ascii=False, separators=(',', ':')) + ';\n'
 js += 'window.TRAITS_EMBARQUES = ' + json.dumps(''.join(embarques), ensure_ascii=False) + ';\n'
 open(os.path.join(ATELIER, 'donnees', 'caracteres.js'), 'w').write(js)
 

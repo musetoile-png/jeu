@@ -24,25 +24,60 @@
     stock.ecrire('ecriture_migre_v1', { le: Date.now(), cartes: n });
   }
 
-  // ---------- paquet : caractères du jeu + ajouts ----------
+  // ---------- paquet : caractères du jeu + ajouts (Excel, Anki) ----------
+  // ajouts[c] = { c, pinyin, sens, histoire, mnemo, noteProf, niveau, paquets:[nom], contextes:[{zh, fr, py, vo, synth, paquet}], mots:[…] }
   let PAR = {}, ORDRE = [];
+  function lireAjouts() {
+    const aj = stock.lire('ecriture_ajouts_v1') || {};
+    Object.values(aj).forEach(a => { if (!a.paquets || !a.paquets.length) a.paquets = ['Excel']; a.mots = a.mots || []; a.contextes = a.contextes || []; });
+    return aj;
+  }
   function construirePaquet() {
     PAR = {}; ORDRE = [];
-    (window.CARACTERES || []).forEach(d => { PAR[d.c] = JSON.parse(JSON.stringify(d)); ORDRE.push(d.c); });
-    const ajouts = stock.lire('ecriture_ajouts_v1') || {};
-    Object.values(ajouts).forEach(a => {
+    (window.CARACTERES || []).forEach(d => { PAR[d.c] = JSON.parse(JSON.stringify(d)); PAR[d.c].paquets = []; ORDRE.push(d.c); });
+    Object.values(lireAjouts()).forEach(a => {
       let d = PAR[a.c];
-      if (!d) { d = PAR[a.c] = { c: a.c, pinyin: '', sens: '', niveau: 0, source: 'import', histoire: '', mnemo: '', mots: [], contextes: [] }; ORDRE.push(a.c); }
-      ['pinyin', 'sens', 'histoire', 'mnemo'].forEach(k => { if (a[k]) d[k] = a[k]; });
+      if (!d) { d = PAR[a.c] = { c: a.c, pinyin: '', sens: '', niveau: 0, source: 'import', histoire: '', mnemo: '', mots: [], contextes: [], paquets: [] }; ORDRE.push(a.c); }
+      ['histoire', 'mnemo', 'noteProf'].forEach(k => { if (a[k]) d[k] = a[k]; });
+      ['pinyin', 'sens'].forEach(k => { if (a[k] && (a.force || !d[k] || d.source === 'import')) d[k] = a[k]; });
       if (a.niveau) d.niveau = a.niveau;
       d.importe = true;
+      d.paquets = [...new Set(d.paquets.concat(a.paquets))];
       const deja = new Set(d.contextes.map(x => x.zh));
-      d.contextes = (a.contextes || []).filter(x => !deja.has(x.zh)).concat(d.contextes);
+      d.contextes = a.contextes.filter(x => !deja.has(x.zh)).concat(d.contextes);
+      const dejaM = new Set(d.mots.map(x => x.zh));
+      d.mots = d.mots.concat(a.mots.filter(x => !dejaM.has(x.zh)));
     });
   }
+  if (R.niveaux.includes('ajouts')) { R.niveaux = R.niveaux.filter(x => x !== 'ajouts').concat('p:Excel'); }
   construirePaquet();
-  const groupe = d => d.importe && d.source === 'import' ? 'ajouts' : d.niveau >= 1 && d.niveau <= 3 ? String(d.niveau) : 'autres';
-  const liste = () => ORDRE.filter(c => R.niveaux.includes(groupe(PAR[c])) || (R.niveaux.includes('ajouts') && PAR[c].importe));
+  function etiquettes(d) {
+    const t = d.paquets.map(n => 'p:' + n);
+    if (d.source !== 'import' || d.niveau) t.push(d.niveau >= 1 && d.niveau <= 3 ? String(d.niveau) : 'autres');
+    return t;
+  }
+  const liste = () => ORDRE.filter(c => etiquettes(PAR[c]).some(t => R.niveaux.includes(t)));
+  function paquetsImportes() {
+    const n = {}; Object.values(PAR).forEach(d => d.paquets.forEach(p => { n[p] = (n[p] || 0) + 1; })); return n;
+  }
+
+  // ---------- sons importés (IndexedDB : trop gros pour le stockage simple) ----------
+  const sonsDB = {
+    base: null,
+    ouvrir() {
+      if (this.base) return this.base;
+      this.base = new Promise((ok, ko) => {
+        const r = indexedDB.open('atelier-ecriture', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('sons');
+        r.onsuccess = () => ok(r.result); r.onerror = () => ko(r.error);
+      });
+      return this.base;
+    },
+    async op(mode, f) { const db = await this.ouvrir(); return new Promise((ok, ko) => { const t = db.transaction('sons', mode); const r = f(t.objectStore('sons')); t.oncomplete = () => ok(r && r.result); t.onerror = () => ko(t.error); }); },
+    mettre(k, blob) { return this.op('readwrite', st => st.put(blob, k)); },
+    lire(k) { return this.op('readonly', st => st.get(k)); },
+    async retirerPrefixe(p) { const db = await this.ouvrir(); return new Promise(ok => { const t = db.transaction('sons', 'readwrite'); t.objectStore('sons').delete(IDBKeyRange.bound(p, p + '￿')); t.oncomplete = ok; t.onerror = ok; }); },
+  };
 
   // ---------- traceur (Hanzi Writer dans une grille 米字格) ----------
   function chargerTraits(c, ok, ko) {
@@ -109,8 +144,12 @@
       const u = new SpeechSynthesisUtterance(texte); u.lang = 'zh-CN'; u.rate = (vitesse || 1) * 0.85; speechSynthesis.speak(u);
     };
     if (!vo) return synthese();
-    const a = new Audio(VO + vo + '.mp3'); a.playbackRate = vitesse || 1;
-    audioCourant = a; a.play().catch(synthese);
+    const lancer = url => { const a = new Audio(url); a.playbackRate = vitesse || 1; audioCourant = a; a.play().catch(synthese); };
+    if (vo.startsWith('idb:')) {
+      sonsDB.lire(vo.slice(4)).then(b => b ? lancer(URL.createObjectURL(b)) : synthese()).catch(synthese);
+      return;
+    }
+    lancer(VO + vo + '.mp3');
   }
 
   // ---------- pinyin ----------
@@ -159,7 +198,7 @@
       $('contexte').innerHTML = d.mots.length ? '' : '<div class="vide">Pas encore de phrase du jeu pour ce caractère.</div>';
       return;
     }
-    $('contexte').innerHTML = `<div class="zh">${htmlContexte(x.zh, d.c, revele)}</div><div class="fr">${revele ? x.fr : x.fr.split(d.c).join('＿')}</div>
+    $('contexte').innerHTML = `<div class="zh">${htmlContexte(x.zh, d.c, revele)}</div>${revele && R.pinyin && x.py ? '<div class="fr" style="color:var(--cinabre)">' + x.py + '</div>' : ''}<div class="fr">${revele ? x.fr : x.fr.split(d.c).join('＿')}</div>${x.paquet ? '<div class="aide">' + x.paquet + '</div>' : ''}
       <div class="boutons" style="margin-top:6px"><button class="btn son discret" id="btnPhrase" type="button">Phrase</button>
       ${d.contextes.length > 1 ? '<button class="btn discret" id="btnAutre" type="button">Autre phrase</button>' : ''}</div>`;
     const bp = $('btnPhrase'); if (bp) bp.onclick = () => jouer(x.vo, x.zh, 1, 'phrase');
@@ -246,8 +285,8 @@
     b.focus({ preventScroll: true });
   }
   function afficherHistoire(d) {
-    if (!d.histoire && !d.mnemo) { $('histoire').hidden = true; return; }
-    $('histoire').innerHTML = `<div class="grand">${d.c}</div>${d.histoire ? '<b>Histoire :</b> ' + d.histoire + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + d.mnemo : ''}`;
+    if (!d.histoire && !d.mnemo && !d.noteProf) { $('histoire').hidden = true; return; }
+    $('histoire').innerHTML = `<div class="grand">${d.c}</div>${d.histoire ? '<b>Histoire :</b> ' + d.histoire + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + d.mnemo + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + d.noteProf : ''}`;
     $('histoire').hidden = false;
   }
   function suivante() {
@@ -306,16 +345,16 @@
     if (R.dictee === 'mot') {
       const vus = new Set(), items = [];
       liste().forEach(c => PAR[c].mots.forEach(m => {
-        if (vus.has(m.id) || !m.vo) return; vus.add(m.id);
+        if (vus.has(m.id) || (!m.vo && !m.synth)) return; vus.add(m.id);
         const cs = [...m.zh].filter(x => HAN.test(x));
-        if (!cs.length || !cs.every(dispo) || !cs.some(x => l.has(x))) return;
+        if (!cs.length || !cs.every(x => l.has(x))) return;  // seulement des mots entièrement dans le paquet choisi
         items.push({ zh: m.zh, fr: m.fr, py: m.py, vo: m.vo, cibles: cs.map((_, i) => i).filter(i => HAN.test([...m.zh][i])), score: cs.filter(appris).length / cs.length });
       }));
       return items;
     }
     const vus = new Set(), items = [];
     liste().forEach(c => PAR[c].contextes.forEach(x => {
-      if (vus.has(x.zh) || !x.vo) return; vus.add(x.zh);
+      if (vus.has(x.zh) || (!x.vo && !x.synth)) return; vus.add(x.zh);
       const cars = [...x.zh];
       let cibles = cars.map((ch, i) => i).filter(i => appris(cars[i]) && l.has(cars[i]));
       if (!cibles.length) cibles = cars.map((ch, i) => i).filter(i => l.has(cars[i]) && dispo(cars[i])).slice(0, 1);
@@ -394,16 +433,23 @@
 
   // ---------- CARNET, paquet, réglages ----------
   function majCarnet() {
-    const groupes = [['1', 'HSK 1'], ['2', 'HSK 2'], ['3', 'HSK 3'], ['autres', 'Autres'], ['ajouts', 'Ajoutés']];
-    $('niveaux').innerHTML = groupes.map(([g, nom]) => {
-      const n = ORDRE.filter(c => groupe(PAR[c]) === g || (g === 'ajouts' && PAR[c].importe)).length;
-      return n ? `<button type="button" data-g="${g}" aria-pressed="${R.niveaux.includes(g)}">${nom} · ${n}</button>` : '';
-    }).join('');
+    const groupes = [['1', 'HSK 1'], ['2', 'HSK 2'], ['3', 'HSK 3'], ['autres', 'Autres']];
+    const comptes = {}; ORDRE.forEach(c => etiquettes(PAR[c]).forEach(t => { comptes[t] = (comptes[t] || 0) + 1; }));
+    const pq = paquetsImportes();
+    Object.keys(pq).forEach(n => groupes.push(['p:' + n, '★ ' + n]));
+    $('niveaux').innerHTML = groupes.map(([g, nom]) => comptes[g] ? `<button type="button" data-g="${g.replace(/"/g, '&quot;')}" aria-pressed="${R.niveaux.includes(g)}">${nom} · ${comptes[g]}</button>` : '').join('');
     document.querySelectorAll('#niveaux button').forEach(b => b.onclick = () => {
       const g = b.dataset.g, on = R.niveaux.includes(g);
       if (on && R.niveaux.length === 1) return;
       R.niveaux = on ? R.niveaux.filter(x => x !== g) : R.niveaux.concat(g); sauverR(); majCarnet(); majCompteurs();
     });
+    $('listePaquets').innerHTML = Object.entries(pq).map(([n, k]) => `<div class="ligne-paquet"><span>★ ${n} · ${k} caractères</span>
+      <button class="btn petit" type="button" data-seul="${n.replace(/"/g, '&quot;')}">Ne travailler que celui-ci</button>
+      <button class="btn petit discret" type="button" data-renommer="${n.replace(/"/g, '&quot;')}">Renommer</button>
+      <button class="btn petit discret" type="button" data-retirer="${n.replace(/"/g, '&quot;')}">Retirer</button></div>`).join('');
+    document.querySelectorAll('[data-renommer]').forEach(b => b.onclick = () => renommerPaquet(b.dataset.renommer));
+    document.querySelectorAll('[data-seul]').forEach(b => b.onclick = () => { R.niveaux = ['p:' + b.dataset.seul]; sauverR(); majCarnet(); majCompteurs(); });
+    document.querySelectorAll('[data-retirer]').forEach(b => b.onclick = () => retirerPaquet(b.dataset.retirer));
     const l = liste();
     $('infoPaquet').textContent = l.length + ' caractères dans le paquet, dans l\'ordre où le jeu les enseigne.';
     $('carnetGrille').innerHTML = l.map(c => `<button type="button" class="n${moteur.niveau(c)}" data-c="${c}" title="${PAR[c].pinyin} ${PAR[c].sens}">${c}</button>`).join('');
@@ -422,34 +468,136 @@
 
   $('fichier').onchange = e => {
     const f = e.target.files[0]; if (!f) return;
+    e.target.value = '';
+    if (/\.apkg$/i.test(f.name)) return importerAnki(f);
     const rd = new FileReader();
     rd.onload = ev => {
       const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
       const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
-      const ajouts = stock.lire('ecriture_ajouts_v1') || {};
+      const ajouts = lireAjouts(), paquet = f.name.replace(/\.(xlsx|xls|csv)$/i, '');
       let ajout = 0, maj = 0, horsLigne = 0;
       rows.forEach(r => {
         const c = String(r[0] || '').trim();
         if (!c || !HAN.test(c) || c.length !== 1) return;
-        const ctx = String(r[5] || '').split(/\s*;\s*/).filter(Boolean).map(s => { const [zh, fr] = s.split('|'); return { zh: zh.trim(), fr: (fr || '').trim(), vo: '', scene: 'import' }; });
+        const ctx = String(r[5] || '').split(/\s*;\s*/).filter(Boolean).map(s => { const [zh, fr] = s.split('|'); return { zh: zh.trim(), fr: (fr || '').trim(), vo: '', synth: true, paquet }; });
         const niv = parseInt(String(r[6] || '').replace(/\D/g, ''), 10) || 0;
         if (PAR[c] || ajouts[c]) maj++; else ajout++;
         if (!(window.TRAITS_EMBARQUES || '').includes(c)) horsLigne++;
-        const a = ajouts[c] || { c, contextes: [] };
+        const a = ajouts[c] || { c, contextes: [], mots: [], paquets: [] };
         a.pinyin = String(r[1] || '') || a.pinyin; a.sens = String(r[2] || '') || a.sens; a.histoire = String(r[3] || '') || a.histoire;
-        a.mnemo = String(r[4] || '') || a.mnemo; a.niveau = niv || a.niveau;
+        a.mnemo = String(r[4] || '') || a.mnemo; a.niveau = niv || a.niveau; a.force = true;
+        if (!a.paquets.includes(paquet)) a.paquets.push(paquet);
         const deja = new Set(a.contextes.map(x => x.zh)); a.contextes = a.contextes.concat(ctx.filter(x => !deja.has(x.zh)));
         ajouts[c] = a;
       });
       stock.ecrire('ecriture_ajouts_v1', ajouts);
       construirePaquet();
-      if (!R.niveaux.includes('ajouts')) R.niveaux.push('ajouts'); sauverR();
+      if (!R.niveaux.includes('p:' + paquet)) R.niveaux.push('p:' + paquet); sauverR();
       majCarnet(); majCompteurs();
       $('infoImport').textContent = `${ajout} caractère(s) ajouté(s), ${maj} mis à jour. Progression conservée.` + (horsLigne ? ` ${horsLigne} caractère(s) chargeront leurs traits par internet.` : '');
       journal.ajouter({ evenement: 'import', detail: f.name + ':' + ajout + '+' + maj });
     };
-    rd.readAsArrayBuffer(f); e.target.value = '';
+    rd.readAsArrayBuffer(f);
   };
+
+  /* Paquet Anki (.apkg) : chaque fiche devient une phrase de contexte (avec le son de la prof s'il y en a un),
+     chaque caractère chinois des fiches devient un caractère à écrire. */
+  async function importerAnki(f) {
+    const info = $('infoImport');
+    info.textContent = 'Lecture du paquet Anki…';
+    let p;
+    try { p = await ImportAnki.lire(await f.arrayBuffer(), f.name); }
+    catch (err) { info.textContent = 'Lecture impossible : ' + err.message; return; }
+    const nom = p.nom, fiches = p.notes.map(ImportAnki.analyserNote).filter(a => a.nbHan);
+    const ajouts = lireAjouts(), pyCars = window.PINYIN_CARS || {};
+    let sonsGardes = 0; const sonsUtiles = new Set(fiches.flatMap(a => a.sons));
+    await sonsDB.retirerPrefixe(nom + '/');
+    for (const [n, octets] of p.sons) {
+      if (!sonsUtiles.has(n)) continue;
+      const type = /\.ogg$/i.test(n) ? 'audio/ogg' : /\.wav$/i.test(n) ? 'audio/wav' : /\.m4a$/i.test(n) ? 'audio/mp4' : 'audio/mpeg';
+      try { await sonsDB.mettre(nom + '/' + n, new Blob([octets], { type })); sonsGardes++; } catch (e) { /* stockage refusé */ }
+    }
+    const entree = c => {
+      const a = ajouts[c] || (ajouts[c] = { c, contextes: [], mots: [], paquets: [] });
+      if (!a.paquets.includes(nom)) a.paquets.push(nom);
+      return a;
+    };
+    // on repart de zéro pour ce paquet (réimporter une version corrigée remplace l'ancienne)
+    Object.values(ajouts).forEach(a => { a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom); });
+    const cars = new Set(), nouveaux = new Set();
+    let phrases = 0;
+    fiches.forEach(a => {
+      const son = a.sons.find(n => p.sons.has(n));
+      const vo = son ? 'idb:' + nom + '/' + son : '';
+      const vus = new Set();
+      a.cars.forEach(({ c, py }) => {
+        if (vus.has(c)) return; vus.add(c); cars.add(c);
+        if (!PAR[c] || PAR[c].source === 'import') nouveaux.add(c);
+        const e = entree(c);
+        if (!e.pinyin && !(PAR[c] && PAR[c].source !== 'import' && PAR[c].pinyin)) e.pinyin = (/[^a-z]/i.test(py) ? py : '') || pyCars[c] || py;  // pinyin de la prof s'il porte un ton (机场 : chǎng), sinon forme de citation
+        if (a.zh === c && a.fr) { e.sens = a.fr; if (a.note) e.noteProf = a.note; }
+        if (a.nbHan >= 2) {
+          if (!e.contextes.some(x => x.zh === a.zh)) e.contextes.push({ zh: a.zh, fr: a.fr, py: a.py, vo, synth: !vo, paquet: nom });
+        }
+        if (a.nbHan <= 4 && !/[，。？！?!…、]/.test(a.zh)) {
+          if (!e.mots.some(x => x.zh === a.zh)) e.mots.push({ id: 'anki-' + a.id, zh: a.zh, py: a.py, fr: a.fr, vo, synth: !vo, paquet: nom });
+        }
+      });
+      if (a.nbHan >= 2) phrases++;
+    });
+    // sens d'un caractère sans fiche à lui : « dans 机场 (aéroport) »
+    cars.forEach(c => {
+      const e = ajouts[c];
+      if (e.sens || (PAR[c] && PAR[c].source !== 'import' && PAR[c].sens)) return;
+      const m = e.mots.filter(x => x.paquet === nom && x.fr).sort((x, y) => x.zh.length - y.zh.length).slice(0, 2);
+      if (m.length) e.sens = m.map(x => `dans ${x.zh} (${x.fr})`).join(' · ');
+    });
+    stock.ecrire('ecriture_ajouts_v1', ajouts);
+    const meta = stock.lire('ecriture_paquets_v1') || {}; meta[nom] = { prefixe: nom + '/', importe: new Date().toISOString(), fichier: f.name }; stock.ecrire('ecriture_paquets_v1', meta);
+    construirePaquet();
+    if (!R.niveaux.includes('p:' + nom)) R.niveaux.push('p:' + nom); sauverR();
+    majCarnet(); majCompteurs();
+    const horsLigne = [...cars].filter(c => !(window.TRAITS_EMBARQUES || '').includes(c)).length;
+    info.innerHTML = `<b>★ ${nom}</b> : ${p.notes.length} fiches lues, ${cars.size} caractères à écrire (${nouveaux.size} absents du jeu), ${phrases} phrases de contexte, ${sonsGardes} enregistrement(s) de la prof.` +
+      (horsLigne ? ` ${horsLigne} caractère(s) chargeront leurs traits par internet.` : '') + ' Le paquet est ajouté à la sélection ci-dessus.';
+    journal.ajouter({ evenement: 'import', detail: 'anki:' + nom + ':' + p.notes.length + ' fiches:' + cars.size + ' caracteres' });
+  }
+
+  function renommerPaquet(ancien) {
+    const nom = (prompt('Nouveau nom du paquet :', ancien) || '').trim().replace(/"/g, '');
+    if (!nom || nom === ancien) return;
+    const ajouts = lireAjouts();
+    Object.values(ajouts).forEach(a => {
+      a.paquets = [...new Set(a.paquets.map(x => x === ancien ? nom : x))];
+      a.contextes.forEach(x => { if (x.paquet === ancien) x.paquet = nom; });
+      a.mots.forEach(x => { if (x.paquet === ancien) x.paquet = nom; });   // les sons gardent leur clé d'origine
+    });
+    stock.ecrire('ecriture_ajouts_v1', ajouts);
+    const meta = stock.lire('ecriture_paquets_v1') || {}; if (meta[ancien]) { meta[nom] = meta[ancien]; delete meta[ancien]; stock.ecrire('ecriture_paquets_v1', meta); }
+    R.niveaux = R.niveaux.map(x => x === 'p:' + ancien ? 'p:' + nom : x); sauverR();
+    construirePaquet(); majCarnet(); majCompteurs();
+  }
+
+  async function retirerPaquet(nom) {
+    if (!confirm('Retirer le paquet « ' + nom + ' » ? La progression déjà faite est gardée.')) return;
+    const ajouts = lireAjouts(), sons = new Set();
+    Object.values(ajouts).forEach(a => a.contextes.concat(a.mots).forEach(x => { if (x.paquet === nom && x.vo && x.vo.startsWith('idb:')) sons.add(x.vo.slice(4)); }));
+    Object.keys(ajouts).forEach(c => {
+      const a = ajouts[c];
+      a.paquets = a.paquets.filter(x => x !== nom);
+      a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom);
+      if (!a.paquets.length) delete ajouts[c];
+    });
+    stock.ecrire('ecriture_ajouts_v1', ajouts);
+    const meta = stock.lire('ecriture_paquets_v1') || {};
+    await sonsDB.retirerPrefixe((meta[nom] && meta[nom].prefixe) || nom + '/');
+    delete meta[nom]; stock.ecrire('ecriture_paquets_v1', meta);
+    for (const k of sons) { try { await sonsDB.op('readwrite', st => st.delete(k)); } catch (e) { /* déjà absent */ } }
+    R.niveaux = R.niveaux.filter(x => x !== 'p:' + nom); if (!R.niveaux.length) R.niveaux = ['1']; sauverR();
+    construirePaquet(); majCarnet(); majCompteurs();
+    journal.ajouter({ evenement: 'retrait_paquet', detail: nom });
+  }
+
   $('btnModele').onclick = () => {
     const ws = XLSX.utils.aoa_to_sheet([
       ['caractère', 'pinyin', 'sens', 'histoire', 'mnémotechnique', 'contextes (phrase|traduction ; phrase|traduction)', 'niveau'],
@@ -507,5 +655,5 @@
 
   majReglages();
   suivante();
-  window.__atelier = { moteur, journal, PAR, liste, etat: () => etat, dic: () => dic, R }; // pour les tests
+  window.__atelier = { moteur, journal, get PAR() { return PAR; }, liste, etat: () => etat, dic: () => dic, R }; // pour les tests
 })();

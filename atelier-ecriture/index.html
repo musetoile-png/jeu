@@ -109,6 +109,8 @@ td.hz { font-family: var(--police-han); font-size: 1.1rem; }
 .defile { max-height: 320px; overflow: auto; }
 footer { font-size: .8rem; color: var(--encre-douce); text-align: center; margin-top: 10px; }
 footer a { color: inherit; }
+.ligne-paquet { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 0; border-top: 1px solid var(--trait); }
+.ligne-paquet span { font-weight: 600; flex: 1 1 200px; }
 </style>
 </head>
 <body>
@@ -198,13 +200,15 @@ footer a { color: inherit; }
         <div class="segments" id="epaisseur"><button type="button" data-v="0.06">Fin (stylet)</button><button type="button" data-v="0.085">Moyen</button><button type="button" data-v="0.11">Épais (doigt)</button></div></div>
     </div>
     <div class="feuille">
-      <h2>Importer des caractères (Excel ou CSV)</h2>
-      <p class="aide">Colonnes : caractère · pinyin · sens · histoire · mnémotechnique · contextes (phrase|traduction ; phrase|traduction) · niveau. La progression est conservée. Les caractères hors HSK 1 à 3 demandent une connexion la première fois.</p>
+      <h2>Importer des caractères (Anki, Excel ou CSV)</h2>
+      <p class="aide"><b>Paquet Anki (.apkg)</b> : chaque fiche devient une phrase de contexte, avec l'enregistrement de la prof s'il y en a un ; chaque caractère chinois des fiches devient un caractère à écrire. Tout reste sur l'appareil.</p>
+      <p class="aide"><b>Excel</b> : colonnes : caractère · pinyin · sens · histoire · mnémotechnique · contextes (phrase|traduction ; phrase|traduction) · niveau. La progression est conservée. Les caractères hors HSK 1 à 3 demandent une connexion la première fois.</p>
       <div class="boutons" style="justify-content:flex-start">
-        <label class="btn">Choisir un fichier<input type="file" id="fichier" accept=".xlsx,.xls,.csv" hidden></label>
+        <label class="btn">Choisir un fichier<input type="file" id="fichier" accept=".apkg,.xlsx,.xls,.csv" hidden></label>
         <button class="btn discret" id="btnModele" type="button">Télécharger un modèle</button>
       </div>
-      <p class="aide" id="infoImport"></p>
+      <p class="aide" id="infoImport" aria-live="polite"></p>
+      <div id="listePaquets"></div>
     </div>
   </section>
 
@@ -230,13 +234,14 @@ footer a { color: inherit; }
     </div>
   </section>
 
-  <footer>千里 Mille li · Atelier d'écriture v0.2 · tracé : <a href="https://github.com/chanind/hanzi-writer">Hanzi Writer</a> (MIT) · données de traits : Make Me a Hanzi, <a href="traits/ARPHICPL.TXT">licence Arphic</a></footer>
+  <footer>千里 Mille li · Atelier d'écriture v0.3 · tracé : <a href="https://github.com/chanind/hanzi-writer">Hanzi Writer</a> (MIT) · import Anki : sql.js, fflate, fzstd (MIT) · données de traits : Make Me a Hanzi, <a href="traits/ARPHICPL.TXT">licence Arphic</a></footer>
 </div>
 
 <script src="lib/hanzi-writer.min.js"></script>
 <script src="lib/xlsx.full.min.js" defer></script>
 <script src="donnees/caracteres.js"></script>
 <script src="moteur-ecriture.js"></script>
+<script src="import-anki.js"></script>
 <script src="ecriture.js"></script>
 </body>
 </html>
