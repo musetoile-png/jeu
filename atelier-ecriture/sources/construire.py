@@ -56,6 +56,8 @@ def parcourir(o, scene):
         if isinstance(o.get('line'), list) and o.get('ok') is not False and not o.get('errorType'):
             zh = texte(o['line'])
             fr = (o.get('gloss') or {}).get('fr', '')
+            # didascalies du jeu entre parenthèses qui citent du chinois : on les retire (elles donneraient la réponse)
+            fr = re.sub(r'\s*\([^)]*[\u3400-\u9fff][^)]*\)\s*', ' ', fr).strip()
             if zh and fr and zh not in vues and sum(han(c) for c in zh) >= 2:
                 vues.add(zh)
                 ids = [t[1] for t in o['line'] if t[0] == 'w']

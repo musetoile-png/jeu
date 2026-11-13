@@ -159,7 +159,7 @@
       $('contexte').innerHTML = d.mots.length ? '' : '<div class="vide">Pas encore de phrase du jeu pour ce caractère.</div>';
       return;
     }
-    $('contexte').innerHTML = `<div class="zh">${htmlContexte(x.zh, d.c, revele)}</div><div class="fr">${x.fr}</div>
+    $('contexte').innerHTML = `<div class="zh">${htmlContexte(x.zh, d.c, revele)}</div><div class="fr">${revele ? x.fr : x.fr.split(d.c).join('＿')}</div>
       <div class="boutons" style="margin-top:6px"><button class="btn son discret" id="btnPhrase" type="button">Phrase</button>
       ${d.contextes.length > 1 ? '<button class="btn discret" id="btnAutre" type="button">Autre phrase</button>' : ''}</div>`;
     const bp = $('btnPhrase'); if (bp) bp.onclick = () => jouer(x.vo, x.zh, 1, 'phrase');
