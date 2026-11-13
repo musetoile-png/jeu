@@ -1,0 +1,229 @@
+{
+ "你": {
+  "pinyin": "nǐ",
+  "sens": "tu",
+  "histoire": "Composé de 亻(l'homme) et 尔 (toi).",
+  "mnemo": "La personne (亻) en face de toi.",
+  "contextes": [
+   "你好！|Bonjour !",
+   "你是老师吗？|Tu es professeur ?",
+   "谢谢你。|Merci à toi."
+  ]
+ },
+ "好": {
+  "pinyin": "hǎo",
+  "sens": "bien, bon",
+  "histoire": "Une femme (女) et un enfant (子).",
+  "mnemo": "Une mère avec son enfant : c'est bien.",
+  "contextes": [
+   "你好！|Bonjour !",
+   "这个茶很好喝。|Ce thé est très bon.",
+   "好的，谢谢。|D'accord, merci."
+  ]
+ },
+ "我": {
+  "pinyin": "wǒ",
+  "sens": "je, moi",
+  "histoire": "À l'origine, une arme à dents de scie, empruntée ensuite pour dire « moi ».",
+  "mnemo": "Moi, je tiens ma hallebarde.",
+  "contextes": [
+   "我是学生。|Je suis étudiant.",
+   "我喝茶。|Je bois du thé.",
+   "我不吃。|Je ne mange pas."
+  ]
+ },
+ "是": {
+  "pinyin": "shì",
+  "sens": "être",
+  "histoire": "Le soleil (日) au-dessus de 正 (droit, juste).",
+  "mnemo": "Sous le soleil, c'est vrai.",
+  "contextes": [
+   "我是学生。|Je suis étudiant.",
+   "他是中国人。|Il est chinois.",
+   "这是什么？|Qu'est-ce que c'est ?"
+  ]
+ },
+ "不": {
+  "pinyin": "bù",
+  "sens": "ne… pas",
+  "histoire": "",
+  "mnemo": "",
+  "contextes": [
+   "我不吃。|Je ne mange pas.",
+   "不是。|Non, ce n'est pas ça.",
+   "不好意思。|Excusez-moi."
+  ]
+ },
+ "人": {
+  "pinyin": "rén",
+  "sens": "personne",
+  "histoire": "Pictogramme d'un homme vu de profil qui marche.",
+  "mnemo": "Deux jambes qui avancent.",
+  "contextes": [
+   "他是中国人。|Il est chinois.",
+   "这里人很多。|Il y a beaucoup de monde ici."
+  ]
+ },
+ "中": {
+  "pinyin": "zhōng",
+  "sens": "milieu",
+  "histoire": "Un étendard planté au centre d'un cercle.",
+  "mnemo": "Une flèche en plein milieu de la cible.",
+  "contextes": [
+   "他是中国人。|Il est chinois.",
+   "我学中文。|J'apprends le chinois."
+  ]
+ },
+ "国": {
+  "pinyin": "guó",
+  "sens": "pays",
+  "histoire": "Une frontière (囗) autour du jade (玉).",
+  "mnemo": "Le trésor protégé par les remparts.",
+  "contextes": [
+   "他是中国人。|Il est chinois.",
+   "你是哪国人？|De quel pays es-tu ?"
+  ]
+ },
+ "大": {
+  "pinyin": "dà",
+  "sens": "grand",
+  "histoire": "Un homme qui écarte les bras.",
+  "mnemo": "« J'ai pêché un poisson grand comme ça ! »",
+  "contextes": [
+   "这个很大。|C'est très grand.",
+   "大家好！|Bonjour à tous !"
+  ]
+ },
+ "小": {
+  "pinyin": "xiǎo",
+  "sens": "petit",
+  "histoire": "Trois petits points, des grains de sable.",
+  "mnemo": "",
+  "contextes": [
+   "小李是学生。|Xiao Li est étudiant.",
+   "这个太小了。|C'est trop petit."
+  ]
+ },
+ "水": {
+  "pinyin": "shuǐ",
+  "sens": "eau",
+  "histoire": "Pictogramme d'un cours d'eau avec ses remous.",
+  "mnemo": "",
+  "contextes": [
+   "我喝水。|Je bois de l'eau.",
+   "一瓶水，谢谢。|Une bouteille d'eau, merci."
+  ]
+ },
+ "山": {
+  "pinyin": "shān",
+  "sens": "montagne",
+  "histoire": "Pictogramme de trois pics.",
+  "mnemo": "",
+  "contextes": []
+ },
+ "口": {
+  "pinyin": "kǒu",
+  "sens": "bouche",
+  "histoire": "Pictogramme d'une bouche ouverte.",
+  "mnemo": "",
+  "contextes": [
+   "人口很多。|La population est nombreuse.",
+   "出口在哪儿？|Où est la sortie ?"
+  ]
+ },
+ "日": {
+  "pinyin": "rì",
+  "sens": "soleil, jour",
+  "histoire": "Un cercle avec un point au centre, devenu carré.",
+  "mnemo": "",
+  "contextes": [
+   "今天是我的生日。|Aujourd'hui c'est mon anniversaire.",
+   "日本|Japon"
+  ]
+ },
+ "月": {
+  "pinyin": "yuè",
+  "sens": "lune, mois",
+  "histoire": "Un croissant de lune.",
+  "mnemo": "",
+  "contextes": [
+   "一月|janvier",
+   "这个月很忙。|Ce mois-ci est chargé."
+  ]
+ },
+ "木": {
+  "pinyin": "mù",
+  "sens": "arbre",
+  "histoire": "Un tronc, des branches et des racines.",
+  "mnemo": "",
+  "contextes": []
+ },
+ "吃": {
+  "pinyin": "chī",
+  "sens": "manger",
+  "histoire": "La bouche (口) et 乞.",
+  "mnemo": "",
+  "contextes": [
+   "我不吃。|Je ne mange pas.",
+   "你吃饭了吗？|Tu as mangé ?"
+  ]
+ },
+ "喝": {
+  "pinyin": "hē",
+  "sens": "boire",
+  "histoire": "La bouche (口) et 曷.",
+  "mnemo": "",
+  "contextes": [
+   "我喝茶。|Je bois du thé.",
+   "你喝什么？|Qu'est-ce que tu bois ?"
+  ]
+ },
+ "茶": {
+  "pinyin": "chá",
+  "sens": "thé",
+  "histoire": "L'herbe (艹) au-dessus d'un homme (人) et d'un arbre (木).",
+  "mnemo": "Un homme entre les herbes et l'arbre à thé.",
+  "contextes": [
+   "我喝茶。|Je bois du thé.",
+   "一杯茶，谢谢。|Une tasse de thé, merci."
+  ]
+ },
+ "学": {
+  "pinyin": "xué",
+  "sens": "étudier",
+  "histoire": "Un enfant (子) sous un toit, les mains qui manipulent des baguettes à compter.",
+  "mnemo": "",
+  "contextes": [
+   "我是学生。|Je suis étudiant.",
+   "我学中文。|J'apprends le chinois."
+  ]
+ },
+ "一": {
+  "pinyin": "yī",
+  "sens": "un",
+  "histoire": "Un trait.",
+  "mnemo": "",
+  "contextes": [
+   "一杯茶，谢谢。|Une tasse de thé, merci.",
+   "一月|janvier"
+  ]
+ },
+ "二": {
+  "pinyin": "èr",
+  "sens": "deux",
+  "histoire": "Deux traits.",
+  "mnemo": "",
+  "contextes": [
+   "二月|février"
+  ]
+ },
+ "三": {
+  "pinyin": "sān",
+  "sens": "trois",
+  "histoire": "Trois traits.",
+  "mnemo": "",
+  "contextes": [
+   "三个人|trois personnes"
+  ]
+ }
+}

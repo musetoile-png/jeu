@@ -1,130 +1,242 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Écriture 汉字</title>
-<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Atelier d'écriture 写字 — 千里 Mille li</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500;700&display=swap">
 <style>
-body{font-family:system-ui;background:#f6f1e7;color:#2b2b2b;margin:0;display:flex;flex-direction:column;align-items:center;touch-action:manipulation;padding-bottom:30px}
-h1{font-weight:400;margin:14px 0 4px}
-#info{text-align:center;min-height:60px}
-#pinyin{font-size:28px;color:#a33}#sens{font-size:18px}
-#target{background:#fffdf8;border:1px solid #c9b99a;border-radius:12px;margin:10px;touch-action:none}
-button,label.btn{font-size:16px;padding:9px 14px;margin:4px;border-radius:10px;border:1px solid #a33;background:#fff;cursor:pointer;display:inline-block}
-#stats{font-size:14px;color:#777;margin:6px}
-#msg{min-height:24px;font-size:18px;text-align:center}
-#histoire{display:none;max-width:320px;background:#fffdf8;border-left:4px solid #a33;padding:10px 14px;margin:8px;border-radius:6px;font-size:15px;line-height:1.4}
-#histoire b{color:#a33}
-#outils{margin-top:10px;font-size:13px;color:#777;text-align:center;max-width:330px}
-#suite{display:none}
-</style></head><body>
-<h1>Écriture 汉字</h1>
-<div id="stats"></div>
-<div id="info"><div id="pinyin"></div><div id="sens"></div></div>
-<svg id="target" width="300" height="300">
-<line x1="0" y1="0" x2="300" y2="300" stroke="#eee"/><line x1="300" y1="0" x2="0" y2="300" stroke="#eee"/>
-<line x1="150" y1="0" x2="150" y2="300" stroke="#eee"/><line x1="0" y1="150" x2="300" y2="150" stroke="#eee"/></svg>
-<div id="contexte" style="font-size:24px;text-align:center;min-height:30px"></div><div id="ctxfr" style="font-size:14px;color:#777;text-align:center"></div><div id="msg"></div>
-<div id="histoire"></div>
-<div><button onclick="montrer()">Montrer l'ordre</button><button onclick="indice()">Indice</button><button onclick="voirHistoire()">Histoire</button><button onclick="suivant()">Passer</button></div>
-<button id="btnPy" onclick="togglePy()"></button>
-<button id="suite" onclick="suivant()">Caractère suivant →</button>
-<div id="outils">
-<label class="btn">Importer Excel / CSV<input type="file" id="fichier" accept=".xlsx,.xls,.csv" hidden></label>
-<button onclick="modele()">Télécharger un modèle</button><br>
-Colonnes : caractère · pinyin · sens · histoire · mnémotechnique · contextes (phrase|traduction, séparés par ;)
+/* Même papier et mêmes encres que l'atelier de la voix. */
+:root {
+  --papier: #eef0eb; --feuille: #f8f9f6; --encre: #1c2220; --encre-douce: #56605b; --trait: #d3d8d1;
+  --jade: #2d7a66; --jade-pale: #dcebe5; --ocre: #b07a12; --ocre-pale: #f3e6c8; --cinabre: #b4412e; --cinabre-pale: #f4dcd6;
+  --gris: #8a938e; --grille: #e3e6e1;
+  --police-texte: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --police-han: "Noto Serif SC", "Songti SC", "SimSun", "Noto Serif CJK SC", serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; overscroll-behavior: none; }
+body { background: var(--papier); color: var(--encre); font-family: var(--police-texte); font-size: 17px; line-height: 1.45;
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 40px max(12px, env(safe-area-inset-left));
+  -webkit-tap-highlight-color: transparent; }
+.page { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.btn.petit { min-height: 38px; padding: 6px 12px; font-size: .95rem; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+h1 { font-size: 1.1rem; margin: 0; font-weight: 600; }
+h1 .han { font-family: var(--police-han); color: var(--cinabre); margin-right: 6px; }
+h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--encre-douce); margin: 0 0 8px; font-weight: 600; }
+
+/* Onglets : quatre gros boutons, toujours au même endroit */
+nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+nav button { font: inherit; font-size: .95rem; padding: 8px 4px; border-radius: 12px; border: 1px solid var(--trait);
+  background: var(--feuille); color: var(--encre); cursor: pointer; min-height: 44px; }
+nav button[aria-selected="true"] { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+[hidden] { display: none !important; }
+
+.feuille { background: var(--feuille); border: 1px solid var(--trait); border-radius: 16px; padding: 14px; }
+.compteurs { display: flex; justify-content: center; gap: 4px 14px; flex-wrap: wrap; font-size: .85rem; color: var(--encre-douce); }
+.compteurs b { color: var(--encre); font-weight: 600; }
+
+/* Les trois étapes, toujours visibles : où j'en suis */
+.etapes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.etape { border: 2px solid var(--trait); border-radius: 10px; padding: 4px 2px; text-align: center; font-size: .88rem; color: var(--encre-douce); background: var(--feuille); white-space: nowrap; }
+.etape .num { font-weight: 600; margin-right: 4px; }
+.etape.faite { border-color: var(--jade); color: var(--jade); background: var(--jade-pale); }
+.etape.active { border-color: var(--encre); color: var(--encre); background: #fff; }
+
+.carte { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sens { font-size: 1.25rem; font-weight: 600; text-align: center; line-height: 1.25; }
+.tete { display: flex; align-items: center; justify-content: center; gap: 4px 12px; flex-wrap: wrap; }
+.ligne-pinyin { display: flex; align-items: center; gap: 10px; }
+.pinyin { font-size: 1.45rem; color: var(--cinabre); min-width: 3ch; text-align: center; }
+.pinyin.cache { visibility: hidden; }
+.mots { font-size: .95rem; color: var(--encre-douce); text-align: center; }
+.mots .hz { font-family: var(--police-han); color: var(--encre); font-size: 1.1rem; }
+
+/* Zone de tracé : grille 米字格, carrée, la plus grande possible */
+.zone { position: relative; touch-action: none; user-select: none; -webkit-user-select: none; }
+#cible { display: block; background: #fffefa; border: 2px solid var(--cinabre); border-radius: 6px; touch-action: none; }
+.retour { min-height: 1.6em; font-size: 1.1rem; text-align: center; font-weight: 500; }
+.retour.ok { color: var(--jade); } .retour.ko { color: var(--cinabre); } .retour.moyen { color: var(--ocre); }
+
+.contexte { text-align: center; }
+.contexte .zh { font-family: var(--police-han); font-size: 1.6rem; line-height: 1.5; }
+.contexte .zh .trou { display: inline-block; width: 1.1em; border-bottom: 3px solid var(--cinabre); margin: 0 1px; }
+.contexte .zh .vise { color: var(--cinabre); }
+.contexte .fr { color: var(--encre-douce); font-size: .95rem; }
+.contexte .vide { color: var(--gris); font-size: .9rem; }
+
+.boutons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.btn { font: inherit; font-size: 1rem; padding: 10px 14px; min-height: 46px; border-radius: 12px; border: 1px solid var(--encre-douce);
+  background: #fff; color: var(--encre); cursor: pointer; }
+.btn:active { transform: translateY(1px); }
+.btn.principal { background: var(--jade); border-color: var(--jade); color: #fff; font-weight: 600; font-size: 1.1rem; padding: 12px 22px; }
+.btn.discret { border-color: var(--trait); color: var(--encre-douce); }
+.btn.son::before { content: "▶ "; color: var(--jade); }
+.btn.principal.son::before { color: #fff; }
+.btn[disabled] { opacity: .45; }
+
+.histoire { border-left: 4px solid var(--cinabre); background: #fff; padding: 10px 14px; border-radius: 0; font-size: .97rem; max-width: 520px; }
+.histoire b { color: var(--cinabre); }
+.histoire .grand { font-family: var(--police-han); font-size: 2.4rem; text-align: center; }
+
+/* Dictée : les cases à remplir */
+.cases { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.case { width: 46px; height: 46px; border: 2px solid var(--trait); border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--police-han); font-size: 1.7rem; background: #fff; }
+.case.active { border-color: var(--cinabre); }
+.case.faite { border-color: var(--jade); color: var(--jade); }
+.case.connue { border-style: dashed; color: var(--encre-douce); }
+
+/* Carnet : encre pâle → encre noire */
+.carnet { display: flex; flex-wrap: wrap; gap: 4px; }
+.carnet button { font-family: var(--police-han); font-size: 1.35rem; width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--trait); background: #fff; cursor: pointer; padding: 0; }
+.carnet .n0 { color: #cfd3ce; } .carnet .n1 { color: #9a8f74; background: #fbf6ea; } .carnet .n2 { color: #3f4943; background: #eef5f1; } .carnet .n3 { color: #000; border: 2px solid var(--encre); }
+.legende { display: flex; gap: 12px; flex-wrap: wrap; font-size: .85rem; color: var(--encre-douce); margin: 8px 0; }
+.legende span { font-family: var(--police-han); font-size: 1.2rem; }
+
+.reglage { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.reglage .titre { font-weight: 600; }
+.segments { display: flex; flex-wrap: wrap; gap: 6px; }
+.segments button { font: inherit; padding: 8px 14px; min-height: 44px; border-radius: 999px; border: 1px solid var(--trait); background: #fff; cursor: pointer; }
+.segments button[aria-pressed="true"] { background: var(--encre); color: var(--papier); border-color: var(--encre); }
+.aide { font-size: .88rem; color: var(--encre-douce); margin: 4px 0; }
+input[type=text] { font: inherit; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--trait); min-height: 44px; width: 100%; max-width: 320px; }
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+td, th { border-bottom: 1px solid var(--trait); padding: 4px 6px; text-align: left; }
+td.hz { font-family: var(--police-han); font-size: 1.1rem; }
+.defile { max-height: 320px; overflow: auto; }
+footer { font-size: .8rem; color: var(--encre-douce); text-align: center; margin-top: 10px; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1><span class="han">写字</span>Atelier d'écriture</h1>
+    <button class="btn discret petit" id="btnPinyin" type="button" aria-pressed="true">Masquer le pinyin</button>
+  </header>
+
+  <nav role="tablist">
+    <button role="tab" data-vue="reviser" aria-selected="true">Réviser</button>
+    <button role="tab" data-vue="dictee" aria-selected="false">Dictée</button>
+    <button role="tab" data-vue="carnet" aria-selected="false">Carnet</button>
+    <button role="tab" data-vue="journal" aria-selected="false">Journal</button>
+  </nav>
+
+  <!-- ===== Réviser ===== -->
+  <section class="vue" id="vue-reviser">
+    <div class="compteurs" id="compteurs"></div>
+    <div class="feuille carte" id="carte">
+      <div class="etapes" id="etapes" style="width:100%">
+        <div class="etape" data-e="1"><span class="num">1</span>Calque</div>
+        <div class="etape" data-e="2"><span class="num">2</span>Guidé</div>
+        <div class="etape" data-e="3"><span class="num">3</span>De mémoire</div>
+      </div>
+      <div class="tete"><span class="sens" id="sens"></span><span class="ligne-pinyin"><span class="pinyin" id="pinyin"></span><button class="btn son discret petit" id="btnMot" type="button">Mot</button></span></div>
+      <div class="zone" id="zone"></div>
+      <div class="retour" id="retour" aria-live="polite"></div>
+      <div class="mots" id="mots"></div>
+      <div class="contexte" id="contexte"></div>
+      <div class="boutons" id="aides">
+        <button class="btn" id="btnOrdre" type="button">Montrer l'ordre</button>
+        <button class="btn" id="btnIndice" type="button">Indice</button>
+        <button class="btn" id="btnEffacer" type="button">Recommencer</button>
+        <button class="btn discret" id="btnPasser" type="button">Passer</button>
+      </div>
+      <div class="boutons"><button class="btn principal" id="btnSuite" type="button" hidden>Suite →</button></div>
+      <div class="histoire" id="histoire" hidden></div>
+    </div>
+    <div class="feuille" id="repos" hidden></div>
+  </section>
+
+  <!-- ===== Dictée ===== -->
+  <section class="vue" id="vue-dictee" hidden>
+    <div class="feuille carte">
+      <div class="segments" id="dicteeType">
+        <button type="button" data-t="mot" aria-pressed="true">Un mot</button>
+        <button type="button" data-t="phrase" aria-pressed="false">Dans une phrase</button>
+      </div>
+      <p class="aide" id="dicteeAide">On entend, on écrit. Les caractères déjà appris viennent en premier.</p>
+      <div class="boutons">
+        <button class="btn son principal" id="dEcouter" type="button">Écouter</button>
+        <button class="btn" id="dLent" type="button">Plus lent</button>
+      </div>
+      <div class="cases" id="dCases"></div>
+      <div class="zone" id="dZone"></div>
+      <div class="retour" id="dRetour" aria-live="polite"></div>
+      <div class="contexte" id="dTexte"></div>
+      <div class="boutons">
+        <button class="btn" id="dSens" type="button">Voir le sens</button>
+        <button class="btn" id="dTrous" type="button">Phrase à trous</button>
+        <button class="btn discret" id="dAide" type="button">Je ne sais pas</button>
+        <button class="btn principal" id="dSuite" type="button">Autre dictée →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Carnet + paquet + réglages ===== -->
+  <section class="vue" id="vue-carnet" hidden>
+    <div class="feuille">
+      <h2>Paquet</h2>
+      <div class="segments" id="niveaux"></div>
+      <p class="aide" id="infoPaquet"></p>
+      <div class="legende"><span style="color:#cfd3ce">字</span> jamais écrit <span style="color:#9a8f74">字</span> en apprentissage <span style="color:#3f4943">字</span> fragile <span style="color:#000">字</span> maîtrisé (3 réussites, 3 contextes)</div>
+      <div class="carnet" id="carnetGrille"></div>
+      <p class="aide">Touche un caractère pour l'écrire tout de suite.</p>
+    </div>
+    <div class="feuille">
+      <h2>Réglages</h2>
+      <div class="reglage"><span class="titre">Tolérance du tracé</span>
+        <div class="segments" id="tolerance">
+          <button type="button" data-v="1.5">Souple</button><button type="button" data-v="1">Normale</button><button type="button" data-v="0.7">Stricte</button>
+        </div><span class="aide">Souple pour le doigt sur téléphone, stricte pour le stylet.</span></div>
+      <div class="reglage"><span class="titre">Nouveaux caractères par jour</span>
+        <div class="segments" id="parJour"><button type="button" data-v="3">3</button><button type="button" data-v="5">5</button><button type="button" data-v="10">10</button><button type="button" data-v="20">20</button></div></div>
+      <div class="reglage"><span class="titre">Épaisseur du trait</span>
+        <div class="segments" id="epaisseur"><button type="button" data-v="0.06">Fin (stylet)</button><button type="button" data-v="0.085">Moyen</button><button type="button" data-v="0.11">Épais (doigt)</button></div></div>
+    </div>
+    <div class="feuille">
+      <h2>Importer des caractères (Excel ou CSV)</h2>
+      <p class="aide">Colonnes : caractère · pinyin · sens · histoire · mnémotechnique · contextes (phrase|traduction ; phrase|traduction) · niveau. La progression est conservée. Les caractères hors HSK 1 à 3 demandent une connexion la première fois.</p>
+      <div class="boutons" style="justify-content:flex-start">
+        <label class="btn">Choisir un fichier<input type="file" id="fichier" accept=".xlsx,.xls,.csv" hidden></label>
+        <button class="btn discret" id="btnModele" type="button">Télécharger un modèle</button>
+      </div>
+      <p class="aide" id="infoImport"></p>
+    </div>
+  </section>
+
+  <!-- ===== Journal ===== -->
+  <section class="vue" id="vue-journal" hidden>
+    <div class="feuille">
+      <h2>Journal pour la recherche</h2>
+      <p class="aide">Chaque tracé est noté : caractère, étape, erreurs par trait, durée, contexte (déjà vu ou nouveau), pinyin visible ou non, doigt, stylet ou souris. Rien ne quitte l'appareil tant qu'on n'exporte pas.</p>
+      <div class="reglage"><span class="titre">Pseudonyme de l'élève</span><input type="text" id="eleve" placeholder="ex. groupe-A-07" autocomplete="off"></div>
+      <p id="resumeJournal"></p>
+      <div class="boutons" style="justify-content:flex-start">
+        <button class="btn principal" id="btnCsv" type="button">Exporter en CSV</button>
+        <button class="btn" id="btnJson" type="button">Exporter en JSON</button>
+        <button class="btn discret" id="btnVider" type="button">Vider le journal</button>
+      </div>
+      <div class="defile"><table id="tableJournal"></table></div>
+    </div>
+    <div class="feuille">
+      <h2>Progression</h2>
+      <div class="boutons" style="justify-content:flex-start">
+        <button class="btn discret" id="btnRaz" type="button">Remettre la progression à zéro</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>千里 Mille li · Atelier d'écriture v0.2 · tracé : <a href="https://github.com/chanind/hanzi-writer">Hanzi Writer</a> (MIT) · données de traits : Make Me a Hanzi, <a href="traits/ARPHICPL.TXT">licence Arphic</a></footer>
 </div>
-<script>
-const BASE=[["你","nǐ","tu","Composé de 亻(l'homme) et 尔 (toi).","La personne (亻) en face de toi."],
-["好","hǎo","bien, bon","Une femme (女) et un enfant (子).","Une mère avec son enfant : c'est bien."],
-["我","wǒ","je, moi","À l'origine, une arme à dents de scie, empruntée ensuite pour dire « moi ».","Moi, je tiens ma hallebarde."],
-["是","shì","être","Le soleil (日) au-dessus de 正 (droit, juste).","Sous le soleil, c'est vrai."],
-["不","bù","ne… pas","",""],
-["人","rén","personne","Pictogramme d'un homme vu de profil qui marche.","Deux jambes qui avancent."],
-["中","zhōng","milieu","Un étendard planté au centre d'un cercle.","Une flèche en plein milieu de la cible."],
-["国","guó","pays","Une frontière (囗) autour du jade (玉).","Le trésor protégé par les remparts."],
-["大","dà","grand","Un homme qui écarte les bras.","« J'ai pêché un poisson grand comme ça ! »"],
-["小","xiǎo","petit","Trois petits points, des grains de sable.",""],
-["水","shuǐ","eau","Pictogramme d'un cours d'eau avec ses remous.",""],
-["山","shān","montagne","Pictogramme de trois pics.",""],
-["口","kǒu","bouche","Pictogramme d'une bouche ouverte.",""],
-["日","rì","soleil, jour","Un cercle avec un point au centre, devenu carré.",""],
-["月","yuè","lune, mois","Un croissant de lune.",""],
-["木","mù","arbre","Un tronc, des branches et des racines.",""],
-["吃","chī","manger","La bouche (口) et 乞.",""],
-["喝","hē","boire","La bouche (口) et 曷.",""],
-["茶","chá","thé","L'herbe (艹) au-dessus d'un homme (人) et d'un arbre (木).","Un homme entre les herbes et l'arbre à thé."],
-["学","xué","étudier","Un enfant (子) sous un toit, les mains qui manipulent des baguettes à compter.",""],
-["一","yī","un","Un trait.",""],["二","èr","deux","Deux traits.",""],["三","sān","trois","Trois traits.",""]];
-const CTX={"你":["你好！|Bonjour !","你是老师吗？|Tu es professeur ?","谢谢你。|Merci à toi."],
-"好":["你好！|Bonjour !","这个茶很好喝。|Ce thé est très bon.","好的，谢谢。|D'accord, merci."],
-"我":["我是学生。|Je suis étudiant.","我喝茶。|Je bois du thé.","我不吃。|Je ne mange pas."],
-"是":["我是学生。|Je suis étudiant.","他是中国人。|Il est chinois.","这是什么？|Qu'est-ce que c'est ?"],
-"不":["我不吃。|Je ne mange pas.","不是。|Non, ce n'est pas ça.","不好意思。|Excusez-moi."],
-"人":["他是中国人。|Il est chinois.","这里人很多。|Il y a beaucoup de monde ici."],
-"中":["他是中国人。|Il est chinois.","我学中文。|J'apprends le chinois."],
-"国":["他是中国人。|Il est chinois.","你是哪国人？|De quel pays es-tu ?"],
-"大":["这个很大。|C'est très grand.","大家好！|Bonjour à tous !"],
-"小":["小李是学生。|Xiao Li est étudiant.","这个太小了。|C'est trop petit."],
-"水":["我喝水。|Je bois de l'eau.","一瓶水，谢谢。|Une bouteille d'eau, merci."],
-"口":["人口很多。|La population est nombreuse.","出口在哪儿？|Où est la sortie ?"],
-"日":["今天是我的生日。|Aujourd'hui c'est mon anniversaire.","日本|Japon"],
-"月":["一月|janvier","这个月很忙。|Ce mois-ci est chargé."],
-"吃":["我不吃。|Je ne mange pas.","你吃饭了吗？|Tu as mangé ?"],
-"喝":["我喝茶。|Je bois du thé.","你喝什么？|Qu'est-ce que tu bois ?"],
-"茶":["我喝茶。|Je bois du thé.","一杯茶，谢谢。|Une tasse de thé, merci."],
-"学":["我是学生。|Je suis étudiant.","我学中文。|J'apprends le chinois."],
-"一":["一杯茶，谢谢。|Une tasse de thé, merci.","一月|janvier"],
-"三":["三个人|trois personnes"],"二":["二月|février"]};
-BASE.forEach(d=>{d[5]=CTX[d[0]]||[]});
-const KS="hanzi_srs_v1",KD="hanzi_deck_v1";
-let S=JSON.parse(localStorage.getItem(KS)||"{}");
-let DECK=JSON.parse(localStorage.getItem(KD)||"null")||BASE;
-DECK.forEach(d=>{if(!d[5])d[5]=CTX[d[0]]||[]});
-const now=()=>Date.now(),DAY=864e5,$=id=>document.getElementById(id);
-function sauver(){localStorage.setItem(KS,JSON.stringify(S));localStorage.setItem(KD,JSON.stringify(DECK))}
-function carte(c){return S[c]||(S[c]={ease:2.5,ivl:0,due:0,reps:0})}
-function choisir(){const dues=DECK.filter(d=>carte(d[0]).due<=now()&&d!==cur);
- const pool=dues.length?dues:DECK.filter(d=>d!==cur);return pool.sort((a,b)=>carte(a[0]).due-carte(b[0]).due)[0]||DECK[0]}
-function noter(c,err){const k=carte(c);
- if(err>2){k.reps=0;k.ivl=0;k.ease=Math.max(1.3,k.ease-0.2);k.due=now()+60e3}
- else{k.reps++;k.ivl=k.reps==1?1:k.reps==2?3:Math.round(k.ivl*k.ease);
-  k.ease=err==0?k.ease+0.1:Math.max(1.3,k.ease-0.05);k.due=now()+k.ivl*DAY}
- sauver();return k}
-function stats(){const d=DECK.filter(x=>carte(x[0]).due<=now()).length,m=DECK.filter(x=>carte(x[0]).reps>=3).length;
- $("stats").textContent=`À réviser : ${d} · Maîtrisés : ${m}/${DECK.length}`}
-function voirHistoire(){const h=cur[3],m=cur[4];
- $("histoire").innerHTML=`<div style="font-size:40px;text-align:center">${cur[0]}</div>`+
-  (h?`<b>Histoire :</b> ${h}<br>`:"")+(m?`<b>Mnémo :</b> ${m}<br>`:"")+((cur[5]||[]).length?`<b>Contextes :</b><br>`+cur[5].map(c=>c.replace("|"," — ")).join("<br>"):"")+(!h&&!m?"Pas encore d'histoire pour ce caractère.":"");
- $("histoire").style.display="block"}
-let w,cur=null,curCtx="";
-function suivant(){cur=choisir();$("histoire").style.display="none";$("suite").style.display="none";
- $("pinyin").textContent=cur[1];$("sens").textContent=cur[2];if(typeof majPy=="function")majPy();
- const cs=cur[5]||[];if(cs.length){const [zh,fr]=cs[Math.floor(Math.random()*cs.length)].split("|");
-  $("contexte").textContent=zh.split(cur[0]).join("＿");$("ctxfr").textContent=fr||"";curCtx=zh}else{$("contexte").textContent="";$("ctxfr").textContent="";curCtx=""}$("msg").textContent="Écris le caractère";
- $("target").querySelectorAll("g").forEach(g=>g.remove());
- w=HanziWriter.create("target",cur[0],{width:300,height:300,padding:15,showCharacter:false,showOutline:false,
-  strokeColor:"#222",highlightColor:"#a33",drawingWidth:22,showHintAfterMisses:3});
- w.quiz({onComplete:r=>fini(r.totalMistakes)});stats()}
-function fini(err){const k=noter(cur[0],err);$("pinyin").style.visibility="visible";if(curCtx)$("contexte").textContent=curCtx;
- $("msg").textContent=(err==0?"Parfait ! ":err<=2?"Bien. ":"À revoir. ")+"Prochaine révision "+(k.ivl?"dans "+k.ivl+" j":"bientôt");
- voirHistoire();$("suite").style.display="inline-block";stats()}
-function montrer(){w.cancelQuiz();w.showOutline();w.animateCharacter({onComplete:()=>{w.hideOutline();w.quiz({onComplete:()=>fini(5)})}})}
-function indice(){w.showOutline();setTimeout(()=>w.hideOutline(),1200)}
-$("fichier").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
- rd.onload=ev=>{const wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"});
-  const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-  let ajout=0,maj=0;
-  rows.forEach(r=>{const c=String(r[0]||"").trim();if(!c||/caract/i.test(c))return;
-   const ligne=[c,String(r[1]||""),String(r[2]||""),String(r[3]||""),String(r[4]||""),String(r[5]||"").split(/\s*;\s*/).filter(Boolean)];
-   const i=DECK.findIndex(d=>d[0]===c);
-   if(i>=0){ligne.forEach((v,j)=>{if(j==5){DECK[i][5]=[...new Set([...(DECK[i][5]||[]),...v])]}else if(v)DECK[i][j]=v});maj++}else{DECK.push(ligne);ajout++}});
-  sauver();stats();alert(`${ajout} caractère(s) ajouté(s), ${maj} mis à jour. Progression conservée.`)};
- rd.readAsArrayBuffer(f);e.target.value=""};
-function modele(){const ws=XLSX.utils.aoa_to_sheet([["caractère","pinyin","sens","histoire","mnémotechnique","contextes (phrase|traduction ; phrase|traduction)"],["火","huǒ","feu","Pictogramme de flammes qui montent.","Un feu de camp qui crépite.","火车站在哪儿？|Où est la gare ? ; 小心火！|Attention au feu !"]]);
- const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"caracteres");XLSX.writeFile(wb,"modele_caracteres.xlsx")}
-let pyOn=localStorage.getItem("hanzi_py")!=="off";
-function majPy(){$("pinyin").style.visibility=pyOn?"visible":"hidden";$("btnPy").textContent=pyOn?"Masquer le pinyin":"Afficher le pinyin";}
-function togglePy(){pyOn=!pyOn;localStorage.setItem("hanzi_py",pyOn?"on":"off");majPy()}
-majPy();
-suivant();
-</script></body></html>
+
+<script src="lib/hanzi-writer.min.js"></script>
+<script src="lib/xlsx.full.min.js" defer></script>
+<script src="donnees/caracteres.js"></script>
+<script src="moteur-ecriture.js"></script>
+<script src="ecriture.js"></script>
+</body>
+</html>
