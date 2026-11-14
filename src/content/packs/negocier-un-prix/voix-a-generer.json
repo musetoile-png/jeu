@@ -1,0 +1,157 @@
+[
+  {
+    "vo": "rendez-vous_01",
+    "speaker": "bai",
+    "text": "欢迎欢迎！坐吧。"
+  },
+  {
+    "vo": "rendez-vous_02",
+    "speaker": "player",
+    "text": "经理，您好！"
+  },
+  {
+    "vo": "rendez-vous_03",
+    "speaker": "bai",
+    "text": "你喝绿茶还是红茶？"
+  },
+  {
+    "vo": "rendez-vous_04a",
+    "speaker": "player",
+    "text": "绿茶，谢谢！"
+  },
+  {
+    "vo": "rendez-vous_04b",
+    "speaker": "player",
+    "text": "绿茶还是红茶。"
+  },
+  {
+    "vo": "rendez-vous_04c",
+    "speaker": "player",
+    "text": "红茶，谢谢！"
+  },
+  {
+    "vo": "rendez-vous_05",
+    "speaker": "bai",
+    "text": "你们公司想买什么？"
+  },
+  {
+    "vo": "rendez-vous_06a",
+    "speaker": "player",
+    "text": "我们公司想买茶杯。"
+  },
+  {
+    "vo": "rendez-vous_06b",
+    "speaker": "player",
+    "text": "我们公司想卖茶杯。"
+  },
+  {
+    "vo": "rendez-vous_06c",
+    "speaker": "player",
+    "text": "我们经理想买茶杯。"
+  },
+  {
+    "vo": "rendez-vous_07",
+    "speaker": "bai",
+    "text": "我们公司卖最好的茶杯。一个十块。"
+  },
+  {
+    "vo": "rendez-vous_08a",
+    "speaker": "player",
+    "text": "太贵了！可以便宜一点儿吗？"
+  },
+  {
+    "vo": "rendez-vous_08b",
+    "speaker": "player",
+    "text": "太便宜了！可以贵一点儿吗？"
+  },
+  {
+    "vo": "rendez-vous_08c",
+    "speaker": "player",
+    "text": "太贵了！你觉得怎么样？"
+  },
+  {
+    "vo": "rendez-vous_09",
+    "speaker": "bai",
+    "text": "我觉得价格不贵。你们买多少个？"
+  },
+  {
+    "vo": "rendez-vous_10a",
+    "speaker": "player",
+    "text": "我们一共买三百个。"
+  },
+  {
+    "vo": "rendez-vous_10b",
+    "speaker": "player",
+    "text": "我们一共卖三百个。"
+  },
+  {
+    "vo": "rendez-vous_10c",
+    "speaker": "player",
+    "text": "我们一共买三百。"
+  },
+  {
+    "vo": "rendez-vous_11",
+    "speaker": "bai",
+    "text": "三百个？我想一下。"
+  },
+  {
+    "vo": "accord_01",
+    "speaker": "bai",
+    "text": "三百个茶杯，我可以打折。九块一个，怎么样？"
+  },
+  {
+    "vo": "accord_02a",
+    "speaker": "player",
+    "text": "有点儿贵。八块可以吗？"
+  },
+  {
+    "vo": "accord_02b",
+    "speaker": "player",
+    "text": "一点儿贵。八块可以吗？"
+  },
+  {
+    "vo": "accord_02c",
+    "speaker": "player",
+    "text": "有点儿便宜。八块可以吗？"
+  },
+  {
+    "vo": "accord_03",
+    "speaker": "bai",
+    "text": "八块？太便宜了！我已经打折了。"
+  },
+  {
+    "vo": "accord_04a",
+    "speaker": "player",
+    "text": "八块五，怎么样？"
+  },
+  {
+    "vo": "accord_04b",
+    "speaker": "player",
+    "text": "五块八，怎么样？"
+  },
+  {
+    "vo": "accord_05",
+    "speaker": "bai",
+    "text": "好，我同意！一共两千五百五十块。"
+  },
+  {
+    "vo": "accord_06a",
+    "speaker": "player",
+    "text": "谢谢！下次我们公司再买。"
+  },
+  {
+    "vo": "accord_06b",
+    "speaker": "player",
+    "text": "谢谢！下次我们公司再卖。"
+  },
+  {
+    "vo": "accord_06c",
+    "speaker": "player",
+    "text": "谢谢！下次我们公司再打折。"
+  },
+  {
+    "vo": "accord_07",
+    "speaker": "bai",
+    "text": "欢迎下次再来！"
+  }
+]

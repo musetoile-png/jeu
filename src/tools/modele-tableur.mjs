@@ -8,9 +8,9 @@
  */
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import ExcelJS from 'exceljs';
 
 import { loadCatalogue } from './catalogue.mjs';
+import { ecrireTableur } from './tableur.mjs';
 
 const args = process.argv.slice(2);
 const example = args.includes('--exemple');
@@ -20,22 +20,6 @@ const baseId = args.includes('--base')
 const cat = loadCatalogue(baseId);
 const OUT = new URL('../sources/editeurs/', import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
-
-const wb = new ExcelJS.Workbook();
-wb.creator = 'Mille li';
-const HEAD = {
-  font: { bold: true, color: { argb: 'FFFFFFFF' } },
-  fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E5FA8' } },
-};
-
-function addSheet(name, columns, rows, notes) {
-  const ws = wb.addWorksheet(name, { views: [{ state: 'frozen', ySplit: 1 }] });
-  ws.columns = columns.map(([header, width]) => ({ header, width }));
-  ws.getRow(1).eachCell((c) => Object.assign(c, HEAD));
-  for (const r of rows) ws.addRow(r);
-  notes?.forEach((n, i) => (ws.getRow(1).getCell(i + 1).note = n));
-  return ws;
-}
 
 // ---------- Leçon ----------
 const lesson = example
@@ -57,25 +41,8 @@ const lesson = example
       ['langue', 'zh'],
       ['paquet de base', baseId],
     ];
-const ls = addSheet(
-  'Leçon',
-  [
-    ['Champ', 26],
-    ['Valeur', 50],
-    ['Aide', 80],
-  ],
-  lesson.map((r) => [...r]),
-);
-const help = [
-  'minuscules, chiffres et tirets : devient le nom du paquet (ex. editeur-lecon-3)',
-  'titre de la leçon, en français',
-  'le même titre dans la langue apprise (affiché en grand sur l’écran titre)',
-  'pinyin du titre',
-  'petite ligne sous le titre (facultatif)',
-  'langue apprise : zh pour le chinois',
-  'décors et personnages réutilisés : ne pas changer',
-];
-help.forEach((h, i) => (ls.getRow(i + 2).getCell(3).value = h));
+const lessonValues = Object.fromEntries(lesson);
+if (example) lessonValues['rédigé par'] = 'Mille li (démonstration)';
 
 // ---------- Mots ----------
 const words = example
@@ -115,26 +82,6 @@ const words = example
       ['好吃', 'hǎochī', 'bon (au goût)'],
     ]
   : [];
-addSheet(
-  'Mots',
-  [
-    ['Mot', 14],
-    ['Transcription', 16],
-    ['Traduction', 42],
-    ['Nature', 12],
-    ['Niveau', 10],
-    ['Identifiant', 16],
-  ],
-  words,
-  [
-    'Le mot tel qu’il s’écrit (caractères)',
-    'pinyin avec les tons',
-    'sens en français',
-    'facultatif (nom, verbe…)',
-    'facultatif (HSK1…)',
-    'facultatif : laissé vide, il est fabriqué à partir du pinyin',
-  ],
-);
 
 // ---------- Scènes ----------
 const scenes = example
@@ -153,30 +100,6 @@ const scenes = example
       ['fruits-li', 'Les fruits de 李叔叔', 'cour', 'li', '', '', '', 3],
     ]
   : [];
-const ss = addSheet(
-  'Scènes',
-  [
-    ['Scène', 16],
-    ['Titre', 32],
-    ['Lieu', 14],
-    ['Personnage', 14],
-    ['Nom affiché', 14],
-    ['Rôle', 24],
-    ['Après', 16],
-    ['Patience', 10],
-  ],
-  scenes,
-  [
-    'identifiant court : minuscules, chiffres, tirets',
-    'titre de la scène, en français',
-    'un lieu de l’onglet Catalogue',
-    'un personnage de l’onglet Catalogue',
-    'facultatif : son nom dans la langue apprise (sinon celui du catalogue)',
-    'facultatif : qui il est, en français',
-    'facultatif : la scène qui doit être finie avant (sinon : la ligne du dessus)',
-    'nombre d’erreurs tolérées avant l’aide (1 à 5, 3 par défaut)',
-  ],
-);
 
 // ---------- Répliques ----------
 const lines = example
@@ -291,98 +214,14 @@ const lines = example
       ],
     ]
   : [];
-const rs = addSheet(
-  'Répliques',
-  [
-    ['Scène', 14],
-    ['Type', 8],
-    ['Qui', 10],
-    ['Texte', 30],
-    ['Traduction', 34],
-    ['Consigne', 38],
-    ['Faux 1', 22],
-    ['Traduction faux 1', 26],
-    ['Pourquoi faux 1', 46],
-    ['Erreur faux 1', 14],
-    ['Faux 2', 22],
-    ['Traduction faux 2', 26],
-    ['Pourquoi faux 2', 46],
-    ['Erreur faux 2', 14],
-    ['Faux 3', 22],
-    ['Traduction faux 3', 26],
-    ['Pourquoi faux 3', 46],
-    ['Erreur faux 3', 14],
-  ],
-  lines,
-  [
-    'la scène (onglet Scènes) ; les lignes se jouent dans l’ordre',
-    '« dit » : une réplique ; « choix » : une question, l’élève choisit sa réponse',
-    'dit : le personnage de la scène (ou « joueur ») ; choix : « joueur »',
-    'dit : la phrase ; choix : la BONNE réponse. Écrire normalement : le tableur la découpe en mots',
-    'traduction française de la colonne Texte',
-    'choix : ce qu’on demande à l’élève, en français',
-    'une mauvaise réponse plausible',
-    'sa traduction',
-    'pourquoi c’est faux : l’élève le lira',
-    'le type d’erreur (sens, usage, grammaire, classificateur, son, caractère, nombre, ordre) : il nourrit le bilan et la recherche',
-  ],
-);
-
-// ---------- Catalogue ----------
-const cs = wb.addWorksheet('Catalogue');
-cs.columns = [
-  { header: 'Lieu', width: 16 },
-  { header: 'Nom du lieu', width: 32 },
-  { header: '', width: 4 },
-  { header: 'Personnage', width: 16 },
-  { header: 'Nom', width: 14 },
-  { header: 'Qui', width: 34 },
-];
-cs.getRow(1).eachCell((c) => c.value && Object.assign(c, HEAD));
-const places = [...cat.places.values()];
-const people = [...cat.people.values()];
-for (let i = 0; i < Math.max(places.length, people.length); i++) {
-  const p = places[i];
-  const q = people[i];
-  cs.addRow([
-    p?.id ?? '',
-    p?.name?.fr ?? '',
-    '',
-    q?.id ?? '',
-    q?.name ?? '',
-    q?.label ?? '',
-  ]);
-}
-
-// listes déroulantes
-for (let r = 2; r <= 300; r++) {
-  ss.getCell(`C${r}`).dataValidation = {
-    type: 'list',
-    allowBlank: true,
-    formulae: [`Catalogue!$A$2:$A$${places.length + 1}`],
-  };
-  ss.getCell(`D${r}`).dataValidation = {
-    type: 'list',
-    allowBlank: true,
-    formulae: [`Catalogue!$D$2:$D$${people.length + 1}`],
-  };
-  rs.getCell(`B${r}`).dataValidation = {
-    type: 'list',
-    allowBlank: true,
-    formulae: ['"dit,choix"'],
-  };
-  for (const col of ['J', 'N', 'R'])
-    rs.getCell(`${col}${r}`).dataValidation = {
-      type: 'list',
-      allowBlank: true,
-      formulae: [
-        '"sens,usage,grammaire,classificateur,son,caractère,nombre,ordre"',
-      ],
-    };
-}
-
 const name = example ? 'exemple-salon-de-the.xlsx' : 'modele-lecon.xlsx';
-await wb.xlsx.writeFile(join(OUT, name));
+const n = await ecrireTableur(join(OUT, name), {
+  cat,
+  lesson: lessonValues,
+  words,
+  scenes,
+  lines,
+});
 console.log(
-  `✔ sources/editeurs/${name} (${places.length} lieux, ${people.length} personnages au catalogue)`,
+  `✔ sources/editeurs/${name} (${n.places} lieux, ${n.people} personnages au catalogue)`,
 );

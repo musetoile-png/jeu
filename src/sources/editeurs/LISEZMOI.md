@@ -42,3 +42,35 @@ puis `npm run build`. Démonstration : `index.html?client=demo-editeur`.
 L'importeur écrit `voix-a-generer.json` (une ligne par réplique : clé, personnage, texte).
 Tant que les fichiers audio n'existent pas, le jeu fait lire les phrases par la voix du navigateur.
 Les voix natives (ElevenLabs) seront générées à partir de cette liste.
+
+## Faire rédiger la leçon par l'IA (générateur)
+
+Le prof donne un thème et sa liste de mots ; l'IA remplit le même tableur ; le prof relit et valide ; l'importeur construit la leçon.
+L'IA propose, l'enseignant dispose : **un brouillon de l'IA ne s'importe pas tant que l'onglet Leçon n'a pas de nom dans « relu par »**.
+
+```sh
+# 1. La consigne à donner à Claude (dans une conversation) : catalogue, vocabulaire connu, règles pédagogiques, format attendu
+node tools/generer.mjs consigne --theme "Négocier un prix" --mots "公司，经理，价格，便宜，贵…" --niveau "HSK 2" --scenes 2 -o consigne.md
+
+# 2. La réponse de Claude (copiée dans un fichier .md ou .json) → le tableur brouillon, vérifié
+node tools/generer.mjs tableur reponse.md --mots "公司，经理，价格…"
+#    → sources/editeurs/brouillons/<identifiant>.xlsx
+
+# Ou les deux d'un coup, par l'API d'Anthropic (clé dans ANTHROPIC_API_KEY ; modèle : ANTHROPIC_MODEL)
+node tools/generer.mjs auto --theme "Négocier un prix" --mots @mots.txt --niveau "HSK 2"
+```
+
+`--mots` accepte une liste (virgules, espaces, retours à la ligne) ou `@fichier.txt` (un mot par ligne ; le pinyin et le sens éventuels sont ignorés).
+
+Le brouillon s'ouvre sur l'onglet **Relecture**, qui liste ce que le prof doit regarder :
+- les **erreurs à corriger** (trouvées par l'importeur : mot absent du vocabulaire, lieu inconnu…) ;
+- les **lieux manquants** : le thème demandait un décor qui n'existe pas (un bureau…), l'IA a joué la scène dans le lieu le plus proche. C'est la liste des décors à dessiner ensuite ;
+- les **mots demandés** jamais employés, ou seulement dans une mauvaise réponse ;
+- les **mots ajoutés** par l'IA hors de la liste ;
+- les **doutes de l'IA** ;
+- la liste de contrôle du relecteur (chinois, pinyin, mauvaises réponses, niveau), puis la validation : son nom dans Leçon › « relu par ».
+
+Le nom du relecteur est gardé dans le paquet (`pack.json` → `source.relu`).
+
+Démonstration : `brouillons/negocier-un-prix.xlsx` (thème « rendez-vous d'affaires », 20 mots HSK 2, rédigé par Claude),
+jouable avec `index.html?client=demo-ia`. **Pas encore relu par Nuwa.**

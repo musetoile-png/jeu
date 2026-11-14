@@ -1,0 +1,148 @@
+{
+  "entries": [
+    {
+      "id": "jiang_jia",
+      "target": "讲价",
+      "transcription": "jiǎng jià",
+      "gloss": {
+        "fr": "marchander, négocier le prix"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "gongsi",
+      "target": "公司",
+      "transcription": "gōngsī",
+      "gloss": {
+        "fr": "société, entreprise"
+      },
+      "pos": "nom"
+    },
+    {
+      "id": "jingli",
+      "target": "经理",
+      "transcription": "jīnglǐ",
+      "gloss": {
+        "fr": "directeur, responsable"
+      },
+      "pos": "nom"
+    },
+    {
+      "id": "jiage",
+      "target": "价格",
+      "transcription": "jiàgé",
+      "gloss": {
+        "fr": "prix"
+      },
+      "pos": "nom"
+    },
+    {
+      "id": "pianyi",
+      "target": "便宜",
+      "transcription": "piányi",
+      "gloss": {
+        "fr": "bon marché, pas cher"
+      },
+      "pos": "adjectif"
+    },
+    {
+      "id": "gui",
+      "target": "贵",
+      "transcription": "guì",
+      "gloss": {
+        "fr": "cher"
+      },
+      "pos": "adjectif"
+    },
+    {
+      "id": "keyi",
+      "target": "可以",
+      "transcription": "kěyǐ",
+      "gloss": {
+        "fr": "pouvoir (avoir la possibilité)"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "da_zhe",
+      "target": "打折",
+      "transcription": "dǎ zhé",
+      "gloss": {
+        "fr": "faire une remise"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "yigong",
+      "target": "一共",
+      "transcription": "yígòng",
+      "gloss": {
+        "fr": "en tout, au total"
+      },
+      "pos": "adverbe"
+    },
+    {
+      "id": "juede",
+      "target": "觉得",
+      "transcription": "juéde",
+      "gloss": {
+        "fr": "trouver, penser (avis)"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "youdianr",
+      "target": "有点儿",
+      "transcription": "yǒudiǎnr",
+      "gloss": {
+        "fr": "un peu (devant un adjectif, souvent négatif)"
+      },
+      "pos": "adverbe"
+    },
+    {
+      "id": "zui",
+      "target": "最",
+      "transcription": "zuì",
+      "gloss": {
+        "fr": "le plus"
+      },
+      "pos": "adverbe"
+    },
+    {
+      "id": "haishi",
+      "target": "还是",
+      "transcription": "háishi",
+      "gloss": {
+        "fr": "ou bien (dans une question)"
+      },
+      "pos": "conjonction"
+    },
+    {
+      "id": "zenmeyang",
+      "target": "怎么样",
+      "transcription": "zěnmeyàng",
+      "gloss": {
+        "fr": "comment ? qu'en pensez-vous ?"
+      },
+      "pos": "pronom"
+    },
+    {
+      "id": "tongyi",
+      "target": "同意",
+      "transcription": "tóngyì",
+      "gloss": {
+        "fr": "être d'accord, accepter"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "yijing",
+      "target": "已经",
+      "transcription": "yǐjīng",
+      "gloss": {
+        "fr": "déjà"
+      },
+      "pos": "adverbe"
+    }
+  ]
+}

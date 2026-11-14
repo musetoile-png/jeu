@@ -1,0 +1,615 @@
+{
+  "id": "accord",
+  "language": "zh",
+  "world": "quartier",
+  "tier": 1,
+  "title": {
+    "fr": "Trouver un accord"
+  },
+  "place": "cour",
+  "npc": "bai",
+  "patience": 3,
+  "actors": {
+    "bai": {
+      "name": "张经理",
+      "label": {
+        "fr": "le directeur d'une fabrique de tasses"
+      },
+      "portrait": "bai"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "bai",
+      "vo": "accord_01",
+      "line": [
+        [
+          "w",
+          "san"
+        ],
+        [
+          "w",
+          "bai"
+        ],
+        [
+          "w",
+          "ge"
+        ],
+        [
+          "w",
+          "chabei"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "keyi"
+        ],
+        [
+          "w",
+          "da_zhe"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "jiu"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "w",
+          "yi"
+        ],
+        [
+          "w",
+          "ge"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "zenmeyang"
+        ],
+        [
+          "p",
+          "？"
+        ]
+      ],
+      "gloss": {
+        "fr": "Pour trois cents tasses, je peux vous faire une remise. Neuf yuans pièce, ça vous va ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "C'est encore un peu cher pour toi. Propose huit yuans."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "accord_02a",
+          "line": [
+            [
+              "w",
+              "youdianr"
+            ],
+            [
+              "w",
+              "gui"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "ba_huit"
+            ],
+            [
+              "w",
+              "kuai"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "C'est un peu cher. Huit yuans, c'est possible ?"
+          }
+        },
+        {
+          "vo": "accord_02b",
+          "line": [
+            [
+              "w",
+              "yidianr"
+            ],
+            [
+              "w",
+              "gui"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "ba_huit"
+            ],
+            [
+              "w",
+              "kuai"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Un peu cher. Huit yuans, c'est possible ?)"
+          },
+          "why": {
+            "fr": "Devant un adjectif, « un peu (trop) » se dit 有点儿 : 有点儿贵. 一点儿 se met après : 便宜一点儿."
+          },
+          "errorType": "grammar"
+        },
+        {
+          "vo": "accord_02c",
+          "line": [
+            [
+              "w",
+              "youdianr"
+            ],
+            [
+              "w",
+              "pianyi"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "ba_huit"
+            ],
+            [
+              "w",
+              "kuai"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "C'est un peu bon marché. Huit yuans, c'est possible ?"
+          },
+          "why": {
+            "fr": "Si c'est bon marché (便宜), pourquoi baisser ? Tu trouves ça cher : 有点儿贵."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "bai",
+      "vo": "accord_03",
+      "line": [
+        [
+          "w",
+          "ba_huit"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "？"
+        ],
+        [
+          "w",
+          "tai"
+        ],
+        [
+          "w",
+          "pianyi"
+        ],
+        [
+          "w",
+          "le"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "yijing"
+        ],
+        [
+          "w",
+          "da_zhe"
+        ],
+        [
+          "w",
+          "le"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Huit yuans ? C'est bien trop peu ! J'ai déjà fait une remise."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Coupe la poire en deux : propose 8,50 yuans."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "accord_04a",
+          "line": [
+            [
+              "w",
+              "ba_huit"
+            ],
+            [
+              "w",
+              "kuai"
+            ],
+            [
+              "w",
+              "wu"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "zenmeyang"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Huit yuans cinquante, ça vous va ?"
+          }
+        },
+        {
+          "vo": "accord_04b",
+          "line": [
+            [
+              "w",
+              "wu"
+            ],
+            [
+              "w",
+              "kuai"
+            ],
+            [
+              "w",
+              "ba_huit"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "zenmeyang"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Cinq yuans quatre-vingts, ça vous va ?"
+          },
+          "why": {
+            "fr": "Le chiffre des yuans vient d'abord : 8,50 yuans se dit 八块五."
+          },
+          "errorType": "number"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "bai",
+      "vo": "accord_05",
+      "line": [
+        [
+          "w",
+          "hao"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "tongyi"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "yigong"
+        ],
+        [
+          "w",
+          "liang"
+        ],
+        [
+          "w",
+          "qian_mille"
+        ],
+        [
+          "w",
+          "wu"
+        ],
+        [
+          "w",
+          "bai"
+        ],
+        [
+          "w",
+          "wu"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bon, d'accord ! Ça fait 2 550 yuans en tout."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Remercie-le et dis que ta société en rachètera la prochaine fois."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "accord_06a",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "xiaci"
+            ],
+            [
+              "w",
+              "women"
+            ],
+            [
+              "w",
+              "gongsi"
+            ],
+            [
+              "w",
+              "zai_encore"
+            ],
+            [
+              "w",
+              "mai"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci ! La prochaine fois, notre société en rachètera."
+          }
+        },
+        {
+          "vo": "accord_06b",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "xiaci"
+            ],
+            [
+              "w",
+              "women"
+            ],
+            [
+              "w",
+              "gongsi"
+            ],
+            [
+              "w",
+              "zai_encore"
+            ],
+            [
+              "w",
+              "mai_vendre"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci ! La prochaine fois, notre société en revendra."
+          },
+          "why": {
+            "fr": "卖 (mài) = vendre. Ta société achète : 买 (mǎi)."
+          },
+          "errorType": "phonetic"
+        },
+        {
+          "vo": "accord_06c",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "xiaci"
+            ],
+            [
+              "w",
+              "women"
+            ],
+            [
+              "w",
+              "gongsi"
+            ],
+            [
+              "w",
+              "zai_encore"
+            ],
+            [
+              "w",
+              "da_zhe"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci ! La prochaine fois, notre société refera une remise."
+          },
+          "why": {
+            "fr": "C'est le vendeur qui fait une remise (打折). Toi, tu achètes : 再买."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "bai",
+      "vo": "accord_07",
+      "line": [
+        [
+          "w",
+          "huanying"
+        ],
+        [
+          "w",
+          "xiaci"
+        ],
+        [
+          "w",
+          "zai_encore"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "p",
+          "！"
+        ]
+      ],
+      "gloss": {
+        "fr": "Revenez quand vous voulez !"
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_accord": "fait"
+    }
+  }
+}

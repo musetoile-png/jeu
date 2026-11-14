@@ -1,0 +1,20 @@
+{
+  "id": "demo-ia",
+  "name": "Leçon générée",
+  "mark": "讲价",
+  "tagline": { "fr": "Négocier un prix · brouillon de l'IA, à relire par Nuwa" },
+  "description": { "fr": "Démonstration du générateur : une leçon rédigée par l'IA à partir d'un thème et de 20 mots, importée telle quelle (pas encore relue)." },
+  "pack": "negocier-un-prix",
+  "uiLanguage": "fr",
+  "storagePrefix": "demo-ia",
+  "theme": {
+    "paper": "#f3efe6",
+    "paper2": "#e4dccb",
+    "ink": "#2a2622",
+    "ink2": "#4f4740",
+    "mute": "#8a8178",
+    "accent": "#7a3e2b",
+    "highlight": "#c99a3a",
+    "success": "#3d7a5a"
+  }
+}

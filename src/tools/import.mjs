@@ -111,6 +111,14 @@ if (packId === baseId)
   );
 if (!lesson.titre) errors.push('Leçon : titre manquant');
 
+// Un brouillon rédigé par l'IA ne devient une leçon qu'une fois relu par un enseignant (« l'IA propose, l'enseignant dispose »).
+const redige = lesson.redigepar ?? '';
+const relu = lesson.relupar ?? '';
+if (/\bIA\b/i.test(redige) && !relu)
+  (dryRun ? warnings : errors).push(
+    "Leçon : brouillon rédigé par l'IA, pas encore validé — l'enseignant qui l'a relu écrit son nom dans « relu par »",
+  );
+
 const langDir = join(CONTENT, 'languages', langCode);
 if (!existsSync(join(langDir, 'language.json'))) {
   console.log(`✖  Leçon : langue inconnue « ${langCode} »`);
@@ -561,6 +569,8 @@ const pack = {
   },
   source: {
     tableur: file.split('/').pop(),
+    ...(redige ? { redige } : {}),
+    ...(relu ? { relu } : {}),
     base: baseId,
     importe: new Date().toISOString().slice(0, 10),
   },
