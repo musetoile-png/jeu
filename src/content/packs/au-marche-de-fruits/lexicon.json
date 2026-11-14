@@ -1,0 +1,76 @@
+{
+  "entries": [
+    {
+      "id": "shuiguo_dian",
+      "target": "水果店",
+      "transcription": "shuǐguǒ diàn",
+      "gloss": {
+        "fr": "magasin de fruits"
+      },
+      "pos": "nom"
+    },
+    {
+      "id": "shouhuoyuan",
+      "target": "售货员",
+      "transcription": "shòuhuòyuán",
+      "gloss": {
+        "fr": "vendeur, vendeuse"
+      },
+      "pos": "nom"
+    },
+    {
+      "id": "jin",
+      "target": "斤",
+      "transcription": "jīn",
+      "gloss": {
+        "fr": "livre (500 grammes)"
+      },
+      "pos": "classificateur"
+    },
+    {
+      "id": "pianyi",
+      "target": "便宜",
+      "transcription": "piányi",
+      "gloss": {
+        "fr": "bon marché"
+      },
+      "pos": "adjectif"
+    },
+    {
+      "id": "keyi",
+      "target": "可以",
+      "transcription": "kěyǐ",
+      "gloss": {
+        "fr": "pouvoir"
+      },
+      "pos": "verbe"
+    },
+    {
+      "id": "hai",
+      "target": "还",
+      "transcription": "hái",
+      "gloss": {
+        "fr": "encore, en plus"
+      },
+      "pos": "adverbe"
+    },
+    {
+      "id": "yigong",
+      "target": "一共",
+      "transcription": "yígòng",
+      "gloss": {
+        "fr": "en tout"
+      },
+      "pos": "adverbe"
+    },
+    {
+      "id": "gui",
+      "target": "贵",
+      "transcription": "guì",
+      "gloss": {
+        "fr": "cher"
+      },
+      "pos": "adjectif"
+    }
+  ]
+}

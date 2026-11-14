@@ -60,6 +60,21 @@ node tools/generer.mjs tableur reponse.md --mots "公司，经理，价格…"
 node tools/generer.mjs auto --theme "Négocier un prix" --mots @mots.txt --niveau "HSK 2"
 ```
 
+### Adapter une leçon existante (manuel d'un éditeur, cours d'un prof)
+
+```sh
+node tools/generer.mjs consigne --lecon @manuels/lecon-fictive-fruits.txt --niveau "HSK 1" --scenes 1 -o consigne.md
+node tools/generer.mjs tableur reponse.md --lecon @manuels/lecon-fictive-fruits.txt
+```
+
+Le texte de la leçon (dialogue, vocabulaire, exercices) se colle tel quel dans un fichier texte. L'IA **garde les phrases du dialogue mot pour mot** :
+les répliques de l'élève deviennent des questions (la phrase du manuel est la bonne réponse, l'IA écrit les mauvaises), celles des autres personnages sont dites.
+Sans `--mots`, la liste à travailler est le vocabulaire de la leçon (生词).
+Avec `--lecon`, la commande `tableur` vérifie chaque phrase du dialogue (lignes « locuteur : … ») : toute phrase coupée, modifiée ou oubliée apparaît dans la Relecture.
+
+Démonstration : `manuels/lecon-fictive-fruits.txt` (leçon **fictive**, écrite dans le style d'un manuel, elle ne vient d'aucun manuel publié)
+→ `brouillons/au-marche-de-fruits.xlsx`, jouable avec `index.html?client=demo-manuel`. Pas encore relue par Nuwa.
+
 `--mots` accepte une liste (virgules, espaces, retours à la ligne) ou `@fichier.txt` (un mot par ligne ; le pinyin et le sens éventuels sont ignorés).
 
 Le brouillon s'ouvre sur l'onglet **Relecture**, qui liste ce que le prof doit regarder :

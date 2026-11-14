@@ -1,0 +1,822 @@
+{
+  "id": "acheter-des-fruits",
+  "language": "zh",
+  "world": "quartier",
+  "tier": 1,
+  "title": {
+    "fr": "Acheter des pommes et un melon d'eau"
+  },
+  "place": "cour",
+  "npc": "li",
+  "patience": 3,
+  "actors": {
+    "li": {
+      "name": "售货员",
+      "label": {
+        "fr": "le vendeur du magasin de fruits"
+      },
+      "portrait": "li"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "acheter-des-fruits_01",
+      "line": [
+        [
+          "w",
+          "ni_hao"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "yao"
+        ],
+        [
+          "w",
+          "mai"
+        ],
+        [
+          "w",
+          "shenme"
+        ],
+        [
+          "p",
+          "？"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bonjour ! Qu'est-ce que tu veux acheter ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Salue-le et demande le prix des pommes à la livre."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "acheter-des-fruits_02a",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "pingguo"
+            ],
+            [
+              "w",
+              "duoshao"
+            ],
+            [
+              "w",
+              "qian"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "jin"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Bonjour ! Combien coûtent les pommes, la livre ?"
+          }
+        },
+        {
+          "vo": "acheter-des-fruits_02b",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "jin"
+            ],
+            [
+              "w",
+              "duoshao"
+            ],
+            [
+              "w",
+              "pingguo"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Bonjour ! Une livre, combien de pommes ?)"
+          },
+          "why": {
+            "fr": "Pour un prix, on dit d'abord 多少钱, puis l'unité : 苹果多少钱一斤？"
+          },
+          "errorType": "order"
+        },
+        {
+          "vo": "acheter-des-fruits_02c",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "pingguo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "shenme"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Bonjour ! Qu'est-ce que c'est, une pomme ?"
+          },
+          "why": {
+            "fr": "Tu demandes ce qu'est une pomme. Pour le prix : 多少钱."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "acheter-des-fruits_03",
+      "line": [
+        [
+          "w",
+          "pingguo"
+        ],
+        [
+          "w",
+          "wu"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "w",
+          "yi"
+        ],
+        [
+          "w",
+          "jin"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Les pommes, c'est cinq yuans la livre."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Tu trouves ça trop cher. Demande un prix un peu plus bas."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "acheter-des-fruits_04a",
+          "line": [
+            [
+              "w",
+              "tai"
+            ],
+            [
+              "w",
+              "gui"
+            ],
+            [
+              "w",
+              "le"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "pianyi"
+            ],
+            [
+              "w",
+              "yidianr"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "C'est trop cher ! Un peu moins cher, c'est possible ?"
+          }
+        },
+        {
+          "vo": "acheter-des-fruits_04b",
+          "line": [
+            [
+              "w",
+              "tai"
+            ],
+            [
+              "w",
+              "pianyi"
+            ],
+            [
+              "w",
+              "le"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "pianyi"
+            ],
+            [
+              "w",
+              "yidianr"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "C'est trop bon marché ! Un peu moins cher, c'est possible ?"
+          },
+          "why": {
+            "fr": "Si c'est déjà trop bon marché (便宜), pourquoi baisser ? Trop cher : 太贵了."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "acheter-des-fruits_04c",
+          "line": [
+            [
+              "w",
+              "tai"
+            ],
+            [
+              "w",
+              "gui"
+            ],
+            [
+              "w",
+              "le"
+            ],
+            [
+              "p",
+              "！"
+            ],
+            [
+              "w",
+              "yidianr"
+            ],
+            [
+              "w",
+              "pianyi"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "keyi"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "(C'est trop cher ! Un peu moins cher, c'est possible ?)"
+          },
+          "why": {
+            "fr": "一点儿 se place après l'adjectif : 便宜一点儿."
+          },
+          "errorType": "order"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "acheter-des-fruits_05",
+      "line": [
+        [
+          "w",
+          "hao"
+        ],
+        [
+          "w",
+          "ba"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "si"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "w",
+          "wu"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "yao"
+        ],
+        [
+          "w",
+          "ji"
+        ],
+        [
+          "w",
+          "jin"
+        ],
+        [
+          "p",
+          "？"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bon, d'accord, quatre yuans cinquante. Tu en veux combien de livres ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Prends deux livres de pommes, et aussi un melon d'eau."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "acheter-des-fruits_06a",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "liang"
+            ],
+            [
+              "w",
+              "jin"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "hai"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "ge"
+            ],
+            [
+              "w",
+              "xigua"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "J'en veux deux livres. Et aussi un melon d'eau."
+          }
+        },
+        {
+          "vo": "acheter-des-fruits_06b",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "er"
+            ],
+            [
+              "w",
+              "jin"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "hai"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "ge"
+            ],
+            [
+              "w",
+              "xigua"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(J'en veux deux livres. Et aussi un melon d'eau.)"
+          },
+          "why": {
+            "fr": "Devant une unité comme 斤 ou 个, « deux » se dit 两 : 两斤."
+          },
+          "errorType": "number"
+        },
+        {
+          "vo": "acheter-des-fruits_06c",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "liang"
+            ],
+            [
+              "w",
+              "ge"
+            ],
+            [
+              "w",
+              "jin"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "hai"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "ge"
+            ],
+            [
+              "w",
+              "xigua"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(J'en veux deux… livres. Et aussi un melon d'eau.)"
+          },
+          "why": {
+            "fr": "斤 est déjà une unité : pas de 个 en plus. 两斤."
+          },
+          "errorType": "classifier"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "acheter-des-fruits_07",
+      "line": [
+        [
+          "w",
+          "xigua"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "er"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "yigong"
+        ],
+        [
+          "w",
+          "er"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "yi"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Le melon d'eau, c'est douze yuans. Ça fait vingt et un yuans en tout."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Donne-lui l'argent et remercie-le."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "acheter-des-fruits_08a",
+          "line": [
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "ni"
+            ],
+            [
+              "w",
+              "qian"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Voici l'argent. Merci !"
+          }
+        },
+        {
+          "vo": "acheter-des-fruits_08b",
+          "line": [
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "ni"
+            ],
+            [
+              "w",
+              "qian"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "bukeqi"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Voici l'argent. De rien !"
+          },
+          "why": {
+            "fr": "不客气 répond à un merci. C'est toi qui remercies : 谢谢！"
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "acheter-des-fruits_08c",
+          "line": [
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "qian"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Donne-moi l'argent. Merci !"
+          },
+          "why": {
+            "fr": "给我钱, c'est « donne-moi l'argent ». C'est toi qui paies : 给你钱."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "acheter-des-fruits_09",
+      "line": [
+        [
+          "w",
+          "bukeqi"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "manzou"
+        ],
+        [
+          "p",
+          "！"
+        ]
+      ],
+      "gloss": {
+        "fr": "De rien. Au revoir, bonne journée !"
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_acheter-des-fruits": "fait"
+    }
+  }
+}

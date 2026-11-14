@@ -15,6 +15,12 @@
  *     Transforme la réponse de l'IA en tableur de leçon, vérifie tout avec l'importeur (essai),
  *     et liste dans l'onglet Relecture ce que l'enseignant doit regarder.
  *
+ *   node tools/generer.mjs consigne --lecon @lecon-du-manuel.txt [--mots …] [--niveau …] [--scenes N]
+ *     Variante « éditeur » : on part du texte d'une leçon de manuel (dialogue, vocabulaire, exercices,
+ *     copiés tels quels). L'IA garde les phrases du manuel et ajoute les questions ; la liste de mots
+ *     est celle du manuel si --mots est absent. « tableur » et « auto » acceptent aussi --lecon :
+ *     chaque phrase du dialogue absente de la leçon jouable est alors signalée dans la Relecture.
+ *
  *   node tools/generer.mjs auto --theme … --mots … [mêmes options que consigne]
  *     Les deux d'un coup, en appelant l'API d'Anthropic (variable ANTHROPIC_API_KEY ;
  *     modèle : ANTHROPIC_MODEL, par défaut claude-opus-5-5).
@@ -75,8 +81,32 @@ const slug = (s) =>
 
 // ---------- Consigne ----------
 
+/** Section de la consigne pour adapter une leçon existante (manuel d'un éditeur, cours d'un prof). */
+function adaptation(lessonText) {
+  return `## La leçon à adapter (texte fourni par l'éditeur ou l'enseignant)
+
+Cette leçon existe déjà, dans un manuel ou un cours. Tu ne la réécris pas : tu la **mets en scène**.
+
+\`\`\`
+${lessonText.trim()}
+\`\`\`
+
+Règles d'adaptation :
+A. **Les phrases du dialogue restent celles de la leçon**, mot pour mot, avec leur ponctuation. Tu peux couper une réplique longue en deux lignes, jamais la reformuler. Si une phrase te paraît fautive ou impossible à garder, garde-la quand même et explique pourquoi dans « notes ».
+B. L'élève joue le personnage du dialogue qui lui ressemble le plus (un étudiant, un client, un visiteur) ; dis lequel dans « notes ». Ses répliques deviennent des « choix » : la phrase du manuel est la bonne réponse, et c'est toi qui écris les mauvaises. Les répliques des autres personnages deviennent des « dit ».
+C. Les personnages du manuel gardent leur nom : mets-le dans « nomAffiche », et prends pour chacun le dessin le plus plausible du catalogue.
+D. Le lieu de la leçon devient le lieu le plus proche du catalogue (sinon : « lieuxManquants »).
+E. Si l'enseignant n'a pas donné de liste de mots, « motsDemandes » est la liste de vocabulaire de la leçon (生词…), recopiée.
+F. Les exercices de la leçon, s'il y en a, peuvent t'inspirer des « choix » supplémentaires, placés là où ils s'insèrent naturellement dans la scène.
+G. Le titre de la leçon garde son titre d'origine (titreCible) et sa traduction (titre).
+H. La longueur des scènes suit celle du dialogue : les limites de nombre de lignes et de « choix » de la règle 3 ne s'appliquent pas.
+
+`;
+}
+
 function buildConsigne({
   theme,
+  lessonText,
   words,
   niveau,
   nbScenes,
@@ -106,13 +136,12 @@ function buildConsigne({
 Tu rédiges le brouillon d'une leçon de chinois pour des **francophones débutants**. Le jeu la met en scène : l'élève se promène dans un décor, parle à un personnage, l'écoute et choisit ses réponses. Un enseignant relira et corrigera ton brouillon avant qu'il n'arrive aux élèves : signale honnêtement tes doutes plutôt que de les cacher.
 
 ## La demande de l'enseignant
-
-- Thème : **${theme}**
-- Mots à faire travailler (${words.length}) : ${words.join('，') || '(aucun : choisis un vocabulaire adapté au thème)'}
+${theme ? `\n- Thème : **${theme}**` : ''}
+- Mots à faire travailler : ${words.length ? `${words.join('，')} (${words.length})` : lessonText ? 'ceux du vocabulaire de la leçon ci-dessous (生词…)' : 'aucun imposé : choisis un vocabulaire adapté au thème'}
 - Niveau : ${niveau}
 - Nombre de scènes : ${nbScenes}${identifiant ? `\n- Identifiant imposé pour la leçon : ${identifiant}` : ''}
 
-## Ce dont tu disposes (et rien d'autre)
+${lessonText ? adaptation(lessonText) : ''}## Ce dont tu disposes (et rien d'autre)
 
 Le jeu n'a pas d'autres décors ni d'autres dessins de personnages que ceux-ci. Tu ne peux pas en inventer.
 
@@ -123,6 +152,8 @@ Personnages (colonne « personnage ») :
 ${people}
 
 Un personnage peut jouer un autre rôle que son rôle d'origine : donne-lui alors un « nomAffiche » (en chinois) et un « role » (en français). Mais son dessin ne change pas : choisis un dessin plausible (âge, allure) pour le rôle.
+
+**Si un personnage nécessaire n'a pas de dessin plausible** (un homme d'affaires en costume, une enfant…), prends le dessin le moins éloigné et déclare-le dans « personnagesManquants ».
 
 **Si le thème demande un lieu qui n'existe pas** (un bureau, un hôpital…), joue la scène dans le lieu disponible le plus proche, adapte légèrement la situation pour qu'elle y soit crédible, et déclare-le dans « lieuxManquants ». C'est ainsi qu'on décide quels décors dessiner ensuite.
 
@@ -179,6 +210,9 @@ Réponds uniquement par un bloc \`\`\`json contenant cet objet (les champs entre
   "lieuxManquants": [
     { "souhaite": "le lieu qu'il aurait fallu, en français", "remplace": "id du lieu utilisé à la place", "pourquoi": "…" }
   ],
+  "personnagesManquants": [
+    { "souhaite": "le personnage qu'il aurait fallu dessiner", "remplace": "id du dessin utilisé à la place", "pourquoi": "…" }
+  ],
   "notes": ["tes doutes et les points que l'enseignant devrait vérifier en priorité"]
 }
 \`\`\`
@@ -197,6 +231,29 @@ function readDraft(text) {
     fail(`La réponse de l'IA n'est pas un JSON lisible : ${e.message}`);
   }
 }
+
+/**
+ * Phrases du dialogue d'une leçon de manuel, sans le nom du locuteur (« 售货员：… », « A：… »).
+ * S'il y a au moins deux lignes de dialogue avec locuteur, seules celles-là comptent (le vocabulaire
+ * et les exercices sont ignorés) ; sinon, toutes les phrases à ponctuation finale.
+ */
+function lessonSentences(lessonText) {
+  const SPEAKER = /^\s*[\p{Script=Han}A-Za-z·]{1,6}\s*[：:]/u;
+  let lines = lessonText.split('\n');
+  const spoken = lines.filter((l) => SPEAKER.test(l));
+  if (spoken.length >= 2) lines = spoken;
+  const out = [];
+  for (const line of lines)
+    for (const piece of line
+      .replace(SPEAKER, '')
+      .match(/[^。！？!?]+[。！？!?]+/g) ?? []) {
+      const han = [...piece].filter((c) => HAN.test(c)).join('');
+      if (han.length >= 2) out.push(compact(piece));
+    }
+  return [...new Set(out)];
+}
+/** Comparaison des phrases : à l'espace près (caractères et ponctuation doivent être identiques). */
+const compact = (t) => t.replace(/[\s\u3000]+/g, '');
 
 /** Lance l'importeur en essai sur le tableur ; renvoie ses erreurs et avertissements. */
 function dryRun(xlsx) {
@@ -217,7 +274,10 @@ function dryRun(xlsx) {
   };
 }
 
-async function draftToSheet(draft, { requested, out, baseId = 'shanghai' }) {
+async function draftToSheet(
+  draft,
+  { requested, out, baseId = 'shanghai', lessonText = '' },
+) {
   const cat = loadCatalogue(baseId);
   const langCode = 'zh';
   const lexicon = json(
@@ -297,8 +357,17 @@ async function draftToSheet(draft, { requested, out, baseId = 'shanghai' }) {
       `${m.pourquoi ?? ''} → Décor à ajouter à la bibliothèque si la leçon est retenue.`,
     ]);
   }
+  const shownNames = (draft.scenes ?? [])
+    .map((sc) => sc.nomAffiche ?? '')
+    .join(' ');
   for (const w of req) {
-    if (!allText.includes(w))
+    if (!allText.includes(w) && shownNames.includes(w))
+      rel.push([
+        'Mot demandé',
+        `« ${w} » n'apparaît que dans le nom affiché d'un personnage, dans aucune phrase.`,
+        'L’élève le voit sans l’entendre : ajouter une réplique qui l’emploie si le mot doit être appris.',
+      ]);
+    else if (!allText.includes(w))
       rel.push([
         'Mot demandé',
         `« ${w} » était demandé mais n'apparaît dans aucune phrase.`,
@@ -319,6 +388,34 @@ async function draftToSheet(draft, { requested, out, baseId = 'shanghai' }) {
         `${m.mot} (${m.transcription ?? '?'}) : ${m.traduction ?? '?'}`,
         'Hors de la liste demandée : vérifier qu’il est utile et au niveau de la classe.',
       ]);
+  for (const m of draft.personnagesManquants ?? []) {
+    const used = cat.people.get(m.remplace);
+    rel.push([
+      'Personnage manquant',
+      `La leçon demandait : ${m.souhaite}. Il est joué pour l'instant par le dessin de ${used ? `${used.name} (${used.label})` : m.remplace}.`,
+      `${m.pourquoi ?? ''} → Dessin à ajouter à la bibliothèque si la leçon est retenue.`,
+    ]);
+  }
+  if (lessonText) {
+    const played = compact(
+      (draft.repliques ?? []).map((r) => r.texte ?? '').join('\n'),
+    );
+    const missing = lessonSentences(lessonText).filter(
+      (p) => !played.includes(p),
+    );
+    for (const p of missing)
+      rel.push([
+        'Phrase du manuel',
+        `« ${p} » n'est pas reprise telle quelle dans la leçon jouable.`,
+        'Vérifier si elle a été coupée, modifiée ou oubliée (le texte du manuel doit rester intact).',
+      ]);
+    if (!missing.length)
+      rel.push([
+        'Phrases du manuel',
+        `Les ${lessonSentences(lessonText).length} phrases du dialogue sont reprises mot pour mot.`,
+        'Vérifié automatiquement.',
+      ]);
+  }
   for (const n of draft.notes ?? []) rel.push(['Doute de l’IA', n, '']);
 
   const base = { cat, lesson, words, scenes, lines };
@@ -417,15 +514,28 @@ function report({ identifiant, rel, check }, out) {
   return identifiant;
 }
 
+/** Texte de la leçon à adapter : @fichier ou texte direct. */
+function readLesson(spec) {
+  if (!spec) return '';
+  const text = spec.startsWith('@')
+    ? readFileSync(spec.slice(1), 'utf8')
+    : spec;
+  if (!HAN.test(text))
+    fail('--lecon : le texte de la leçon ne contient aucun caractère chinois');
+  return text;
+}
+
 const langCode = 'zh';
 const baseId = opt('--base', 'shanghai');
 
 if (command === 'consigne' || command === 'auto') {
   const theme = opt('--theme');
-  if (!theme) fail('--theme manquant');
+  const lessonText = readLesson(opt('--lecon'));
+  if (!theme && !lessonText) fail('--theme ou --lecon manquant');
   const words = parseWords(opt('--mots'), langCode);
   const params = {
     theme,
+    lessonText,
     words,
     niveau: opt('--niveau', 'débutant (HSK 1-2)'),
     nbScenes: Number(opt('--scenes', '2')),
@@ -439,29 +549,33 @@ if (command === 'consigne' || command === 'auto') {
     if (o) {
       writeFileSync(o, prompt);
       console.log(
-        `✔ Consigne écrite dans ${o} (${words.length} mots demandés)`,
+        `✔ Consigne écrite dans ${o} (${words.length ? `${words.length} mots demandés` : lessonText ? 'vocabulaire de la leçon' : 'vocabulaire libre'})`,
       );
     } else process.stdout.write(prompt);
   } else {
     mkdirSync(OUT, { recursive: true });
     console.log(
-      `… Rédaction par l'IA (${words.length} mots, thème « ${theme} »)`,
+      `… Rédaction par l'IA (${theme ? `thème « ${theme} »` : 'adaptation d’une leçon'}, ${words.length} mots demandés)`,
     );
     const answer = await askClaude(prompt);
     const draft = readDraft(answer);
-    const id = params.identifiant || slug(draft.lecon?.identifiant || theme);
+    const id =
+      params.identifiant || slug(draft.lecon?.identifiant || theme || 'lecon');
     draft.lecon = { ...draft.lecon, identifiant: id };
     writeFileSync(
       join(OUT, `${id}.json`),
       `${JSON.stringify(draft, null, 2)}\n`,
     );
     const out = opt('-o') || join(OUT, `${id}.xlsx`);
-    report(await draftToSheet(draft, { requested: words, out, baseId }), out);
+    report(
+      await draftToSheet(draft, { requested: words, out, baseId, lessonText }),
+      out,
+    );
   }
 } else if (command === 'tableur') {
   if (!positional || !existsSync(positional))
     fail(
-      'Usage : node tools/generer.mjs tableur <reponse-de-l-ia.json|.md> [-o brouillon.xlsx]',
+      'Usage : node tools/generer.mjs tableur <reponse-de-l-ia.json|.md> [--lecon @lecon.txt] [-o brouillon.xlsx]',
     );
   const draft = readDraft(readFileSync(positional, 'utf8'));
   const id = slug(
@@ -470,10 +584,14 @@ if (command === 'consigne' || command === 'auto') {
   mkdirSync(OUT, { recursive: true });
   const out = opt('-o') || join(OUT, `${id}.xlsx`);
   const requested = parseWords(opt('--mots'), langCode);
-  report(await draftToSheet(draft, { requested, out, baseId }), out);
+  const lessonText = readLesson(opt('--lecon'));
+  report(
+    await draftToSheet(draft, { requested, out, baseId, lessonText }),
+    out,
+  );
 } else {
   console.log(
-    'Usage :\n  node tools/generer.mjs consigne --theme "…" --mots "…" [--niveau …] [--scenes 2] [-o consigne.md]\n  node tools/generer.mjs tableur <reponse.json|.md> [--mots "…"] [-o brouillon.xlsx]\n  node tools/generer.mjs auto --theme "…" --mots "…"   (ANTHROPIC_API_KEY)',
+    'Usage :\n  node tools/generer.mjs consigne --theme "…" --mots "…" [--niveau …] [--scenes 2] [-o consigne.md]\n  node tools/generer.mjs consigne --lecon @lecon-du-manuel.txt [--mots "…"] [-o consigne.md]\n  node tools/generer.mjs tableur <reponse.json|.md> [--mots "…"] [-o brouillon.xlsx]\n  node tools/generer.mjs auto --theme "…" --mots "…"   (ANTHROPIC_API_KEY)',
   );
   process.exit(command ? 1 : 0);
 }

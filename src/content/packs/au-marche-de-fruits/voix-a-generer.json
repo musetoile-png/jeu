@@ -1,0 +1,87 @@
+[
+  {
+    "vo": "acheter-des-fruits_01",
+    "speaker": "li",
+    "text": "你好！你要买什么？"
+  },
+  {
+    "vo": "acheter-des-fruits_02a",
+    "speaker": "player",
+    "text": "你好！苹果多少钱一斤？"
+  },
+  {
+    "vo": "acheter-des-fruits_02b",
+    "speaker": "player",
+    "text": "你好！一斤多少苹果？"
+  },
+  {
+    "vo": "acheter-des-fruits_02c",
+    "speaker": "player",
+    "text": "你好！苹果是什么？"
+  },
+  {
+    "vo": "acheter-des-fruits_03",
+    "speaker": "li",
+    "text": "苹果五块一斤。"
+  },
+  {
+    "vo": "acheter-des-fruits_04a",
+    "speaker": "player",
+    "text": "太贵了！便宜一点儿，可以吗？"
+  },
+  {
+    "vo": "acheter-des-fruits_04b",
+    "speaker": "player",
+    "text": "太便宜了！便宜一点儿，可以吗？"
+  },
+  {
+    "vo": "acheter-des-fruits_04c",
+    "speaker": "player",
+    "text": "太贵了！一点儿便宜，可以吗？"
+  },
+  {
+    "vo": "acheter-des-fruits_05",
+    "speaker": "li",
+    "text": "好吧，四块五。你要几斤？"
+  },
+  {
+    "vo": "acheter-des-fruits_06a",
+    "speaker": "player",
+    "text": "我要两斤。还要一个西瓜。"
+  },
+  {
+    "vo": "acheter-des-fruits_06b",
+    "speaker": "player",
+    "text": "我要二斤。还要一个西瓜。"
+  },
+  {
+    "vo": "acheter-des-fruits_06c",
+    "speaker": "player",
+    "text": "我要两个斤。还要一个西瓜。"
+  },
+  {
+    "vo": "acheter-des-fruits_07",
+    "speaker": "li",
+    "text": "西瓜十二块。一共二十一块。"
+  },
+  {
+    "vo": "acheter-des-fruits_08a",
+    "speaker": "player",
+    "text": "给你钱。谢谢！"
+  },
+  {
+    "vo": "acheter-des-fruits_08b",
+    "speaker": "player",
+    "text": "给你钱。不客气！"
+  },
+  {
+    "vo": "acheter-des-fruits_08c",
+    "speaker": "player",
+    "text": "给我钱。谢谢！"
+  },
+  {
+    "vo": "acheter-des-fruits_09",
+    "speaker": "li",
+    "text": "不客气。慢走！"
+  }
+]

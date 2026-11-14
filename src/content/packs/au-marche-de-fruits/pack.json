@@ -1,0 +1,153 @@
+{
+  "id": "au-marche-de-fruits",
+  "name": {
+    "fr": "Au magasin de fruits"
+  },
+  "language": "zh",
+  "uiLanguages": [
+    "fr"
+  ],
+  "start": {
+    "place": "cour",
+    "entrance": "debut"
+  },
+  "places": [
+    "cour"
+  ],
+  "scenes": [
+    "acheter-des-fruits"
+  ],
+  "modifiers": {},
+  "assets": {
+    "images": {
+      "cour_far": "art/cour_far.jpg",
+      "li_stand": "art/li_stand.webp",
+      "portrait_li_neutral": "art/li_bust_neutral.jpg",
+      "portrait_li_joy": "art/li_bust_joy.jpg",
+      "portrait_li_surprise": "art/li_bust_surprise.jpg",
+      "player_torso": "art/player_torso.webp",
+      "player_leg_back": "art/player_leg_back.webp",
+      "player_leg_front": "art/player_leg_front.webp",
+      "player_front": "art/player_front.webp",
+      "playerf_front": "art/playerf_front.webp",
+      "playerf_torso": "art/playerf_torso.webp",
+      "playerf_leg_back": "art/playerf_leg_back.webp",
+      "playerf_leg_front": "art/playerf_leg_front.webp"
+    },
+    "voicePath": "audio/vo/au-marche-de-fruits/",
+    "keyWhite": [],
+    "player": {
+      "side": "player_torso",
+      "front": "player_front",
+      "height": 660,
+      "rig": {
+        "width": 767,
+        "height": 1263,
+        "ground": 1238,
+        "cx": 345,
+        "legs": [
+          {
+            "key": "player_leg_back",
+            "pivot": [
+              290,
+              725
+            ],
+            "foot": [
+              110,
+              1238
+            ]
+          },
+          {
+            "key": "player_leg_front",
+            "pivot": [
+              400,
+              725
+            ],
+            "foot": [
+              650,
+              1238
+            ]
+          }
+        ]
+      }
+    },
+    "playerF": {
+      "side": "playerf_torso",
+      "front": "playerf_front",
+      "height": 640,
+      "rig": {
+        "width": 777,
+        "height": 1311,
+        "ground": 1290,
+        "cx": 346,
+        "legs": [
+          {
+            "key": "playerf_leg_back",
+            "pivot": [
+              296,
+              705
+            ],
+            "foot": [
+              106,
+              1272
+            ]
+          },
+          {
+            "key": "playerf_leg_front",
+            "pivot": [
+              376,
+              705
+            ],
+            "foot": [
+              676,
+              1272
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "title": {
+    "line": [
+      [
+        "w",
+        "zai"
+      ],
+      [
+        "w",
+        "shuiguo_dian"
+      ]
+    ],
+    "fr": "Au magasin de fruits",
+    "sub": {
+      "fr": "Leçon 5 · adaptée d'un manuel (démonstration)"
+    }
+  },
+  "profile": {
+    "bodies": [
+      {
+        "id": "m",
+        "label": {
+          "fr": "un étudiant"
+        },
+        "front": "player_front"
+      },
+      {
+        "id": "f",
+        "label": {
+          "fr": "une étudiante"
+        },
+        "front": "playerf_front"
+      }
+    ],
+    "names": [],
+    "startItems": []
+  },
+  "source": {
+    "tableur": "au-marche-de-fruits.xlsx",
+    "redige": "IA (brouillon)",
+    "relu": "Claude (test technique, à relire par Nuwa)",
+    "base": "shanghai",
+    "importe": "2026-11-14"
+  }
+}
