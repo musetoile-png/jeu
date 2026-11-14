@@ -2,7 +2,9 @@
  * Carnet de mots : pour chaque mot, l'ensemble des contextes (lignes) où il a été reconnu.
  * Un mot n'est « sûr » qu'à partir de N contextes différents (§12 : chaque caractère doit voyager).
  */
-const KEY = 'jeu-zh-notebook';
+import { storageKey } from './client';
+
+const KEY = storageKey('notebook');
 
 interface Entry {
   contexts: string[];

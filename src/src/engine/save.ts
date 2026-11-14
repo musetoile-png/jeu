@@ -2,6 +2,7 @@
  * Sauvegarde de la partie : profil du joueur, drapeaux d'histoire, sac, quête, album.
  * Tout tient dans le navigateur (localStorage) ; le carnet de mots et le journal ont leurs propres clés.
  */
+import { storageKey } from './client';
 import type { Content, Token } from './content';
 
 export interface Photo {
@@ -28,7 +29,7 @@ export interface SaveData {
   place?: string;
 }
 
-const KEY = 'jeu-zh-save';
+const KEY = storageKey('save');
 let data: SaveData | null = load();
 
 function load(): SaveData | null {
@@ -141,7 +142,7 @@ export function resolveLine(content: Content, line: Token[]): Token[] {
     if (tok[0] !== 'v') return tok;
     if (tok[1] === 'NAME') {
       const n = content.pack.profile?.names.find((x) => x.id === d.profile.name);
-      return n ? ['t', n.zh, n.pinyin, ''] : ['p', ''];
+      return n ? ['t', n.target, n.transcription ?? '', ''] : ['p', ''];
     }
     return content.pack.profile?.vars?.[tok[1]]?.[d.profile.body] ?? ['p', ''];
   });
@@ -155,5 +156,5 @@ export function fill(text: string, content?: Content) {
     .replaceAll('{body}', d.profile.body)
     .replaceAll('{name}', d.profile.name ?? '')
     .replaceAll('{country}', d.profile.country ?? '')
-    .replaceAll('{NAME}', name ? name.zh : '');
+    .replaceAll('{NAME}', name ? name.target : '');
 }

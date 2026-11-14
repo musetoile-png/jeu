@@ -8,10 +8,11 @@ import Phaser from 'phaser';
 import { KEY } from '../constants';
 import { initVoices } from '../engine/audio';
 import type { Ambient, Content, Entrance, Hotspot, Place, Quest } from '../engine/content';
-import { assetUrl, loadContent, t } from '../engine/content';
+import { assetUrl, calligraphyFont, loadContent, t } from '../engine/content';
+import { CLIENT } from '../engine/client';
 import { Dialogue } from '../engine/dialogue';
 import { keyOutWhite } from '../engine/keyout';
-import { ensurePlaceholderPerson, ensurePlaceholderPlane, placeholderKeys } from '../engine/placeholders';
+import { ensurePlaceholderPerson, ensurePlaceholderPlane, placeholderKeys, setPlaceholderFont } from '../engine/placeholders';
 import { Puppet } from '../engine/puppet';
 import * as save from '../engine/save';
 import * as ui from '../engine/ui';
@@ -97,7 +98,7 @@ export class World extends Phaser.Scene {
   }
 
   preload() {
-    this.content = loadContent('shanghai', 'fr');
+    this.content = loadContent(CLIENT.pack, CLIENT.uiLanguage);
     // En fichier autonome, on ne charge que les images réellement incorporées (les autres attendent d'être dessinées).
     const inline = (window as unknown as { __inlineAssets?: Record<string, string> }).__inlineAssets;
     for (const [key, path] of Object.entries(this.content.pack.assets.images)) if (!inline || inline[path]) this.load.image(key, assetUrl(path));
@@ -119,6 +120,8 @@ export class World extends Phaser.Scene {
     initVoices(this.content.language.bcp47);
     sfx.initSfx(this.content.pack.assets.sfx);
     document.documentElement.style.setProperty('--zh-font', this.content.language.font);
+    document.documentElement.style.setProperty('--calli', calligraphyFont(this.content.language));
+    setPlaceholderFont(calligraphyFont(this.content.language));
     // Détourage du blanc sur tout ce qui est livré sur fond blanc (pack.assets.keyWhite)
     for (const key of this.content.pack.assets.keyWhite ?? []) if (this.textures.exists(key)) keyOutWhite(this, key);
     ensurePlaceholderPerson(this, 'player_0', '#58d6a9', false);
@@ -284,7 +287,7 @@ export class World extends Phaser.Scene {
     for (const sign of place.signs ?? []) {
       const txt = this.add
         .text(sign.x, sign.y, sign.text[this.content.language.code] ?? '', {
-          fontFamily: `'Ma Shan Zheng', ${this.content.language.font}`,
+          fontFamily: calligraphyFont(this.content.language),
           fontSize: `${sign.size ?? 48}px`,
           color: sign.color ?? '#2b2b33',
         })
@@ -369,7 +372,7 @@ export class World extends Phaser.Scene {
       if (closed && signText) {
         const plaque = this.add
           .text(h.x, h.y - this.exitPromptHeight(place) * 1.15, signText, {
-            fontFamily: `'Ma Shan Zheng', ${this.content.language.font}`,
+            fontFamily: calligraphyFont(this.content.language),
             fontSize: '30px',
             color: '#2b2b33',
             backgroundColor: '#e3dbc9',

@@ -4,6 +4,12 @@
  */
 import Phaser from 'phaser';
 
+/** Police des titres peints sur les décors de secours : celle de la langue cible (réglée au chargement du contenu). */
+const calli = { stack: 'serif' };
+export function setPlaceholderFont(stack: string) {
+  calli.stack = stack;
+}
+
 function rr(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
   ctx.roundRect(x, y, w, h, r);
@@ -51,7 +57,7 @@ function paperPlane(ctx: CanvasRenderingContext2D, w: number, h: number, title: 
   ctx.fillStyle = 'rgba(43,43,51,0.82)';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `${Math.round(h * 0.17)}px 'Ma Shan Zheng', 'Noto Serif SC', 'Noto Sans SC', serif`;
+  ctx.font = `${Math.round(h * 0.17)}px ${calli.stack}`;
   ctx.fillText(title, w / 2, h * 0.36);
   ctx.strokeStyle = 'rgba(43,43,51,0.35)';
   ctx.lineCap = 'round';
@@ -76,7 +82,7 @@ export function ensurePlaceholderPlane(scene: Phaser.Scene, key: string, w: numb
     else {
       paperPlane(ctx, w, h, title);
       // la police calligraphique arrive peut-être après : on repeint le titre une fois chargée
-      void document.fonts.load(`40px 'Ma Shan Zheng'`).then(() => {
+      void document.fonts.load(`40px ${calli.stack}`).then(() => {
         if (!scene.textures.exists(key)) return;
         paperPlane(ctx, w, h, title);
         tex.refresh();

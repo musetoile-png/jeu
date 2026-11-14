@@ -2,7 +2,9 @@
  * Bilan pour l'enseignante : une page HTML autonome, lisible hors ligne, tirée du journal et du carnet.
  * Elle contient aussi les données brutes (CSV) en pièce jointe, pour l'analyse.
  */
+import { CLIENT } from './client';
 import type { Content } from './content';
+import { transcriptionLabel } from './content';
 import { allEvents, toCsv } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
@@ -101,7 +103,7 @@ export function buildReport(content: Content, player: string): string {
   const strengthFr = ['vu', 'pâle', 'moyen', 'sûr'];
 
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bilan Mille li — ${esc(player)}</title>
+<title>Bilan ${esc(CLIENT.name)} — ${esc(player)}</title>
 <style>
 body{font:15px/1.5 system-ui,sans-serif;background:#f3eee3;color:#2b2b33;margin:0;padding:24px 16px}
 main{max-width:860px;margin:auto}h1{font-weight:600;margin:0 0 4px}h1 span{color:#c0392b}
@@ -113,9 +115,9 @@ th,td{text-align:left;padding:6px 10px;border-bottom:1px solid #00000010;vertica
 .zh{font-size:20px}.ok{color:#2e7d5b}.ko{color:#c0392b}a.btn{display:inline-block;background:#c0392b;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none}
 .note{color:#6b6b72;font-size:13px}
 </style></head><body><main>
-<h1><span>千里</span> Mille li — bilan de jeu</h1>
+<h1>${CLIENT.mark ? `<span>${esc(CLIENT.mark)}</span> ` : ''}${esc(CLIENT.name)} — bilan de jeu</h1>
 <p class="sub">Joueur ou joueuse : <b>${esc(player)}</b> · exporté le ${esc(date.toLocaleString('fr-FR'))}${
-    p ? ` · personnage ${p.profile.body === 'f' ? 'féminin' : 'masculin'}${p.profile.name ? `, nom chinois « ${esc(p.profile.name)} »` : ''}${p.quest ? `, quête « ${esc(p.quest)} »` : ''}` : ''
+    p ? ` · personnage ${p.profile.body === 'f' ? 'féminin' : 'masculin'}${p.profile.name ? `, nom choisi « ${esc(p.profile.name)} »` : ''}${p.quest ? `, quête « ${esc(p.quest)} »` : ''}` : ''
   }</p>
 <div class="kpis">
 <div class="kpi"><b>${minutes} min</b><small>temps de jeu estimé · ${sessions} séance(s)</small></div>
@@ -157,11 +159,11 @@ ${
 
 <h2>Carnet de mots</h2>
 <p class="note">Un mot devient « sûr » quand il a été reconnu dans au moins trois contextes différents (règle de réemploi : chaque caractère doit voyager).</p>
-<table><tr><th>Mot</th><th>Pinyin</th><th>Sens</th><th>Contextes</th><th>Encre</th></tr>
+<table><tr><th>Mot</th>${content.language.transcription ? `<th>${esc(transcriptionLabel(content))}</th>` : ''}<th>Sens</th><th>Contextes</th><th>Encre</th></tr>
 ${words
   .map(
     (x) =>
-      `<tr><td class="zh">${esc(x.w!.target)}</td><td>${esc(x.w!.transcription)}</td><td>${esc(x.w!.gloss.fr ?? '')}</td><td>${x.n}</td><td class="${x.e ? 'ko' : x.s >= 3 ? 'ok' : ''}">${strengthFr[x.s]}${x.e ? ' · erreur récente' : ''}</td></tr>`,
+      `<tr><td class="zh">${esc(x.w!.target)}</td>${content.language.transcription ? `<td>${esc(x.w!.transcription)}</td>` : ''}<td>${esc(x.w!.gloss.fr ?? '')}</td><td>${x.n}</td><td class="${x.e ? 'ko' : x.s >= 3 ? 'ok' : ''}">${strengthFr[x.s]}${x.e ? ' · erreur récente' : ''}</td></tr>`,
   )
   .join('')}
 </table>

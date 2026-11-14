@@ -329,24 +329,24 @@
     "names": [
       {
         "id": "an",
-        "zh": "小安",
-        "pinyin": "Xiǎo Ān",
+        "target": "小安",
+        "transcription": "Xiǎo Ān",
         "why": {
           "fr": "安, la paix — tu le retrouveras dans 西安 (Xi'an), la ville de la paix de l'Ouest."
         }
       },
       {
         "id": "ming",
-        "zh": "小明",
-        "pinyin": "Xiǎo Míng",
+        "target": "小明",
+        "transcription": "Xiǎo Míng",
         "why": {
           "fr": "明, la lumière — c'est le 明 de 明天 (demain), dès la cuisine."
         }
       },
       {
         "id": "wen",
-        "zh": "小文",
-        "pinyin": "Xiǎo Wén",
+        "target": "小文",
+        "transcription": "Xiǎo Wén",
         "why": {
           "fr": "文, l'écrit — c'est le 文 de 中文 (le chinois)."
         }

@@ -1,0 +1,11 @@
+{
+  "id": "mille-li",
+  "name": "Mille li",
+  "mark": "千里",
+  "inkTitle": true,
+  "tagline": { "fr": "Premier soir à Shanghai" },
+  "description": { "fr": "Apprendre le chinois en vivant une soirée à Shanghai" },
+  "pack": "shanghai",
+  "uiLanguage": "fr",
+  "storagePrefix": "jeu-zh"
+}

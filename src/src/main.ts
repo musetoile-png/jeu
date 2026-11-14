@@ -1,24 +1,30 @@
 import Phaser from 'phaser';
 
+import { applyBranding, CLIENT, storageKey } from './engine/client';
 import type { Content } from './engine/content';
+import { calligraphyFont, packLanguage } from './engine/content';
 import { count } from './engine/log';
 import { buildReport } from './engine/report';
 import * as notebook from './engine/notebook';
 import * as sfx from './engine/sfx';
 import * as scenes from './scenes';
 
-// La calligraphie des enseignes est dessinée dans le canvas : on attend la police (2 s max).
-await Promise.race([document.fonts.load('48px "Ma Shan Zheng"'), new Promise((r) => setTimeout(r, 2000))]).catch(() => undefined);
+// La page prend l'habillage du client (marque blanche) avant tout dessin.
+applyBranding(CLIENT);
+
+// La calligraphie des enseignes est dessinée dans le canvas : on attend la police de la langue (2 s max).
+const calli = calligraphyFont(packLanguage(CLIENT.pack));
+await Promise.race([document.fonts.load(`48px ${calli}`), new Promise((r) => setTimeout(r, 2000))]).catch(() => undefined);
 
 const game = new Phaser.Game({
   parent: 'game',
   width: 1280,
   height: 720,
-  title: 'Mille li',
+  title: CLIENT.name,
   version: import.meta.env.VITE_APP_VERSION,
   scene: [scenes.World],
   disableContextMenu: import.meta.env.PROD,
-  backgroundColor: '#efe9dc',
+  backgroundColor: CLIENT.theme?.paper ?? '#efe9dc',
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   pixelArt: false,
   antialias: true,
@@ -50,7 +56,7 @@ let lastCount = -1;
 function inkHeaderTitle(content: Content) {
   const h = document.querySelector<HTMLElement>('header h1 .zh');
   const line = content.pack.title?.line;
-  if (!h || !line) return;
+  if (!h || !line || !CLIENT.inkTitle) return;
   const required = content.language.mastery?.contextsRequired ?? 3;
   h.replaceChildren(
     ...line.map((tok) => {
@@ -108,7 +114,7 @@ game.events.once('ready', () => {
     exp.onclick = () => {
       let player = '';
       try {
-        player = localStorage.getItem('jeu-zh-player') ?? '';
+        player = localStorage.getItem(storageKey('player')) ?? '';
       } catch {
         /* stockage indisponible */
       }
@@ -116,7 +122,7 @@ game.events.once('ready', () => {
       if (typed === null) return;
       player = typed.trim() || 'anonyme';
       try {
-        localStorage.setItem('jeu-zh-player', player);
+        localStorage.setItem(storageKey('player'), player);
       } catch {
         /* stockage indisponible */
       }
@@ -124,7 +130,7 @@ game.events.once('ready', () => {
       const blob = new Blob([buildReport(content, player)], { type: 'text/html;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `bilan-mille-li-${safe}-${new Date().toISOString().slice(0, 10)}.html`;
+      a.download = `bilan-${CLIENT.id}-${safe}-${new Date().toISOString().slice(0, 10)}.html`;
       a.click();
     };
     renderNotebook(content);

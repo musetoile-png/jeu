@@ -164,7 +164,12 @@ const SYLLABLE = /(zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])?(iang|iong|uang|ang|eng|ing|
 const syllables = (s: string): string[] => bare(s.replace(/ü/g, 'v')).match(SYLLABLE) ?? [];
 
 /** Une syllabe commune aux deux transcriptions (sans les tons), ou ''. */
-function sharedSyllable(a: string, b: string) {
+function sharedSyllable(a: string, b: string, system?: string) {
+  // la découpe ci-dessous ne vaut que pour le pinyin ; ailleurs, on compare les mots de la transcription
+  if (system !== 'pinyin') {
+    const wb = b.toLowerCase().split(/[\s-]+/);
+    return a.toLowerCase().split(/[\s-]+/).find((x) => x && wb.includes(x)) ?? '';
+  }
   const sb = syllables(b);
   return syllables(a).find((x) => sb.includes(x)) ?? '';
 }
@@ -212,10 +217,10 @@ export function explain(content: Content, expected: string, chosen: string): { w
   } else if (distance(bare(vars.pa), bare(vars.pb)) <= Math.max(1, Math.floor(Math.max(bare(vars.pa).length, bare(vars.pb).length) / 3))) {
     errorType = 'phonetic';
     why = fmt(ui.stallSound ?? '{a} {pa} / {b} {pb}.', vars);
-  } else if (sharedSyllable(vars.pa, vars.pb) && ui.stallSyllable) {
+  } else if (sharedSyllable(vars.pa, vars.pb, content.language.transcription) && ui.stallSyllable) {
     // 灯笼 dēnglong / 龙井 lóngjǐng : pas de caractère commun, mais un même son (long)
     errorType = 'phonetic';
-    why = fmt(ui.stallSyllable, { ...vars, s: sharedSyllable(vars.pa, vars.pb) });
+    why = fmt(ui.stallSyllable, { ...vars, s: sharedSyllable(vars.pa, vars.pb, content.language.transcription) });
   } else {
     errorType = 'semantic';
     return { why: fmt(ui.stallMeaning ?? '{a} : {ga} ; {b} : {gb}.', vars), errorType };

@@ -2,9 +2,10 @@
  * Lecteur de scènes : affiche les répliques en HTML par-dessus le canvas,
  * gère les choix, les « pick » (dictée-wok), la patience, l'audio et le journal.
  */
+import { storageKey } from './client';
 import { preloadVoices, RATE, speak, speakWords, stop } from './audio';
 import type { Choice, Content, Pay, PickOption, Restore, Said, Scene, Sequence, Serve, Stall, StallGood, StallLine, Step, Ticket, Token } from './content';
-import { lineText, lineWords, t } from './content';
+import { lineText, lineWords, t, transcriptionLabel } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
@@ -108,10 +109,12 @@ export class Dialogue {
     this.el.slow.onclick = () => (this.replay ? this.replay(RATE.SLOW) : this.sayLine(this.words, this.currentVo, RATE.SLOW));
     this.el.normal.onclick = () => (this.replay ? this.replay(RATE.NORMAL) : this.sayLine(this.words, this.currentVo, RATE.NORMAL));
     this.el.words.onclick = () => speakWords(content, lineWords(this.words));
-    icon(this.el.py, 'pīn', ui.pinyin ?? 'pinyin');
+    icon(this.el.py, content.language.transcriptionShort ?? content.language.transcription ?? '', transcriptionLabel(content));
+    // pas de transcription dans cette langue (espagnol, français…) : pas de bouton
+    this.el.py.hidden = !content.language.transcription;
     const pinyinOn = () => {
       try {
-        return localStorage.getItem('jeu-zh-pinyin') !== 'off';
+        return localStorage.getItem(storageKey('pinyin')) !== 'off';
       } catch {
         return true;
       }
@@ -126,7 +129,7 @@ export class Dialogue {
     this.el.py.onclick = () => {
       const on = this.root.classList.contains('no-py');
       try {
-        localStorage.setItem('jeu-zh-pinyin', on ? 'on' : 'off');
+        localStorage.setItem(storageKey('pinyin'), on ? 'on' : 'off');
       } catch {
         /* navigation privée : réglage non mémorisé */
       }
@@ -369,8 +372,8 @@ export class Dialogue {
     const actor = actorId ? this.scene.actors[actorId] : undefined;
     this.speaker = actorId ?? '';
     this.bubble.classList.toggle('me', actorId === 'player');
-    // le joueur parle sous son nom chinois, s'il en a choisi un
-    const me = actorId === 'player' ? this.content.pack.profile?.names.find((n) => n.id === save.get().profile.name)?.zh : undefined;
+    // le joueur parle sous le nom qu'il s'est choisi dans la langue cible, s'il en a choisi un
+    const me = actorId === 'player' ? this.content.pack.profile?.names.find((n) => n.id === save.get().profile.name)?.target : undefined;
     this.el.who.textContent = me ?? actor?.name ?? '';
     this.el.whofr.textContent = actor ? t(this.content, actor.label) : '';
     const img = this.el.portrait as HTMLImageElement;

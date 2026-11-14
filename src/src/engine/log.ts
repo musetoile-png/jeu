@@ -2,6 +2,8 @@
  * Journal d'événements : la matière première de la recherche.
  * Chaque événement est horodaté et exportable en CSV depuis le menu.
  */
+import { storageKey } from './client';
+
 export interface LogEvent {
   t: number;
   scene: string;
@@ -33,7 +35,7 @@ export interface LogEvent {
   context?: 'connu' | 'nouveau';
 }
 
-const KEY = 'jeu-zh-log';
+const KEY = storageKey('log');
 const events: LogEvent[] = load();
 
 function load(): LogEvent[] {

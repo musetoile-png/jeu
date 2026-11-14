@@ -2,9 +2,10 @@
  * Interface HTML posée sur le canvas : écran titre, sac, quête, album, notifications.
  * Aucun texte de langue cible ici : tout vient du contenu.
  */
+import { storageKey } from './client';
 import { speak, RATE } from './audio';
 import type { Content, Ending, PickOption, Place, Quest, Scene, Step, Token } from './content';
-import { assetUrl, lineText, t } from './content';
+import { assetUrl, lineText, t, transcriptionLabel } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
@@ -136,7 +137,7 @@ export function showBag(content: Content) {
 /** Réglage pīn du lecteur de scènes (absent = pinyin affiché dans les répliques). */
 function pinyinSetting(): 'on' | 'off' | '' {
   try {
-    const v = localStorage.getItem('jeu-zh-pinyin');
+    const v = localStorage.getItem(storageKey('pinyin'));
     return v === 'on' || v === 'off' ? v : '';
   } catch {
     return '';
@@ -145,7 +146,7 @@ function pinyinSetting(): 'on' | 'off' | '' {
 
 function setPinyinSetting(on: boolean) {
   try {
-    localStorage.setItem('jeu-zh-pinyin', on ? 'on' : 'off');
+    localStorage.setItem(storageKey('pinyin'), on ? 'on' : 'off');
   } catch {
     /* navigation privée : réglage non mémorisé */
   }
@@ -204,7 +205,7 @@ export function showQuest(content: Content, focus?: string) {
     draw();
     if (readOnly) {
       const pyBtn = el('button', 'sm pybtn', 'pīn');
-      pyBtn.title = content.ui.pinyin ?? 'pinyin';
+      pyBtn.title = transcriptionLabel(content);
       const sync = () => pyBtn.setAttribute('aria-pressed', String(pinyinSetting() === 'on'));
       sync();
       pyBtn.onclick = () => {
@@ -397,7 +398,7 @@ export function showTitle(content: Content, onStart: (c: TitleChoice) => void) {
   const h = el('h2', 'title-zh');
   for (const tok of title?.line ?? []) if (tok[0] === 'w') h.append(inkWord(content, tok[1], false));
   scroll.append(h, el('p', 'title-fr', title?.fr ?? ''), el('p', 'title-sub', t(content, title?.sub)));
-  if (title?.chapter) scroll.append(el('p', 'title-chapter', `${title.chapter.zh ?? ''} · ${t(content, title.chapter)}`));
+  if (title?.chapter) scroll.append(el('p', 'title-chapter', `${title.chapter[content.language.code] ?? ''} · ${t(content, title.chapter)}`));
 
   const pick = el('div', 'bodies');
   let body: 'm' | 'f' | null = null;

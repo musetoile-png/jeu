@@ -284,6 +284,27 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
   }
 }
 
+// Fiches client (marque blanche) : paquet existant, langue d'interface traduite, préfixe de stockage unique
+const clientsDir = join(ROOT, 'clients');
+const prefixes = new Map();
+const THEME_KEYS = ['paper', 'paper2', 'ink', 'ink2', 'mute', 'accent', 'highlight', 'success', 'display', 'body'];
+if (!existsSync(join(clientsDir, 'mille-li', 'client.json'))) errors.push('[clients] client par défaut « mille-li » manquant');
+for (const id of existsSync(clientsDir) ? readdirSync(clientsDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name) : []) {
+  const f = join(clientsDir, id, 'client.json');
+  if (!existsSync(f)) { errors.push(`[clients/${id}] client.json manquant`); continue; }
+  const c = json(f);
+  const w = `[clients/${id}]`;
+  if (c.id !== id) errors.push(`${w} : id « ${c.id} » différent du nom du dossier`);
+  if (!/^[a-z0-9-]+$/.test(id)) errors.push(`${w} : identifiant invalide (minuscules, chiffres, tirets)`);
+  if (!c.name) errors.push(`${w} : nom manquant`);
+  if (!existsSync(join(ROOT, 'packs', c.pack ?? '', 'pack.json'))) errors.push(`${w} : paquet inconnu « ${c.pack} »`);
+  if (!existsSync(join(ROOT, 'ui-strings', `${c.uiLanguage}.json`))) errors.push(`${w} : interface non traduite « ${c.uiLanguage} » (ui-strings)`);
+  if (!c.storagePrefix) errors.push(`${w} : storagePrefix manquant`);
+  else if (prefixes.has(c.storagePrefix)) errors.push(`${w} : storagePrefix « ${c.storagePrefix} » déjà pris par ${prefixes.get(c.storagePrefix)} (les élèves se mélangeraient)`);
+  else prefixes.set(c.storagePrefix, id);
+  for (const k of Object.keys(c.theme ?? {})) if (!THEME_KEYS.includes(k)) errors.push(`${w} : clé de thème inconnue « ${k} » (attendu : ${THEME_KEYS.join(', ')})`);
+}
+
 // §12 — chaque caractère doit voyager
 for (const [code, L] of Object.entries(languages)) {
   const N = L.lang.mastery?.contextsRequired ?? 3;

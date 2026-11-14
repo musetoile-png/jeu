@@ -20,7 +20,13 @@ export interface Language {
   bcp47: string;
   name: Localized;
   direction: 'ltr' | 'rtl';
+  /** Système de transcription (pinyin, furigana, romaja…) ; absent = pas de transcription (espagnol, français…). */
   transcription?: string;
+  /** Nom de la transcription dans l'interface (« pinyin ») et son bouton court (« pīn »). */
+  transcriptionLabel?: Localized;
+  transcriptionShort?: string;
+  /** Police des enseignes, titres et sceaux (calligraphie) ; absente = la police du texte. */
+  calligraphy?: string;
   font: string;
   casting: Record<string, { voice: string; label?: string; style?: string }>;
   mastery?: { contextsRequired: number };
@@ -501,7 +507,8 @@ export interface Pack {
   title?: { line: Token[]; fr: string; sub?: Localized; chapter?: Localized };
   profile?: {
     bodies: { id: 'm' | 'f'; label: Localized; front: string }[];
-    names: { id: string; zh: string; pinyin: string; why: Localized }[];
+    /** Noms proposés au joueur dans la langue cible (小安 / Xiǎo Ān). */
+    names: { id: string; target: string; transcription?: string; why: Localized }[];
     vars?: Record<string, Record<string, Token>>;
     startItems?: string[];
   };
@@ -570,6 +577,21 @@ export function lineText(content: Content, line: Token[]): string {
 export function lineWords(line: Token[]): string[] {
   return line.filter((t): t is ['w', string] => t[0] === 'w').map((t) => t[1]);
 }
+
+/** Pile de polices calligraphiques de la langue (enseignes, titres, sceaux). */
+export function calligraphyFont(language: Language): string {
+  return language.calligraphy ? `'${language.calligraphy}', ${language.font}` : language.font;
+}
+
+/** Langue d'un paquet, sans charger tout le paquet (police à attendre avant le premier dessin). */
+export function packLanguage(packId: string): Language {
+  const pack = file<Pack>(`packs/${packId}/pack.json`);
+  return file<Language>(`languages/${pack.language}/language.json`);
+}
+
+/** Nom de la transcription dans l'interface (« pinyin »). */
+export const transcriptionLabel = (content: Content): string =>
+  t(content, content.language.transcriptionLabel, content.ui.pinyin ?? content.language.transcription ?? '');
 
 export const t = (content: Content, l: Localized | undefined, fallback = ''): string =>
   l?.[content.uiLang] ?? l?.fr ?? l?.en ?? fallback;

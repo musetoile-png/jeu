@@ -1,0 +1,21 @@
+{
+  "id": "demo-editeur",
+  "name": "Éditions Exemple",
+  "mark": "中文",
+  "tagline": { "fr": "Chinois, première année · démonstration" },
+  "description": { "fr": "Démonstration en marque blanche : le même moteur aux couleurs d'un éditeur (client fictif)." },
+  "pack": "shanghai",
+  "uiLanguage": "fr",
+  "storagePrefix": "demo-editeur",
+  "theme": {
+    "paper": "#eef2f6",
+    "paper2": "#d9e2ec",
+    "ink": "#1f2a37",
+    "ink2": "#475569",
+    "mute": "#7b8794",
+    "accent": "#1e5fa8",
+    "highlight": "#f2a33a",
+    "success": "#0f8b6c",
+    "display": "'Nunito Sans', system-ui, sans-serif"
+  }
+}
