@@ -2,9 +2,9 @@
   "id": "demo-editeur",
   "name": "Éditions Exemple",
   "mark": "中文",
-  "tagline": { "fr": "Chinois, première année · démonstration" },
+  "tagline": { "fr": "Chinois, première année · leçon 3 (démonstration)" },
   "description": { "fr": "Démonstration en marque blanche : le même moteur aux couleurs d'un éditeur (client fictif)." },
-  "pack": "shanghai",
+  "pack": "editions-exemple-the",
   "uiLanguage": "fr",
   "storagePrefix": "demo-editeur",
   "theme": {

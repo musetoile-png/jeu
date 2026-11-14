@@ -556,7 +556,9 @@ export function loadContent(packId: string, uiLang = 'fr'): Content {
   const pack = file<Pack>(`packs/${packId}/pack.json`);
   const language = file<Language>(`languages/${pack.language}/language.json`);
   const lex = file<{ entries: LexEntry[] }>(`languages/${pack.language}/lexicon.json`);
-  const lexicon = new Map(lex.entries.map((e) => [e.id, e]));
+  // Un paquet peut apporter ses propres mots (liste d'un éditeur, d'un prof) : ils s'ajoutent à ceux de la langue.
+  const packLex = optional<{ entries: LexEntry[] }>(`packs/${packId}/lexicon.json`)?.entries ?? [];
+  const lexicon = new Map([...lex.entries, ...packLex].map((e) => [e.id, e]));
   const places = new Map(pack.places.map((id) => [id, file<Place>(`packs/${packId}/places/${id}.json`)]));
   const scenes = new Map(pack.scenes.map((id) => [id, file<Scene>(`packs/${packId}/scenes/${id}.json`)]));
   const ui = file<Localized>(`ui-strings/${uiLang}.json`);

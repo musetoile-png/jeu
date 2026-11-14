@@ -1,0 +1,128 @@
+{
+  "id": "cour",
+  "name": {
+    "zh": "院子",
+    "fr": "La cour du lilong"
+  },
+  "world": "quartier",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.43,
+  "planes": [
+    {
+      "image": "cour_far",
+      "parallax": 1,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 447,
+      "y": 456,
+      "text": {
+        "zh": "小卖部"
+      },
+      "size": 50
+    },
+    {
+      "x": 1031,
+      "y": 456,
+      "text": {
+        "zh": "水果"
+      },
+      "size": 52
+    },
+    {
+      "x": 1622,
+      "y": 456,
+      "text": {
+        "zh": "茶馆"
+      },
+      "size": 52
+    }
+  ],
+  "walk": {
+    "yMin": 1036,
+    "yMax": 1074,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 140,
+    "y": 1046,
+    "facing": "right",
+    "walkIn": 200
+  },
+  "entrances": {
+    "debut": {
+      "x": 140,
+      "y": 1046,
+      "facing": "right",
+      "walkIn": 200
+    },
+    "fin": {
+      "x": 1780,
+      "y": 1046,
+      "facing": "left",
+      "walkIn": -200
+    }
+  },
+  "hotspots": [
+    {
+      "id": "the-accueil",
+      "kind": "npc",
+      "x": 660,
+      "y": 1040,
+      "scene": "the-accueil",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "prompt": {
+        "fr": "parler à 陈爷爷"
+      },
+      "facing": "left",
+      "when": {
+        "vu_the-accueil": ""
+      }
+    },
+    {
+      "id": "the-payer",
+      "kind": "npc",
+      "x": 660,
+      "y": 1040,
+      "scene": "the-payer",
+      "sprite": "chen_stand",
+      "scale": 0.47,
+      "prompt": {
+        "fr": "parler à 陈爷爷"
+      },
+      "facing": "left",
+      "when": {
+        "vu_the-accueil": "fait"
+      }
+    },
+    {
+      "id": "fruits-li",
+      "kind": "npc",
+      "x": 1260,
+      "y": 1040,
+      "scene": "fruits-li",
+      "sprite": "li_stand",
+      "scale": 0.47,
+      "prompt": {
+        "fr": "parler à 李叔叔"
+      },
+      "facing": "right",
+      "when": {
+        "vu_the-payer": "fait"
+      }
+    }
+  ],
+  "palette": [
+    "#d6322a",
+    "#f3e6c8",
+    "#58d6a9"
+  ]
+}

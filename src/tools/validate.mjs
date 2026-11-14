@@ -50,11 +50,23 @@ function checkLine(L, line, where) {
   }
 }
 
+const packLexicons = [];
 for (const packId of readdirSync(join(ROOT, 'packs'))) {
   const pdir = join(ROOT, 'packs', packId);
   const pack = json(join(pdir, 'pack.json'));
-  const L = languages[pack.language];
-  if (!L) { errors.push(`[${packId}] langue inconnue ${pack.language}`); continue; }
+  const base = languages[pack.language];
+  if (!base) { errors.push(`[${packId}] langue inconnue ${pack.language}`); continue; }
+  // lexique propre au paquet (mots d'un éditeur) : il s'ajoute au lexique de la langue, sans jamais le contredire
+  const packLexFile = join(pdir, 'lexicon.json');
+  const packLex = existsSync(packLexFile) ? json(packLexFile).entries : [];
+  for (const e of packLex) {
+    const known = base.byId.get(e.id);
+    if (known && known.target !== e.target) errors.push(`[${packId}] lexique : l'identifiant « ${e.id} » désigne déjà « ${known.target} » dans la langue (ici « ${e.target} »)`);
+    if (!e.gloss?.fr) warnings.push(`[${packId}] lexique : « ${e.target} » sans traduction`);
+    if (base.lang.transcription && !e.transcription) warnings.push(`[${packId}] lexique : « ${e.target} » sans ${base.lang.transcription}`);
+  }
+  const L = packLex.length ? { ...base, byId: new Map([...base.byId, ...packLex.map((e) => [e.id, e])]) } : base;
+  if (packLex.length) packLexicons.push({ packId, code: pack.language, entries: packLex.filter((e) => !base.byId.has(e.id)) });
 
   // objets : un mot + une phrase d'usage + au moins deux réemplois (§ 5 de la proposition d'architecture)
   const itemsFile = join(pdir, 'items.json');
@@ -312,6 +324,16 @@ for (const [code, L] of Object.entries(languages)) {
     const n = L.contexts.get(e.id)?.size ?? 0;
     if (n === 0) warnings.push(`[${code}] « ${e.target} » (${e.id}) n'apparaît dans aucune scène`);
     else if (n < N) warnings.push(`[${code}] « ${e.target} » (${e.id}) n'apparaît que dans ${n} contexte(s), ${N} requis pour la maîtrise`);
+  }
+}
+
+for (const { packId, code, entries } of packLexicons) {
+  const L = languages[code];
+  const N = L.lang.mastery?.contextsRequired ?? 3;
+  for (const e of entries) {
+    const n = L.contexts.get(e.id)?.size ?? 0;
+    if (n === 0) warnings.push(`[${packId}] « ${e.target} » (${e.id}) n'apparaît dans aucune scène`);
+    else if (n < N) warnings.push(`[${packId}] « ${e.target} » (${e.id}) n'apparaît que dans ${n} contexte(s), ${N} requis pour la maîtrise`);
   }
 }
 

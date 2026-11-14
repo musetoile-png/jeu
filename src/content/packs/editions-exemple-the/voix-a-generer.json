@@ -1,0 +1,112 @@
+[
+  {
+    "vo": "the-accueil_01",
+    "speaker": "chen",
+    "text": "你好！请坐。"
+  },
+  {
+    "vo": "the-accueil_02a",
+    "speaker": "player",
+    "text": "谢谢！"
+  },
+  {
+    "vo": "the-accueil_02b",
+    "speaker": "player",
+    "text": "不客气！"
+  },
+  {
+    "vo": "the-accueil_02c",
+    "speaker": "player",
+    "text": "再见！"
+  },
+  {
+    "vo": "the-accueil_03",
+    "speaker": "chen",
+    "text": "你喝什么？"
+  },
+  {
+    "vo": "the-accueil_04a",
+    "speaker": "player",
+    "text": "我要一杯绿茶。"
+  },
+  {
+    "vo": "the-accueil_04b",
+    "speaker": "player",
+    "text": "我要一杯红茶。"
+  },
+  {
+    "vo": "the-accueil_04c",
+    "speaker": "player",
+    "text": "我要一个绿茶。"
+  },
+  {
+    "vo": "the-accueil_05",
+    "speaker": "chen",
+    "text": "好。绿茶很热！"
+  },
+  {
+    "vo": "the-payer_01",
+    "speaker": "chen",
+    "text": "绿茶十块。"
+  },
+  {
+    "vo": "the-payer_02a",
+    "speaker": "player",
+    "text": "多少钱？"
+  },
+  {
+    "vo": "the-payer_02b",
+    "speaker": "player",
+    "text": "这是什么？"
+  },
+  {
+    "vo": "the-payer_02c",
+    "speaker": "player",
+    "text": "你好吗？"
+  },
+  {
+    "vo": "the-payer_03",
+    "speaker": "chen",
+    "text": "十块。"
+  },
+  {
+    "vo": "the-payer_04a",
+    "speaker": "player",
+    "text": "谢谢，再见！"
+  },
+  {
+    "vo": "the-payer_04b",
+    "speaker": "player",
+    "text": "对不起，再见！"
+  },
+  {
+    "vo": "the-payer_05",
+    "speaker": "chen",
+    "text": "再见！明天见！"
+  },
+  {
+    "vo": "fruits-li_01",
+    "speaker": "li",
+    "text": "你好！你要苹果吗？"
+  },
+  {
+    "vo": "fruits-li_02a",
+    "speaker": "player",
+    "text": "我要香蕉。"
+  },
+  {
+    "vo": "fruits-li_02b",
+    "speaker": "player",
+    "text": "我要苹果。"
+  },
+  {
+    "vo": "fruits-li_02c",
+    "speaker": "player",
+    "text": "我不要。"
+  },
+  {
+    "vo": "fruits-li_03",
+    "speaker": "li",
+    "text": "好！香蕉很好吃。"
+  }
+]

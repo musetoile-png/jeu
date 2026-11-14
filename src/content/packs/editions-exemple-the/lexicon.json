@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "id": "qing",
+      "target": "请",
+      "transcription": "qǐng",
+      "gloss": {
+        "fr": "je t’en prie, s’il te plaît"
+      }
+    },
+    {
+      "id": "zaijian",
+      "target": "再见",
+      "transcription": "zàijiàn",
+      "gloss": {
+        "fr": "au revoir"
+      }
+    }
+  ]
+}

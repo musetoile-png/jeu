@@ -1,0 +1,256 @@
+{
+  "id": "the-payer",
+  "language": "zh",
+  "world": "quartier",
+  "tier": 1,
+  "title": {
+    "fr": "Payer son thé"
+  },
+  "place": "cour",
+  "npc": "chen",
+  "patience": 3,
+  "actors": {
+    "chen": {
+      "name": "陈爷爷",
+      "label": {
+        "fr": "le maître du salon de thé"
+      },
+      "portrait": "chen"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-payer_01",
+      "line": [
+        [
+          "w",
+          "lucha"
+        ],
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Le thé vert, c’est dix yuans."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Tu n’as pas bien entendu. Redemande le prix :"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "the-payer_02a",
+          "line": [
+            [
+              "w",
+              "duoshao"
+            ],
+            [
+              "w",
+              "qian"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Combien ?"
+          }
+        },
+        {
+          "vo": "the-payer_02b",
+          "line": [
+            [
+              "w",
+              "zhe"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "shenme"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Qu’est-ce que c’est ?"
+          },
+          "why": {
+            "fr": "这是什么 demande ce qu’est une chose. Pour le prix : 多少钱."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "the-payer_02c",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "w",
+              "ma"
+            ],
+            [
+              "p",
+              "？"
+            ]
+          ],
+          "gloss": {
+            "fr": "Comment vas-tu ?"
+          },
+          "why": {
+            "fr": "你好吗 demande des nouvelles. Pour le prix : 多少钱."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-payer_03",
+      "line": [
+        [
+          "w",
+          "shi_dix"
+        ],
+        [
+          "w",
+          "kuai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Dix yuans."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Tu as payé. Remercie et dis au revoir :"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "the-payer_04a",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "zaijian"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci, au revoir !"
+          }
+        },
+        {
+          "vo": "the-payer_04b",
+          "line": [
+            [
+              "w",
+              "duibuqi"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "zaijian"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Pardon, au revoir !"
+          },
+          "why": {
+            "fr": "对不起, c’est pour s’excuser. Pour remercier : 谢谢."
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-payer_05",
+      "line": [
+        [
+          "w",
+          "zaijian"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "mingtian"
+        ],
+        [
+          "w",
+          "jian"
+        ],
+        [
+          "p",
+          "！"
+        ]
+      ],
+      "gloss": {
+        "fr": "Au revoir ! À demain !"
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_the-payer": "fait"
+    }
+  }
+}

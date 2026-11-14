@@ -1,0 +1,197 @@
+{
+  "id": "fruits-li",
+  "language": "zh",
+  "world": "quartier",
+  "tier": 1,
+  "title": {
+    "fr": "Les fruits de 李叔叔"
+  },
+  "place": "cour",
+  "npc": "li",
+  "patience": 3,
+  "actors": {
+    "li": {
+      "name": "李叔叔",
+      "label": {
+        "fr": "le marchand de fruits"
+      },
+      "portrait": "li"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "fruits-li_01",
+      "line": [
+        [
+          "w",
+          "ni_hao"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "yao"
+        ],
+        [
+          "w",
+          "pingguo"
+        ],
+        [
+          "w",
+          "ma"
+        ],
+        [
+          "p",
+          "？"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bonjour ! Tu veux des pommes ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Tu préfères les bananes. Dis-le :"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "fruits-li_02a",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "xiangjiao"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je voudrais des bananes."
+          }
+        },
+        {
+          "vo": "fruits-li_02b",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "pingguo"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je voudrais des pommes."
+          },
+          "why": {
+            "fr": "苹果, ce sont les pommes. Les bananes : 香蕉."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "fruits-li_02c",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je n’en veux pas."
+          },
+          "why": {
+            "fr": "不要 = je n’en veux pas. Toi, tu veux des bananes : 我要香蕉."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "li",
+      "vo": "fruits-li_03",
+      "line": [
+        [
+          "w",
+          "hao"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "xiangjiao"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "haochi"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "D’accord ! Les bananes sont très bonnes."
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_fruits-li": "fait"
+    }
+  }
+}

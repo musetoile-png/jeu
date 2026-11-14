@@ -1,0 +1,304 @@
+{
+  "id": "the-accueil",
+  "language": "zh",
+  "world": "quartier",
+  "tier": 1,
+  "title": {
+    "fr": "Le salon de thé de 陈爷爷"
+  },
+  "place": "cour",
+  "npc": "chen",
+  "patience": 3,
+  "actors": {
+    "chen": {
+      "name": "陈爷爷",
+      "label": {
+        "fr": "le maître du salon de thé"
+      },
+      "portrait": "chen"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-accueil_01",
+      "line": [
+        [
+          "w",
+          "ni_hao"
+        ],
+        [
+          "p",
+          "！"
+        ],
+        [
+          "w",
+          "qing"
+        ],
+        [
+          "w",
+          "zuo_assis"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bonjour ! Assieds-toi."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Il t’invite à t’asseoir. Réponds poliment :"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "the-accueil_02a",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci !"
+          }
+        },
+        {
+          "vo": "the-accueil_02b",
+          "line": [
+            [
+              "w",
+              "bukeqi"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "De rien !"
+          },
+          "why": {
+            "fr": "不客气 répond à un merci : « de rien ». Pour remercier : 谢谢."
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "the-accueil_02c",
+          "line": [
+            [
+              "w",
+              "zaijian"
+            ],
+            [
+              "p",
+              "！"
+            ]
+          ],
+          "gloss": {
+            "fr": "Au revoir !"
+          },
+          "why": {
+            "fr": "再见, c’est pour partir : tu viens d’arriver !"
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-accueil_03",
+      "line": [
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "he"
+        ],
+        [
+          "w",
+          "shenme"
+        ],
+        [
+          "p",
+          "？"
+        ]
+      ],
+      "gloss": {
+        "fr": "Qu’est-ce que tu bois ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Commande un thé vert :"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "the-accueil_04a",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "bei"
+            ],
+            [
+              "w",
+              "lucha"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je voudrais une tasse de thé vert."
+          }
+        },
+        {
+          "vo": "the-accueil_04b",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "bei"
+            ],
+            [
+              "w",
+              "hongcha"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je voudrais une tasse de thé noir."
+          },
+          "why": {
+            "fr": "红茶, le « thé rouge », c’est le thé noir. Le thé vert : 绿茶."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "the-accueil_04c",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "yao"
+            ],
+            [
+              "w",
+              "yi"
+            ],
+            [
+              "w",
+              "ge"
+            ],
+            [
+              "w",
+              "lucha"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Je voudrais un thé vert, mal compté.)"
+          },
+          "why": {
+            "fr": "Une boisson se compte en tasses : 一杯, pas 一个."
+          },
+          "errorType": "classifier"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "chen",
+      "vo": "the-accueil_05",
+      "line": [
+        [
+          "w",
+          "hao"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "lucha"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "re"
+        ],
+        [
+          "p",
+          "！"
+        ]
+      ],
+      "gloss": {
+        "fr": "D’accord. Le thé vert est très chaud !"
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_the-accueil": "fait"
+    }
+  }
+}
