@@ -127,7 +127,7 @@
   /* Journal d'événements pour la recherche : une ligne par geste qui compte, exportable en CSV. */
   const COLONNES = ['horodatage', 'eleve', 'session', 'evenement', 'mode', 'caractere', 'etape', 'type_carte',
     'nb_traits', 'erreurs', 'erreurs_par_trait', 'indices', 'ordre_montre', 'duree_ms', 'resultat',
-    'prochain_intervalle_j', 'contexte', 'contexte_nouveau', 'pinyin_visible', 'tolerance', 'saisie', 'ecran', 'detail'];
+    'prochain_intervalle_j', 'contexte', 'contexte_nouveau', 'pinyin_visible', 'tolerance', 'saisie', 'ecran', 'detail', 'diagnostics'];
 
   function creerJournal(opts) {
     const stock = opts.stockage, CLE = 'ecriture_journal_v1';

@@ -1,4 +1,4 @@
-# Atelier d'écriture — module de 千里 Mille li (v0.3, 13 novembre 2026)
+# Atelier d'écriture — module de 千里 Mille li (v0.4, 15 novembre 2026)
 
 En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, tablette, ordinateur ; doigt, stylet ou souris).
 
@@ -8,6 +8,15 @@ En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, t
 3. **Dictée** : on entend un mot (ou une phrase du jeu) avec la voix ElevenLabs, on écrit les caractères. Les caractères déjà appris viennent en premier.
 4. **Carnet** : les caractères du paquet, de l'encre pâle (jamais écrit) à l'encre noire (maîtrisé : 3 réussites et 3 contextes). Choix du paquet (HSK 1, 2, 3, autres, ajoutés), réglages (tolérance, nouveaux par jour, épaisseur du trait), import Excel.
 5. **Journal** : un événement par geste (tracé, écoute, indice, ordre montré, pinyin…), avec erreurs par trait, durée, contexte déjà vu ou nouveau, doigt/stylet/souris. Export CSV (séparateur `;`, s'ouvre dans Excel) ou JSON, avec un pseudonyme d'élève.
+
+## Aide pédagogique : dire ce qui ne va pas (v0.4)
+`diagnostic-traits.js` compare le trait dessiné (Hanzi Writer le transmet à chaque erreur) aux lignes médianes des traits attendus :
+- **ordre** : le trait dessiné ressemble à un autre trait du caractère (plus tard ou déjà fait) ;
+- **sens** : départ et arrivée inversés ;
+- **forme** : point trop long, crochet oublié ou en trop, coude oublié ou en trop, mauvaise direction ;
+- **place et longueur** : plus haut, plus à gauche…, trop court, trop long.
+Chaque trait attendu est classé (point, horizontal, vertical, 撇, 捺, 提, coude, crochet) avec un conseil (« pose, appuie, relâche », « finis par un petit coup sec vers la gauche »…). Le nom chinois n'est affiché que pour les traits courants reconnus avec sûreté.
+Pendant le tracé : un message sous la grille à chaque erreur. Après le tracé : « Ce qui a coincé », une planche avec les traits à revoir en rouge (numéro, départ, sens) et un bouton pour les revoir animés. Même chose en dictée. Le journal reçoit une colonne `diagnostics` (ex. `t1:ordre|t4:crochet_oublie`).
 
 ## Importer un paquet Anki (.apkg)
 Carnet → « Choisir un fichier » → le `.apkg` exporté d'Anki. Tout se passe dans le navigateur, rien n'est envoyé.
@@ -22,6 +31,7 @@ Carnet → « Choisir un fichier » → le `.apkg` exporté d'Anki. Tout se pass
 - `moteur-ecriture.js` : répétition espacée de l'écriture + journal, sans DOM — à réutiliser tel quel dans le jeu (le « pinceau »).
 - `donnees/caracteres.js` : **généré** par `sources/construire.py` à partir de `src/content/languages/zh/lexicon.json` et des scènes des paquets (phrases justes seulement, avec traduction et voix). Relancer le script après chaque ajout au lexique.
 - `traits/` : données de traits Make Me a Hanzi (caractères du jeu + HSK 1 à 3 de 2021 : 940 fichiers, 3,8 Mo), **non modifiées**, avec `ARPHICPL.TXT`. Les autres caractères se chargent depuis jsDelivr (connexion nécessaire).
+- `diagnostic-traits.js` : diagnostic des traits faux et planche de correction (sans DOM, réutilisable dans le jeu).
 - `import-anki.js` : lecture des `.apkg` (chargé, avec ses bibliothèques, seulement au moment d'importer).
 - `lib/` : Hanzi Writer 3.7.3 (MIT), SheetJS 0.18.5 (Apache 2.0), sql.js 1.16.0, fflate 0.8.3, fzstd 0.1.1 (MIT), copiés pour ne dépendre d'aucun service.
 - `sources/histoires.json` : histoires et moyens mnémotechniques du prototype du 11 novembre ; `sources/prototype-11-novembre.html` : le prototype d'origine.

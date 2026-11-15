@@ -80,7 +80,9 @@
   };
 
   // ---------- traceur (Hanzi Writer dans une grille 米字格) ----------
-  function chargerTraits(c, ok, ko) {
+  const DONNEES = {};   // données de traits par caractère (pour le diagnostic)
+  function chargerTraits(c, ok0, ko) {
+    const ok = d => { DONNEES[c] = d; ok0(d); };
     const local = (window.TRAITS_EMBARQUES || '').includes(c);
     fetch((local ? 'traits/' : CDN_TRAITS) + encodeURIComponent(c) + '.json')
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
@@ -163,6 +165,45 @@
     journal.ajouter({ evenement: 'pinyin', mode: vueActive, caractere: (etat && etat.c) || '', pinyin_visible: R.pinyin });
   };
 
+  // ---------- aide pédagogique : dire ce qui ne va pas ----------
+  function diagnostic(c, s) {
+    try {
+      const d = DONNEES[c]; if (!d || !window.DiagnosticTraits) return null;
+      return DiagnosticTraits.diagnostiquer(d.medians, s.strokeNum, s.drawnPath && s.drawnPath.points);
+    } catch (e) { return null; }
+  }
+  function direErreur(el, diag, s) {
+    el.className = 'retour moyen';
+    el.textContent = (diag ? diag.message : 'Trait ' + (s.strokeNum + 1) + ' : pas tout à fait.') + (s.mistakesOnStroke >= 3 ? ' Le bon trait clignote : suis-le.' : '');
+  }
+  const cap1 = t => t ? t[0].toUpperCase() + t.slice(1) : t;
+  const codesDiag = diags => diags.map(x => 't' + x.trait + ':' + x.code).join('|');
+  /* Bilan après le tracé : planche avec les traits à revoir et ce qu'il faut corriger, trait par trait. */
+  function bilan(el, c, diags, w) {
+    if (!diags.length || !DONNEES[c]) { el.hidden = true; el.innerHTML = ''; return; }
+    const parTrait = new Map();
+    diags.forEach(x => { const p = parTrait.get(x.trait) || { n: 0, liste: [] }; parTrait.set(x.trait, { ...x, n: p.n + 1, liste: p.liste.concat(x) }); });
+    const traits = [...parTrait.keys()].sort((a, b) => a - b);
+    const enBilan = x => x.code === 'ordre' ? `tu as commencé par le trait ${x.autre}, qui vient après.`
+      : x.code === 'deja_fait' ? `tu as repassé le trait ${x.autre}, déjà fait, au lieu de celui-ci.`
+      : x.message.replace(/^Trait \d+ : /, '');
+    const lignes = traits.map(t => {
+      const x = parTrait.get(t);
+      const vus = new Set(), textes = [];
+      x.liste.forEach(y => { if (!vus.has(y.code)) { vus.add(y.code); textes.push(enBilan(y)); } });
+      const conseil = textes.some(tx => tx.includes(x.conseil.slice(0, 20))) ? '' : `<span class="conseil">Comment l'écrire : ${x.fr}, ${x.ou} — ${x.conseil}.</span>`;
+      return `<li><b>Trait ${t}${x.nom ? ' ' + x.nom : ''}</b>${x.n > 1 ? ' · ' + x.n + ' essais' : ''}<br>${textes.map(cap1).join('<br>')}${conseil ? '<br>' + conseil : ''}</li>`;
+    }).join('');
+    el.innerHTML = `<h3>Ce qui a coincé</h3><div class="bilan-corps">${DiagnosticTraits.planche(DONNEES[c], traits, 140)}<ol>${lignes}</ol></div>
+      <div class="boutons" style="justify-content:flex-start"><button class="btn son" type="button">Revoir ${traits.length > 1 ? 'ces traits' : 'ce trait'}</button></div>`;
+    el.querySelector('button').onclick = () => {
+      journal.ajouter({ evenement: 'revoir_traits', caractere: c, detail: traits.join('-') });
+      let p = Promise.resolve();
+      traits.forEach(t => { p = p.then(() => new Promise(ok => w.animateStroke(t - 1, { onComplete: ok }))).then(() => new Promise(ok => setTimeout(ok, 250))); });
+    };
+    el.hidden = false;
+  }
+
   // ---------- RÉVISER ----------
   let etat = null, traceur = null;
   const CONSIGNES = {
@@ -223,7 +264,8 @@
   function lancerEtape(e) {
     const d = PAR[etat.c];
     scrollTo(0, 0);
-    Object.assign(etat, { etape: e, debut: Date.now(), erreurs: 0, parTrait: [], indices: 0, ordreMontre: false, fini: false, traitCourant: 0 });
+    Object.assign(etat, { etape: e, debut: Date.now(), erreurs: 0, parTrait: [], diags: [], indices: 0, ordreMontre: false, fini: false, traitCourant: 0 });
+    $('bilan').hidden = true;
     majEtapes(e); majCompteurs();
     $('sens').textContent = d.sens || '—';
     $('pinyin').textContent = d.pinyin || '';
@@ -236,8 +278,15 @@
     $('retour').className = 'retour'; $('retour').textContent = CONSIGNES[e];
     $('btnSuite').hidden = true; $('histoire').hidden = true; $('aides').hidden = false;
     traceur = creerTraceur($('zone'), etat.c, e, {
-      erreurTrait: s => { etat.erreurs++; etat.parTrait[s.strokeNum] = (etat.parTrait[s.strokeNum] || 0) + 1; },
-      traitJuste: s => { etat.traitCourant = s.strokeNum + 1; },
+      erreurTrait: s => {
+        etat.erreurs++; etat.parTrait[s.strokeNum] = (etat.parTrait[s.strokeNum] || 0) + 1;
+        const dg = diagnostic(etat.c, s); if (dg) etat.diags.push(dg);
+        direErreur($('retour'), dg, s);
+      },
+      traitJuste: s => {
+        etat.traitCourant = s.strokeNum + 1;
+        if (etat.parTrait[s.strokeNum] && s.strokesRemaining > 0) { $('retour').className = 'retour ok'; $('retour').textContent = 'Oui, trait ' + (s.strokeNum + 1) + ' réussi. Continue.'; }
+      },
       fini: () => finTrace(),
       erreur: () => { $('retour').className = 'retour ko'; $('retour').textContent = 'Données de traits introuvables pour ce caractère (connexion ?).'; },
     });
@@ -254,8 +303,9 @@
       nb_traits: nbTraits, erreurs: etat.erreurs, erreurs_par_trait: Array.from({ length: nbTraits || etat.parTrait.length }, (_, i) => etat.parTrait[i] || 0).join('-'),
       indices: etat.indices, ordre_montre: etat.ordreMontre, duree_ms: Date.now() - etat.debut, resultat: r.resultat,
       prochain_intervalle_j: e === 3 ? r.carte.ivl : '', contexte: etat.ctx ? etat.ctx.zh : '', contexte_nouveau: etat.ctx ? etat.ctxNouveau : '',
-      pinyin_visible: R.pinyin, tolerance: R.tolerance, saisie, ecran: innerWidth + 'x' + innerHeight,
+      pinyin_visible: R.pinyin, tolerance: R.tolerance, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(etat.diags),
     });
+    bilan($('bilan'), etat.c, etat.diags, traceur.w);
     afficherMots(d, true); afficherContexte(true); majPinyin(); majCompteurs();
     const b = $('btnSuite'), m = $('retour');
     $('aides').hidden = true; b.hidden = false;
@@ -273,7 +323,7 @@
       }
     } else {
       if (r.resultat === 'a_revoir') {
-        m.className = 'retour ko'; m.textContent = 'À revoir : on repasse par l\'étape guidée.';
+        m.className = 'retour ko'; m.textContent = 'À revoir : regarde ci-dessous ce qui a coincé, puis on repasse par l\'étape guidée.';
         b.textContent = 'Étape 2 : guidé →'; b.onclick = () => { etat.rattrapage = true; lancerEtape(2); };
       } else {
         m.className = 'retour ok';
@@ -369,7 +419,8 @@
     const meilleurs = items.filter(x => x.score === 1), moyens = items.filter(x => x.score > 0);
     const pool = meilleurs.length >= 3 ? meilleurs : moyens.length ? moyens : items;
     const it = pool[Math.floor(Math.random() * pool.length)];
-    dic = { it, i: 0, erreurs: {}, aides: {}, debut: Date.now(), cars: [...it.zh] };
+    dic = { it, i: 0, erreurs: {}, aides: {}, diags: {}, traceurs: {}, debut: Date.now(), cars: [...it.zh] };
+    $('dBilan').hidden = true; $('dBilan').innerHTML = '';
     $('dTexte').innerHTML = ''; $('dRetour').className = 'retour';
     $('dRetour').textContent = meilleurs.length || moyens.length ? 'Écoute, puis écris.' : 'Ces caractères ne sont pas encore appris : commence par Réviser si c\'est trop dur.';
     $('dSuite').hidden = true; $('dAide').hidden = false;
@@ -385,13 +436,14 @@
   }
   function ecrireCible() {
     const ci = dic.it.cibles[dic.i], c = dic.cars[ci];
-    dic.erreurs[ci] = dic.erreurs[ci] || 0;
+    dic.erreurs[ci] = dic.erreurs[ci] || 0; dic.diags[ci] = dic.diags[ci] || [];
     dTraceur = creerTraceur($('dZone'), c, 3, {
-      erreurTrait: () => { dic.erreurs[ci]++; },
+      erreurTrait: s => { dic.erreurs[ci]++; const dg = diagnostic(c, s); if (dg) dic.diags[ci].push(dg); direErreur($('dRetour'), dg, s); },
+      traitJuste: s => { if (dic.diags[ci].some(x => x.trait === s.strokeNum + 1) && s.strokesRemaining > 0) { $('dRetour').className = 'retour ok'; $('dRetour').textContent = 'Oui, trait ' + (s.strokeNum + 1) + ' réussi.'; } },
       fini: () => {
         journal.ajouter({ evenement: 'trace', mode: 'dictee_' + R.dictee, caractere: c, etape: 3, type_carte: appris(c) ? 'revision' : 'non_appris',
           erreurs: dic.erreurs[ci], indices: dic.aides[ci] ? 1 : 0, ordre_montre: !!dic.aides[ci], contexte: dic.it.zh, tolerance: R.tolerance,
-          pinyin_visible: R.pinyin, saisie, ecran: innerWidth + 'x' + innerHeight,
+          pinyin_visible: R.pinyin, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(dic.diags[ci]),
           resultat: dic.aides[ci] || dic.erreurs[ci] > 2 ? 'a_revoir' : dic.erreurs[ci] ? 'bien' : 'parfait' });
         if (appris(c)) moteur.noter(c, 3, dic.erreurs[ci], !!dic.aides[ci]);
         dic.i++; dessinerCases();
@@ -405,6 +457,17 @@
     $('dRetour').className = 'retour ' + (tot === 0 && !aides ? 'ok' : tot <= 2 && !aides ? 'moyen' : 'ko');
     $('dRetour').textContent = tot === 0 && !aides ? 'Parfait !' : 'Fini — ' + tot + ' erreur' + (tot > 1 ? 's' : '') + (aides ? ', ' + aides + ' aide' + (aides > 1 ? 's' : '') : '') + '.';
     montrerTexte(true);
+    // bilan : un bloc par caractère qui a coincé (planche + conseils)
+    const zone = $('dBilan'); zone.innerHTML = '';
+    dic.it.cibles.forEach(ci => {
+      if (!dic.diags[ci] || !dic.diags[ci].length) return;
+      const bloc = document.createElement('div'); bloc.className = 'bilan'; zone.appendChild(bloc);
+      bilan(bloc, dic.cars[ci], dic.diags[ci], dTraceur.w);
+      const h = bloc.querySelector('h3'); if (h) h.textContent = 'Ce qui a coincé dans ' + dic.cars[ci];
+      const b = bloc.querySelector('button'); if (b) b.textContent = 'Voir ' + dic.cars[ci] + ' tracé';
+      if (b) b.onclick = () => { creerTraceur($('dZone'), dic.cars[ci], 1, {}).w.animateCharacter(); };
+    });
+    zone.hidden = !zone.children.length;
     $('dSuite').hidden = false; $('dAide').hidden = true; $('dSuite').focus({ preventScroll: true });
     journal.ajouter({ evenement: 'dictee', mode: 'dictee_' + R.dictee, contexte: dic.it.zh, erreurs: tot, indices: aides, duree_ms: Date.now() - dic.debut });
   }
