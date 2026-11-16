@@ -56,18 +56,26 @@
       if (k.retourMemoire) { k.etape = 3; k.due = k.retourMemoire; delete k.retourMemoire; sauver(); }
     }
 
-    /* Prochaine carte : d'abord une carte en cours d'apprentissage, puis les révisions dues, puis du nouveau. */
+    /* Prochaine carte : d'abord une carte en cours d'apprentissage (on finit calque → guidé → mémoire),
+       puis on MÉLANGE révisions dues et nouveaux caractères, répartis sur la séance :
+       s'il reste 40 révisions et 20 nouveaux, on fait 2 révisions, 1 nouveau, 2 révisions, 1 nouveau… */
+    let depuisNouveau = 0;
     function prochaine(liste, reglages, exclure) {
       const t = maintenant();
       const enCours = liste.filter(c => S[c] && S[c].vu && S[c].etape < 3 && c !== exclure);
       if (enCours.length) return { c: enCours[0], type: 'apprentissage' };
       const dues = liste.filter(c => S[c] && S[c].vu && S[c].etape === 3 && S[c].due <= t && c !== exclure)
         .sort((a, b) => S[a].due - S[b].due);
-      if (dues.length) return { c: dues[0], type: 'revision' };
-      if (nouveauxDuJour() < (reglages.nouveauxParJour || 5)) {
-        const neuf = liste.find(c => estNouveau(c) && c !== exclure);
-        if (neuf) return { c: neuf, type: 'nouveau' };
+      const quota = (reglages.parJour || reglages.nouveauxParJour || 5) - nouveauxDuJour();
+      const neuf = quota > 0 ? liste.find(c => estNouveau(c) && c !== exclure) : null;
+      if (dues.length && neuf) {
+        const rythme = Math.min(4, Math.max(1, Math.round(dues.length / quota)));
+        if (depuisNouveau >= rythme) { depuisNouveau = 0; return { c: neuf, type: 'nouveau' }; }
+        depuisNouveau++;
+        return { c: dues[0], type: 'revision' };
       }
+      if (dues.length) return { c: dues[0], type: 'revision' };
+      if (neuf) { depuisNouveau = 0; return { c: neuf, type: 'nouveau' }; }
       return null;
     }
     function enAvance(liste, exclure) {

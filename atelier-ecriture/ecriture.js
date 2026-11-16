@@ -277,6 +277,7 @@
     afficherMots(d, e === 1); afficherContexte(e === 1);
     $('retour').className = 'retour'; $('retour').textContent = CONSIGNES[e];
     $('btnSuite').hidden = true; $('histoire').hidden = true; $('aides').hidden = false;
+    $('btnHistoire').hidden = !aHistoire(d); $('btnHistoire').setAttribute('aria-pressed', 'false');
     traceur = creerTraceur($('zone'), etat.c, e, {
       erreurTrait: s => {
         etat.erreurs++; etat.parTrait[s.strokeNum] = (etat.parTrait[s.strokeNum] || 0) + 1;
@@ -309,6 +310,7 @@
     afficherMots(d, true); afficherContexte(true); majPinyin(); majCompteurs();
     const b = $('btnSuite'), m = $('retour');
     $('aides').hidden = true; b.hidden = false;
+    if (aHistoire(d)) afficherHistoire(d, false);
     if (e < 3) {
       if (r.resultat === 'refaire') {
         m.className = 'retour moyen'; m.textContent = 'Encore une fois cette étape, tranquillement.';
@@ -330,15 +332,25 @@
         m.textContent = (r.resultat === 'parfait' ? 'Parfait ! ' : 'Bien. ') + 'Prochaine fois dans ' + r.carte.ivl + (r.carte.ivl > 1 ? ' jours.' : ' jour.');
         b.textContent = 'Suite →'; b.onclick = () => suivante();
       }
-      afficherHistoire(d);
     }
     b.focus({ preventScroll: true });
   }
-  function afficherHistoire(d) {
-    if (!d.histoire && !d.mnemo && !d.noteProf) { $('histoire').hidden = true; return; }
-    $('histoire').innerHTML = `<div class="grand">${d.c}</div>${d.histoire ? '<b>Histoire :</b> ' + d.histoire + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + d.mnemo + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + d.noteProf : ''}`;
+  const aHistoire = d => !!(d.histoire || d.mnemo || d.noteProf);
+  /* masque = pendant l'étape « de mémoire » : on n'affiche pas le caractère lui-même (sinon la réponse est donnée) */
+  function afficherHistoire(d, masque) {
+    if (!aHistoire(d)) { $('histoire').hidden = true; return; }
+    const m = t => masque ? t.split(d.c).join('＿') : t;
+    $('histoire').innerHTML = `${masque ? '' : '<div class="grand">' + d.c + '</div>'}${d.histoire ? '<b>Histoire :</b> ' + m(d.histoire) + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + m(d.mnemo) + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + m(d.noteProf) : ''}`;
     $('histoire').hidden = false;
   }
+  $('btnHistoire').onclick = () => {
+    if (!etat) return;
+    const d = PAR[etat.c];
+    if (!$('histoire').hidden) { $('histoire').hidden = true; $('btnHistoire').setAttribute('aria-pressed', 'false'); return; }
+    afficherHistoire(d, !etat.fini && etat.etape === 3);
+    $('btnHistoire').setAttribute('aria-pressed', 'true');
+    journal.ajouter({ evenement: 'histoire', mode: 'revision', caractere: etat.c, etape: etat.etape, detail: etat.fini ? 'apres' : 'pendant' });
+  };
   function suivante() {
     const r = moteur.prochaine(liste(), R, etat && etat.c);
     if (r) return ouvrir(r.c, r.type);
@@ -421,14 +433,17 @@
     const it = pool[Math.floor(Math.random() * pool.length)];
     dic = { it, i: 0, erreurs: {}, aides: {}, diags: {}, traceurs: {}, debut: Date.now(), cars: [...it.zh] };
     $('dBilan').hidden = true; $('dBilan').innerHTML = '';
-    $('dTexte').innerHTML = ''; $('dRetour').className = 'retour';
+    $('dTexte').innerHTML = ''; $('dIndice').innerHTML = ''; $('dRetour').className = 'retour';
     $('dRetour').textContent = meilleurs.length || moyens.length ? 'Écoute, puis écris.' : 'Ces caractères ne sont pas encore appris : commence par Réviser si c\'est trop dur.';
     $('dSuite').hidden = true; $('dAide').hidden = false;
-    dessinerCases(); ecrireCible();
+    dessinerCases();
+    if (R.dictee === 'phrase') montrerTexte(false);   // la phrase d'abord : la grille se dimensionne en dessous
+    ecrireCible();
     if (jouerAuto) jouer(it.vo, it.zh, 1, 'dictee');
   }
   function dessinerCases() {
     const it = dic.it;
+    $('dCases').hidden = R.dictee === 'phrase';  // en phrase, les trous de la phrase font office de cases
     $('dCases').innerHTML = it.cibles.map((ci, n) => {
       const fait = n < dic.i, actif = n === dic.i;
       return `<div class="case ${fait ? 'faite' : ''} ${actif ? 'active' : ''}">${fait ? dic.cars[ci] : ''}</div>`;
@@ -446,8 +461,8 @@
           pinyin_visible: R.pinyin, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(dic.diags[ci]),
           resultat: dic.aides[ci] || dic.erreurs[ci] > 2 ? 'a_revoir' : dic.erreurs[ci] ? 'bien' : 'parfait' });
         if (appris(c)) moteur.noter(c, 3, dic.erreurs[ci], !!dic.aides[ci]);
-        dic.i++; dessinerCases();
-        if (dic.i < dic.it.cibles.length) ecrireCible(); else finDictee();
+        dic.i++; dessinerCases(); $('dIndice').innerHTML = '';
+        if (dic.i < dic.it.cibles.length) { if (R.dictee === 'phrase') montrerTexte(false); ecrireCible(); } else finDictee();
       },
       erreur: () => { $('dRetour').className = 'retour ko'; $('dRetour').textContent = 'Données de traits introuvables (connexion ?).'; },
     });
@@ -473,13 +488,47 @@
   }
   function montrerTexte(complet) {
     const it = dic.it;
-    const zh = dic.cars.map((ch, i) => it.cibles.includes(i) && !complet && it.cibles.indexOf(i) >= dic.i ? '<span class="trou"></span>' : it.cibles.includes(i) ? `<span class="vise">${ch}</span>` : ch).join('');
-    $('dTexte').innerHTML = `<div class="zh">${zh}</div><div class="fr">${it.fr}${complet && it.py ? ' · ' + it.py : ''}</div>`;
+    const actif = it.cibles[dic.i];
+    const zh = dic.cars.map((ch, i) => it.cibles.includes(i) && !complet && it.cibles.indexOf(i) >= dic.i ? `<span class="trou${i === actif ? ' actif' : ''}"></span>` : it.cibles.includes(i) ? `<span class="vise">${ch}</span>` : ch).join('');
+    $('dTexte').innerHTML = `<div class="zh">${zh}</div>` + (complet ? `<div class="fr">${it.fr}${it.py ? ' · ' + it.py : ''}</div>` : (it.cibles.length > 1 ? `<div class="aide">Case rouge : le caractère à écrire maintenant (${dic.i + 1} sur ${it.cibles.length}).</div>` : ''));
+  }
+  /* Le mot qui contient le caractère à écrire (pour donner son pinyin et son sens) */
+  function motEnPosition(cars, i) {
+    const zh = cars.join(''); let best = null;
+    new Set(cars).forEach(c2 => (PAR[c2] ? PAR[c2].mots : []).forEach(m => {
+      let p = zh.indexOf(m.zh);
+      while (p >= 0) { if (p <= i && i < p + m.zh.length && (!best || m.zh.length > best.zh.length)) best = { ...m, pos: p }; p = zh.indexOf(m.zh, p + 1); }
+    }));
+    const c = cars[i];
+    return best || { zh: c, py: (PAR[c] && PAR[c].pinyin) || '', fr: (PAR[c] && PAR[c].sens) || '', pos: i };
+  }
+  function pinyinSouligne(m, i) {
+    const n = [...m.zh].length, k = i - m.pos;
+    let syl = (m.py || '').trim().split(/\s+/);
+    if (syl.length !== n && window.ImportAnki) { const s2 = ImportAnki.syllabes((m.py || '').replace(/\s+/g, '')); if (s2) syl = s2; }
+    if (syl.length !== n) return m.py || '';
+    return syl.map((s, j) => j === k && n > 1 ? `<b class="vise">${s}</b>` : s).join(' ');
   }
   $('dEcouter').onclick = () => dic ? jouer(dic.it.vo, dic.it.zh, 1, 'dictee') : nouvelleDictee(true);
   $('dLent').onclick = () => dic && jouer(dic.it.vo, dic.it.zh, 0.72, 'dictee');
-  $('dSens').onclick = () => { if (!dic) return; $('dTexte').innerHTML = `<div class="fr" style="font-size:1.1rem">${dic.it.fr}</div>`; journal.ajouter({ evenement: 'aide_sens', mode: 'dictee_' + R.dictee, contexte: dic.it.zh }); };
-  $('dTrous').onclick = () => { if (!dic) return; montrerTexte(false); journal.ajouter({ evenement: 'aide_trous', mode: 'dictee_' + R.dictee, contexte: dic.it.zh }); };
+  function indice(quoi) {
+    if (!dic || dic.i >= dic.it.cibles.length) return;
+    const ci = dic.it.cibles[dic.i], m = motEnPosition(dic.cars, ci), c = dic.cars[ci];
+    const lignes = [];
+    if (quoi === 'pinyin') lignes.push(`<span class="pinyin-indice">${pinyinSouligne(m, ci)}</span>`);
+    else {
+      if (R.dictee === 'phrase' || [...m.zh].length > 1) lignes.push(`Le mot : <b>${m.fr || '—'}</b>`);
+      if (R.dictee === 'mot' && [...m.zh].length === 1) lignes.push(`<b>${dic.it.fr}</b>`);
+      // la traduction peut citer du chinois (noms propres) : on cache les caractères qui restent à écrire
+      const reste = dic.it.cibles.slice(dic.i).map(j => dic.cars[j]);
+      if (R.dictee === 'phrase') lignes.push(`La phrase : ${[...dic.it.fr].map(ch => reste.includes(ch) ? '＿' : ch).join('')}`);
+    }
+    if (!$('dIndice').querySelector('.ind-py')) $('dIndice').innerHTML = '<div class="ind-py"></div><div class="ind-sens"></div>';
+    $('dIndice').querySelector(quoi === 'pinyin' ? '.ind-py' : '.ind-sens').innerHTML = lignes.join('<br>');
+    journal.ajouter({ evenement: 'aide_' + quoi, mode: 'dictee_' + R.dictee, caractere: c, contexte: dic.it.zh });
+  }
+  $('dPinyin').onclick = () => indice('pinyin');
+  $('dSens').onclick = () => indice('sens');
   $('dAide').onclick = () => {
     if (!dic || !dTraceur) return;
     const ci = dic.it.cibles[dic.i]; dic.aides[ci] = true;

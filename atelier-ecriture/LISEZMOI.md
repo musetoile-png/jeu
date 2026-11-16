@@ -1,4 +1,4 @@
-# Atelier d'écriture — module de 千里 Mille li (v0.4, 15 novembre 2026)
+# Atelier d'écriture — module de 千里 Mille li (v0.5, 16 novembre 2026)
 
 En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, tablette, ordinateur ; doigt, stylet ou souris).
 
@@ -8,6 +8,11 @@ En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, t
 3. **Dictée** : on entend un mot (ou une phrase du jeu) avec la voix ElevenLabs, on écrit les caractères. Les caractères déjà appris viennent en premier.
 4. **Carnet** : les caractères du paquet, de l'encre pâle (jamais écrit) à l'encre noire (maîtrisé : 3 réussites et 3 contextes). Choix du paquet (HSK 1, 2, 3, autres, ajoutés), réglages (tolérance, nouveaux par jour, épaisseur du trait), import Excel.
 5. **Journal** : un événement par geste (tracé, écoute, indice, ordre montré, pinyin…), avec erreurs par trait, durée, contexte déjà vu ou nouveau, doigt/stylet/souris. Export CSV (séparateur `;`, s'ouvre dans Excel) ou JSON, avec un pseudonyme d'élève.
+
+## Retours de Manu du 16 novembre (v0.5)
+- **Nouveaux et révisions mélangés** : la séance répartit les nouveaux caractères entre les révisions (ex. 2 révisions, 1 nouveau…). Correction d'un bug : le moteur ignorait le réglage « nouveaux par jour » et restait à 5.
+- **Histoire et mnémo pendant la révision** : bouton à côté des aides ; à l'étape de mémoire, le caractère lui-même est masqué dans le texte. Ouvert sans pénalité, noté dans le journal (`histoire`).
+- **Dictée dans une phrase** : la phrase à trous s'affiche au-dessus de la grille, la case à écrire clignote en rouge ; indices **Pinyin** (syllabe du caractère en rouge dans le pinyin du mot) et **Sens** (le mot, puis la phrase, sans révéler les caractères à écrire) ; « Je ne sais pas » anime le caractère. Indices notés dans le journal (`aide_pinyin`, `aide_sens`).
 
 ## Aide pédagogique : dire ce qui ne va pas (v0.4)
 `diagnostic-traits.js` compare le trait dessiné (Hanzi Writer le transmet à chaque erreur) aux lignes médianes des traits attendus :

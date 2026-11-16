@@ -114,6 +114,15 @@ td.hz { font-family: var(--police-han); font-size: 1.1rem; }
 .bilan ol { list-style: none; margin: 0; padding: 0; flex: 1 1 220px; display: flex; flex-direction: column; gap: 8px; font-size: .97rem; }
 .bilan .conseil { color: var(--encre-douce); font-size: .9rem; }
 #dBilan { width: 100%; display: flex; flex-direction: column; align-items: center; }
+#dTexte .zh .trou.actif { border-bottom-color: var(--cinabre); background: var(--cinabre-pale); animation: clignote 1.4s ease-in-out infinite; }
+@keyframes clignote { 50% { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { #dTexte .zh .trou.actif { animation: none; } }
+#dTexte .zh .trou { border-bottom-color: var(--gris); }
+.indice { text-align: center; font-size: 1.05rem; min-height: 0; }
+.indice > div { margin: 4px 0; }
+.pinyin-indice { font-size: 1.5rem; color: var(--encre); }
+.pinyin-indice .vise, .indice b.vise { color: var(--cinabre); }
+#btnHistoire[aria-pressed="true"] { background: var(--cinabre-pale); border-color: var(--cinabre); }
 footer { font-size: .8rem; color: var(--encre-douce); text-align: center; margin-top: 10px; }
 footer a { color: inherit; }
 .ligne-paquet { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 0; border-top: 1px solid var(--trait); }
@@ -146,6 +155,7 @@ footer a { color: inherit; }
       <div class="tete"><span class="sens" id="sens"></span><span class="ligne-pinyin"><span class="pinyin" id="pinyin"></span><button class="btn son discret petit" id="btnMot" type="button">Mot</button></span></div>
       <div class="zone" id="zone"></div>
       <div class="retour" id="retour" aria-live="polite"></div>
+      <div class="histoire" id="histoire" hidden></div>
       <div class="bilan" id="bilan" hidden></div>
       <div class="mots" id="mots"></div>
       <div class="contexte" id="contexte"></div>
@@ -153,10 +163,10 @@ footer a { color: inherit; }
         <button class="btn" id="btnOrdre" type="button">Montrer l'ordre</button>
         <button class="btn" id="btnIndice" type="button">Indice</button>
         <button class="btn" id="btnEffacer" type="button">Recommencer</button>
+        <button class="btn" id="btnHistoire" type="button" aria-pressed="false">Histoire et mnémo</button>
         <button class="btn discret" id="btnPasser" type="button">Passer</button>
       </div>
       <div class="boutons"><button class="btn principal" id="btnSuite" type="button" hidden>Suite →</button></div>
-      <div class="histoire" id="histoire" hidden></div>
     </div>
     <div class="feuille" id="repos" hidden></div>
   </section>
@@ -174,14 +184,15 @@ footer a { color: inherit; }
         <button class="btn" id="dLent" type="button">Plus lent</button>
       </div>
       <div class="cases" id="dCases"></div>
+      <div class="contexte" id="dTexte"></div>
       <div class="zone" id="dZone"></div>
       <div class="retour" id="dRetour" aria-live="polite"></div>
+      <div class="indice" id="dIndice" aria-live="polite"></div>
       <div id="dBilan" hidden></div>
-      <div class="contexte" id="dTexte"></div>
       <div class="boutons">
-        <button class="btn" id="dSens" type="button">Voir le sens</button>
-        <button class="btn" id="dTrous" type="button">Phrase à trous</button>
-        <button class="btn discret" id="dAide" type="button">Je ne sais pas</button>
+        <button class="btn" id="dPinyin" type="button">Pinyin</button>
+        <button class="btn" id="dSens" type="button">Sens</button>
+        <button class="btn" id="dAide" type="button">Je ne sais pas</button>
         <button class="btn principal" id="dSuite" type="button">Autre dictée →</button>
       </div>
     </div>
@@ -243,7 +254,7 @@ footer a { color: inherit; }
     </div>
   </section>
 
-  <footer>千里 Mille li · Atelier d'écriture v0.4 · tracé : <a href="https://github.com/chanind/hanzi-writer">Hanzi Writer</a> (MIT) · import Anki : sql.js, fflate, fzstd (MIT) · données de traits : Make Me a Hanzi, <a href="traits/ARPHICPL.TXT">licence Arphic</a></footer>
+  <footer>千里 Mille li · Atelier d'écriture v0.5 · tracé : <a href="https://github.com/chanind/hanzi-writer">Hanzi Writer</a> (MIT) · import Anki : sql.js, fflate, fzstd (MIT) · données de traits : Make Me a Hanzi, <a href="traits/ARPHICPL.TXT">licence Arphic</a></footer>
 </div>
 
 <script src="lib/hanzi-writer.min.js"></script>
