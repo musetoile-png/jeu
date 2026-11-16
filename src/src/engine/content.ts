@@ -13,7 +13,15 @@ export interface LexEntry {
   pos?: string;
   level?: string;
   taughtInContext?: boolean;
+  /**
+   * Analyse du mot par l'enseignant (colonne « Analyse » du tableur) : caractères, composants, étymologie, aide-mémoire.
+   * Texte libre, retours à la ligne gardés ; affiché dans la fiche du mot (carnet).
+   */
+  analysis?: Localized;
 }
+
+/** Entrée du lexique d'un paquet : un mot nouveau (complet) ou une surcharge d'un mot de la langue (seulement les champs changés). */
+type PackLexEntry = Pick<LexEntry, 'id' | 'target'> & Partial<LexEntry>;
 
 export interface Language {
   code: string;
@@ -557,8 +565,23 @@ export function loadContent(packId: string, uiLang = 'fr'): Content {
   const language = file<Language>(`languages/${pack.language}/language.json`);
   const lex = file<{ entries: LexEntry[] }>(`languages/${pack.language}/lexicon.json`);
   // Un paquet peut apporter ses propres mots (liste d'un éditeur, d'un prof) : ils s'ajoutent à ceux de la langue.
-  const packLex = optional<{ entries: LexEntry[] }>(`packs/${packId}/lexicon.json`)?.entries ?? [];
-  const lexicon = new Map([...lex.entries, ...packLex].map((e) => [e.id, e]));
+  // Un mot du paquet qui a le même id ET le même caractère qu'un mot de la langue le surcharge, pour ce paquet seulement :
+  // son sens, son pinyin et son analyse remplacent ceux de la langue ; le reste (voix, nature, niveau) ne change pas.
+  const packLex = optional<{ entries: PackLexEntry[] }>(`packs/${packId}/lexicon.json`)?.entries ?? [];
+  const lexicon = new Map(lex.entries.map((e) => [e.id, e]));
+  for (const e of packLex) {
+    const base = lexicon.get(e.id);
+    if (base?.target !== e.target) {
+      lexicon.set(e.id, { gloss: {}, ...e });
+      continue;
+    }
+    lexicon.set(e.id, {
+      ...base,
+      gloss: e.gloss ?? base.gloss,
+      transcription: e.transcription ?? base.transcription,
+      analysis: e.analysis ?? base.analysis,
+    });
+  }
   const places = new Map(pack.places.map((id) => [id, file<Place>(`packs/${packId}/places/${id}.json`)]));
   const scenes = new Map(pack.scenes.map((id) => [id, file<Scene>(`packs/${packId}/scenes/${id}.json`)]));
   const ui = file<Localized>(`ui-strings/${uiLang}.json`);

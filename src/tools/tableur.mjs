@@ -58,7 +58,7 @@ export const CHAMPS_LECON = [
  * @param {object} d
  * @param {object} d.cat catalogue du paquet de base (catalogue.mjs)
  * @param {Record<string,string>} d.lesson valeurs des champs de CHAMPS_LECON
- * @param {string[][]} d.words lignes Mots
+ * @param {string[][]} d.words lignes Mots : mot, transcription, traduction, nature, niveau, identifiant, [analyse]
  * @param {any[][]} d.scenes lignes Scènes
  * @param {string[][]} d.lines lignes Répliques
  * @param {string[][]} [d.relecture] lignes [catégorie, point, détail] : ajoute l'onglet Relecture (brouillon)
@@ -115,7 +115,7 @@ export async function ecrireTableur(path, d) {
     Object.assign(ls.getRow(reluRow).getCell(2), TODO);
 
   // ---------- Mots ----------
-  addSheet(
+  const ws = addSheet(
     'Mots',
     [
       ['Mot', 14],
@@ -124,6 +124,7 @@ export async function ecrireTableur(path, d) {
       ['Nature', 12],
       ['Niveau', 10],
       ['Identifiant', 16],
+      ['Analyse', 70],
     ],
     d.words,
     [
@@ -133,8 +134,13 @@ export async function ecrireTableur(path, d) {
       'facultatif (nom, verbe…)',
       'facultatif (HSK1…)',
       'facultatif : laissé vide, il est fabriqué à partir du pinyin',
+      'facultatif : l’analyse du mot par l’enseignant (caractères, composants, étymologie, aide-mémoire), ' +
+        'telle qu’elle est écrite dans le cours ; retours à la ligne permis (Alt+Entrée). L’élève la lit dans la fiche du mot (carnet). ' +
+        'Pour un mot que le jeu connaît déjà, une traduction, un pinyin ou une analyse différents de ceux du jeu ' +
+        'remplacent les siens dans cette leçon seulement.',
     ],
   );
+  ws.getColumn(7).alignment = { wrapText: true, vertical: 'top' };
 
   // ---------- Scènes ----------
   const ss = addSheet(

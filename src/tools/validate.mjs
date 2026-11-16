@@ -15,6 +15,8 @@ const ROOT = new URL('../content/', import.meta.url).pathname;
 const strict = process.argv.includes('--strict');
 const errors = [];
 const warnings = [];
+/** Surcharges du lexique de la langue par les paquets (une ligne par paquet). */
+const overrides = [];
 const json = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
 const languages = {};
@@ -25,6 +27,7 @@ for (const code of readdirSync(join(ROOT, 'languages'))) {
   const byId = new Map(lex.entries.map((e) => [e.id, e]));
   const dup = lex.entries.map((e) => e.id).filter((id, i, a) => a.indexOf(id) !== i);
   if (dup.length) errors.push(`[${code}] identifiants dupliqués dans le lexique : ${[...new Set(dup)].join(', ')}`);
+  for (const e of lex.entries) if (e.analysis !== undefined && (typeof e.analysis !== 'object' || Array.isArray(e.analysis))) errors.push(`[${code}] lexique : « ${e.target} » → « analysis » doit être un objet par langue ({ "fr": "…" })`);
   languages[code] = { lang, lex, byId, contexts: new Map() };
 }
 
@@ -56,16 +59,34 @@ for (const packId of readdirSync(join(ROOT, 'packs'))) {
   const pack = json(join(pdir, 'pack.json'));
   const base = languages[pack.language];
   if (!base) { errors.push(`[${packId}] langue inconnue ${pack.language}`); continue; }
-  // lexique propre au paquet (mots d'un éditeur) : il s'ajoute au lexique de la langue, sans jamais le contredire
+  // lexique propre au paquet (mots d'un éditeur) : il s'ajoute au lexique de la langue, sans jamais le contredire.
+  // Exception, la surcharge : même identifiant ET même caractère qu'un mot de la langue → le paquet réécrit, pour lui seul,
+  // le sens (gloss), le pinyin (transcription) et l'analyse (analysis) du mot ; le reste du mot de la langue est gardé.
   const packLexFile = join(pdir, 'lexicon.json');
   const packLex = existsSync(packLexFile) ? json(packLexFile).entries : [];
+  const baseByTarget = new Map(base.lex.entries.map((e) => [e.target, e]));
+  const OVERRIDABLE = ['gloss', 'transcription', 'analysis'];
+  const overridden = [];
+  const seenIds = new Set();
   for (const e of packLex) {
+    if (seenIds.has(e.id)) errors.push(`[${packId}] lexique : identifiant « ${e.id} » en double dans le paquet`);
+    seenIds.add(e.id);
+    for (const k of ['gloss', 'analysis']) if (e[k] !== undefined && (typeof e[k] !== 'object' || Array.isArray(e[k]))) errors.push(`[${packId}] lexique : « ${e.target} » → « ${k} » doit être un objet par langue ({ "fr": "…" })`);
     const known = base.byId.get(e.id);
-    if (known && known.target !== e.target) errors.push(`[${packId}] lexique : l'identifiant « ${e.id} » désigne déjà « ${known.target} » dans la langue (ici « ${e.target} »)`);
+    if (known && known.target === e.target) {
+      overridden.push(`${e.target} (${e.id} : ${OVERRIDABLE.filter((k) => e[k] !== undefined).join(', ') || 'rien'})`);
+      const extra = Object.keys(e).filter((k) => !['id', 'target', ...OVERRIDABLE].includes(k));
+      if (extra.length) warnings.push(`[${packId}] lexique : surcharge de « ${e.target} » (${e.id}) → champ(s) ${extra.join(', ')} ignoré(s) : seuls ${OVERRIDABLE.join(', ')} se surchargent`);
+      if (!OVERRIDABLE.some((k) => e[k] !== undefined)) warnings.push(`[${packId}] lexique : surcharge de « ${e.target} » (${e.id}) qui ne change rien`);
+      continue;
+    }
+    if (known) errors.push(`[${packId}] lexique : l'identifiant « ${e.id} » désigne déjà « ${known.target} » dans la langue (ici « ${e.target} »)`);
+    else if (baseByTarget.has(e.target)) errors.push(`[${packId}] lexique : « ${e.target} » existe déjà dans la langue sous l'identifiant « ${baseByTarget.get(e.target).id} » (ici « ${e.id} ») — pour le surcharger, reprendre le même identifiant`);
     if (!e.gloss?.fr) warnings.push(`[${packId}] lexique : « ${e.target} » sans traduction`);
     if (base.lang.transcription && !e.transcription) warnings.push(`[${packId}] lexique : « ${e.target} » sans ${base.lang.transcription}`);
   }
-  const L = packLex.length ? { ...base, byId: new Map([...base.byId, ...packLex.map((e) => [e.id, e])]) } : base;
+  if (overridden.length) overrides.push({ packId, list: overridden });
+  const L = packLex.length ? { ...base, byId: new Map([...base.byId, ...packLex.map((e) => [e.id, base.byId.get(e.id)?.target === e.target ? { ...base.byId.get(e.id), ...e } : e])]) } : base;
   if (packLex.length) packLexicons.push({ packId, code: pack.language, entries: packLex.filter((e) => !base.byId.has(e.id)) });
 
   // objets : un mot + une phrase d'usage + au moins deux réemplois (§ 5 de la proposition d'architecture)
@@ -338,6 +359,8 @@ for (const { packId, code, entries } of packLexicons) {
 }
 
 for (const w of warnings) console.log('⚠  ' + w);
+for (const o of overrides) console.log(`↺  [${o.packId}] ${o.list.length} mot(s) de la langue surchargé(s) pour ce paquet : ${o.list.join(' · ')}`);
 for (const e of errors) console.log('✖  ' + e);
-console.log(`\n${errors.length} erreur(s), ${warnings.length} avertissement(s).`);
+const nOverrides = overrides.reduce((n, o) => n + o.list.length, 0);
+console.log(`\n${errors.length} erreur(s), ${warnings.length} avertissement(s)${nOverrides ? `, ${nOverrides} surcharge(s) du lexique` : ''}.`);
 process.exit(errors.length || (strict && warnings.length) ? 1 : 0);

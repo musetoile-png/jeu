@@ -107,5 +107,8 @@
   "wageToast": "Ta paie : +{n} {unit}",
   "payDue": "À payer : {words} ({n})",
   "payRight": "La bonne monnaie :",
-  "backToTitle": "↺ Revenir à l'écran titre"
+  "backToTitle": "↺ Revenir à l'écran titre",
+  "analysis": "Analyse",
+  "analysisOpen": "Touche pour lire l'analyse du mot",
+  "analysisClose": "✕ Fermer"
 }
