@@ -9,7 +9,7 @@ import { assetUrl, lineText, t, transcriptionLabel } from './content';
 import { log } from './log';
 import * as notebook from './notebook';
 import * as save from './save';
-import { play } from './sfx';
+import { isMuted, play } from './sfx';
 import { fmt } from './stall';
 
 const stage = () => document.getElementById('stage') as HTMLElement;
@@ -389,10 +389,16 @@ export interface TitleChoice {
   body: 'm' | 'f';
 }
 
-export function showTitle(content: Content, onStart: (c: TitleChoice) => void) {
+export function showTitle(content: Content, onStart: (c: TitleChoice) => void, backdrop?: HTMLElement) {
   const title = content.pack.title;
   const prof = content.pack.profile;
   const box = el('div', 'title-screen');
+  // le générique figé sur sa dernière image sert de fond : le rouleau s'y pose
+  if (backdrop) box.classList.add('over-film');
+  const leave = () => {
+    box.remove();
+    backdrop?.remove();
+  };
   const scroll = el('div', 'scroll');
   // Les caractères du titre foncent à mesure que le joueur les rencontre en jeu (même règle que le carnet).
   const h = el('h2', 'title-zh');
@@ -426,7 +432,7 @@ export function showTitle(content: Content, onStart: (c: TitleChoice) => void) {
   const actions = el('div', 'title-actions');
   start.onclick = () => {
     if (!body) return;
-    box.remove();
+    leave();
     log({ scene: 'titre', step: 0, kind: 'scene_start', detail: `body=${body}` });
     onStart({ mode: 'new', body });
   };
@@ -434,7 +440,7 @@ export function showTitle(content: Content, onStart: (c: TitleChoice) => void) {
   if (save.exists()) {
     const cont = el('button', '', content.ui.continue_game ?? 'Continuer');
     cont.onclick = () => {
-      box.remove();
+      leave();
       onStart({ mode: 'continue', body: save.get().profile.body });
     };
     actions.prepend(cont);
@@ -573,6 +579,90 @@ export function ending(content: Content, e: Ending) {
   setTimeout(() => {
     box.classList.add('card');
   }, 5200);
+}
+
+/**
+ * Un film plein cadre (générique, cinématique). Un clic, Entrée, Espace ou Échap le passe.
+ * `keep` : le film reste figé sur sa dernière image, légèrement voilé, et sert de fond (au menu du titre) ;
+ * `done` reçoit alors le cadre, à retirer par l'appelant. Sans fichier (version autonome), `done` est appelé tout de suite.
+ */
+/** Le film peut-il être joué (fichier présent, pas en version autonome sans vidéo) ? */
+export const filmAvailable = (src: string | undefined) => !!src && hasAsset(src);
+
+export function film(src: string | undefined, done: (box?: HTMLElement) => void, keep = false) {
+  if (!src || !hasAsset(src)) {
+    done();
+    return;
+  }
+  setAnim('film', true);
+  const box = el('div', 'cine film');
+  const v = document.createElement('video');
+  v.src = assetUrl(src);
+  v.playsInline = true;
+  v.preload = 'auto';
+  v.muted = isMuted();
+  const skip = el('button', 'intro-skip', '›');
+  skip.title = 'Passer';
+  box.append(v, skip);
+  stage().appendChild(box);
+  requestAnimationFrame(() => {
+    box.classList.add('on');
+  });
+  let ended = false;
+  const finish = () => {
+    if (ended) return;
+    ended = true;
+    document.removeEventListener('keydown', onKey, true);
+    skip.remove();
+    setAnim('film', false);
+    if (keep) {
+      // l'image finale reste : titre écrit, sceau posé
+      if (Number.isFinite(v.duration)) v.currentTime = Math.max(0, v.duration - 0.05);
+      v.pause();
+      box.classList.add('still');
+      done(box);
+      return;
+    }
+    box.classList.remove('on');
+    setTimeout(() => {
+      box.remove();
+      done();
+    }, 600);
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (['Escape', 'Enter', ' '].includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+      finish();
+    }
+  };
+  document.addEventListener('keydown', onKey, true);
+  box.onclick = finish;
+  v.onended = finish;
+  v.onerror = finish;
+  // le navigateur peut refuser le son sans geste du joueur : on rejoue alors sans le son
+  v.play().catch(() => {
+    v.muted = true;
+    v.play().catch(finish);
+  });
+}
+
+/** Seuil d'entrée : un geste du joueur avant le générique, pour que le navigateur laisse passer le son. */
+export function gate(content: Content, onEnter: () => void) {
+  const box = el('div', 'cine gate');
+  const zh = el('div', 'gate-zh');
+  for (const tok of content.pack.title?.line ?? []) if (tok[0] === 'w') zh.append(el('b', '', content.lexicon.get(tok[1])?.target ?? ''));
+  const go = el('button', 'go', content.ui.enterGame);
+  box.append(zh, go);
+  stage().appendChild(box);
+  requestAnimationFrame(() => {
+    box.classList.add('on');
+  });
+  const enter = () => {
+    box.remove();
+    onEnter();
+  };
+  box.onclick = enter;
 }
 
 /**

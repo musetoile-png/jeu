@@ -484,6 +484,16 @@
       "fr": "Un soir de septembre, l'avion descend sur Shanghai. Mille li depuis chez toi, et tout reste à apprendre."
     }
   },
+  "films": {
+    "opening": "video/generique-qianli.mp4",
+    "prologue": {
+      "scene": "prologue-chien",
+      "src": {
+        "m": "video/chien-m.mp4",
+        "f": "video/chien-f.mp4"
+      }
+    }
+  },
   "money": {
     "unit": [
       "w",

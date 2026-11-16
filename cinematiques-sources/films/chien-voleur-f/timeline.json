@@ -1,0 +1,106 @@
+{
+  "title": "chien-voleur-f",
+  "body": "f",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "duration": 15.5,
+  "formats": [
+    {
+      "name": "16x9",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "walk": {
+    "t0": 2.4,
+    "stop": 5.4,
+    "omega": 7.5,
+    "speed": 345,
+    "x0": -150,
+    "ease": 0.4
+  },
+  "run": {
+    "t0": 11.6,
+    "omega": 12,
+    "arrive": 12.3,
+    "recedeEnd": 13.2
+  },
+  "cues": [
+    {
+      "t": 0.7,
+      "name": "lamp-on",
+      "sfx": "lamp"
+    },
+    {
+      "t": 4.2,
+      "name": "wallet-slip",
+      "sfx": "slip"
+    },
+    {
+      "t": 4.57,
+      "name": "wallet-land",
+      "sfx": "thud"
+    },
+    {
+      "t": 5.75,
+      "name": "bark",
+      "sfx": "vo:p0_01"
+    },
+    {
+      "t": 6.0,
+      "name": "dog-enter",
+      "sfx": "paws"
+    },
+    {
+      "t": 6.28,
+      "name": "sparrows",
+      "sfx": "flutter"
+    },
+    {
+      "t": 6.6,
+      "name": "pickup",
+      "sfx": "hit"
+    },
+    {
+      "t": 7.05,
+      "name": "turn",
+      "sfx": "whoosh"
+    },
+    {
+      "t": 7.55,
+      "name": "alley",
+      "sfx": ""
+    },
+    {
+      "t": 8.8,
+      "name": "gone",
+      "sfx": ""
+    },
+    {
+      "t": 9.0,
+      "name": "panel",
+      "sfx": "pop"
+    },
+    {
+      "t": 9.25,
+      "name": "say-wallet",
+      "sfx": "vo:p0_02_f"
+    },
+    {
+      "t": 11.3,
+      "name": "say-dog",
+      "sfx": "vo:p0_03_f"
+    },
+    {
+      "t": 12.9,
+      "name": "ink",
+      "sfx": "ink"
+    },
+    {
+      "t": 14.3,
+      "name": "seal",
+      "sfx": "gong"
+    }
+  ]
+}

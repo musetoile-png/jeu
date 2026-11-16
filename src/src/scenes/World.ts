@@ -8,7 +8,7 @@ import Phaser from 'phaser';
 import { KEY } from '../constants';
 import { initVoices } from '../engine/audio';
 import type { Ambient, Content, Entrance, Hotspot, Place, Quest } from '../engine/content';
-import { assetUrl, calligraphyFont, loadContent, t } from '../engine/content';
+import { assetUrl, calligraphyFont, lineText, lineWords, loadContent, t } from '../engine/content';
 import { CLIENT } from '../engine/client';
 import { Dialogue } from '../engine/dialogue';
 import { keyOutWhite } from '../engine/keyout';
@@ -179,17 +179,63 @@ export class World extends Phaser.Scene {
       if (sc && this.content.scenes.has(sc)) this.time.delayedCall(900, () => this.playScene(sc));
       return;
     }
-    // Écran titre : le monde attend le choix du joueur.
-    ui.showTitle(this.content, (c) => {
+    // Seuil, générique (千里 écrit au pinceau), puis l'écran titre posé sur sa dernière image.
+    const films = this.content.pack.films;
+    const title = (backdrop?: HTMLElement) => {
+      ui.showTitle(this.content, (c) => {
       if (c.mode === 'new') {
         save.newGame(c.body, this.content.pack.profile?.startItems ?? []);
         log({ scene: 'titre', step: 0, kind: 'choice_set', detail: `body=${c.body}` });
-        // l'avion descend sur Shanghai, puis la ruelle
-        ui.intro(this.content, () => this.enterPlace(this.content.pack.start.place, this.content.pack.start.entrance));
+        // l'avion descend sur Shanghai, le chien vole le portefeuille (film), puis la ruelle
+        const start = () => {
+          this.enterPlace(this.content.pack.start.place, this.content.pack.start.entrance);
+        };
+        ui.intro(this.content, () => {
+          const pro = films?.prologue;
+          if (!pro) {
+            start();
+            return;
+          }
+          ui.film(pro.src[c.body], () => {
+            this.sceneAsFilm(pro.scene, pro.src[c.body]);
+            start();
+          });
+        });
       } else this.enterPlace(save.get().place ?? this.content.pack.start.place);
       this.started = true;
       document.dispatchEvent(new CustomEvent('game-started'));
-    });
+      }, backdrop);
+    };
+    if (films?.opening) {
+      ui.gate(this.content, () => {
+        ui.film(films.opening, title, true);
+      });
+    } else title();
+  }
+
+  /**
+   * Une scène racontée par un film (le chien) : ses répliques comptent au carnet, ses objets changent de main,
+   * ses drapeaux sont posés — la scène ne se rejoue donc pas en jeu. Sans film disponible, rien n'est posé
+   * et la scène se joue en jeu comme avant.
+   */
+  private sceneAsFilm(id: string, src: string | undefined) {
+    const sc = this.content.scenes.get(id);
+    if (!sc || !ui.filmAvailable(src)) return;
+    log({ scene: id, step: 0, kind: 'scene_start', detail: 'film' });
+    for (const [i, st] of sc.steps.entries()) {
+      if (st.line) {
+        const ctx = lineText(this.content, save.resolveLine(this.content, st.line));
+        for (const w of lineWords(st.line)) log({ scene: id, step: i, kind: 'word_met', word: w, context: notebook.meet(w, ctx) });
+      }
+      for (const it of st.take ?? []) {
+        if (!save.hasItem(it)) continue;
+        save.removeItem(it);
+        log({ scene: id, step: i, kind: 'item_lose', detail: it, word: this.content.items.get(it)?.word });
+      }
+    }
+    if (sc.onEnd?.flags) save.setFlags(sc.onEnd.flags);
+    log({ scene: id, step: -1, kind: 'scene_end', detail: 'film' });
+    document.dispatchEvent(new CustomEvent('notebook-changed'));
   }
 
   /** Boutons et raccourcis du sac, de la quête, de l'album, de l'appareil photo. */

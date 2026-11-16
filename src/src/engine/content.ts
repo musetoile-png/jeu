@@ -526,6 +526,11 @@ export interface Pack {
   closedSign?: Token[];
   /** Ouverture d'une nouvelle partie : une image plein écran, le nom du lieu en grand, une phrase. */
   intro?: { image: string; word: string; text: Localized };
+  /**
+   * Films (chemins sous assets/) : le générique qui ouvre le jeu, et une scène racontée par un film
+   * (une version par corps). Si le film manque (fichier HTML autonome), la scène se joue en jeu comme avant.
+   */
+  films?: { opening?: string; prologue?: { scene: string; src: Partial<Record<'m' | 'f', string>> } };
   photo?: { item: string; credits?: string; guide?: PhotoGuide };
   /** Monnaie : l'unité (块), les montants dits (nombre → mots), les pièces et billets, l'objet du sac qui la représente. */
   money?: { unit: Token; words: Record<string, Token[]>; coins: number[]; item?: string };

@@ -841,6 +841,9 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 /* téléphone ou cadre trop petit : l'écran titre prend toute la fenêtre */
 @media (max-aspect-ratio: 1/1), (orientation: landscape) and (max-height: 540px) {
   #stage > .title-screen { position: fixed; inset: 0; z-index: 50; }
+  /* le générique et son seuil aussi ; figé, il reste sous l'écran titre */
+  #stage > .cine.film, #stage > .cine.gate { position: fixed; inset: 0; z-index: 50; }
+  #stage > .cine.film.still { z-index: 49; }
   #photo-dock > * { position: static; transform: none; width: auto; max-width: none; left: auto; top: auto; right: auto; bottom: auto; }
   /* le tiroir est posé sur la page (et sur la barre du bas) : un fond de papier pour qu'il reste lisible */
   #photo-dock .vf-bar { background: #f3ede0; border-radius: 12px; padding: 8px; box-shadow: 0 -8px 30px -12px rgba(30, 22, 8, .45), 0 0 0 1px rgba(60, 45, 20, .1); }
@@ -875,3 +878,15 @@ h1 .zh .ink-2 b { color: var(--lantern); opacity: .75; } h1 .zh .ink-3 b { color
 @keyframes prop-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 body.anim .prop { opacity: 0; }
 @media (max-aspect-ratio: 1/1) { .prop { width: 34cqw; } .prop-hand { font-size: 2.5cqw; } .prop-sheet { font-size: 3.6cqw; } }
+
+/* Films : générique et cinématiques, plein cadre ; le générique figé sert de fond à l'écran titre */
+.cine.film { background: #17130f; cursor: pointer; transition: opacity .6s ease; }
+.cine.film video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cine.film.still { z-index: 19; cursor: default; }
+.cine.film.still video { filter: blur(3px) brightness(.96); transform: scale(1.02); transition: filter 1.2s ease, transform 1.2s ease; }
+.title-screen.over-film { background: transparent; }
+.title-screen.over-film .scroll { animation: rise 1s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.cine.gate { display: grid; place-items: center; align-content: center; gap: 28px; cursor: pointer;
+  background: radial-gradient(ellipse at 50% 40%, #f6f1e6, #e3dbc9 70%, #cfc5b0); }
+.gate-zh { display: flex; gap: .15em; font: clamp(64px, 12vw, 140px) var(--calli); color: #c9c1b0; }

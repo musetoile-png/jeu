@@ -1,0 +1,12 @@
+{
+  "title": "titre-qianli",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "duration": 14.0,
+  "formats": [{ "name": "16x9", "width": 1920, "height": 1080 }],
+  "cues": [
+    { "t": 0.35, "name": "drop", "sfx": "drop" },
+    { "t": 12.0, "name": "latin", "sfx": "bell" }
+  ]
+}
