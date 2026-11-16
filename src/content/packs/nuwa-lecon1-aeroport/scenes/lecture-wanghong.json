@@ -590,6 +590,7 @@
   "onEnd": {
     "flags": {
       "vu_lecture-wanghong": "fait"
-    }
+    },
+    "next": "lecture-telephone"
   }
 }

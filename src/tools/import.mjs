@@ -479,7 +479,16 @@ const order = scenes.map((s, i) => ({
 }));
 const placeIds = [...new Set(order.map((s) => s.place))];
 
-const sceneFiles = order.map((s) => {
+const sceneFiles = order.map((s, i) => {
+  // enchaînement : la scène suivante du même lieu démarre d'elle-même ; la dernière ferme la leçon (écran de fin)
+  const nextScene = order[i + 1];
+  const end = { flags: { [flag(s.id)]: 'fait' } };
+  if (nextScene && nextScene.place === s.place) end.next = nextScene.id;
+  if (!nextScene)
+    end.ending = {
+      image: cat.places.get(s.place).planes?.[0]?.image,
+      title: { fr: `Fin de la leçon — ${lesson.titre}` },
+    };
   const person = cat.people.get(s.person);
   const place = cat.places.get(s.place);
   return {
@@ -504,7 +513,7 @@ const sceneFiles = order.map((s) => {
     },
     objects: {},
     steps: s.steps,
-    onEnd: { flags: { [flag(s.id)]: 'fait' } },
+    onEnd: end,
   };
 });
 

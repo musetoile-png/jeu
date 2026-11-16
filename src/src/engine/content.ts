@@ -291,6 +291,8 @@ export interface SceneEnd {
   quest?: { id: string; step: number };
   /** Fin de chapitre (après les drapeaux et les objets). */
   ending?: Ending;
+  /** Scène suivante, lancée d'elle-même (leçons de prof : on enchaîne dialogues et lectures sans chercher qui parler). */
+  next?: string;
 }
 
 export interface Scene {

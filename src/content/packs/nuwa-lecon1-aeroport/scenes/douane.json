@@ -789,6 +789,7 @@
   "onEnd": {
     "flags": {
       "vu_douane": "fait"
-    }
+    },
+    "next": "hall"
   }
 }

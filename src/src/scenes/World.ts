@@ -919,6 +919,9 @@ export class World extends Phaser.Scene {
     } else {
       this.buildSpots(this.place);
       this.applyNight(this.place);
+      // leçon de prof : la scène suivante s'enchaîne d'elle-même
+      const next = end.next;
+      if (next && this.content.scenes.has(next)) this.time.delayedCall(1300, () => this.playScene(next));
     }
     const g = this.content.pack.photo?.guide;
     // l'appareil acheté : quelques pas vers ce que 小马 montre, pour l'avoir dans le champ

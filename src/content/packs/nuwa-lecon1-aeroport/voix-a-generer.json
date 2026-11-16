@@ -403,15 +403,5 @@
     "vo": "lecture-depart_10b",
     "speaker": "player",
     "text": "他给工作人员手机和行李。"
-  },
-  {
-    "vo": "w_da_2",
-    "speaker": "lexicon",
-    "text": "打。"
-  },
-  {
-    "vo": "w_dianhua",
-    "speaker": "lexicon",
-    "text": "电话。"
   }
 ]

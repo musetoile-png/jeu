@@ -556,8 +556,9 @@ export function ending(content: Content, e: Ending) {
   const back = el('button', 'go', content.ui.backToTitle);
   back.onclick = () => {
     play('tap');
-    // l'écran titre, sans les raccourcis de test de l'adresse
-    location.href = location.pathname;
+    // l'écran titre, sans les raccourcis de test de l'adresse (mais en gardant le client : leçon de prof, éditeur)
+    const client = new URLSearchParams(location.search).get('client');
+    location.href = location.pathname + (client ? `?client=${encodeURIComponent(client)}` : '');
   };
   card.append(back);
   box.append(card);

@@ -888,6 +888,7 @@
   "onEnd": {
     "flags": {
       "vu_lecture-telephone": "fait"
-    }
+    },
+    "next": "lecture-depart"
   }
 }

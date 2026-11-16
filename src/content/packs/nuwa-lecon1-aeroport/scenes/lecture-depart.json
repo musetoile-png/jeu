@@ -612,6 +612,12 @@
   "onEnd": {
     "flags": {
       "vu_lecture-depart": "fait"
+    },
+    "ending": {
+      "image": "aeroport_far",
+      "title": {
+        "fr": "Fin de la leçon — Leçon 1 : À l’aéroport"
+      }
     }
   }
 }
