@@ -446,6 +446,8 @@ export function showTitle(content: Content, onStart: (c: TitleChoice) => void, b
     actions.prepend(cont);
   }
   scroll.append(actions);
+  const credit = content.pack.films?.credit;
+  if (credit) scroll.append(el('p', 'title-credit', credit));
   box.append(scroll);
   stage().appendChild(box);
 }

@@ -4,9 +4,31 @@
   "height": 1080,
   "fps": 30,
   "duration": 14.0,
-  "formats": [{ "name": "16x9", "width": 1920, "height": 1080 }],
+  "formats": [
+    {
+      "name": "16x9",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
   "cues": [
-    { "t": 0.35, "name": "drop", "sfx": "drop" },
-    { "t": 12.0, "name": "latin", "sfx": "bell" }
-  ]
+    {
+      "t": 0.35,
+      "name": "drop",
+      "sfx": "drop"
+    },
+    {
+      "t": 12.0,
+      "name": "latin",
+      "sfx": "bell"
+    }
+  ],
+  "music": {
+    "file": "../_musique/imperial-china-cinematic.mp3",
+    "credit": "Imperial China Cinematic by Shane Ivers - https://www.silvermansound.com (CC BY 4.0)",
+    "start": 0.41,
+    "gain": 0.5,
+    "fadeIn": 0.3,
+    "fadeOut": 1.2
+  }
 }

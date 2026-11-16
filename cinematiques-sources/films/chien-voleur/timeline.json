@@ -102,5 +102,28 @@
       "name": "seal",
       "sfx": "gong"
     }
-  ]
+  ],
+  "music": {
+    "file": "../_musique/imperial-china-cinematic.mp3",
+    "credit": "Imperial China Cinematic by Shane Ivers - https://www.silvermansound.com (CC BY 4.0)",
+    "start": 139.88,
+    "gain": 0.42,
+    "fadeIn": 0.8,
+    "fadeOut": 1.6,
+    "duckDb": -10,
+    "duck": [
+      [
+        5.7,
+        6.5
+      ],
+      [
+        9.2,
+        10.9
+      ],
+      [
+        11.25,
+        12.6
+      ]
+    ]
+  }
 }

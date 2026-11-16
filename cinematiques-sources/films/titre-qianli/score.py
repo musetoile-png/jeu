@@ -120,7 +120,11 @@ for k, idx in enumerate([5, 7, 8, 10, 12]):
     note(L + 0.09 * k, idx, 3.0, 0.12, -0.4 + 0.2 * k, 0.7)
 note(L + 0.9, 3, 3.0, 0.1, 0, 0.7)
 
+sys.path.insert(0, str(HERE.parent / '_musique'))
+from music import add_music  # noqa: E402
+
+add_music(mx, T, HERE, SR)
 mix = mx.render(rev_time=0.9, rev_gain=0.12, seed=S('rev'))[: int(DUR * SR)]
-I, tp = master(mix, HERE / 'score.wav', target=-20.0, fade_out=1.2)
+I, tp = master(mix, HERE / 'score.wav', target=-14.0, fade_out=1.2)
 (HERE / 'beats.json').write_text(json.dumps(log, indent=1))
 print(f'score.wav: {I:.2f} LUFS, {tp:.2f} dBTP')

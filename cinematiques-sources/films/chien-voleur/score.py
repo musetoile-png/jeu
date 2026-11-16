@@ -231,6 +231,10 @@ else:  # le sceau : un simple coup de tampon
     mx.add(C['seal'], sweep_sine(sd, 140, 60, 0.03) * env(sd, 0.001, 0.06) + 0.5 * bp(noise(sd, S('stamp')), 300, 2500) * env(sd, 0.001, 0.015), 0.5, 0, 0.15)
     mark('stamp', C['seal'])
 
+sys.path.insert(0, str(HERE.parent / '_musique'))
+from music import add_music  # noqa: E402
+
+add_music(mx, T, HERE, SR)
 mix = mx.render(rev_time=0.55, rev_gain=0.09, seed=S('rev'))[: int((DUR + 0.0) * SR)]
 I, tp = master(mix, HERE / 'score.wav', target=-14.0, fade_out=0.6)
 (HERE / 'beats.json').write_text(json.dumps(log, indent=1))

@@ -14,10 +14,16 @@ Branchement : `pack.json` → `films` (`opening`, `prologue`). Le film du chien 
 ses mots comptent au carnet, le portefeuille quitte le sac, le drapeau `chien` passe à `fait`.
 Sans fichier vidéo (version HTML autonome), la scène se rejoue en jeu comme avant.
 
-## Pas de musique
+## Musique
 
-Les films n'ont que les bruitages et les voix. Pour ajouter une musique libre de droits : la mixer sous `score.wav`
-(ou remettre `MUSIC = True` dans `score.py` pour la musique synthétisée d'origine), puis relancer le rendu.
+« Imperial China Cinematic », Shane Ivers — silvermansound.com, licence **CC BY 4.0** : le crédit est obligatoire
+(il est affiché sous l'écran titre, `pack.json` → `films.credit`). Fichier : `films/_musique/`.
+Chaque film en prend un extrait, réglé dans son `timeline.json` → `music` :
+- générique : départ à 0,41 s du morceau, pour que la phrase qui entre à 7,24 s tombe sur le sceau ;
+- chien : départ à 139,88 s, pour que le retour des taikos (146,48 s) tombe sur le moment où le chien happe le portefeuille ;
+  la musique se retire de 10 dB sous les voix (`duck`).
+Changer de morceau ou d'extrait : modifier `music`, relancer `score.py`, puis remplacer seulement la piste son de la vidéo
+(`ffmpeg -i video.mp4 -i score.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k out.mp4`), sans refaire l'image.
 
 ## Refaire un film
 
