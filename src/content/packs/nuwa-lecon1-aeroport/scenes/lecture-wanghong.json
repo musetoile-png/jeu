@@ -1,0 +1,595 @@
+{
+  "id": "lecture-wanghong",
+  "language": "zh",
+  "world": "pekin",
+  "tier": 1,
+  "title": {
+    "fr": "Lecture : 王红"
+  },
+  "place": "aeroport",
+  "npc": "accueil",
+  "patience": 3,
+  "actors": {
+    "accueil": {
+      "name": "王红",
+      "label": {
+        "fr": "l’agente d’accueil"
+      },
+      "portrait": "accueil"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    },
+    "narrateur": {
+      "name": "",
+      "label": {
+        "fr": "récit"
+      },
+      "portrait": ""
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_01",
+      "line": [
+        [
+          "w",
+          "wang_hong"
+        ],
+        [
+          "w",
+          "shi"
+        ],
+        [
+          "w",
+          "beijing"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "de"
+        ],
+        [
+          "w",
+          "gongzuo_renyuan"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Wang Hong travaille à l’aéroport de Pékin."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_02",
+      "line": [
+        [
+          "w",
+          "ta_f"
+        ],
+        [
+          "w",
+          "meitian"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "gongzuo"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Elle travaille à l’aéroport tous les jours."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_03",
+      "line": [
+        [
+          "w",
+          "meitian"
+        ],
+        [
+          "w",
+          "you_avoir"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "duo"
+        ],
+        [
+          "w",
+          "waiguoren"
+        ],
+        [
+          "w",
+          "cong_2"
+        ],
+        [
+          "w",
+          "faguo"
+        ],
+        [
+          "p",
+          "、"
+        ],
+        [
+          "w",
+          "meiguo"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "w",
+          "beijing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Chaque jour, beaucoup d’étrangers arrivent à Pékin de France et des États-Unis."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_04",
+      "line": [
+        [
+          "w",
+          "tamen"
+        ],
+        [
+          "w",
+          "changchang"
+        ],
+        [
+          "w",
+          "wen"
+        ],
+        [
+          "w",
+          "ta_f"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "qingwen"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "xishoujian"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "nar"
+        ],
+        [
+          "p",
+          "?"
+        ],
+        [
+          "p",
+          "”"
+        ]
+      ],
+      "gloss": {
+        "fr": "Ils lui demandent souvent : « Excusez-moi, où sont les toilettes ? »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_05",
+      "line": [
+        [
+          "w",
+          "wang_hong"
+        ],
+        [
+          "w",
+          "hui"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "w",
+          "hanyu"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "ye"
+        ],
+        [
+          "w",
+          "hui"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "w",
+          "fayu"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Wang Hong sait parler chinois, et aussi français."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_06",
+      "line": [
+        [
+          "w",
+          "ta_f"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "gaoxing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Elle est contente."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-wanghong_07",
+      "line": [
+        [
+          "w",
+          "ta_f"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "huanying"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "w",
+          "zhongguo"
+        ],
+        [
+          "p",
+          "!"
+        ],
+        [
+          "p",
+          "”"
+        ]
+      ],
+      "gloss": {
+        "fr": "Elle dit : « Bienvenue en Chine ! »"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : où travaille Wang Hong ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-wanghong_08a",
+          "line": [
+            [
+              "w",
+              "ta_f"
+            ],
+            [
+              "w",
+              "meitian"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "jichang"
+            ],
+            [
+              "w",
+              "gongzuo"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Elle travaille à l’aéroport tous les jours."
+          }
+        },
+        {
+          "vo": "lecture-wanghong_08b",
+          "line": [
+            [
+              "w",
+              "ta_f"
+            ],
+            [
+              "w",
+              "meitian"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "faguo"
+            ],
+            [
+              "w",
+              "gongzuo"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Elle travaille en France tous les jours."
+          },
+          "why": {
+            "fr": "Relis la 2e phrase : elle travaille à l’aéroport, 在机场."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : quelles langues parle Wang Hong ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-wanghong_09a",
+          "line": [
+            [
+              "w",
+              "ta_f"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "hanyu"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "ye"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "fayu"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Elle sait parler chinois, et aussi français."
+          }
+        },
+        {
+          "vo": "lecture-wanghong_09b",
+          "line": [
+            [
+              "w",
+              "ta_f"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "hanyu"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "fayu"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Elle sait parler chinois, mais pas français."
+          },
+          "why": {
+            "fr": "Le texte dit 也会说法语 : elle parle AUSSI français."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "lecture-wanghong_09c",
+          "line": [
+            [
+              "w",
+              "ta_f"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "fayu"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "ye"
+            ],
+            [
+              "w",
+              "hui"
+            ],
+            [
+              "w",
+              "shuo"
+            ],
+            [
+              "w",
+              "meiguo"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Elle sait parler français, et aussi « États-Unis ».)"
+          },
+          "why": {
+            "fr": "美国 est un pays. Une langue se termine souvent par 语 : 汉语, 法语."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_lecture-wanghong": "fait"
+    }
+  }
+}

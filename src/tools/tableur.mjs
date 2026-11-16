@@ -40,6 +40,10 @@ export const CHAMPS_LECON = [
   ['langue', 'langue apprise : zh pour le chinois'],
   ['paquet de base', 'décors et personnages réutilisés : ne pas changer'],
   [
+    'joueur',
+    'facultatif : m ou f quand le texte impose le personnage joué (ex. Marc) ; vide : l’élève choisit',
+  ],
+  [
     'rédigé par',
     'qui a écrit ce tableur (un nom, ou « IA (brouillon) » s’il sort du générateur)',
   ],

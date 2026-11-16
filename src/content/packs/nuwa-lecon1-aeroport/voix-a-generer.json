@@ -1,0 +1,592 @@
+[
+  {
+    "vo": "douane_01",
+    "speaker": "douanier",
+    "text": "你好!"
+  },
+  {
+    "vo": "douane_02a",
+    "speaker": "player",
+    "text": "你好!"
+  },
+  {
+    "vo": "douane_02b",
+    "speaker": "player",
+    "text": "再见!"
+  },
+  {
+    "vo": "douane_02c",
+    "speaker": "player",
+    "text": "谢谢!"
+  },
+  {
+    "vo": "douane_03",
+    "speaker": "douanier",
+    "text": "请给我护照。"
+  },
+  {
+    "vo": "douane_04a",
+    "speaker": "player",
+    "text": "给你。"
+  },
+  {
+    "vo": "douane_04b",
+    "speaker": "player",
+    "text": "给我。"
+  },
+  {
+    "vo": "douane_04c",
+    "speaker": "player",
+    "text": "请给我护照。"
+  },
+  {
+    "vo": "douane_05",
+    "speaker": "douanier",
+    "text": "你是美国人吗?"
+  },
+  {
+    "vo": "douane_06a",
+    "speaker": "player",
+    "text": "不是，我不是美国人，我是法国人。"
+  },
+  {
+    "vo": "douane_06b",
+    "speaker": "player",
+    "text": "是，我不是美国人，我是法国人。"
+  },
+  {
+    "vo": "douane_06c",
+    "speaker": "player",
+    "text": "不是，我是不美国人，我是法国人。"
+  },
+  {
+    "vo": "douane_07",
+    "speaker": "douanier",
+    "text": "你叫什么名字?"
+  },
+  {
+    "vo": "douane_08a",
+    "speaker": "player",
+    "text": "我叫马克。"
+  },
+  {
+    "vo": "douane_08b",
+    "speaker": "player",
+    "text": "我是叫马克。"
+  },
+  {
+    "vo": "douane_08c",
+    "speaker": "player",
+    "text": "你叫马克。"
+  },
+  {
+    "vo": "douane_09",
+    "speaker": "douanier",
+    "text": "谢谢，马克。欢迎来中国!"
+  },
+  {
+    "vo": "douane_10a",
+    "speaker": "player",
+    "text": "谢谢!"
+  },
+  {
+    "vo": "douane_10b",
+    "speaker": "player",
+    "text": "不客气!"
+  },
+  {
+    "vo": "douane_10c",
+    "speaker": "player",
+    "text": "你好!"
+  },
+  {
+    "vo": "douane_11",
+    "speaker": "douanier",
+    "text": "不客气。再见!"
+  },
+  {
+    "vo": "douane_12a",
+    "speaker": "player",
+    "text": "再见!"
+  },
+  {
+    "vo": "douane_12b",
+    "speaker": "player",
+    "text": "你好!"
+  },
+  {
+    "vo": "douane_12c",
+    "speaker": "player",
+    "text": "不客气!"
+  },
+  {
+    "vo": "hall_01",
+    "speaker": "narrateur",
+    "text": "马克在北京机场。"
+  },
+  {
+    "vo": "hall_02",
+    "speaker": "narrateur",
+    "text": "他不在法国，他在中国。"
+  },
+  {
+    "vo": "hall_03",
+    "speaker": "narrateur",
+    "text": "马克找行李。"
+  },
+  {
+    "vo": "hall_04a",
+    "speaker": "player",
+    "text": "请问，行李在哪儿?"
+  },
+  {
+    "vo": "hall_04b",
+    "speaker": "player",
+    "text": "请问，行李在那儿?"
+  },
+  {
+    "vo": "hall_04c",
+    "speaker": "player",
+    "text": "请问，行李哪儿在?"
+  },
+  {
+    "vo": "hall_05",
+    "speaker": "accueil",
+    "text": "行李在那儿。"
+  },
+  {
+    "vo": "hall_06a",
+    "speaker": "player",
+    "text": "谢谢。请问，出租车在哪儿?"
+  },
+  {
+    "vo": "hall_06b",
+    "speaker": "player",
+    "text": "不客气。请问，出租车在哪儿?"
+  },
+  {
+    "vo": "hall_06c",
+    "speaker": "player",
+    "text": "谢谢。请问，飞机在哪儿?"
+  },
+  {
+    "vo": "hall_07",
+    "speaker": "accueil",
+    "text": "出租车在外面。"
+  },
+  {
+    "vo": "hall_08a",
+    "speaker": "player",
+    "text": "洗手间在哪儿?"
+  },
+  {
+    "vo": "hall_08b",
+    "speaker": "player",
+    "text": "洗手间在这儿?"
+  },
+  {
+    "vo": "hall_08c",
+    "speaker": "player",
+    "text": "手机在哪儿?"
+  },
+  {
+    "vo": "hall_09",
+    "speaker": "accueil",
+    "text": "洗手间在这儿。"
+  },
+  {
+    "vo": "lecture-wanghong_01",
+    "speaker": "narrateur",
+    "text": "王红是北京机场的工作人员。"
+  },
+  {
+    "vo": "lecture-wanghong_02",
+    "speaker": "narrateur",
+    "text": "她每天在机场工作。"
+  },
+  {
+    "vo": "lecture-wanghong_03",
+    "speaker": "narrateur",
+    "text": "每天有很多外国人从法国、美国来北京。"
+  },
+  {
+    "vo": "lecture-wanghong_04",
+    "speaker": "narrateur",
+    "text": "他们常常问她:”请问，洗手间在哪儿?”"
+  },
+  {
+    "vo": "lecture-wanghong_05",
+    "speaker": "narrateur",
+    "text": "王红会说汉语，也会说法语。"
+  },
+  {
+    "vo": "lecture-wanghong_06",
+    "speaker": "narrateur",
+    "text": "她很高兴。"
+  },
+  {
+    "vo": "lecture-wanghong_07",
+    "speaker": "narrateur",
+    "text": "她说:”欢迎来中国!”"
+  },
+  {
+    "vo": "lecture-wanghong_08a",
+    "speaker": "player",
+    "text": "她每天在机场工作。"
+  },
+  {
+    "vo": "lecture-wanghong_08b",
+    "speaker": "player",
+    "text": "她每天在法国工作。"
+  },
+  {
+    "vo": "lecture-wanghong_09a",
+    "speaker": "player",
+    "text": "她会说汉语，也会说法语。"
+  },
+  {
+    "vo": "lecture-wanghong_09b",
+    "speaker": "player",
+    "text": "她会说汉语，不会说法语。"
+  },
+  {
+    "vo": "lecture-wanghong_09c",
+    "speaker": "player",
+    "text": "她会说法语，也会说美国。"
+  },
+  {
+    "vo": "lecture-telephone_01",
+    "speaker": "narrateur",
+    "text": "马克今天从法国来北京。"
+  },
+  {
+    "vo": "lecture-telephone_02",
+    "speaker": "narrateur",
+    "text": "他坐飞机来，飞机很大。"
+  },
+  {
+    "vo": "lecture-telephone_03",
+    "speaker": "narrateur",
+    "text": "他在北京机场下飞机。"
+  },
+  {
+    "vo": "lecture-telephone_04",
+    "speaker": "narrateur",
+    "text": "机场里有很多人，有中国人，也有外国人。"
+  },
+  {
+    "vo": "lecture-telephone_05",
+    "speaker": "narrateur",
+    "text": "马克想给朋友打电话，可是他的手机不在这儿。"
+  },
+  {
+    "vo": "lecture-telephone_06",
+    "speaker": "narrateur",
+    "text": "手机在行李里。马克在行李里找手机。"
+  },
+  {
+    "vo": "lecture-telephone_07",
+    "speaker": "narrateur",
+    "text": "\"手机在这儿!\"他很高兴。"
+  },
+  {
+    "vo": "lecture-telephone_08",
+    "speaker": "narrateur",
+    "text": "他给朋友王明打电话:”王明,你在哪儿?”"
+  },
+  {
+    "vo": "lecture-telephone_09",
+    "speaker": "narrateur",
+    "text": "王明说:”我在机场外面等你。\""
+  },
+  {
+    "vo": "lecture-telephone_10",
+    "speaker": "narrateur",
+    "text": "马克说:”我在洗手间前面。\""
+  },
+  {
+    "vo": "lecture-telephone_11",
+    "speaker": "narrateur",
+    "text": "王明说:”好,你在那儿等我。\""
+  },
+  {
+    "vo": "lecture-telephone_12",
+    "speaker": "narrateur",
+    "text": "马克在洗手间前面等朋友。他很高兴。"
+  },
+  {
+    "vo": "lecture-telephone_13a",
+    "speaker": "player",
+    "text": "手机在行李里。"
+  },
+  {
+    "vo": "lecture-telephone_13b",
+    "speaker": "player",
+    "text": "手机在洗手间里。"
+  },
+  {
+    "vo": "lecture-telephone_13c",
+    "speaker": "player",
+    "text": "手机在飞机里。"
+  },
+  {
+    "vo": "lecture-telephone_14a",
+    "speaker": "player",
+    "text": "他在机场外面等马克。"
+  },
+  {
+    "vo": "lecture-telephone_14b",
+    "speaker": "player",
+    "text": "他在洗手间前面等马克。"
+  },
+  {
+    "vo": "lecture-depart_01",
+    "speaker": "narrateur",
+    "text": "马克想坐飞机去上海。"
+  },
+  {
+    "vo": "lecture-depart_02",
+    "speaker": "narrateur",
+    "text": "他的朋友李华在上海。"
+  },
+  {
+    "vo": "lecture-depart_03",
+    "speaker": "narrateur",
+    "text": "他在机场里找工作人员。"
+  },
+  {
+    "vo": "lecture-depart_04",
+    "speaker": "narrateur",
+    "text": "他给工作人员机票和护照。"
+  },
+  {
+    "vo": "lecture-depart_05",
+    "speaker": "narrateur",
+    "text": "工作人员说:”谢谢，这是你的登机牌。\""
+  },
+  {
+    "vo": "lecture-depart_06",
+    "speaker": "narrateur",
+    "text": "马克说:”请问，登机口在哪儿?”"
+  },
+  {
+    "vo": "lecture-depart_07",
+    "speaker": "narrateur",
+    "text": "工作人员说:”在前面。\""
+  },
+  {
+    "vo": "lecture-depart_08",
+    "speaker": "narrateur",
+    "text": "马克在登机口前面等飞机。他很高兴。"
+  },
+  {
+    "vo": "lecture-depart_09a",
+    "speaker": "player",
+    "text": "马克想坐飞机去上海。"
+  },
+  {
+    "vo": "lecture-depart_09b",
+    "speaker": "player",
+    "text": "马克想坐出租车去上海。"
+  },
+  {
+    "vo": "lecture-depart_09c",
+    "speaker": "player",
+    "text": "马克想坐飞机来北京。"
+  },
+  {
+    "vo": "lecture-depart_10a",
+    "speaker": "player",
+    "text": "他给工作人员机票和护照。"
+  },
+  {
+    "vo": "lecture-depart_10b",
+    "speaker": "player",
+    "text": "他给工作人员手机和行李。"
+  },
+  {
+    "vo": "w_zhongguo",
+    "speaker": "lexicon",
+    "text": "中国。"
+  },
+  {
+    "vo": "w_meiguo",
+    "speaker": "lexicon",
+    "text": "美国。"
+  },
+  {
+    "vo": "w_qing",
+    "speaker": "lexicon",
+    "text": "请。"
+  },
+  {
+    "vo": "w_zaijian",
+    "speaker": "lexicon",
+    "text": "再见。"
+  },
+  {
+    "vo": "w_jichang",
+    "speaker": "lexicon",
+    "text": "机场。"
+  },
+  {
+    "vo": "w_beijing",
+    "speaker": "lexicon",
+    "text": "北京。"
+  },
+  {
+    "vo": "w_xingli",
+    "speaker": "lexicon",
+    "text": "行李。"
+  },
+  {
+    "vo": "w_qingwen",
+    "speaker": "lexicon",
+    "text": "请问。"
+  },
+  {
+    "vo": "w_chuzuche",
+    "speaker": "lexicon",
+    "text": "出租车。"
+  },
+  {
+    "vo": "w_waimian",
+    "speaker": "lexicon",
+    "text": "外面。"
+  },
+  {
+    "vo": "w_xishoujian",
+    "speaker": "lexicon",
+    "text": "洗手间。"
+  },
+  {
+    "vo": "w_cong_2",
+    "speaker": "lexicon",
+    "text": "从。"
+  },
+  {
+    "vo": "w_feiji",
+    "speaker": "lexicon",
+    "text": "飞机。"
+  },
+  {
+    "vo": "w_waiguoren",
+    "speaker": "lexicon",
+    "text": "外国人。"
+  },
+  {
+    "vo": "w_da_2",
+    "speaker": "lexicon",
+    "text": "打。"
+  },
+  {
+    "vo": "w_dianhua",
+    "speaker": "lexicon",
+    "text": "电话。"
+  },
+  {
+    "vo": "w_keshi",
+    "speaker": "lexicon",
+    "text": "可是。"
+  },
+  {
+    "vo": "w_gaoxing",
+    "speaker": "lexicon",
+    "text": "高兴。"
+  },
+  {
+    "vo": "w_shuo",
+    "speaker": "lexicon",
+    "text": "说。"
+  },
+  {
+    "vo": "w_wang_ming",
+    "speaker": "lexicon",
+    "text": "王明。"
+  },
+  {
+    "vo": "w_qianmian",
+    "speaker": "lexicon",
+    "text": "前面。"
+  },
+  {
+    "vo": "w_li_hua",
+    "speaker": "lexicon",
+    "text": "李华。"
+  },
+  {
+    "vo": "w_jipiao",
+    "speaker": "lexicon",
+    "text": "机票。"
+  },
+  {
+    "vo": "w_he_2",
+    "speaker": "lexicon",
+    "text": "和。"
+  },
+  {
+    "vo": "w_gongzuo_renyuan",
+    "speaker": "lexicon",
+    "text": "工作人员。"
+  },
+  {
+    "vo": "w_dengjipai",
+    "speaker": "lexicon",
+    "text": "登机牌。"
+  },
+  {
+    "vo": "w_dengjikou",
+    "speaker": "lexicon",
+    "text": "登机口。"
+  },
+  {
+    "vo": "w_wang_hong",
+    "speaker": "lexicon",
+    "text": "王红。"
+  },
+  {
+    "vo": "w_meitian",
+    "speaker": "lexicon",
+    "text": "每天。"
+  },
+  {
+    "vo": "w_gongzuo",
+    "speaker": "lexicon",
+    "text": "工作。"
+  },
+  {
+    "vo": "w_changchang",
+    "speaker": "lexicon",
+    "text": "常常。"
+  },
+  {
+    "vo": "w_tamen",
+    "speaker": "lexicon",
+    "text": "他们。"
+  },
+  {
+    "vo": "w_wen",
+    "speaker": "lexicon",
+    "text": "问。"
+  },
+  {
+    "vo": "w_hui",
+    "speaker": "lexicon",
+    "text": "会。"
+  },
+  {
+    "vo": "w_hanyu",
+    "speaker": "lexicon",
+    "text": "汉语。"
+  },
+  {
+    "vo": "w_fayu",
+    "speaker": "lexicon",
+    "text": "法语。"
+  },
+  {
+    "vo": "w_make",
+    "speaker": "lexicon",
+    "text": "马克。"
+  }
+]

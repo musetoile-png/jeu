@@ -1,0 +1,156 @@
+{
+  "id": "aeroport",
+  "name": {
+    "zh": "北京机场",
+    "fr": "L'aéroport de Pékin"
+  },
+  "world": "pekin",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.5,
+  "planes": [
+    {
+      "image": "aeroport_far",
+      "parallax": 1,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 937,
+      "y": 483,
+      "text": {
+        "zh": "行李"
+      },
+      "size": 44
+    },
+    {
+      "x": 1272,
+      "y": 466,
+      "text": {
+        "zh": "洗手间"
+      },
+      "size": 40
+    },
+    {
+      "x": 1690,
+      "y": 372,
+      "text": {
+        "zh": "出租车"
+      },
+      "size": 46
+    }
+  ],
+  "walk": {
+    "yMin": 1000,
+    "yMax": 1060,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 140,
+    "y": 1015,
+    "facing": "right",
+    "walkIn": 200
+  },
+  "entrances": {
+    "debut": {
+      "x": 140,
+      "y": 1015,
+      "facing": "right",
+      "walkIn": 200
+    },
+    "fin": {
+      "x": 1780,
+      "y": 1015,
+      "facing": "left",
+      "walkIn": -200
+    }
+  },
+  "hotspots": [
+    {
+      "id": "douane",
+      "kind": "npc",
+      "x": 430,
+      "y": 1030,
+      "scene": "douane",
+      "sprite": "douanier_stand",
+      "scale": 0.56,
+      "prompt": {
+        "fr": "parler à 海关"
+      },
+      "facing": "right"
+    },
+    {
+      "id": "hall",
+      "kind": "npc",
+      "x": 760,
+      "y": 1030,
+      "scene": "hall",
+      "sprite": "accueil_stand",
+      "scale": 0.56,
+      "prompt": {
+        "fr": "parler à 王红"
+      },
+      "facing": "left",
+      "when": {
+        "vu_douane": "fait",
+        "vu_hall": ""
+      }
+    },
+    {
+      "id": "lecture-wanghong",
+      "kind": "npc",
+      "x": 760,
+      "y": 1030,
+      "scene": "lecture-wanghong",
+      "sprite": "accueil_stand",
+      "scale": 0.56,
+      "prompt": {
+        "fr": "parler à 王红"
+      },
+      "facing": "left",
+      "when": {
+        "vu_hall": "fait",
+        "vu_lecture-wanghong": ""
+      }
+    },
+    {
+      "id": "lecture-telephone",
+      "kind": "npc",
+      "x": 760,
+      "y": 1030,
+      "scene": "lecture-telephone",
+      "sprite": "accueil_stand",
+      "scale": 0.56,
+      "prompt": {
+        "fr": "parler à 王红"
+      },
+      "facing": "left",
+      "when": {
+        "vu_lecture-wanghong": "fait",
+        "vu_lecture-telephone": ""
+      }
+    },
+    {
+      "id": "lecture-depart",
+      "kind": "npc",
+      "x": 760,
+      "y": 1030,
+      "scene": "lecture-depart",
+      "sprite": "accueil_stand",
+      "scale": 0.56,
+      "prompt": {
+        "fr": "parler à 王红"
+      },
+      "facing": "left",
+      "when": {
+        "vu_lecture-telephone": "fait"
+      }
+    }
+  ],
+  "_doc": "Décor Canva du 16 novembre 2026. Enseignes vides écrites par le jeu (行李, 洗手间, 出租车) ; à changer selon la leçon. slots = place de chaque personnage (x)."
+}

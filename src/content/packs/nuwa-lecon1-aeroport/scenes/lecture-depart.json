@@ -1,0 +1,617 @@
+{
+  "id": "lecture-depart",
+  "language": "zh",
+  "world": "pekin",
+  "tier": 1,
+  "title": {
+    "fr": "Lecture : le départ pour Shanghai"
+  },
+  "place": "aeroport",
+  "npc": "accueil",
+  "patience": 3,
+  "actors": {
+    "accueil": {
+      "name": "王红",
+      "label": {
+        "fr": "l’agente d’accueil"
+      },
+      "portrait": "accueil"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    },
+    "narrateur": {
+      "name": "",
+      "label": {
+        "fr": "récit"
+      },
+      "portrait": ""
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_01",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "xiang"
+        ],
+        [
+          "w",
+          "zuo_assis"
+        ],
+        [
+          "w",
+          "feiji"
+        ],
+        [
+          "w",
+          "qu"
+        ],
+        [
+          "w",
+          "shanghai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc veut prendre l’avion pour Shanghai."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_02",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "de"
+        ],
+        [
+          "w",
+          "pengyou"
+        ],
+        [
+          "w",
+          "li_hua"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "shanghai"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Son ami Li Hua est à Shanghai."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_03",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "li"
+        ],
+        [
+          "w",
+          "zhao"
+        ],
+        [
+          "w",
+          "gongzuo_renyuan"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Dans l’aéroport, il cherche un membre du personnel."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_04",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "gei"
+        ],
+        [
+          "w",
+          "gongzuo_renyuan"
+        ],
+        [
+          "w",
+          "jipiao"
+        ],
+        [
+          "w",
+          "he_2"
+        ],
+        [
+          "w",
+          "huzhao"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Il donne son billet d’avion et son passeport à l’employé."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_05",
+      "line": [
+        [
+          "w",
+          "gongzuo_renyuan"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "xiexie"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "zhe"
+        ],
+        [
+          "w",
+          "shi"
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "de"
+        ],
+        [
+          "w",
+          "dengjipai"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "p",
+          "\""
+        ]
+      ],
+      "gloss": {
+        "fr": "L’employé dit : « Merci, voici votre carte d’embarquement. »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_06",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "qingwen"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "dengjikou"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "nar"
+        ],
+        [
+          "p",
+          "?"
+        ],
+        [
+          "p",
+          "”"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc dit : « Excusez-moi, où est la porte d’embarquement ? »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_07",
+      "line": [
+        [
+          "w",
+          "gongzuo_renyuan"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "qianmian"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "p",
+          "\""
+        ]
+      ],
+      "gloss": {
+        "fr": "L’employé dit : « Devant vous. »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-depart_08",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "dengjikou"
+        ],
+        [
+          "w",
+          "qianmian"
+        ],
+        [
+          "w",
+          "deng"
+        ],
+        [
+          "w",
+          "feiji"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "gaoxing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc attend l’avion devant la porte d’embarquement. Il est content."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : où va Marc ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-depart_09a",
+          "line": [
+            [
+              "w",
+              "make"
+            ],
+            [
+              "w",
+              "xiang"
+            ],
+            [
+              "w",
+              "zuo_assis"
+            ],
+            [
+              "w",
+              "feiji"
+            ],
+            [
+              "w",
+              "qu"
+            ],
+            [
+              "w",
+              "shanghai"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Marc veut prendre l’avion pour Shanghai."
+          }
+        },
+        {
+          "vo": "lecture-depart_09b",
+          "line": [
+            [
+              "w",
+              "make"
+            ],
+            [
+              "w",
+              "xiang"
+            ],
+            [
+              "w",
+              "zuo_assis"
+            ],
+            [
+              "w",
+              "chuzuche"
+            ],
+            [
+              "w",
+              "qu"
+            ],
+            [
+              "w",
+              "shanghai"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Marc veut prendre un taxi pour Shanghai."
+          },
+          "why": {
+            "fr": "Relis : il prend l’avion, 坐飞机."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "lecture-depart_09c",
+          "line": [
+            [
+              "w",
+              "make"
+            ],
+            [
+              "w",
+              "xiang"
+            ],
+            [
+              "w",
+              "zuo_assis"
+            ],
+            [
+              "w",
+              "feiji"
+            ],
+            [
+              "w",
+              "lai"
+            ],
+            [
+              "w",
+              "beijing"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Marc veut venir à Pékin en avion."
+          },
+          "why": {
+            "fr": "Il est déjà à Pékin et il en part : 去上海. 来 se rapproche de celui qui parle, 去 s’en éloigne."
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : que donne Marc à l’employé ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-depart_10a",
+          "line": [
+            [
+              "w",
+              "ta_m"
+            ],
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "gongzuo_renyuan"
+            ],
+            [
+              "w",
+              "jipiao"
+            ],
+            [
+              "w",
+              "he_2"
+            ],
+            [
+              "w",
+              "huzhao"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Il donne son billet d’avion et son passeport à l’employé."
+          }
+        },
+        {
+          "vo": "lecture-depart_10b",
+          "line": [
+            [
+              "w",
+              "ta_m"
+            ],
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "gongzuo_renyuan"
+            ],
+            [
+              "w",
+              "shouji"
+            ],
+            [
+              "w",
+              "he_2"
+            ],
+            [
+              "w",
+              "xingli"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Il donne son portable et ses bagages à l’employé."
+          },
+          "why": {
+            "fr": "Relis la 4e phrase : 机票和护照, le billet et le passeport."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_lecture-depart": "fait"
+    }
+  }
+}

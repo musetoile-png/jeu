@@ -1,6 +1,9 @@
 /**
  * Catalogue d'un paquet de base : les lieux (décors) et les personnages (dessins) qu'un éditeur peut réutiliser
  * sans rien dessiner. Lu par l'importeur et par le générateur du tableur modèle.
+ *
+ * S'y ajoute la bibliothèque partagée (content/bibliotheque/) : des lieux et des personnages produits pour
+ * toutes les leçons, qui ne jouent pas dans Mille li. Chaque personnage y a sa fiche, avec sa taille de référence.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -49,5 +52,43 @@ export function loadCatalogue(baseId) {
     }
   }
   for (const p of people.values()) if (!p.ref) people.delete(p.id);
-  return { pack, places, people, dir };
+
+  // bibliothèque partagée : ses lieux, ses personnages et ses images s'ajoutent à ceux du paquet de base
+  const libDir = join(CONTENT, 'bibliotheque');
+  let merged = pack;
+  if (existsSync(join(libDir, 'bibliotheque.json'))) {
+    const lib = json(join(libDir, 'bibliotheque.json'));
+    for (const id of lib.places ?? []) {
+      if (places.has(id))
+        throw new Error(`Bibliothèque : le lieu « ${id} » existe déjà`);
+      places.set(id, {
+        ...json(join(libDir, 'places', `${id}.json`)),
+        library: true,
+      });
+    }
+    for (const p of lib.people ?? []) {
+      if (people.has(p.id))
+        throw new Error(`Bibliothèque : le personnage « ${p.id} » existe déjà`);
+      const sprite = `${p.id}_stand`;
+      if (!lib.images?.[sprite]) continue;
+      people.set(p.id, {
+        id: p.id,
+        name: p.name,
+        label: p.label?.fr ?? '',
+        portrait: p.portrait ?? p.id,
+        sprite,
+        ref: p.ref,
+        library: true,
+      });
+    }
+    merged = {
+      ...pack,
+      assets: {
+        ...pack.assets,
+        images: { ...pack.assets.images, ...lib.images },
+        keyWhite: [...(pack.assets.keyWhite ?? []), ...(lib.keyWhite ?? [])],
+      },
+    };
+  }
+  return { pack: merged, places, people, dir };
 }

@@ -1,0 +1,301 @@
+{
+  "entries": [
+    {
+      "id": "zhongguo",
+      "target": "中国",
+      "transcription": "Zhōngguó",
+      "gloss": {
+        "fr": "Chine"
+      }
+    },
+    {
+      "id": "meiguo",
+      "target": "美国",
+      "transcription": "Měiguó",
+      "gloss": {
+        "fr": "États-Unis"
+      }
+    },
+    {
+      "id": "qing",
+      "target": "请",
+      "transcription": "qǐng",
+      "gloss": {
+        "fr": "s'il vous plaît (请 + V) ; inviter"
+      }
+    },
+    {
+      "id": "zaijian",
+      "target": "再见",
+      "transcription": "zàijiàn",
+      "gloss": {
+        "fr": "au revoir"
+      }
+    },
+    {
+      "id": "jichang",
+      "target": "机场",
+      "transcription": "jīchǎng",
+      "gloss": {
+        "fr": "aéroport"
+      }
+    },
+    {
+      "id": "beijing",
+      "target": "北京",
+      "transcription": "Běijīng",
+      "gloss": {
+        "fr": "Pékin"
+      }
+    },
+    {
+      "id": "xingli",
+      "target": "行李",
+      "transcription": "xíngli",
+      "gloss": {
+        "fr": "bagages"
+      }
+    },
+    {
+      "id": "qingwen",
+      "target": "请问",
+      "transcription": "qǐngwèn",
+      "gloss": {
+        "fr": "excusez-moi, pourriez-vous me dire"
+      }
+    },
+    {
+      "id": "chuzuche",
+      "target": "出租车",
+      "transcription": "chūzūchē",
+      "gloss": {
+        "fr": "taxi"
+      }
+    },
+    {
+      "id": "waimian",
+      "target": "外面",
+      "transcription": "wàimiàn",
+      "gloss": {
+        "fr": "dehors"
+      }
+    },
+    {
+      "id": "xishoujian",
+      "target": "洗手间",
+      "transcription": "xǐshǒujiān",
+      "gloss": {
+        "fr": "toilettes"
+      }
+    },
+    {
+      "id": "cong_2",
+      "target": "从",
+      "transcription": "cóng",
+      "gloss": {
+        "fr": "de (point de départ) ; à partir de"
+      }
+    },
+    {
+      "id": "feiji",
+      "target": "飞机",
+      "transcription": "fēijī",
+      "gloss": {
+        "fr": "avion"
+      }
+    },
+    {
+      "id": "waiguoren",
+      "target": "外国人",
+      "transcription": "wàiguórén",
+      "gloss": {
+        "fr": "étranger"
+      }
+    },
+    {
+      "id": "da_2",
+      "target": "打",
+      "transcription": "dǎ",
+      "gloss": {
+        "fr": "frapper ; faire (un geste)"
+      }
+    },
+    {
+      "id": "dianhua",
+      "target": "电话",
+      "transcription": "diànhuà",
+      "gloss": {
+        "fr": "téléphone"
+      }
+    },
+    {
+      "id": "keshi",
+      "target": "可是",
+      "transcription": "kěshì",
+      "gloss": {
+        "fr": "mais"
+      }
+    },
+    {
+      "id": "gaoxing",
+      "target": "高兴",
+      "transcription": "gāoxìng",
+      "gloss": {
+        "fr": "content, heureux"
+      }
+    },
+    {
+      "id": "shuo",
+      "target": "说",
+      "transcription": "shuō",
+      "gloss": {
+        "fr": "dire, parler"
+      }
+    },
+    {
+      "id": "wang_ming",
+      "target": "王明",
+      "transcription": "Wáng Míng",
+      "gloss": {
+        "fr": "Wang Ming (nom)"
+      }
+    },
+    {
+      "id": "qianmian",
+      "target": "前面",
+      "transcription": "qiánmiàn",
+      "gloss": {
+        "fr": "devant, en face"
+      }
+    },
+    {
+      "id": "li_hua",
+      "target": "李华",
+      "transcription": "Lǐ Huá",
+      "gloss": {
+        "fr": "Li Hua (nom)"
+      }
+    },
+    {
+      "id": "jipiao",
+      "target": "机票",
+      "transcription": "jīpiào",
+      "gloss": {
+        "fr": "billet d'avion"
+      }
+    },
+    {
+      "id": "he_2",
+      "target": "和",
+      "transcription": "hé",
+      "gloss": {
+        "fr": "et ; avec"
+      }
+    },
+    {
+      "id": "gongzuo_renyuan",
+      "target": "工作人员",
+      "transcription": "gōngzuò rényuán",
+      "gloss": {
+        "fr": "employé, membre du personnel, staff"
+      }
+    },
+    {
+      "id": "dengjipai",
+      "target": "登机牌",
+      "transcription": "dēngjīpái",
+      "gloss": {
+        "fr": "carte d'embarquement"
+      }
+    },
+    {
+      "id": "dengjikou",
+      "target": "登机口",
+      "transcription": "dēngjīkǒu",
+      "gloss": {
+        "fr": "porte d'embarquement"
+      }
+    },
+    {
+      "id": "wang_hong",
+      "target": "王红",
+      "transcription": "Wáng Hóng",
+      "gloss": {
+        "fr": "Wang Hong (nom)"
+      }
+    },
+    {
+      "id": "meitian",
+      "target": "每天",
+      "transcription": "měitiān",
+      "gloss": {
+        "fr": "chaque jour, tous les jours"
+      }
+    },
+    {
+      "id": "gongzuo",
+      "target": "工作",
+      "transcription": "gōngzuò",
+      "gloss": {
+        "fr": "travailler ; travail"
+      }
+    },
+    {
+      "id": "changchang",
+      "target": "常常",
+      "transcription": "chángcháng",
+      "gloss": {
+        "fr": "souvent"
+      }
+    },
+    {
+      "id": "tamen",
+      "target": "他们",
+      "transcription": "tāmen",
+      "gloss": {
+        "fr": "ils, eux"
+      }
+    },
+    {
+      "id": "wen",
+      "target": "问",
+      "transcription": "wèn",
+      "gloss": {
+        "fr": "demander (une question)"
+      }
+    },
+    {
+      "id": "hui",
+      "target": "会",
+      "transcription": "huì",
+      "gloss": {
+        "fr": "savoir (faire) ; pouvoir"
+      }
+    },
+    {
+      "id": "hanyu",
+      "target": "汉语",
+      "transcription": "hànyǔ",
+      "gloss": {
+        "fr": "chinois (langue)"
+      }
+    },
+    {
+      "id": "fayu",
+      "target": "法语",
+      "transcription": "fǎyǔ",
+      "gloss": {
+        "fr": "français (langue)"
+      }
+    },
+    {
+      "id": "make",
+      "target": "马克",
+      "transcription": "Mǎkè",
+      "gloss": {
+        "fr": "Marc (prénom)"
+      },
+      "pos": "nom propre"
+    }
+  ]
+}

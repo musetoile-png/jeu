@@ -1,0 +1,73 @@
+{
+  "id": "aeroport",
+  "name": {
+    "zh": "北京机场",
+    "fr": "L'aéroport de Pékin"
+  },
+  "world": "pekin",
+  "size": {
+    "width": 1920,
+    "height": 1080
+  },
+  "zoom": 1,
+  "playerScale": 0.5,
+  "planes": [
+    {
+      "image": "aeroport_far",
+      "parallax": 1,
+      "y": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 937,
+      "y": 483,
+      "text": {
+        "zh": "行李"
+      },
+      "size": 44
+    },
+    {
+      "x": 1272,
+      "y": 466,
+      "text": {
+        "zh": "洗手间"
+      },
+      "size": 40
+    },
+    {
+      "x": 1690,
+      "y": 372,
+      "text": {
+        "zh": "出租车"
+      },
+      "size": 46
+    }
+  ],
+  "walk": {
+    "yMin": 1000,
+    "yMax": 1060,
+    "xMin": 60,
+    "xMax": 1860
+  },
+  "spawn": {
+    "x": 140,
+    "y": 1030,
+    "facing": "right",
+    "walkIn": 260
+  },
+  "entrances": {
+    "porte": {
+      "x": 140,
+      "y": 1030,
+      "facing": "right",
+      "walkIn": 260
+    }
+  },
+  "hotspots": [],
+  "slots": {
+    "douanier": 430,
+    "accueil": 760
+  },
+  "_doc": "Décor Canva du 16 novembre 2026. Enseignes vides écrites par le jeu (行李, 洗手间, 出租车) ; à changer selon la leçon. slots = place de chaque personnage (x)."
+}

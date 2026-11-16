@@ -15,6 +15,7 @@
  * Sortie : content/packs/<identifiant>/ (pack.json, lexicon.json, places/, scenes/, voix-a-generer.json).
  */
 import {
+  copyFileSync,
   mkdirSync,
   readFileSync,
   rmSync,
@@ -326,10 +327,17 @@ for (const r of sheet('Répliques')) {
   const type = norm(r.type ?? '');
   if (type === 'dit') {
     const who = norm(r.qui ?? '') || sc.person;
-    const actor = who === 'joueur' || who === 'player' ? 'player' : who;
-    if (actor !== 'player' && actor !== sc.person)
+    // « narrateur » (ou « récit ») : une phrase de récit, sans portrait, pour les lectures guidées
+    const actor =
+      who === 'joueur' || who === 'player'
+        ? 'player'
+        : who === 'narrateur' || who === 'recit'
+          ? 'narrateur'
+          : who;
+    if (actor === 'narrateur') sc.narrator = true;
+    if (actor !== 'player' && actor !== 'narrateur' && actor !== sc.person)
       errors.push(
-        `${where} : « ${r.qui} » ne joue pas dans cette scène (personnage : ${sc.person}, ou « joueur »)`,
+        `${where} : « ${r.qui} » ne joue pas dans cette scène (personnage : ${sc.person}, « joueur » ou « narrateur »)`,
       );
     if (!r.texte) errors.push(`${where} : texte vide`);
     if (!r.traduction) warnings.push(`${where} : réplique sans traduction`);
@@ -342,7 +350,7 @@ for (const r of sheet('Répliques')) {
     });
     voices.push({
       vo: key,
-      speaker: actor === 'player' ? 'player' : sc.person,
+      speaker: actor === 'player' || actor === 'narrateur' ? actor : sc.person,
       text: r.texte ?? '',
     });
   } else if (type === 'choix') {
@@ -443,6 +451,9 @@ const sceneFiles = order.map((s) => {
         portrait: person.portrait,
       },
       player: { name: '', label: { fr: 'toi' }, portrait: 'player' },
+      ...(s.narrator
+        ? { narrateur: { name: '', label: { fr: 'récit' }, portrait: '' } }
+        : {}),
     },
     objects: {},
     steps: s.steps,
@@ -467,10 +478,13 @@ const places = placeIds.map((pid, pi) => {
           100,
       ) / 100;
     const k = people.indexOf(s.person);
-    const x = Math.round(
-      base.walk.xMin +
-        ((base.walk.xMax - base.walk.xMin) * (k + 1)) / (people.length + 1),
-    );
+    // un lieu peut fixer la place de chaque personnage (« slots », ex. le douanier devant sa guérite)
+    const x =
+      base.slots?.[s.person] ??
+      Math.round(
+        base.walk.xMin +
+          ((base.walk.xMax - base.walk.xMin) * (k + 1)) / (people.length + 1),
+      );
     const when = {};
     if (s.prev) when[flag(s.prev)] = 'fait';
     // une autre scène du même personnage, ici, plus tard : celle-ci s'efface une fois jouée pour lui laisser la place
@@ -518,7 +532,9 @@ const places = placeIds.map((pid, pi) => {
       toEntrance: 'fin',
       prompt: { fr: `vers : ${cat.places.get(prev).name.fr}` },
     });
-  const place = { ...base, spawn: entrances.debut, entrances, hotspots };
+  // eslint-disable-next-line no-unused-vars
+  const { library, slots, ...rest } = base;
+  const place = { ...rest, spawn: entrances.debut, entrances, hotspots };
   for (const k of ['props', 'ambient', 'onEnter', '$schema']) delete place[k];
   return place;
 });
@@ -563,7 +579,10 @@ const pack = {
     ...(lesson.soustitre ? { sub: { fr: lesson.soustitre } } : {}),
   },
   profile: {
-    bodies: cat.pack.profile?.bodies ?? [],
+    // « joueur » (Leçon) : m ou f quand le texte impose le personnage joué (ex. Marc) ; sinon les deux
+    bodies: (cat.pack.profile?.bodies ?? []).filter(
+      (b) => !lesson.joueur || b.id === norm(lesson.joueur),
+    ),
     names: [],
     startItems: [],
   },
@@ -591,6 +610,35 @@ write('pack.json', pack);
 if (packLex.length) write('lexicon.json', { entries: packLex });
 for (const p of places) write(`places/${p.id}.json`, p);
 for (const s of sceneFiles) write(`scenes/${s.id}.json`, s);
+// clips des mots (« mot à mot », clic sur un mot) : ceux des mots déjà connus sont copiés depuis la langue,
+// ceux des mots nouveaux sont ajoutés à la liste des voix à générer (voix « lexicon »)
+const voDir = new URL(`../public/assets/audio/vo/${packId}/`, import.meta.url)
+  .pathname;
+const langVo = new URL(`../public/assets/audio/vo/${langCode}/`, import.meta.url)
+  .pathname;
+const usedWords = new Set();
+const walk = (x) => {
+  if (Array.isArray(x)) {
+    if (x[0] === 'w' && typeof x[1] === 'string') usedWords.add(x[1]);
+    else x.forEach(walk);
+  } else if (x && typeof x === 'object') Object.values(x).forEach(walk);
+};
+walk(sceneFiles);
+walk(pack.title);
+mkdirSync(voDir, { recursive: true });
+let copied = 0;
+const newIds = new Set(packLex.map((e) => e.id));
+for (const id of usedWords) {
+  const f = `w_${id}.mp3`;
+  if (!newIds.has(id) && existsSync(join(langVo, f)) && !existsSync(join(voDir, f))) {
+    copyFileSync(join(langVo, f), join(voDir, f));
+    copied++;
+  }
+}
+for (const e of packLex)
+  if (usedWords.has(e.id) && !existsSync(join(voDir, `w_${e.id}.mp3`)))
+    voices.push({ vo: `w_${e.id}`, speaker: 'lexicon', text: `${e.target}。` });
 write('voix-a-generer.json', voices);
+if (copied) console.log(`  ${copied} clip(s) de mots connus copiés dans audio/vo/${packId}/`);
 console.log(`\n✔ Paquet écrit dans content/packs/${packId}/ : ${summary}`);
 console.log('  Lance ensuite : node tools/validate.mjs');

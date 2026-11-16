@@ -1,0 +1,794 @@
+{
+  "id": "douane",
+  "language": "zh",
+  "world": "pekin",
+  "tier": 1,
+  "title": {
+    "fr": "À la douane"
+  },
+  "place": "aeroport",
+  "npc": "douanier",
+  "patience": 3,
+  "actors": {
+    "douanier": {
+      "name": "海关",
+      "label": {
+        "fr": "le douanier"
+      },
+      "portrait": "douanier"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_01",
+      "line": [
+        [
+          "w",
+          "ni_hao"
+        ],
+        [
+          "p",
+          "!"
+        ]
+      ],
+      "gloss": {
+        "fr": "Bonjour !"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Le douanier te salue. Réponds-lui."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_02a",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Bonjour !"
+          }
+        },
+        {
+          "vo": "douane_02b",
+          "line": [
+            [
+              "w",
+              "zaijian"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Au revoir !"
+          },
+          "why": {
+            "fr": "再见 sert à prendre congé. Pour répondre à 你好, on dit aussi 你好 !"
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "douane_02c",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci !"
+          },
+          "why": {
+            "fr": "Il ne t’a rien donné : on répond à 你好 par 你好 !"
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_03",
+      "line": [
+        [
+          "w",
+          "qing"
+        ],
+        [
+          "w",
+          "gei"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "huzhao"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Votre passeport, s’il vous plaît."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Tends-lui ton passeport."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_04a",
+          "line": [
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "ni"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Tenez."
+          }
+        },
+        {
+          "vo": "douane_04b",
+          "line": [
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Donne-moi."
+          },
+          "why": {
+            "fr": "给我, c’est « donne-moi ». C’est toi qui donnes : 给你, « à toi, tenez »."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "douane_04c",
+          "line": [
+            [
+              "w",
+              "qing"
+            ],
+            [
+              "w",
+              "gei"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "huzhao"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Votre passeport, s’il vous plaît."
+          },
+          "why": {
+            "fr": "Tu répètes sa demande. Pour tendre le passeport : 给你。"
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_05",
+      "line": [
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "shi"
+        ],
+        [
+          "w",
+          "meiguo"
+        ],
+        [
+          "w",
+          "ren"
+        ],
+        [
+          "w",
+          "ma"
+        ],
+        [
+          "p",
+          "?"
+        ]
+      ],
+      "gloss": {
+        "fr": "Vous êtes américain ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Réponds que non : tu n’es pas américain, tu es français."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_06a",
+          "line": [
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "meiguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "faguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Non, je ne suis pas américain, je suis français."
+          }
+        },
+        {
+          "vo": "douane_06b",
+          "line": [
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "meiguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "faguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Oui, je ne suis pas américain, je suis français.)"
+          },
+          "why": {
+            "fr": "Pour dire non, on répète le verbe à la forme négative : 不是. 是 tout seul veut dire « oui »."
+          },
+          "errorType": "grammar"
+        },
+        {
+          "vo": "douane_06c",
+          "line": [
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "bu"
+            ],
+            [
+              "w",
+              "meiguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "faguo"
+            ],
+            [
+              "w",
+              "ren"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Non, je suis ne pas américain, je suis français.)"
+          },
+          "why": {
+            "fr": "不 se place juste devant le verbe : 我不是美国人."
+          },
+          "errorType": "order"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_07",
+      "line": [
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "jiao"
+        ],
+        [
+          "w",
+          "shenme"
+        ],
+        [
+          "w",
+          "mingzi"
+        ],
+        [
+          "p",
+          "?"
+        ]
+      ],
+      "gloss": {
+        "fr": "Comment vous appelez-vous ?"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Dis-lui ton nom : Marc."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_08a",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "jiao"
+            ],
+            [
+              "w",
+              "make"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Je m’appelle Marc."
+          }
+        },
+        {
+          "vo": "douane_08b",
+          "line": [
+            [
+              "w",
+              "wo"
+            ],
+            [
+              "w",
+              "shi"
+            ],
+            [
+              "w",
+              "jiao"
+            ],
+            [
+              "w",
+              "make"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Je suis appelle Marc.)"
+          },
+          "why": {
+            "fr": "叫 est déjà le verbe « s’appeler » : pas de 是 devant."
+          },
+          "errorType": "grammar"
+        },
+        {
+          "vo": "douane_08c",
+          "line": [
+            [
+              "w",
+              "ni"
+            ],
+            [
+              "w",
+              "jiao"
+            ],
+            [
+              "w",
+              "make"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Tu t’appelles Marc."
+          },
+          "why": {
+            "fr": "你 = tu. Pour parler de toi : 我叫马克."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_09",
+      "line": [
+        [
+          "w",
+          "xiexie"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "make"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "huanying"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "w",
+          "zhongguo"
+        ],
+        [
+          "p",
+          "!"
+        ]
+      ],
+      "gloss": {
+        "fr": "Merci, Marc. Bienvenue en Chine !"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Il te souhaite la bienvenue. Remercie-le."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_10a",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci !"
+          }
+        },
+        {
+          "vo": "douane_10b",
+          "line": [
+            [
+              "w",
+              "bukeqi"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "De rien !"
+          },
+          "why": {
+            "fr": "不客气 répond à un merci. Ici, c’est toi qui remercies : 谢谢 !"
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "douane_10c",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Bonjour !"
+          },
+          "why": {
+            "fr": "Vous vous êtes déjà salués : il t’accueille, remercie-le."
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "douanier",
+      "vo": "douane_11",
+      "line": [
+        [
+          "w",
+          "bukeqi"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "zaijian"
+        ],
+        [
+          "p",
+          "!"
+        ]
+      ],
+      "gloss": {
+        "fr": "Je vous en prie. Au revoir !"
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Il te dit au revoir. Réponds-lui."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "douane_12a",
+          "line": [
+            [
+              "w",
+              "zaijian"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Au revoir !"
+          }
+        },
+        {
+          "vo": "douane_12b",
+          "line": [
+            [
+              "w",
+              "ni_hao"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "Bonjour !"
+          },
+          "why": {
+            "fr": "你好 sert à saluer en arrivant. Pour partir : 再见 !"
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "douane_12c",
+          "line": [
+            [
+              "w",
+              "bukeqi"
+            ],
+            [
+              "p",
+              "!"
+            ]
+          ],
+          "gloss": {
+            "fr": "De rien !"
+          },
+          "why": {
+            "fr": "不客气 répond à un merci. Pour prendre congé : 再见 !"
+          },
+          "errorType": "pragmatic"
+        }
+      ]
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_douane": "fait"
+    }
+  }
+}

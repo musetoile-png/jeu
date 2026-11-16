@@ -1,0 +1,52 @@
+{
+  "_doc": "Bibliothèque partagée : lieux et personnages produits pour toutes les leçons (profs, éditeurs), hors de l'histoire de Mille li. Lue par tools/catalogue.mjs. Voir claude/bibliotheque-assets-et-offres.md.",
+  "places": [
+    "aeroport"
+  ],
+  "people": [
+    {
+      "id": "douanier",
+      "name": "海关人员",
+      "label": {
+        "fr": "le douanier"
+      },
+      "portrait": "douanier",
+      "ref": {
+        "place": "aeroport",
+        "scale": 0.56,
+        "y": 1030,
+        "facing": "right"
+      },
+      "voice": "police",
+      "produit": "Canva, 16 novembre 2026"
+    },
+    {
+      "id": "accueil",
+      "name": "工作人员",
+      "label": {
+        "fr": "l'agente d'accueil"
+      },
+      "portrait": "accueil",
+      "ref": {
+        "place": "aeroport",
+        "scale": 0.56,
+        "y": 1030,
+        "facing": "left"
+      },
+      "voice": "guichet",
+      "produit": "Canva, 16 novembre 2026"
+    }
+  ],
+  "images": {
+    "aeroport_far": "art/aeroport_far.jpg",
+    "douanier_stand": "art/douanier_stand.webp",
+    "portrait_douanier_neutral": "art/douanier_bust_neutral.jpg",
+    "portrait_douanier_joy": "art/douanier_bust_joy.jpg",
+    "portrait_douanier_surprise": "art/douanier_bust_surprise.jpg",
+    "accueil_stand": "art/accueil_stand.webp",
+    "portrait_accueil_neutral": "art/accueil_bust_neutral.jpg",
+    "portrait_accueil_joy": "art/accueil_bust_joy.jpg",
+    "portrait_accueil_surprise": "art/accueil_bust_surprise.jpg"
+  },
+  "keyWhite": []
+}

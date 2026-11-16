@@ -99,6 +99,8 @@ D. Le lieu de la leçon devient le lieu le plus proche du catalogue (sinon : « 
 E. Si l'enseignant n'a pas donné de liste de mots, « motsDemandes » est la liste de vocabulaire de la leçon (生词…), recopiée.
 F. Les exercices de la leçon, s'il y en a, peuvent t'inspirer des « choix » supplémentaires, placés là où ils s'insèrent naturellement dans la scène.
 G. Le titre de la leçon garde son titre d'origine (titreCible) et sa traduction (titre).
+I. **Un récit** (texte sans dialogue) devient une **lecture guidée** : chaque phrase du récit est une ligne « dit » dont « qui » vaut « narrateur », mot pour mot ; puis 1 à 3 « choix » de compréhension : la consigne pose la question en français, la bonne réponse est une phrase du récit (ou une phrase courte faite de ses mots), les mauvaises la contredisent. Une scène de lecture garde un personnage du catalogue (celui près duquel l'élève lit), qui peut ne rien dire.
+J. Si le texte impose le personnage joué par l'élève (un prénom, un genre), mets « m » ou « f » dans « joueur ».
 H. La longueur des scènes suit celle du dialogue : les limites de nombre de lignes et de « choix » de la règle 3 ne s'appliquent pas.
 
 `;
@@ -176,7 +178,7 @@ ${known}
 5. Chaque mauvaise réponse (1 à 3 par choix) est plausible pour un débutant mais fausse dans cette situation, pour **une** raison claire. Jamais deux réponses acceptables.
 6. « pourquoi » : une ou deux phrases en français, au tutoiement, adressées à l'élève, qui expliquent l'erreur et redonnent la bonne forme.
 7. « erreur » : un seul mot parmi ${ERREURS.join(', ')}.
-8. « qui » : pour « dit », l'identifiant du personnage de la scène ou « joueur » ; pour « choix », toujours « joueur ».
+8. « qui » : pour « dit », l'identifiant du personnage de la scène, « joueur », ou « narrateur » (phrase de récit) ; pour « choix », toujours « joueur ».
 9. Traductions françaises naturelles (pas de mot à mot), « tu » entre l'élève et les personnages familiers, « vous » si la situation l'exige.
 10. Les scènes se jouent dans l'ordre donné ; chacune s'ouvre quand la précédente est finie.
 
@@ -192,7 +194,8 @@ Réponds uniquement par un bloc \`\`\`json contenant cet objet (les champs entre
     "titre": "titre en français",
     "titreCible": "titre en chinois",
     "transcriptionTitre": "pinyin du titre",
-    "sousTitre": "[petite ligne sous le titre]"
+    "sousTitre": "[petite ligne sous le titre]",
+    "joueur": "[m ou f, seulement si le texte impose le personnage que joue l'élève]"
   },
   "mots": [
     { "mot": "便宜", "transcription": "piányi", "traduction": "bon marché", "nature": "[adjectif]", "niveau": "[HSK2]" }
@@ -295,6 +298,7 @@ async function draftToSheet(
     'sous-titre': L.sousTitre ?? '',
     langue: langCode,
     'paquet de base': baseId,
+    joueur: L.joueur ?? '',
     'rédigé par': 'IA (brouillon)',
     'relu par': '',
   };

@@ -1,0 +1,11 @@
+{
+  "id": "cours-nuwa",
+  "name": "Le cours de Nuwa",
+  "mark": "在机场",
+  "inkTitle": true,
+  "tagline": { "fr": "Leçon 1 : à l'aéroport de Pékin" },
+  "description": { "fr": "La leçon 1 du cours de Nuwa (à l'aéroport de Pékin), mise en scène par le générateur : dialogues joués, récits en lecture guidée, analyse des caractères dans le carnet." },
+  "pack": "nuwa-lecon1-aeroport",
+  "uiLanguage": "fr",
+  "storagePrefix": "cours-nuwa"
+}

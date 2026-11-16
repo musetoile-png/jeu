@@ -1,0 +1,893 @@
+{
+  "id": "lecture-telephone",
+  "language": "zh",
+  "world": "pekin",
+  "tier": 1,
+  "title": {
+    "fr": "Lecture : le coup de téléphone"
+  },
+  "place": "aeroport",
+  "npc": "accueil",
+  "patience": 3,
+  "actors": {
+    "accueil": {
+      "name": "王红",
+      "label": {
+        "fr": "l’agente d’accueil"
+      },
+      "portrait": "accueil"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    },
+    "narrateur": {
+      "name": "",
+      "label": {
+        "fr": "récit"
+      },
+      "portrait": ""
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_01",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "jintian"
+        ],
+        [
+          "w",
+          "cong_2"
+        ],
+        [
+          "w",
+          "faguo"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "w",
+          "beijing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Aujourd’hui, Marc arrive de France à Pékin."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_02",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "zuo_assis"
+        ],
+        [
+          "w",
+          "feiji"
+        ],
+        [
+          "w",
+          "lai"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "feiji"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "da"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Il vient en avion ; l’avion est grand."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_03",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "beijing"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "xia"
+        ],
+        [
+          "w",
+          "feiji"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Il descend de l’avion à l’aéroport de Pékin."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_04",
+      "line": [
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "li"
+        ],
+        [
+          "w",
+          "you_avoir"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "duo"
+        ],
+        [
+          "w",
+          "ren"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "you_avoir"
+        ],
+        [
+          "w",
+          "zhongguo"
+        ],
+        [
+          "w",
+          "ren"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "ye"
+        ],
+        [
+          "w",
+          "you_avoir"
+        ],
+        [
+          "w",
+          "waiguoren"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Dans l’aéroport, il y a beaucoup de monde : des Chinois, et aussi des étrangers."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_05",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "xiang"
+        ],
+        [
+          "w",
+          "gei"
+        ],
+        [
+          "w",
+          "pengyou"
+        ],
+        [
+          "w",
+          "da_2"
+        ],
+        [
+          "w",
+          "dianhua"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "keshi"
+        ],
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "de"
+        ],
+        [
+          "w",
+          "shouji"
+        ],
+        [
+          "w",
+          "bu"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "zher"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc veut téléphoner à un ami, mais son portable n’est pas là."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_06",
+      "line": [
+        [
+          "w",
+          "shouji"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "xingli"
+        ],
+        [
+          "w",
+          "li"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "xingli"
+        ],
+        [
+          "w",
+          "li"
+        ],
+        [
+          "w",
+          "zhao"
+        ],
+        [
+          "w",
+          "shouji"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Le portable est dans les bagages. Marc le cherche dans ses bagages."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_07",
+      "line": [
+        [
+          "p",
+          "\""
+        ],
+        [
+          "w",
+          "shouji"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "zher"
+        ],
+        [
+          "p",
+          "!"
+        ],
+        [
+          "p",
+          "\""
+        ],
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "gaoxing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "« Le voilà ! » Il est content."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_08",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "gei"
+        ],
+        [
+          "w",
+          "pengyou"
+        ],
+        [
+          "w",
+          "wang_ming"
+        ],
+        [
+          "w",
+          "da_2"
+        ],
+        [
+          "w",
+          "dianhua"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "wang_ming"
+        ],
+        [
+          "p",
+          ","
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "nar"
+        ],
+        [
+          "p",
+          "?"
+        ],
+        [
+          "p",
+          "”"
+        ]
+      ],
+      "gloss": {
+        "fr": "Il téléphone à son ami Wang Ming : « Wang Ming, où es-tu ? »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_09",
+      "line": [
+        [
+          "w",
+          "wang_ming"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "w",
+          "waimian"
+        ],
+        [
+          "w",
+          "deng"
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "p",
+          "\""
+        ]
+      ],
+      "gloss": {
+        "fr": "Wang Ming dit : « Je t’attends devant l’aéroport. »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_10",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "xishoujian"
+        ],
+        [
+          "w",
+          "qianmian"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "p",
+          "\""
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc dit : « Je suis devant les toilettes. »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_11",
+      "line": [
+        [
+          "w",
+          "wang_ming"
+        ],
+        [
+          "w",
+          "shuo"
+        ],
+        [
+          "p",
+          ":"
+        ],
+        [
+          "p",
+          "”"
+        ],
+        [
+          "w",
+          "hao"
+        ],
+        [
+          "p",
+          ","
+        ],
+        [
+          "w",
+          "ni"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "nar_la"
+        ],
+        [
+          "w",
+          "deng"
+        ],
+        [
+          "w",
+          "wo"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "p",
+          "\""
+        ]
+      ],
+      "gloss": {
+        "fr": "Wang Ming dit : « D’accord, attends-moi là. »"
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "lecture-telephone_12",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "xishoujian"
+        ],
+        [
+          "w",
+          "qianmian"
+        ],
+        [
+          "w",
+          "deng"
+        ],
+        [
+          "w",
+          "pengyou"
+        ],
+        [
+          "p",
+          "。"
+        ],
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "hen"
+        ],
+        [
+          "w",
+          "gaoxing"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc attend son ami devant les toilettes. Il est content."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : où est le portable de Marc ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-telephone_13a",
+          "line": [
+            [
+              "w",
+              "shouji"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "xingli"
+            ],
+            [
+              "w",
+              "li"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Le portable est dans les bagages."
+          }
+        },
+        {
+          "vo": "lecture-telephone_13b",
+          "line": [
+            [
+              "w",
+              "shouji"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "xishoujian"
+            ],
+            [
+              "w",
+              "li"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Le portable est dans les toilettes."
+          },
+          "why": {
+            "fr": "Relis : 手机在行李里, dans les bagages."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "lecture-telephone_13c",
+          "line": [
+            [
+              "w",
+              "shouji"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "feiji"
+            ],
+            [
+              "w",
+              "li"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Le portable est dans l’avion."
+          },
+          "why": {
+            "fr": "Relis : 手机在行李里, dans les bagages."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Question : où Wang Ming attend-il Marc ?"
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "lecture-telephone_14a",
+          "line": [
+            [
+              "w",
+              "ta_m"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "jichang"
+            ],
+            [
+              "w",
+              "waimian"
+            ],
+            [
+              "w",
+              "deng"
+            ],
+            [
+              "w",
+              "make"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Il attend Marc devant l’aéroport."
+          }
+        },
+        {
+          "vo": "lecture-telephone_14b",
+          "line": [
+            [
+              "w",
+              "ta_m"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "xishoujian"
+            ],
+            [
+              "w",
+              "qianmian"
+            ],
+            [
+              "w",
+              "deng"
+            ],
+            [
+              "w",
+              "make"
+            ],
+            [
+              "p",
+              "。"
+            ]
+          ],
+          "gloss": {
+            "fr": "Il attend Marc devant les toilettes."
+          },
+          "why": {
+            "fr": "C’est Marc qui attend devant les toilettes. Wang Ming est 在机场外面."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_lecture-telephone": "fait"
+    }
+  }
+}

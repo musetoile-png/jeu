@@ -1,0 +1,562 @@
+{
+  "id": "hall",
+  "language": "zh",
+  "world": "pekin",
+  "tier": 1,
+  "title": {
+    "fr": "Dans le hall"
+  },
+  "place": "aeroport",
+  "npc": "accueil",
+  "patience": 3,
+  "actors": {
+    "accueil": {
+      "name": "王红",
+      "label": {
+        "fr": "l’agente d’accueil"
+      },
+      "portrait": "accueil"
+    },
+    "player": {
+      "name": "",
+      "label": {
+        "fr": "toi"
+      },
+      "portrait": "player"
+    },
+    "narrateur": {
+      "name": "",
+      "label": {
+        "fr": "récit"
+      },
+      "portrait": ""
+    }
+  },
+  "objects": {},
+  "steps": [
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "hall_01",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "beijing"
+        ],
+        [
+          "w",
+          "jichang"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc est à l’aéroport de Pékin."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "hall_02",
+      "line": [
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "bu"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "faguo"
+        ],
+        [
+          "p",
+          "，"
+        ],
+        [
+          "w",
+          "ta_m"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "zhongguo"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Il n’est pas en France, il est en Chine."
+      }
+    },
+    {
+      "type": "say",
+      "actor": "narrateur",
+      "vo": "hall_03",
+      "line": [
+        [
+          "w",
+          "make"
+        ],
+        [
+          "w",
+          "zhao"
+        ],
+        [
+          "w",
+          "xingli"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Marc cherche ses bagages."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Demande poliment à l’agente où sont les bagages."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "hall_04a",
+          "line": [
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "xingli"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "Excusez-moi, où sont les bagages ?"
+          }
+        },
+        {
+          "vo": "hall_04b",
+          "line": [
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "xingli"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar_la"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Excusez-moi, les bagages sont là-bas ?)"
+          },
+          "why": {
+            "fr": "那儿 (nàr, 4e ton) veut dire « là-bas ». « Où » se dit 哪儿 (nǎr, 3e ton)."
+          },
+          "errorType": "phonetic"
+        },
+        {
+          "vo": "hall_04c",
+          "line": [
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "xingli"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Excusez-moi, les bagages où sont ?)"
+          },
+          "why": {
+            "fr": "在 vient avant le lieu : 在哪儿 ?"
+          },
+          "errorType": "order"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "accueil",
+      "vo": "hall_05",
+      "line": [
+        [
+          "w",
+          "xingli"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "nar_la"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Les bagages sont là-bas."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Remercie-la, puis demande où sont les taxis."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "hall_06a",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "chuzuche"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci. Excusez-moi, où sont les taxis ?"
+          }
+        },
+        {
+          "vo": "hall_06b",
+          "line": [
+            [
+              "w",
+              "bukeqi"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "chuzuche"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "De rien. Excusez-moi, où sont les taxis ?"
+          },
+          "why": {
+            "fr": "C’est elle qui t’a aidé : c’est à toi de dire 谢谢."
+          },
+          "errorType": "pragmatic"
+        },
+        {
+          "vo": "hall_06c",
+          "line": [
+            [
+              "w",
+              "xiexie"
+            ],
+            [
+              "p",
+              "。"
+            ],
+            [
+              "w",
+              "qingwen"
+            ],
+            [
+              "p",
+              "，"
+            ],
+            [
+              "w",
+              "feiji"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "Merci. Excusez-moi, où est l’avion ?"
+          },
+          "why": {
+            "fr": "飞机, c’est l’avion. Le taxi : 出租车."
+          },
+          "errorType": "semantic"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "accueil",
+      "vo": "hall_07",
+      "line": [
+        [
+          "w",
+          "chuzuche"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "waimian"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Les taxis sont dehors."
+      }
+    },
+    {
+      "type": "choose",
+      "ask": {
+        "fr": "Demande où sont les toilettes."
+      },
+      "choices": [
+        {
+          "ok": true,
+          "vo": "hall_08a",
+          "line": [
+            [
+              "w",
+              "xishoujian"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "Où sont les toilettes ?"
+          }
+        },
+        {
+          "vo": "hall_08b",
+          "line": [
+            [
+              "w",
+              "xishoujian"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "zher"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "(Les toilettes sont ici ?)"
+          },
+          "why": {
+            "fr": "这儿 veut dire « ici ». « Où » : 哪儿."
+          },
+          "errorType": "semantic"
+        },
+        {
+          "vo": "hall_08c",
+          "line": [
+            [
+              "w",
+              "shouji"
+            ],
+            [
+              "w",
+              "zai"
+            ],
+            [
+              "w",
+              "nar"
+            ],
+            [
+              "p",
+              "?"
+            ]
+          ],
+          "gloss": {
+            "fr": "Où est le téléphone ?"
+          },
+          "why": {
+            "fr": "手机 (le portable) et 洗手间 (les toilettes) ont le même caractère 手, la main : regarde bien le mot entier."
+          },
+          "errorType": "character"
+        }
+      ]
+    },
+    {
+      "type": "say",
+      "actor": "accueil",
+      "vo": "hall_09",
+      "line": [
+        [
+          "w",
+          "xishoujian"
+        ],
+        [
+          "w",
+          "zai"
+        ],
+        [
+          "w",
+          "zher"
+        ],
+        [
+          "p",
+          "。"
+        ]
+      ],
+      "gloss": {
+        "fr": "Les toilettes sont ici."
+      }
+    }
+  ],
+  "onEnd": {
+    "flags": {
+      "vu_hall": "fait"
+    }
+  }
+}
