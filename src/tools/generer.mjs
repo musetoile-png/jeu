@@ -99,11 +99,11 @@ D. Le lieu de la leçon devient le lieu le plus proche du catalogue (sinon : « 
 E. Si l'enseignant n'a pas donné de liste de mots, « motsDemandes » est la liste de vocabulaire de la leçon (生词…), recopiée.
 F. Les exercices de la leçon, s'il y en a, peuvent t'inspirer des « choix » supplémentaires, placés là où ils s'insèrent naturellement dans la scène.
 G. Le titre de la leçon garde son titre d'origine (titreCible) et sa traduction (titre).
-I. **Un récit** (texte sans dialogue) devient une **lecture guidée** : chaque phrase du récit est une ligne « dit » dont « qui » vaut « narrateur », mot pour mot ; puis 1 à 3 « choix » de compréhension : la consigne pose la question en français, la bonne réponse est une phrase du récit (ou une phrase courte faite de ses mots), les mauvaises la contredisent. Une scène de lecture garde un personnage du catalogue (celui près duquel l'élève lit), qui peut ne rien dire.
-J. Si le texte impose le personnage joué par l'élève (un prénom, un genre), mets « m » ou « f » dans « joueur ».
 H. La longueur des scènes suit celle du dialogue : les limites de nombre de lignes et de « choix » de la règle 3 ne s'appliquent pas.
 I. **Analyse des caractères.** Si la leçon contient une analyse des mots (colonne « Analyse » d'un tableau de vocabulaire, décomposition en caractères et composants, étymologie, aide-mémoire), recopie-la **mot pour mot** dans le champ « analyse » du mot, sans la résumer, la corriger ni la compléter (retours à la ligne permis : \\n). Un mot dont la leçon ne donne pas d'analyse n'a pas de champ « analyse ».
 J. **Mots déjà connus du jeu.** Si la leçon donne pour un mot déjà connu du jeu un sens ou une analyse, liste-le **aussi** dans « mots » avec la traduction de la leçon et son analyse recopiée : c'est l'explication de l'enseignant que l'élève doit retrouver dans son carnet (elle remplace celle du jeu pour cette leçon seulement). Les autres mots connus n'ont rien à faire dans « mots ».
+K. **Un récit** (texte sans dialogue) devient une **lecture guidée** : chaque phrase du récit est une ligne « dit » dont « qui » vaut « narrateur », mot pour mot ; puis 1 à 3 « choix » de compréhension : la consigne pose la question en français, la bonne réponse est une phrase du récit (ou une phrase courte faite de ses mots), les mauvaises la contredisent. Une scène de lecture garde un personnage du catalogue (celui près duquel l'élève lit), qui peut ne rien dire.
+L. Si le texte impose le personnage joué par l'élève (un prénom, un genre), mets « m » ou « f » dans « joueur ».
 
 `;
 }

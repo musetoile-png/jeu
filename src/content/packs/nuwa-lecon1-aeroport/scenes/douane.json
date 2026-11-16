@@ -11,7 +11,7 @@
   "patience": 3,
   "actors": {
     "douanier": {
-      "name": "海关",
+      "name": "海关人员",
       "label": {
         "fr": "le douanier"
       },

@@ -80,7 +80,7 @@
       "sprite": "douanier_stand",
       "scale": 0.56,
       "prompt": {
-        "fr": "parler à 海关"
+        "fr": "parler à 海关人员"
       },
       "facing": "right"
     },

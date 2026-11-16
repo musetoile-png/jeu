@@ -1,11 +1,116 @@
 {
   "entries": [
     {
+      "id": "ni",
+      "target": "你",
+      "gloss": {
+        "fr": "tu, toi, vous (singulier)"
+      },
+      "analysis": {
+        "fr": "亻(personne) + 尔 (ěr, phonétique). Le poli est 您 nín, que l'on lit volontiers comme 你 + 心 (cœur) : « toi, avec le cœur » (aide-mémoire). On dit 您 aux aînés et aux inconnus de rang."
+      }
+    },
+    {
+      "id": "hao",
+      "target": "好",
+      "gloss": {
+        "fr": "bon, bien"
+      },
+      "analysis": {
+        "fr": "女 (femme) + 子 (enfant). Traditionnelle : une femme avec son enfant, image du bien."
+      }
+    },
+    {
+      "id": "ni_hao",
+      "target": "你好",
+      "analysis": {
+        "fr": "Littéralement « toi bon ». Se dit à une personne ; à plusieurs : 你们好 nǐmen hǎo."
+      }
+    },
+    {
+      "id": "wo",
+      "target": "我",
+      "analysis": {
+        "fr": "Forme ancienne : une arme à lame dentée au bout d'un manche. Le mot « je » a emprunté ce caractère pour son seul son. On retrouve 戈 (hallebarde) dans le caractère."
+      }
+    },
+    {
+      "id": "shi",
+      "target": "是",
+      "gloss": {
+        "fr": "être, c'est"
+      },
+      "analysis": {
+        "fr": "日 (soleil) + 正 (droit) : « ce qui est droit, juste ». Traditionnelle, discutée par les paléographes. 是 sert aussi à répondre « oui » : le chinois répète le verbe."
+      }
+    },
+    {
+      "id": "ma",
+      "target": "吗",
+      "gloss": {
+        "fr": "particule de question"
+      },
+      "analysis": {
+        "fr": "口 (bouche) + 马 (mǎ, phonétique) ; forme traditionnelle 嗎. 口 marque beaucoup de mots parlés ou de particules : 吗, 叫, 名."
+      }
+    },
+    {
+      "id": "bu",
+      "target": "不",
+      "gloss": {
+        "fr": "ne…pas"
+      },
+      "analysis": {
+        "fr": "Devient bú devant un 4e ton."
+      }
+    },
+    {
+      "id": "jiao",
+      "target": "叫",
+      "analysis": {
+        "fr": "口 (bouche) + 丩 (jiū, phonétique). Même verbe dans 叫车 jiào chē, « appeler un taxi »."
+      }
+    },
+    {
+      "id": "shenme",
+      "target": "什么",
+      "analysis": {
+        "fr": "什 (亻 + 十) et 么 (forme simplifiée de 麼) notent un son : le sens des éléments est sans rapport. Le mot interrogatif prend la place de la réponse, sans changer l'ordre de la phrase."
+      }
+    },
+    {
+      "id": "mingzi",
+      "target": "名字",
+      "analysis": {
+        "fr": "名 : 夕 (soir) + 口 (bouche) ; dans le noir, on ne se voit pas, on s'annonce de la bouche (traditionnelle, Xu Shen). 字 : 宀 (toit) + 子 (enfant), à l'origine « enfanter », puis « se multiplier » : les caractères qui s'engendrent (traditionnelle). Les lettrés avaient aussi un 字, « nom de courtoisie »."
+      }
+    },
+    {
+      "id": "ren",
+      "target": "人",
+      "gloss": {
+        "fr": "personne, gens"
+      },
+      "analysis": {
+        "fr": "Pictogramme d'une personne vue de profil (). Sous forme de composant, il devient 亻. 法国人 : un Français."
+      }
+    },
+    {
+      "id": "faguo",
+      "target": "法国",
+      "analysis": {
+        "fr": "法 : 氵(eau) + 去 ; la forme ancienne 灋 incluait un animal mythique qui désignait le coupable, d'où le sens « loi » (traditionnelle). Ici 法 transcrit le son « Fa- » de France. 法语 Fǎyǔ : le français."
+      }
+    },
+    {
       "id": "zhongguo",
       "target": "中国",
       "transcription": "Zhōngguó",
       "gloss": {
         "fr": "Chine"
+      },
+      "analysis": {
+        "fr": "中 : un trait qui traverse le milieu d'un espace, poteau planté au centre ou cible traversée (origine discutée). 国 : 囗 (enclos, frontière) + 玉 (jade). La forme traditionnelle 國 contient 或 : 口 (population) + 戈 (arme) + 一 (terre), un territoire défendu () ; 玉 est le remplacement simplifié. Le nom désignait d'abord « les États du milieu » de la plaine centrale, non pas le « centre du monde »."
       }
     },
     {
@@ -14,6 +119,9 @@
       "transcription": "Měiguó",
       "gloss": {
         "fr": "États-Unis"
+      },
+      "analysis": {
+        "fr": "美 : 羊 (mouton) + 大 (grand), traditionnellement « beau, bon ». Ici 美 transcrit le son « Mei » d'America. Autres noms de pays par le son : 英国 Yīngguó (Royaume-Uni), 德国 Déguó (Allemagne)."
       }
     },
     {
@@ -22,6 +130,50 @@
       "transcription": "qǐng",
       "gloss": {
         "fr": "s'il vous plaît (请 + V) ; inviter"
+      },
+      "analysis": {
+        "fr": "讠(parole) + 青 (qīng, phonétique) ; forme traditionnelle 請.请 ouvre la plupart des demandes polies : 请坐 qǐng zuò, « asseyez-vous ». Aussi « inviter » : 请客 qǐngkè, « offrir un repas »."
+      }
+    },
+    {
+      "id": "gei",
+      "target": "给",
+      "gloss": {
+        "fr": "donner ; pour"
+      },
+      "analysis": {
+        "fr": "纟 (soie, fil) + 合 (hé, phonétique approximatif). Sens ancien : fournir, approvisionner (traditionnelle). La soie servait de monnaie et de cadeau dans la Chine ancienne."
+      }
+    },
+    {
+      "id": "huzhao",
+      "target": "护照",
+      "analysis": {
+        "fr": "护 : 扌(main) + 户 (hù, porte, phonétique) ; sens « protéger ». 照 : 昭 (clair, soleil) + 灬 (feu) ; sens « éclairer », puis « document qui atteste » : 驾照 jiàzhào, « permis de conduire ». Aide-mémoire : le papier qui te protège et atteste qui tu es."
+      }
+    },
+    {
+      "id": "xiexie",
+      "target": "谢谢",
+      "analysis": {
+        "fr": "讠(parole) + 射 (shè, phonétique) ; forme traditionnelle 謝. La répétition adoucit le mot, avec une 2e syllabe neutre. Entre proches, on dit peu merci : trop insister crée de la distance."
+      }
+    },
+    {
+      "id": "huanying",
+      "target": "欢迎",
+      "gloss": {
+        "fr": "bienvenue ; accueillir"
+      },
+      "analysis": {
+        "fr": "欢 : 又 + 欠 ; la forme traditionnelle 歡 est 雚 + 欠, où 欠 est une personne bouche ouverte (comme 歌 gē, chanter). 迎 : 辶 (marche) + 卬 (phonétique) : aller à la rencontre. Dans une boutique, on entend 欢迎光临 huānyíng guānglín."
+      }
+    },
+    {
+      "id": "lai",
+      "target": "来",
+      "analysis": {
+        "fr": "Forme ancienne 來 : un plant de blé avec ses épis (). Le mot « venir » a emprunté ce caractère pour son son ; le sens « blé » reste dans 麦 mài."
       }
     },
     {
@@ -30,6 +182,29 @@
       "transcription": "zàijiàn",
       "gloss": {
         "fr": "au revoir"
+      },
+      "analysis": {
+        "fr": "再 : « de nouveau ». 见 (forme traditionnelle 見) : 目 (œil) sur 儿 (jambes d'une personne) = une personne dont l'œil voit. Littéralement « se revoir ». Entre jeunes, on dit aussi 拜拜 báibái, de l'anglais bye-bye."
+      }
+    },
+    {
+      "id": "bukeqi",
+      "target": "不客气",
+      "gloss": {
+        "fr": "de rien, je vous en prie"
+      },
+      "analysis": {
+        "fr": "客 : 宀 (toit) + 各 (gè, phonétique) : quelqu'un qui arrive sous le toit, un invité. 气 : trois traits de vapeur qui montent ; la forme traditionnelle 氣 ajoute 米 (riz) : la vapeur du riz qui cuit. 客气 : « manières d'invité », la politesse ; 不客气 : « sans manières ». Entre amis : 别客气 bié kèqi, « fais comme chez toi »."
+      }
+    },
+    {
+      "id": "zai",
+      "target": "在",
+      "gloss": {
+        "fr": "être à ; à, dans"
+      },
+      "analysis": {
+        "fr": "土 (terre) + 才 (cái). 才 est à la fois le son et une pousse qui sort du sol : ce qui est planté quelque part (traditionnelle, discutée)."
       }
     },
     {
@@ -38,6 +213,9 @@
       "transcription": "jīchǎng",
       "gloss": {
         "fr": "aéroport"
+      },
+      "analysis": {
+        "fr": "机 : 木 (bois) + 几 (jī, son), d'abord un mécanisme en bois, puis « machine ». 场 : 土 (terre) + 昜 (yáng, son), un terrain dégagé. D'où « terrain à machines ». Voir 飞机 fēijī, « avion »."
       }
     },
     {
@@ -46,6 +224,26 @@
       "transcription": "Běijīng",
       "gloss": {
         "fr": "Pékin"
+      },
+      "analysis": {
+        "fr": "北 : deux personnes dos à dos, d'où le nord . 京 : un haut bâtiment sur une butte, d'où « capitale » (traditionnelle). Pékin = « capitale du nord », comme 南京 Nánjīng = « capitale du sud»."
+      }
+    },
+    {
+      "id": "ta_m",
+      "target": "他",
+      "analysis": {
+        "fr": "亻 (personne) + 也 (yě, son). À l'oral, il, elle et ça se disent tous tā : on distingue à l'écrit 他, 她 (女, femme) et 它 (chose, animal). 她 est une création du début du XXe siècle."
+      }
+    },
+    {
+      "id": "zhao",
+      "target": "找",
+      "gloss": {
+        "fr": "chercher"
+      },
+      "analysis": {
+        "fr": "扌 (main) + 戈 (arme à hallebarde) : aide-mémoire, la main qui fouille. Caractère tardif."
       }
     },
     {
@@ -54,6 +252,9 @@
       "transcription": "xíngli",
       "gloss": {
         "fr": "bagages"
+      },
+      "analysis": {
+        "fr": "行 : un carrefour, quatre routes qui se croisent , d'où « marcher, voyager ». 李 : prunier et nom de famille très courant."
       }
     },
     {
@@ -62,6 +263,33 @@
       "transcription": "qǐngwèn",
       "gloss": {
         "fr": "excusez-moi, pourriez-vous me dire"
+      },
+      "analysis": {
+        "fr": "请 : 讠(parole) + 青 (qīng, son), « prier ». 问 : 门 (porte) + 口 (bouche), frapper à la porte en parlant (traditionnelle 問). 请问 ouvre toute question adressée à un inconnu."
+      }
+    },
+    {
+      "id": "nar",
+      "target": "哪儿",
+      "analysis": {
+        "fr": "哪 : 口 (bouche) + 那 (nà, son). 儿 est le suffixe « érisé » typique du parler pékinois. Dans le sud, on dit plutôt 哪里 nǎlǐ."
+      }
+    },
+    {
+      "id": "nar_la",
+      "target": "那儿",
+      "gloss": {
+        "fr": "là-bas"
+      },
+      "analysis": {
+        "fr": "那 + 儿. Même suffixe. 那 sert de démonstratif pour « cela, ce qui est loin »."
+      }
+    },
+    {
+      "id": "zher",
+      "target": "这儿",
+      "analysis": {
+        "fr": "这 (traditionnelle 這) : 辶 (marche) + 言 (parole), aide-mémoire. Série : 这儿 ici, 那儿 là-bas, 哪儿 où."
       }
     },
     {
@@ -70,6 +298,9 @@
       "transcription": "chūzūchē",
       "gloss": {
         "fr": "taxi"
+      },
+      "analysis": {
+        "fr": "出 : un pied qui sort d'une fosse (traditionnelle), « sortir ». 租 : 禾 (céréale) + 且 (qiě, son), un loyer payé en grain. 车 : un char vu de dessus, simplifié . Littéralement « voiture de location »."
       }
     },
     {
@@ -78,6 +309,9 @@
       "transcription": "wàimiàn",
       "gloss": {
         "fr": "dehors"
+      },
+      "analysis": {
+        "fr": "外 : 夕 (soir) + 卜 (divination). 面 : un visage, ici « côté ». Littéralement « le côté du dehors »."
       }
     },
     {
@@ -86,6 +320,33 @@
       "transcription": "xǐshǒujiān",
       "gloss": {
         "fr": "toilettes"
+      },
+      "analysis": {
+        "fr": "洗 : 氵(eau) + 先 (xiān, son), laver. 手 : une main avec ses doigts . 间 : 门 (porte) + 日 (soleil). La forme traditionnelle 間 a 月 (lune) à la place de 日 : la lumière qui passe dans l'entrebâillement, puis « espace entre, pièce ». Littéralement « pièce où l'on se lave les mains »."
+      }
+    },
+    {
+      "id": "deng",
+      "target": "等",
+      "analysis": {
+        "fr": "竹 (bambou) + 寺 (sì)"
+      }
+    },
+    {
+      "id": "pengyou",
+      "target": "朋友",
+      "gloss": {
+        "fr": "ami"
+      },
+      "analysis": {
+        "fr": "朋 : deux 月 côte à côte, deux chapelets de cauris (coquillages-monnaie) . 友 : deux mains qui se tiennent . Le sens ancien de 朋 est « paire de chapelets », d'où « compagnon »."
+      }
+    },
+    {
+      "id": "jintian",
+      "target": "今天",
+      "analysis": {
+        "fr": "今 : origine discutée (une forme ancienne montre un couvercle sur un trait). 天 : 大 (personne aux bras écartés) + 一 au-dessus : ce qui est au-dessus de l'homme, le ciel . 今天 = « ce jour »."
       }
     },
     {
@@ -94,6 +355,19 @@
       "transcription": "cóng",
       "gloss": {
         "fr": "de (point de départ) ; à partir de"
+      },
+      "analysis": {
+        "fr": "Deux 人 l'un derrière l'autre : suivre . La forme traditionnelle 從 ajoute 辶 et 彳 (marche). Dans 从法国来, le sens est « en venant de »."
+      }
+    },
+    {
+      "id": "zuo_assis",
+      "target": "坐",
+      "gloss": {
+        "fr": "s'asseoir ; voyager (en transport)"
+      },
+      "analysis": {
+        "fr": "Deux 人 face à face sur 土 (terre) : des gens assis par terre (traditionnelle). On dit 坐飞机, 坐出租车, 坐地铁 : « prendre l'avion, le taxi, le métro »."
       }
     },
     {
@@ -102,6 +376,66 @@
       "transcription": "fēijī",
       "gloss": {
         "fr": "avion"
+      },
+      "analysis": {
+        "fr": "飞 (traditionnelle 飛) : un oiseau aux ailes déployées, la forme simplifiée garde l'aile . 机 : machine (voir 机场). 飞机 = « machine volante »."
+      }
+    },
+    {
+      "id": "da",
+      "target": "大",
+      "analysis": {
+        "fr": "Pictogramme d'une personne debout, bras et jambes écartés : un homme grand . On retrouve 大 dans 天 et 太."
+      }
+    },
+    {
+      "id": "hen",
+      "target": "很",
+      "gloss": {
+        "fr": "très ; (appui devant un adjectif)"
+      },
+      "analysis": {
+        "fr": "彳 (pas, marche) + 艮 (gèn, son), discuté. Ancien sens : « féroce, rebelle », puis emprunt pour « très ». Devant un adjectif, 很 est quasi obligatoire et s'affaiblit : 飞机很大 = « l'avion est grand »."
+      }
+    },
+    {
+      "id": "xia",
+      "target": "下",
+      "gloss": {
+        "fr": "descendre ; en bas"
+      },
+      "analysis": {
+        "fr": "Un trait avec une marque dessous : ce qui est sous la ligne, opposé de 上 shàng. 下飞机 = « descendre de l'avion » ; 下车 = « descendre de voiture ». 上飞机，上车"
+      }
+    },
+    {
+      "id": "li",
+      "target": "里",
+      "gloss": {
+        "fr": "dans, à l'intérieur"
+      },
+      "analysis": {
+        "fr": "田 (champ) + 土 (terre) : un quartier, un village ; 里 était aussi une mesure de distance, ≈ 500 m. La forme simplifiée 里 remplace aussi 裏 (衣 + 里), qui signifie « dans, intérieur » : les deux caractères ont été fusionnés."
+      }
+    },
+    {
+      "id": "you_avoir",
+      "target": "有",
+      "gloss": {
+        "fr": "avoir ; il y a"
+      },
+      "analysis": {
+        "fr": "Traditionnelle : 又 (main) + 月 (viande, forme de 肉) : une main qui tient un morceau de viande, posséder. Négation : 没有 méiyǒu (à venir dans le cours). 机场里有很多人 : « dans l'aéroport il y a beaucoup de gens »."
+      }
+    },
+    {
+      "id": "duo",
+      "target": "多",
+      "gloss": {
+        "fr": "beaucoup, nombreux"
+      },
+      "analysis": {
+        "fr": "Deux 夕 superposés : la répétition marque l'abondance (traditionnelle). 很多 hěn duō = « beaucoup de » ; 多 est le contraire de 少 shǎo, « peu »."
       }
     },
     {
@@ -110,6 +444,26 @@
       "transcription": "wàiguórén",
       "gloss": {
         "fr": "étranger"
+      },
+      "analysis": {
+        "fr": "外 (dehors) + 国 (pays) + 人 (personne) : « personne du pays du dehors ». En conversation, on dit souvent 老外 lǎowài (familier, « le vieux du dehors »), très courant à l’oral."
+      }
+    },
+    {
+      "id": "ye",
+      "target": "也",
+      "analysis": {
+        "fr": "Origine discutée (un récipient, ou un serpent). Le mot « aussi » est un emprunt phonétique. On retrouve 也 comme élément sonore dans 他 et 她. Se place juste avant le verbe : 也有."
+      }
+    },
+    {
+      "id": "xiang",
+      "target": "想",
+      "gloss": {
+        "fr": "vouloir ; penser"
+      },
+      "analysis": {
+        "fr": "相 (xiāng, regarder : 木 + 目, et aussi le son) + 心 (cœur) : le cœur qui observe, d'où « penser, avoir envie » (traditionnelle). Suivi d'un verbe : 想打电话."
       }
     },
     {
@@ -118,6 +472,9 @@
       "transcription": "dǎ",
       "gloss": {
         "fr": "frapper ; faire (un geste)"
+      },
+      "analysis": {
+        "fr": "扌 (main) + 丁 (dīng, son). Sens premier : frapper. Verbe très polyvalent : 打电话 (téléphoner), 打车 (prendre un taxi, d'une appli), 打篮球 (jouer au basket)."
       }
     },
     {
@@ -126,6 +483,9 @@
       "transcription": "diànhuà",
       "gloss": {
         "fr": "téléphone"
+      },
+      "analysis": {
+        "fr": "电 (traditionnelle 電) : 雨 (pluie) + 申 (un éclair, attestée) : l'éclair, puis « électricité ». 话 : 讠 (parole) + 舌 (langue), « propos, parole ». 电话 = « parole électrique »."
       }
     },
     {
@@ -134,6 +494,26 @@
       "transcription": "kěshì",
       "gloss": {
         "fr": "mais"
+      },
+      "analysis": {
+        "fr": "可 : 口 (bouche) + 丂, discuté ; sens « possible, admissible ». 是 : voir leçon 1. 可是 = « c'est vrai, mais ». Synonyme : 但是 dànshì."
+      }
+    },
+    {
+      "id": "de",
+      "target": "的",
+      "gloss": {
+        "fr": "de (marque la possession)"
+      },
+      "analysis": {
+        "fr": "白 (blanc, clair) + 勺 (sháo, son). Sens ancien : « clair, visible » (lu dì dans 目的 mùdì, « but »). La particule de possession en est un emprunt phonétique. Caractère le plus fréquent de la langue moderne. 他的手机 = « son téléphone »."
+      }
+    },
+    {
+      "id": "shouji",
+      "target": "手机",
+      "analysis": {
+        "fr": "手 (main) + 机 (machine) : « machine de la main ». C'est le mot courant en Chine ; 电话 désigne plutôt le téléphone fixe ou l'appel. Avec 手机, on paie, on prend le métro et on appelle un taxi."
       }
     },
     {
@@ -142,6 +522,9 @@
       "transcription": "gāoxìng",
       "gloss": {
         "fr": "content, heureux"
+      },
+      "analysis": {
+        "fr": "高 : une tour à étages vue de côté , « haut ». 兴 (traditionnelle 興) : quatre mains qui soulèvent ensemble (舁 + 同), « élan, enthousiasme ». 高兴 = « élan haut » : être de bonne humeur. 兴 se lit aussi xīng dans 兴奋 xīngfèn."
       }
     },
     {
@@ -150,6 +533,9 @@
       "transcription": "shuō",
       "gloss": {
         "fr": "dire, parler"
+      },
+      "analysis": {
+        "fr": "讠 (parole) + 兑 (duì, son ; aussi une bouche qui rit, aide-mémoire). 说 introduit le discours direct : 王明说:\"…\" et se complète par 说话 shuōhuà, « parler »."
       }
     },
     {
@@ -158,6 +544,9 @@
       "transcription": "Wáng Míng",
       "gloss": {
         "fr": "Wang Ming (nom)"
+      },
+      "analysis": {
+        "fr": "王 : trois traits horizontaux reliés par un vertical : le roi qui relie Ciel, Homme et Terre (Dong Zhongshu, discuté ; la forme ancienne est une hache). C'est un des noms de famille les plus fréquents. 明 : 日 (soleil) + 月 (lune) : brillant, clair . Ordre chinois : nom de famille d'abord, M. Wang, prénom Ming."
       }
     },
     {
@@ -166,6 +555,23 @@
       "transcription": "qiánmiàn",
       "gloss": {
         "fr": "devant, en face"
+      },
+      "analysis": {
+        "fr": "前 : 止 (pied) + 舟 (bateau) + 刂 (couteau) dans la forme traditionnelle ; discuté, sens « avancer », puis « devant ». 面 : voir 外面. Contraire : 后面 hòumiàn, « derrière ». 洗手间前面 : « devant les toilettes »."
+      }
+    },
+    {
+      "id": "qu",
+      "target": "去",
+      "analysis": {
+        "fr": "Origine discutée : la forme ancienne montre une personne au-dessus d'une cavité, quelqu'un qui s'en va. Le sens premier est « partir, quitter ». 去 s'éloigne de celui qui parle, 来 s'en rapproche : 来北京 si l'on est à Pékin, 去北京 si l'on n'y est pas."
+      }
+    },
+    {
+      "id": "shanghai",
+      "target": "上海",
+      "analysis": {
+        "fr": "上 : un trait avec une marque au-dessus , opposé de 下 xià. 海 : 氵 (eau) + 每 (měi, son), la mer. 上海 = « sur la mer ». Le nom est attesté depuis la dynastie des Song ; la ville est un grand port sur la mer de Chine orientale."
       }
     },
     {
@@ -174,6 +580,9 @@
       "transcription": "Lǐ Huá",
       "gloss": {
         "fr": "Li Hua (nom)"
+      },
+      "analysis": {
+        "fr": "李 : 木 (arbre) + 子 (enfant), le prunier, et l'un des noms de famille les plus fréquents. 华 (traditionnelle 華) : une fleur qui s'épanouit, d'où « éclatant »."
       }
     },
     {
@@ -182,6 +591,9 @@
       "transcription": "jīpiào",
       "gloss": {
         "fr": "billet d'avion"
+      },
+      "analysis": {
+        "fr": "机 : voir 机场. 票 : « billet, ticket ». 机票 = « billet de la machine volante ». Voir aussi 车票 chēpiào, « billet de train »."
       }
     },
     {
@@ -190,6 +602,9 @@
       "transcription": "hé",
       "gloss": {
         "fr": "et ; avec"
+      },
+      "analysis": {
+        "fr": "禾 (céréale) + 口 (bouche) : forme traditionnelle, sens ancien « accord, harmonie » (traditionnelle). La notion de 和 (harmonie) est centrale dans la pensée confucéenne : 和平 hépíng, « la paix ». Relie seulement des noms : 机票和护照."
       }
     },
     {
@@ -198,6 +613,9 @@
       "transcription": "gōngzuò rényuán",
       "gloss": {
         "fr": "employé, membre du personnel, staff"
+      },
+      "analysis": {
+        "fr": "工 : un outil de charpentier, une équerre (traditionnelle, discutée). 作 : 亻(personne) + 乍 (zhà, son), « faire ». 工作 = « travail, travailler ». 人员 : 人 + 员 (traditionnelle 員 : 口 + 贝, un cercle et un coquillage-monnaie), « membre, personnel »."
       }
     },
     {
@@ -206,6 +624,19 @@
       "transcription": "dēngjīpái",
       "gloss": {
         "fr": "carte d'embarquement"
+      },
+      "analysis": {
+        "fr": "登 : 癶 (deux pieds) + 豆 (vase rituel) : gravir les marches avec l'offrande (traditionnelle), « monter ». 机 : ici abréviation de 飞机. 牌 : 片 (planche) + 卑 (bēi, son), « plaque, carte ». 登机牌 = « plaque pour monter à bord »."
+      }
+    },
+    {
+      "id": "zhe",
+      "target": "这",
+      "gloss": {
+        "fr": "ce, ceci, voici"
+      },
+      "analysis": {
+        "fr": "这 (traditionnelle 這) : 辶 (marche) + 文 dans la forme simplifiée. Série à retenir : 这 zhè (près), 那 nà (loin), 哪 nǎ (lequel). On les voit dans 这儿, 那儿, 哪儿. 这是 = « c'est »."
       }
     },
     {
@@ -214,6 +645,9 @@
       "transcription": "dēngjīkǒu",
       "gloss": {
         "fr": "porte d'embarquement"
+      },
+      "analysis": {
+        "fr": "登机 + 口 : une bouche dessinée , puis « ouverture, porte, entrée ». À repérer dans un aéroport : 出口 chūkǒu (sortie), 入口 rùkǒu (entrée)."
       }
     },
     {
@@ -222,6 +656,9 @@
       "transcription": "Wáng Hóng",
       "gloss": {
         "fr": "Wang Hong (nom)"
+      },
+      "analysis": {
+        "fr": "王 : trois traits reliés par un vertical, le roi qui unit Ciel, Homme et Terre. Nom de famille très courant. 红 : 纟 (soie) + 工 (gōng, son), « rouge ». Le rouge porte chance en Chine : mariage, Nouvel An. Prénom fréquent pour les femmes."
       }
     },
     {
@@ -230,6 +667,9 @@
       "transcription": "měitiān",
       "gloss": {
         "fr": "chaque jour, tous les jours"
+      },
+      "analysis": {
+        "fr": "每 : à l'origine une femme à la coiffure ornée, puis emprunt pour « chaque » (discuté). 天 : voir 今天. 每天 se place avant le verbe : 她每天在机场工作. Voir aussi 每年 měinián, « chaque année »."
       }
     },
     {
@@ -238,6 +678,9 @@
       "transcription": "gōngzuò",
       "gloss": {
         "fr": "travailler ; travail"
+      },
+      "analysis": {
+        "fr": "工 (outil) + 作 (faire) : voir 工作人员. Verbe et nom : 她在机场工作 (« elle travaille à l'aéroport »), 我的工作 (« mon travail »). À ne pas confondre avec 做 zuò, « faire »."
       }
     },
     {
@@ -246,6 +689,9 @@
       "transcription": "chángcháng",
       "gloss": {
         "fr": "souvent"
+      },
+      "analysis": {
+        "fr": "常 : 巾 (tissu) + 尚 (shàng, son), une jupe longue (traditionnelle), puis « ordinaire, constant ». La répétition rend le mot plus doux, comme dans 谢谢. Se place avant le verbe : 他们常常问她."
       }
     },
     {
@@ -254,6 +700,9 @@
       "transcription": "tāmen",
       "gloss": {
         "fr": "ils, eux"
+      },
+      "analysis": {
+        "fr": "他 + 们 (traditionnelle 們) : 亻(personne) + 门 (mén, son). 们 est la marque du pluriel des personnes : 我们 (nous), 你们 (vous, pluriel), 他们 (ils), 她们 (elles). Il ne s'emploie jamais avec les choses (它们)."
       }
     },
     {
@@ -262,6 +711,9 @@
       "transcription": "wèn",
       "gloss": {
         "fr": "demander (une question)"
+      },
+      "analysis": {
+        "fr": "门 (porte) + 口 (bouche) : frapper à la porte en parlant (traditionnelle 問). Voir 请问. Construction : 问 + personne + question, 他们问她:\"…\"."
       }
     },
     {
@@ -270,6 +722,9 @@
       "transcription": "huì",
       "gloss": {
         "fr": "savoir (faire) ; pouvoir"
+      },
+      "analysis": {
+        "fr": "会 (traditionnelle 會) : se rassembler (voir 开会 kāihuì, « tenir une réunion »), puis « avoir appris à ». 会 + verbe = une capacité acquise : 她会说汉语. Il se distingue de 能 néng, « pouvoir (physiquement ou par permission) »."
       }
     },
     {
@@ -278,6 +733,9 @@
       "transcription": "hànyǔ",
       "gloss": {
         "fr": "chinois (langue)"
+      },
+      "analysis": {
+        "fr": "汉 (traditionnelle 漢) : 氵 (eau) + 堇 (jǐn, son), le fleuve Han, puis la dynastie des Han et le peuple Han (汉族). 语 (traditionnelle 語) : 讠 (parole) + 吾 (wú, son), « langue ». 汉语 = « langue des Han ». On dit aussi 中文 Zhōngwén."
       }
     },
     {
@@ -286,6 +744,9 @@
       "transcription": "fǎyǔ",
       "gloss": {
         "fr": "français (langue)"
+      },
+      "analysis": {
+        "fr": "法 (France, voir 法国) + 语 (langue). Même construction que 汉语. 英语 Yīngyǔ : anglais ; 德语 Déyǔ : allemand."
       }
     },
     {
@@ -295,7 +756,10 @@
       "gloss": {
         "fr": "Marc (prénom)"
       },
-      "pos": "nom propre"
+      "pos": "nom propre",
+      "analysis": {
+        "fr": "Le prénom de Marc est transcrit par le son : 马克 (Mǎkè) ne veut pas dire « cheval vaincre ». Les caractères sont choisis pour leur prononciation, ce qui est la règle pour tous les prénoms étrangers."
+      }
     }
   ]
 }

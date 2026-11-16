@@ -1,34 +1,125 @@
 {
   "code": "zh",
   "bcp47": "zh-CN",
-  "name": { "fr": "Chinois (mandarin)", "en": "Chinese (Mandarin)" },
+  "name": {
+    "fr": "Chinois (mandarin)",
+    "en": "Chinese (Mandarin)"
+  },
   "script": "hans",
   "direction": "ltr",
   "transcription": "pinyin",
-  "transcriptionLabel": { "fr": "pinyin", "en": "pinyin" },
+  "transcriptionLabel": {
+    "fr": "pinyin",
+    "en": "pinyin"
+  },
   "transcriptionShort": "pīn",
   "calligraphy": "Ma Shan Zheng",
   "font": "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
   "segmentation": "content",
-  "tts": { "provider": "elevenlabs", "model": "eleven_v4", "language_code": "zh" },
+  "tts": {
+    "provider": "elevenlabs",
+    "model": "eleven_v4",
+    "language_code": "zh"
+  },
   "casting": {
-    "nainai": { "voice": "5eoK8NqMBsMdqUmImHNs", "label": "Yating Lin", "style": "" },
-    "xiaoma": { "voice": "xQsp9uyB3OResmXFYuFx", "label": "Arthur", "style": "" },
-    "xiaoli": { "voice": "xQsp9uyB3OResmXFYuFx", "label": "Arthur", "style": "" },
-    "xiaolong": { "voice": "5s3UifUu3OJ90z17rRMA", "label": "Jun (小龙)", "style": "" },
-    "laowang": { "voice": "wANHrjUjSeu6xPACDSus", "label": "alvinluo (老王)", "style": "" },
-    "xiaomei": { "voice": "8RCmdqih4CKjJ7Bd3ZxT", "label": "Ladaisy (小美)", "style": "" },
-    "wang": { "voice": "rtRocV7drsrJFSQPxlD3", "label": "王阿姨", "style": "" },
-    "li": { "voice": "frg6uDhHqwcCUe0XBbpp", "label": "李叔叔", "style": "" },
-    "chen": { "voice": "YGeNjTKY1wBaKygyl4y8", "label": "陈爷爷", "style": "" },
-    "bai": { "voice": "W8lBaQb9YIoddhxfQNLP", "label": "Siqi Liu (白老师)", "style": "" },
-    "guichet": { "voice": "8uceOSflAGVvQuMt4HPh", "label": "Shasha (售票员, la guichetière de la gare)", "style": "" },
-    "police": { "voice": "cwzmKSYMCC9Aym1ymCnt", "label": "Mr. Chen (警察, le policier de la gare)", "style": "" },
-    "annonce": { "voice": "WfA47nTEqsxcbtplkPLI", "label": "Alina P (广播, annonce du train)", "style": "" },
-    "player": { "voice": "zYD0xJl1ponKr8TwFBmJ", "label": "Jin (joueur, clés _m)", "style": "" },
-    "player_f": { "voice": "bss6xwA9ygVKRihgIbhZ", "label": "joueuse (clés _f)", "style": "" },
-    "lexicon": { "voice": "s2LjOZIlsH2Yu4p6MtAK", "label": "Bobo", "style": "" }
+    "nainai": {
+      "voice": "5eoK8NqMBsMdqUmImHNs",
+      "label": "Yating Lin",
+      "style": ""
+    },
+    "xiaoma": {
+      "voice": "xQsp9uyB3OResmXFYuFx",
+      "label": "Arthur",
+      "style": ""
+    },
+    "xiaoli": {
+      "voice": "xQsp9uyB3OResmXFYuFx",
+      "label": "Arthur",
+      "style": ""
+    },
+    "xiaolong": {
+      "voice": "5s3UifUu3OJ90z17rRMA",
+      "label": "Jun (小龙)",
+      "style": ""
+    },
+    "laowang": {
+      "voice": "wANHrjUjSeu6xPACDSus",
+      "label": "alvinluo (老王)",
+      "style": ""
+    },
+    "xiaomei": {
+      "voice": "8RCmdqih4CKjJ7Bd3ZxT",
+      "label": "Ladaisy (小美)",
+      "style": ""
+    },
+    "wang": {
+      "voice": "rtRocV7drsrJFSQPxlD3",
+      "label": "王阿姨",
+      "style": ""
+    },
+    "li": {
+      "voice": "frg6uDhHqwcCUe0XBbpp",
+      "label": "李叔叔",
+      "style": ""
+    },
+    "chen": {
+      "voice": "YGeNjTKY1wBaKygyl4y8",
+      "label": "陈爷爷",
+      "style": ""
+    },
+    "bai": {
+      "voice": "W8lBaQb9YIoddhxfQNLP",
+      "label": "Siqi Liu (白老师)",
+      "style": ""
+    },
+    "guichet": {
+      "voice": "8uceOSflAGVvQuMt4HPh",
+      "label": "Shasha (售票员, la guichetière de la gare)",
+      "style": ""
+    },
+    "police": {
+      "voice": "cwzmKSYMCC9Aym1ymCnt",
+      "label": "Mr. Chen (警察, le policier de la gare)",
+      "style": ""
+    },
+    "annonce": {
+      "voice": "WfA47nTEqsxcbtplkPLI",
+      "label": "Alina P (广播, annonce du train)",
+      "style": ""
+    },
+    "player": {
+      "voice": "zYD0xJl1ponKr8TwFBmJ",
+      "label": "Jin (joueur, clés _m)",
+      "style": ""
+    },
+    "player_f": {
+      "voice": "bss6xwA9ygVKRihgIbhZ",
+      "label": "joueuse (clés _f)",
+      "style": ""
+    },
+    "lexicon": {
+      "voice": "s2LjOZIlsH2Yu4p6MtAK",
+      "label": "Bobo",
+      "style": ""
+    },
+    "douanier": {
+      "voice": "cwzmKSYMCC9Aym1ymCnt",
+      "label": "Mr. Chen (海关人员, le douanier de l'aéroport — bibliothèque)",
+      "style": ""
+    },
+    "accueil": {
+      "voice": "8uceOSflAGVvQuMt4HPh",
+      "label": "Shasha (王红, l'agente d'accueil de l'aéroport — bibliothèque)",
+      "style": ""
+    },
+    "narrateur": {
+      "voice": "s2LjOZIlsH2Yu4p6MtAK",
+      "label": "Bobo (narrateur des lectures guidées)",
+      "style": ""
+    }
   },
   "_voixNotes": "Pas de balise entre crochets dans les textes (eleven_v4 les joue). Chaque nouveau clip est normalisé à -17 LUFS avant d'entrer dans le jeu.",
-  "mastery": { "contextsRequired": 3 }
+  "mastery": {
+    "contextsRequired": 3
+  }
 }
