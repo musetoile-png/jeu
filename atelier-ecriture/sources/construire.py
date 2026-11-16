@@ -118,6 +118,21 @@ for n in (1, 2, 3, 4, 5, 6):
                 hsk_niv.setdefault(c, n)
 
 histoires = json.load(open(os.path.join(ATELIER, 'sources', 'histoires.json')))
+# Histoires et moyens mnémotechniques rédigés par Claude (brouillons, à vérifier par Nuwa), puis versions validées.
+#   sources/brouillons/*.json : { "car": {"h": histoire, "m": mnémo} }
+#   sources/histoires-validees.json : même format ; une entrée ici passe le caractère au statut « validé ».
+for f in sorted(glob.glob(os.path.join(ATELIER, 'sources', 'brouillons', '*.json'))):
+    for c, v in json.load(open(f)).items():
+        e = histoires.setdefault(c, {'pinyin': '', 'sens': '', 'histoire': '', 'mnemo': '', 'contextes': []})
+        e['histoire'] = v.get('h') or e.get('histoire', '')
+        e['mnemo'] = v.get('m') or e.get('mnemo', '')
+for c, e in histoires.items():
+    e['statut'] = 'brouillon' if (e.get('histoire') or e.get('mnemo')) else ''
+for c, v in json.load(open(os.path.join(ATELIER, 'sources', 'histoires-validees.json'))).items():
+    e = histoires.setdefault(c, {'pinyin': '', 'sens': '', 'histoire': '', 'mnemo': '', 'contextes': []})
+    e['histoire'] = v.get('h') or e['histoire']; e['mnemo'] = v.get('m') or e['mnemo']; e['statut'] = 'validé'
+# pinyin des particules : la forme courante, pas une lecture rare de la liste HSK
+PINYIN_FORCE = {'个': 'gè', '吗': 'ma', '吧': 'ba', '了': 'le', '的': 'de', '们': 'men', '么': 'me', '呢': 'ne'}
 
 # --- caractères, dans l'ordre du lexique ---
 cars, ordre = {}, []
@@ -146,7 +161,7 @@ for c in ordre:
             or (lazy_pinyin(c, style=Style.TONE)[0] if lazy_pinyin else '') or py
     if seul:
         sens = seul['gloss'].get('fr', '')
-    elif c in histoires:
+    elif histoires.get(c, {}).get('sens'):
         sens = histoires[c]['sens']
     else:
         sens = ' · '.join(f"dans {m['target']} ({m['gloss'].get('fr', '')})" for m in mots[:2])
@@ -158,8 +173,9 @@ for c in ordre:
         zh, _, fr = s.partition('|')
         if zh not in [x['zh'] for x in ctx]:
             ctx.append({'zh': zh, 'fr': fr, 'vo': '', 'scene': ''})
+    py = PINYIN_FORCE.get(c, py)
     sortie.append({
-        'c': c, 'pinyin': py, 'sens': sens, 'niveau': niveau, 'source': 'jeu' if d['mots'] else 'prototype',
+        'c': c, 'pinyin': py, 'statut': histoires.get(c, {}).get('statut', ''), 'sens': sens, 'niveau': niveau, 'source': 'jeu' if d['mots'] else 'prototype',
         'histoire': histoires.get(c, {}).get('histoire', ''), 'mnemo': histoires.get(c, {}).get('mnemo', ''),
         'mots': [{'id': m['id'], 'zh': m['target'], 'py': m.get('transcription', ''), 'fr': m['gloss'].get('fr', ''),
                   'vo': ('w_' + m['id']) if os.path.exists(os.path.join(VO, 'w_' + m['id'] + '.mp3')) else ''} for m in mots],

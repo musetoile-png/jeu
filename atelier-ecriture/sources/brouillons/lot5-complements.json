@@ -1,0 +1,15 @@
+{
+"小": {"h": "Trois petits traits, comme des grains de sable ou des gouttes : petit (explication courante). Opposé de 大.", "m": "Un trait au milieu et deux petites gouttes de chaque côté : tout petit."},
+"水": {"h": "Pictogramme d'un cours d'eau : le courant au centre et les remous sur les côtés. En composant, il devient 氵 (trois gouttes).", "m": "Le courant au milieu, l'eau qui gicle des deux côtés."},
+"山": {"h": "Pictogramme de trois pics de montagne, le plus haut au milieu.", "m": "Trois sommets, le plus haut au centre."},
+"口": {"h": "Pictogramme d'une bouche ouverte. En composant, il marque souvent la parole ou les particules de l'oral : 吗, 吧, 叫, 哪.", "m": "Une bouche grande ouverte, carrée."},
+"日": {"h": "Pictogramme du soleil : un cercle avec un point au centre, devenu carré au pinceau. Soleil, jour.", "m": "Un soleil carré avec un trait au milieu."},
+"月": {"h": "Pictogramme d'un croissant de lune. En composant, 月 peut aussi venir de 肉, la viande (有, 肝, 脸).", "m": "Un croissant de lune, avec deux traits dedans."},
+"木": {"h": "Pictogramme d'un arbre : un tronc, des branches en haut, des racines en bas.", "m": "Un tronc droit, des branches et des racines qui s'écartent."},
+"吃": {"h": "口 (bouche) + 乞 (qǐ, mendier, pour le son). Sens premier : bégayer (口吃), puis manger.", "m": "La bouche (口) qui réclame (乞) à manger."},
+"喝": {"h": "口 (bouche) + 曷 (hé, pour le son). Boire ; aussi crier fort.", "m": "La bouche (口) qui avale une grande gorgée."},
+"学": {"h": "Forme traditionnelle 學 : deux mains qui manipulent des baguettes à compter (爻) au-dessus d'un enfant (子) sous un toit : l'enfant qui apprend à l'école.", "m": "Un enfant (子) sous le toit de l'école, des étincelles d'idées au-dessus."},
+"一": {"h": "Un seul trait horizontal : un.", "m": "Un seul trait, posé à plat."},
+"二": {"h": "Deux traits horizontaux, le second plus long : deux.", "m": "Deux traits, le petit en haut."},
+"三": {"h": "Trois traits horizontaux : trois. Le trait du milieu est le plus court.", "m": "Trois traits empilés, le plus long en bas."}
+}

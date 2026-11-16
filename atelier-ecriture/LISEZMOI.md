@@ -1,4 +1,4 @@
-# Atelier d'écriture — module de 千里 Mille li (v0.5, 16 novembre 2026)
+# Atelier d'écriture — module de 千里 Mille li (v0.6, 16 novembre 2026)
 
 En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, tablette, ordinateur ; doigt, stylet ou souris).
 
@@ -8,6 +8,12 @@ En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, t
 3. **Dictée** : on entend un mot (ou une phrase du jeu) avec la voix ElevenLabs, on écrit les caractères. Les caractères déjà appris viennent en premier.
 4. **Carnet** : les caractères du paquet, de l'encre pâle (jamais écrit) à l'encre noire (maîtrisé : 3 réussites et 3 contextes). Choix du paquet (HSK 1, 2, 3, autres, ajoutés), réglages (tolérance, nouveaux par jour, épaisseur du trait), import Excel.
 5. **Journal** : un événement par geste (tracé, écoute, indice, ordre montré, pinyin…), avec erreurs par trait, durée, contexte déjà vu ou nouveau, doigt/stylet/souris. Export CSV (séparateur `;`, s'ouvre dans Excel) ou JSON, avec un pseudonyme d'élève.
+
+## Histoires, cours Word et relecture de Nuwa (v0.6)
+- **Les 235 caractères ont une histoire et un moyen mnémotechnique**, rédigés par Claude : `sources/brouillons/*.json` (`{"car": {"h": histoire, "m": mnémo}}`), statut « brouillon à vérifier par Nuwa » affiché dans l'atelier. Conventions : « explication traditionnelle », « origine discutée », « pour le son ».
+- **Relecture** : `sources/histoires-a-verifier.xlsx` (onglets Histoires + Mode d'emploi). Nuwa met « validé » ou corrige le texte ; importé dans l'atelier (Carnet → Importer), il s'applique sur l'appareil (stockage `ecriture_corrections_v1`, pas de paquet créé). Pour l'intégrer au jeu : reporter les lignes validées ou corrigées dans `sources/histoires-validees.json` (même format que les brouillons) et relancer `construire.py`.
+- **Cours Word (.docx)** : `import-word.js` lit les tableaux de vocabulaire (en-têtes 词 ou Mot, Pinyin, Sens, Analyse), découpe l'analyse d'un mot caractère par caractère (« 机 : … 场 : … »), et reprend les phrases chinoises du cours comme contextes (sans traduction, voix du navigateur). Affiché dans « Histoire et mnémo » sous « Analyse du cours ». Le contenu reste sur l'appareil : il n'est pas dans le dépôt.
+- Corrigé : le sens du type « dans 手机 (…) » ne donne plus la réponse aux étapes 2 et 3 ; pinyin des particules (个 gè, 吗 ma, 吧 ba…).
 
 ## Retours de Manu du 16 novembre (v0.5)
 - **Nouveaux et révisions mélangés** : la séance répartit les nouveaux caractères entre les révisions (ex. 2 révisions, 1 nouveau…). Correction d'un bug : le moteur ignorait le réglage « nouveaux par jour » et restait à 5.
@@ -36,6 +42,7 @@ Carnet → « Choisir un fichier » → le `.apkg` exporté d'Anki. Tout se pass
 - `moteur-ecriture.js` : répétition espacée de l'écriture + journal, sans DOM — à réutiliser tel quel dans le jeu (le « pinceau »).
 - `donnees/caracteres.js` : **généré** par `sources/construire.py` à partir de `src/content/languages/zh/lexicon.json` et des scènes des paquets (phrases justes seulement, avec traduction et voix). Relancer le script après chaque ajout au lexique.
 - `traits/` : données de traits Make Me a Hanzi (caractères du jeu + HSK 1 à 3 de 2021 : 940 fichiers, 3,8 Mo), **non modifiées**, avec `ARPHICPL.TXT`. Les autres caractères se chargent depuis jsDelivr (connexion nécessaire).
+- `import-word.js` : lecture des cours Word (.docx).
 - `diagnostic-traits.js` : diagnostic des traits faux et planche de correction (sans DOM, réutilisable dans le jeu).
 - `import-anki.js` : lecture des `.apkg` (chargé, avec ses bibliothèques, seulement au moment d'importer).
 - `lib/` : Hanzi Writer 3.7.3 (MIT), SheetJS 0.18.5 (Apache 2.0), sql.js 1.16.0, fflate 0.8.3, fzstd 0.1.1 (MIT), copiés pour ne dépendre d'aucun service.

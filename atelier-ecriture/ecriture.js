@@ -32,13 +32,16 @@
     Object.values(aj).forEach(a => { if (!a.paquets || !a.paquets.length) a.paquets = ['Excel']; a.mots = a.mots || []; a.contextes = a.contextes || []; });
     return aj;
   }
-  function construirePaquet() {
+  let construirePaquet = function () {
     PAR = {}; ORDRE = [];
     (window.CARACTERES || []).forEach(d => { PAR[d.c] = JSON.parse(JSON.stringify(d)); PAR[d.c].paquets = []; ORDRE.push(d.c); });
     Object.values(lireAjouts()).forEach(a => {
       let d = PAR[a.c];
       if (!d) { d = PAR[a.c] = { c: a.c, pinyin: '', sens: '', niveau: 0, source: 'import', histoire: '', mnemo: '', mots: [], contextes: [], paquets: [] }; ORDRE.push(a.c); }
       ['histoire', 'mnemo', 'noteProf'].forEach(k => { if (a[k]) d[k] = a[k]; });
+      if (a.histoire || a.mnemo) d.statut = 'import';
+      const dejaA = new Set((d.analyses || []).map(x => x.mot + '|' + x.paquet));
+      d.analyses = (d.analyses || []).concat((a.analyses || []).filter(x => !dejaA.has(x.mot + '|' + x.paquet)));
       ['pinyin', 'sens'].forEach(k => { if (a[k] && (a.force || !d[k] || d.source === 'import')) d[k] = a[k]; });
       if (a.niveau) d.niveau = a.niveau;
       d.importe = true;
@@ -48,7 +51,17 @@
       const dejaM = new Set(d.mots.map(x => x.zh));
       d.mots = d.mots.concat(a.mots.filter(x => !dejaM.has(x.zh)));
     });
+  };
+  // corrections de Nuwa importées depuis le fichier de relecture (colonne « statut ») : elles priment
+  function appliquerCorrections() {
+    const corr = stock.lire('ecriture_corrections_v1') || {};
+    Object.entries(corr).forEach(([c, v]) => {
+      const d = PAR[c]; if (!d) return;
+      if (v.histoire) d.histoire = v.histoire; if (v.mnemo) d.mnemo = v.mnemo; d.statut = v.statut || 'corrigé';
+    });
   }
+  const construireBase = construirePaquet;
+  construirePaquet = function () { construireBase(); appliquerCorrections(); };
   if (R.niveaux.includes('ajouts')) { R.niveaux = R.niveaux.filter(x => x !== 'ajouts').concat('p:Excel'); }
   construirePaquet();
   function etiquettes(d) {
@@ -267,7 +280,7 @@
     Object.assign(etat, { etape: e, debut: Date.now(), erreurs: 0, parTrait: [], diags: [], indices: 0, ordreMontre: false, fini: false, traitCourant: 0 });
     $('bilan').hidden = true;
     majEtapes(e); majCompteurs();
-    $('sens').textContent = d.sens || '—';
+    $('sens').textContent = e >= 2 ? (d.sens || '—').split(d.c).join('＿') : (d.sens || '—');  // « dans 手机 » ne doit pas donner la réponse
     $('pinyin').textContent = d.pinyin || '';
     majPinyin();
     const ma = motAudio(d);
@@ -308,6 +321,7 @@
       pinyin_visible: R.pinyin, tolerance: R.tolerance, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(etat.diags),
     });
     bilan($('bilan'), etat.c, etat.diags, traceur.w);
+    $('sens').textContent = d.sens || '—';
     afficherMots(d, true); afficherContexte(true); majPinyin(); majCompteurs();
     const b = $('btnSuite'), m = $('retour');
     $('aides').hidden = true; b.hidden = false;
@@ -336,7 +350,8 @@
     }
     b.focus({ preventScroll: true });
   }
-  const aHistoire = d => !!(d.histoire || d.mnemo || d.noteProf);
+  const aHistoire = d => !!(d.histoire || d.mnemo || d.noteProf || (d.analyses && d.analyses.length));
+  const ETIQUETTES = { brouillon: 'brouillon à vérifier par Nuwa', 'validé': 'vérifiée par Nuwa', 'corrigé': 'corrigée par Nuwa', import: 'importée' };
   /* masque = pendant l'étape « de mémoire » : on n'affiche pas le caractère lui-même (sinon la réponse est donnée) */
   function afficherHistoire(d, masque) {
     if (!aHistoire(d)) {
@@ -344,7 +359,9 @@
       $('histoire').hidden = false; return;
     }
     const m = t => masque ? t.split(d.c).join('＿') : t;
-    $('histoire').innerHTML = `${masque ? '' : '<div class="grand">' + d.c + '</div>'}${d.histoire ? '<b>Histoire :</b> ' + m(d.histoire) + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + m(d.mnemo) + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + m(d.noteProf) : ''}`;
+    const cours = (d.analyses || []).slice(0, 3).map(a => `<div class="cours"><b>Analyse du cours</b>${a.mot !== d.c ? ' (dans ' + m(a.mot) + ')' : ''} : ${m(a.texte)}<span class="source">${a.paquet}</span></div>`).join('');
+    const etiq = d.statut && (d.histoire || d.mnemo) ? `<span class="statut statut-${d.statut === 'brouillon' ? 'b' : 'v'}">${ETIQUETTES[d.statut] || d.statut}</span>` : '';
+    $('histoire').innerHTML = `${masque ? '' : '<div class="grand">' + d.c + '</div>'}${cours}${d.histoire ? '<b>Histoire :</b> ' + m(d.histoire) + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + m(d.mnemo) + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + m(d.noteProf) + '<br>' : ''}${etiq}`;
     $('histoire').hidden = false;
   }
   $('btnHistoire').onclick = () => {
@@ -586,11 +603,30 @@
     const f = e.target.files[0]; if (!f) return;
     e.target.value = '';
     if (/\.apkg$/i.test(f.name)) return importerAnki(f);
+    if (/\.docx$/i.test(f.name)) return importerWord(f);
     const rd = new FileReader();
     rd.onload = ev => {
       const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
       const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
       const ajouts = lireAjouts(), paquet = f.name.replace(/\.(xlsx|xls|csv)$/i, '');
+      const entete = (rows[0] || []).map(x => String(x).toLowerCase());
+      const iStatut = entete.findIndex(x => x.startsWith('statut'));
+      if (iStatut >= 0) {   // fichier de relecture des histoires (corrections de Nuwa)
+        const corr = stock.lire('ecriture_corrections_v1') || {}; let n = 0;
+        rows.slice(1).forEach(r => {
+          const c = String(r[0] || '').trim(); if (!c || !PAR[c]) return;
+          const st = String(r[iStatut] || '').toLowerCase();
+          const h = String(r[3] || '').trim(), mn = String(r[4] || '').trim(), d = PAR[c];
+          const norm = t => String(t || '').normalize('NFC').replace(/\s+/g, ' ').trim();
+          const change = (h && norm(h) !== norm(d.histoire)) || (mn && norm(mn) !== norm(d.mnemo));
+          if (!st.startsWith('valid') && !change) return;
+          corr[c] = { histoire: h || d.histoire, mnemo: mn || d.mnemo, statut: change ? 'corrigé' : 'validé' }; n++;
+        });
+        stock.ecrire('ecriture_corrections_v1', corr); construirePaquet(); majCarnet();
+        $('infoImport').textContent = `Relecture importée : ${n} caractère(s) validé(s) ou corrigé(s) sur cet appareil. Envoie aussi le fichier à Claude pour l'intégrer au jeu.`;
+        journal.ajouter({ evenement: 'import', detail: 'relecture:' + f.name + ':' + n });
+        return;
+      }
       let ajout = 0, maj = 0, horsLigne = 0;
       rows.forEach(r => {
         const c = String(r[0] || '').trim();
@@ -694,6 +730,63 @@
     construirePaquet(); majCarnet(); majCompteurs();
   }
 
+  /* Cours de la prof au format Word : l'analyse de chaque mot va à ses caractères ; les phrases chinoises
+     deviennent des contextes (sans traduction : c'est le cours qui l'apporte) ; le tout reste sur l'appareil. */
+  async function importerWord(f) {
+    const info = $('infoImport');
+    info.textContent = 'Lecture du document Word…';
+    let p;
+    try { p = await ImportWord.lire(await f.arrayBuffer(), f.name); }
+    catch (err) { info.textContent = 'Lecture impossible : ' + err.message; return; }
+    if (!p.mots.length) { info.textContent = 'Aucun tableau de vocabulaire trouvé (colonnes attendues : 词 ou Mot, Pinyin, Sens, Analyse).'; return; }
+    const nom = p.nom, ajouts = lireAjouts(), pyCars = window.PINYIN_CARS || {};
+    Object.values(ajouts).forEach(a => {
+      a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom);
+      a.analyses = (a.analyses || []).filter(x => x.paquet !== nom);
+    });
+    const entree = c => {
+      const a = ajouts[c] || (ajouts[c] = { c, contextes: [], mots: [], paquets: [], analyses: [] });
+      a.analyses = a.analyses || [];
+      if (!a.paquets.includes(nom)) a.paquets.push(nom);
+      return a;
+    };
+    const duJeu = c => PAR[c] && PAR[c].source !== 'import';
+    const cars = new Set(), nouveaux = new Set();
+    p.mots.forEach((m, i) => {
+      const cs = [...m.zh].filter(c => HAN.test(c));
+      new Set(cs).forEach(c => {
+        cars.add(c); if (!duJeu(c)) nouveaux.add(c);
+        const e = entree(c);
+        const texte = m.parCar[c] || (cs.length > 1 ? m.analyse : m.analyse);
+        if (texte && !e.analyses.some(x => x.mot === m.zh)) e.analyses.push({ mot: m.zh, texte, paquet: nom });
+        if (m.zh === c && m.fr && !duJeu(c)) e.sens = m.fr;
+        if (!e.pinyin && !duJeu(c)) e.pinyin = (cs.length === 1 && m.py) || pyCars[c] || '';
+        if (!e.mots.some(x => x.zh === m.zh)) e.mots.push({ id: 'word-' + i, zh: m.zh, py: m.py, fr: m.fr, vo: '', synth: true, paquet: nom });
+      });
+    });
+    let phrases = 0;
+    p.phrases.forEach(zh => {
+      let utile = false;
+      new Set([...zh].filter(c => cars.has(c))).forEach(c => {
+        const e = entree(c);
+        if (!e.contextes.some(x => x.zh === zh)) { e.contextes.push({ zh, fr: '', py: '', vo: '', synth: true, paquet: nom }); utile = true; }
+      });
+      if (utile) phrases++;
+    });
+    cars.forEach(c => {   // sens d'un caractère sans entrée à lui : « dans 机场 (aéroport) »
+      const e = ajouts[c];
+      if (e.sens || duJeu(c)) return;
+      const m = e.mots.filter(x => x.paquet === nom && x.fr).sort((x, y) => x.zh.length - y.zh.length).slice(0, 2);
+      if (m.length) e.sens = m.map(x => `dans ${x.zh} (${x.fr})`).join(' · ');
+    });
+    stock.ecrire('ecriture_ajouts_v1', ajouts);
+    construirePaquet();
+    if (!R.niveaux.includes('p:' + nom)) R.niveaux.push('p:' + nom); sauverR();
+    majCarnet(); majCompteurs();
+    info.innerHTML = `<b>★ ${nom}</b> : ${p.mots.length} mots analysés, ${cars.size} caractères (${nouveaux.size} absents du jeu), ${phrases} phrases du cours ajoutées comme contextes. Les analyses s'affichent avec « Histoire et mnémo ».`;
+    journal.ajouter({ evenement: 'import', detail: 'word:' + nom + ':' + p.mots.length + ' mots:' + cars.size + ' caracteres' });
+  }
+
   async function retirerPaquet(nom) {
     if (!confirm('Retirer le paquet « ' + nom + ' » ? La progression déjà faite est gardée.')) return;
     const ajouts = lireAjouts(), sons = new Set();
@@ -702,6 +795,7 @@
       const a = ajouts[c];
       a.paquets = a.paquets.filter(x => x !== nom);
       a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom);
+      a.analyses = (a.analyses || []).filter(x => x.paquet !== nom);
       if (!a.paquets.length) delete ajouts[c];
     });
     stock.ecrire('ecriture_ajouts_v1', ajouts);
