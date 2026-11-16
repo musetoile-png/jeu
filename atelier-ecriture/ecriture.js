@@ -277,7 +277,8 @@
     afficherMots(d, e === 1); afficherContexte(e === 1);
     $('retour').className = 'retour'; $('retour').textContent = CONSIGNES[e];
     $('btnSuite').hidden = true; $('histoire').hidden = true; $('aides').hidden = false;
-    $('btnHistoire').hidden = !aHistoire(d); $('btnHistoire').setAttribute('aria-pressed', 'false');
+    $('btnHistoire').hidden = false; $('btnHistoire').setAttribute('aria-pressed', 'false');
+    $('btnHistoire').textContent = aHistoire(d) ? 'Histoire et mnémo' : 'Histoire et mnémo (vide)';
     traceur = creerTraceur($('zone'), etat.c, e, {
       erreurTrait: s => {
         etat.erreurs++; etat.parTrait[s.strokeNum] = (etat.parTrait[s.strokeNum] || 0) + 1;
@@ -338,7 +339,10 @@
   const aHistoire = d => !!(d.histoire || d.mnemo || d.noteProf);
   /* masque = pendant l'étape « de mémoire » : on n'affiche pas le caractère lui-même (sinon la réponse est donnée) */
   function afficherHistoire(d, masque) {
-    if (!aHistoire(d)) { $('histoire').hidden = true; return; }
+    if (!aHistoire(d)) {
+      $('histoire').innerHTML = `${masque ? '' : '<div class="grand">' + d.c + '</div>'}<span class="aide">Pas encore d'histoire ni de moyen mnémotechnique pour ce caractère. On peut en ajouter par un fichier Excel (Carnet → Importer).</span>`;
+      $('histoire').hidden = false; return;
+    }
     const m = t => masque ? t.split(d.c).join('＿') : t;
     $('histoire').innerHTML = `${masque ? '' : '<div class="grand">' + d.c + '</div>'}${d.histoire ? '<b>Histoire :</b> ' + m(d.histoire) + '<br>' : ''}${d.mnemo ? '<b>Pour s\'en souvenir :</b> ' + m(d.mnemo) + '<br>' : ''}${d.noteProf ? '<b>Note du cours :</b> ' + m(d.noteProf) : ''}`;
     $('histoire').hidden = false;
