@@ -109,7 +109,7 @@ for t, i, d in [(0.15, 6, 2.5), (0.75, 5, 2.0), (1.15, 4, 2.0), (1.55, 3, 2.6), 
 WK = T['walk']
 
 
-def step_sound(t, k, g=0.3):
+def step_sound(t, k, g=0.11):  # pas discrets (demande de Manu)
     d = 0.11
     x = bp(noise(d, S('step', k)), 250, 2200) * env(d, 0.002, 0.025) + 0.5 * sweep_sine(d, 160, 70, 0.02) * env(d, 0.001, 0.03)
     mx.add(t, x, g, -0.1 + 0.2 * (k % 2), 0.1)
@@ -130,7 +130,7 @@ while True:
     t = RN['t0'] + k * math.pi / RN['omega']
     if t > RN['recedeEnd']:
         break
-    step_sound(t, 100 + k, 0.3 * max(0.15, 1 - (t - RN['arrive']) / 0.9) if t > RN['arrive'] else 0.32)
+    step_sound(t, 100 + k, 0.3 * max(0.15, 1 - (t - RN['arrive']) / 0.9) * 0.37 if t > RN['arrive'] else 0.12)
     k += 1
 
 # ---- le portefeuille ----

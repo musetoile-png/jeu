@@ -85,7 +85,7 @@ for s in D['schedule']:
     shape = np.minimum(1, tt(n) / 0.02) * (1 - u) ** 0.6 * (0.7 + 0.3 * np.sin(np.pi * u))
     x = bp(noise(n, S('brush', s['c'], s['i'], s['group'])), 900, 5000) * shape
     x += 0.35 * lp(noise(n, S('paper', s['c'], s['i'])), 400) * shape
-    mx.add(s['t0'], x, 0.16 if big else 0.07, 0.2 if big else 0.6, 0.15)
+    mx.add(s['t0'], x, 0.045 if big else 0.02, 0.2 if big else 0.6, 0.15)  # pinceau discret (demande de Manu)
     mark('brush', s['t0'])
 
 # guzheng : une note posée au début de chaque caractère du titre, phrase qui monte
