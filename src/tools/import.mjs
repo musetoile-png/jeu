@@ -6,7 +6,9 @@
  *
  * Le tableur (modèle : node tools/modele-tableur.mjs) a quatre onglets :
  *  - Leçon     : identifiant du paquet, titres, langue, paquet de base (décors et personnages réutilisés)
- *  - Mots      : le vocabulaire (mot, transcription, traduction) ; un mot déjà connu de la langue est réutilisé
+ *  - Mots      : le vocabulaire (mot, transcription, traduction, [analyse]) ; un mot déjà connu de la langue est réutilisé
+ *                (même identifiant, même voix) ; si la ligne en donne une traduction, un pinyin ou une analyse différents,
+ *                le lexique du paquet les surcharge, pour ce paquet seulement (même id, même caractère)
  *  - Scènes    : une ligne par scène : lieu, personnage, ordre
  *  - Répliques : une ligne par réplique (« dit ») ou par question à choix (« choix »), dans l'ordre
  *
@@ -148,31 +150,76 @@ function makeId(entry) {
 }
 
 const byTarget = new Map(baseLex.map((e) => [e.target, e]));
+const baseByTarget = new Map(byTarget);
 const usedIds = new Set(baseLex.map((e) => e.id));
 const packLex = [];
+let overrides = 0;
+
+/** Texte comparable : forme Unicode, apostrophes (’ = '), espaces. Une différence de typographie n'est pas une surcharge. */
+const plain = (x) =>
+  (x ?? '').normalize('NFC').replace(/[’‘`]/g, "'").replace(/\s+/g, ' ').trim();
+const sameText = (a, b) => plain(a) === plain(b);
+/** Pinyin comparable : « Nǐ  hǎo » = « nǐ hǎo » (en plus : la casse). */
+const samePinyin = (a, b) => plain(a).toLowerCase() === plain(b).toLowerCase();
+
 for (const r of sheet('Mots')) {
   const target = r.mot ?? '';
   if (!target) {
     errors.push(`Mots ligne ${r._row} : colonne « mot » vide`);
     continue;
   }
-  const gloss = r.traduction ?? '';
+  // les en-têtes des tableaux de cours (Pinyin, Sens, Analyse) sont acceptés comme ceux du modèle
+  const gloss = r.traduction || r.sens || '';
+  const transcription = r.transcription || r.pinyin || '';
+  const analysis = (r.analyse || r.etymologie || r.explication || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[ \t]+\n/g, '\n');
+  const known = baseByTarget.get(target);
+  if (known) {
+    // déjà dans la langue : on réutilise l'entrée existante (même identifiant, même voix) ; ce que la leçon en dit
+    // autrement (sens, pinyin, analyse de l'enseignant) devient une surcharge, valable dans ce paquet seulement
+    if (r.identifiant && norm(r.identifiant) !== norm(known.id))
+      warnings.push(
+        `Mots ligne ${r._row} : « ${target} » est déjà connu du jeu sous l'identifiant « ${known.id} » : l'identifiant « ${r.identifiant} » est ignoré`,
+      );
+    const over = { id: known.id, target };
+    if (transcription && !samePinyin(transcription, known.transcription))
+      over.transcription = transcription;
+    if (gloss && !sameText(gloss, known.gloss?.fr)) over.gloss = { fr: gloss };
+    if (analysis && !sameText(analysis, known.analysis?.fr))
+      over.analysis = { fr: analysis };
+    if (Object.keys(over).length === 2) continue;
+    if (packLex.some((e) => e.id === known.id)) {
+      warnings.push(
+        `Mots ligne ${r._row} : « ${target} » apparaît deux fois ; seule la première ligne compte`,
+      );
+      continue;
+    }
+    packLex.push(over);
+    overrides++;
+    continue;
+  }
+  if (byTarget.has(target)) {
+    warnings.push(
+      `Mots ligne ${r._row} : « ${target} » apparaît deux fois ; seule la première ligne compte`,
+    );
+    continue;
+  }
   if (!gloss)
     errors.push(`Mots ligne ${r._row} : « ${target} » sans traduction`);
-  if (language.transcription && !r.transcription)
+  if (language.transcription && !transcription)
     warnings.push(
       `Mots ligne ${r._row} : « ${target} » sans ${language.transcription}`,
     );
-  const known = byTarget.get(target);
-  if (known) continue; // déjà dans la langue : on réutilise l'entrée existante (même identifiant, même voix)
   const entry = {
     id: '',
     target,
-    transcription: r.transcription || undefined,
+    transcription: transcription || undefined,
     gloss: { fr: gloss },
   };
   if (r.nature) entry.pos = r.nature;
   if (r.niveau) entry.level = r.niveau;
+  if (analysis) entry.analysis = { fr: analysis };
   let id = r.identifiant ? norm(r.identifiant) : makeId(entry);
   for (let k = 2; usedIds.has(id); k++) id = `${makeId(entry)}_${k}`;
   entry.id = id;
@@ -577,7 +624,7 @@ const pack = {
 };
 
 const out = join(CONTENT, 'packs', packId);
-const summary = `${sceneFiles.length} scène(s), ${sceneFiles.reduce((n, s) => n + s.steps.length, 0)} étape(s), ${packLex.length} mot(s) nouveau(x), ${voices.length} voix à générer, lieu(x) : ${placeIds.join(', ')}`;
+const summary = `${sceneFiles.length} scène(s), ${sceneFiles.reduce((n, s) => n + s.steps.length, 0)} étape(s), ${packLex.length - overrides} mot(s) nouveau(x), ${overrides} surcharge(s) de mots connus (sens, pinyin ou analyse), ${packLex.filter((e) => e.analysis).length} analyse(s), ${voices.length} voix à générer, lieu(x) : ${placeIds.join(', ')}`;
 if (dryRun) {
   console.log(`\nTableur valide (essai, rien n'est écrit) : ${summary}`);
   process.exit(0);

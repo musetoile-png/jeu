@@ -393,10 +393,14 @@ export class Dialogue {
       i.textContent = e?.transcription ?? '';
       s.title = t(this.content, e?.gloss);
       s.tabIndex = 0;
+      // mot analysé par l'enseignant : souligné de points ; le toucher ouvre aussi sa fiche dans le carnet
+      const analysed = !!t(this.content, e?.analysis);
+      if (analysed) s.classList.add('has-an');
       s.onclick = (ev) => {
         ev.stopPropagation();
         if (e) speak(this.content, e.target, `w_${tok[1]}`, RATE.WORD);
         log({ scene: this.scene.id, step: this.i, kind: 'listen', word: tok[1], detail: 'word' });
+        if (analysed) document.dispatchEvent(new CustomEvent('word-analysis', { detail: tok[1] }));
       };
     } else if (tok[0] === 't') {
       s.className = 'w';

@@ -100,6 +100,8 @@ E. Si l'enseignant n'a pas donné de liste de mots, « motsDemandes » est la li
 F. Les exercices de la leçon, s'il y en a, peuvent t'inspirer des « choix » supplémentaires, placés là où ils s'insèrent naturellement dans la scène.
 G. Le titre de la leçon garde son titre d'origine (titreCible) et sa traduction (titre).
 H. La longueur des scènes suit celle du dialogue : les limites de nombre de lignes et de « choix » de la règle 3 ne s'appliquent pas.
+I. **Analyse des caractères.** Si la leçon contient une analyse des mots (colonne « Analyse » d'un tableau de vocabulaire, décomposition en caractères et composants, étymologie, aide-mémoire), recopie-la **mot pour mot** dans le champ « analyse » du mot, sans la résumer, la corriger ni la compléter (retours à la ligne permis : \\n). Un mot dont la leçon ne donne pas d'analyse n'a pas de champ « analyse ».
+J. **Mots déjà connus du jeu.** Si la leçon donne pour un mot déjà connu du jeu un sens ou une analyse, liste-le **aussi** dans « mots » avec la traduction de la leçon et son analyse recopiée : c'est l'explication de l'enseignant que l'élève doit retrouver dans son carnet (elle remplace celle du jeu pour cette leçon seulement). Les autres mots connus n'ont rien à faire dans « mots ».
 
 `;
 }
@@ -164,6 +166,8 @@ Un personnage peut jouer un autre rôle que son rôle d'origine : donne-lui alor
 - soit dans ta liste « mots », avec son pinyin à tons et sa traduction française.
 Un nom propre ou un nom de personnage utilisé dans une phrase (王经理…) doit lui aussi figurer dans « mots ». Mets dans « mots » tous les mots demandés par l'enseignant, et le moins possible d'autres mots nouveaux.
 
+Le champ « analyse » d'un mot est **facultatif** et réservé à l'analyse écrite par l'enseignant dans la leçon fournie (caractères, composants, étymologie, aide-mémoire), recopiée mot pour mot. **N'invente jamais d'étymologie ni de décomposition** : sans analyse dans la leçon fournie, laisse « analyse » absent. Une étymologie inventée serait apprise par l'élève comme vraie.
+
 Vocabulaire déjà connu du jeu (${lexicon.length} mots) :
 ${known}
 
@@ -195,7 +199,8 @@ Réponds uniquement par un bloc \`\`\`json contenant cet objet (les champs entre
     "sousTitre": "[petite ligne sous le titre]"
   },
   "mots": [
-    { "mot": "便宜", "transcription": "piányi", "traduction": "bon marché", "nature": "[adjectif]", "niveau": "[HSK2]" }
+    { "mot": "便宜", "transcription": "piányi", "traduction": "bon marché", "nature": "[adjectif]", "niveau": "[HSK2]",
+      "analyse": "[seulement si la leçon fournie en donne une : recopiée mot pour mot]" }
   ],
   "scenes": [
     { "id": "minuscules-et-tirets", "titre": "titre en français", "lieu": "id d'un lieu", "personnage": "id d'un personnage",
@@ -284,6 +289,7 @@ async function draftToSheet(
     join(CONTENT, 'languages', langCode, 'lexicon.json'),
   ).entries;
   const known = new Set(lexicon.map((e) => e.target));
+  const knownByTarget = new Map(lexicon.map((e) => [e.target, e]));
 
   const L = draft.lecon ?? {};
   const identifiant = slug(L.identifiant || L.titre || 'lecon-generee');
@@ -308,6 +314,7 @@ async function draftToSheet(
     m.nature ?? '',
     m.niveau ?? '',
     '',
+    m.analyse ?? '',
   ]);
   const scenes = (draft.scenes ?? []).map((s) => [
     s.id ?? '',
@@ -388,6 +395,47 @@ async function draftToSheet(
         `${m.mot} (${m.transcription ?? '?'}) : ${m.traduction ?? '?'}`,
         'Hors de la liste demandée : vérifier qu’il est utile et au niveau de la classe.',
       ]);
+  // mots connus du jeu dont la leçon donne un autre sens ou une analyse : ils surchargeront le lexique (ce paquet seulement)
+  for (const m of mots) {
+    const k = knownByTarget.get(m.mot);
+    if (!k) continue;
+    const changes = [];
+    const plain = (x) =>
+      (x ?? '').replace(/[’‘`]/g, "'").replace(/\s+/g, ' ').trim();
+    if (m.traduction && plain(m.traduction) !== plain(k.gloss?.fr))
+      changes.push(
+        `sens : « ${k.gloss?.fr ?? ''} » dans le jeu → « ${m.traduction} » dans la leçon`,
+      );
+    if (m.analyse) changes.push('analyse de l’enseignant ajoutée');
+    if (changes.length)
+      rel.push([
+        'Mot connu, surchargé',
+        `${m.mot} (${k.transcription ?? ''}) : ${changes.join(' ; ')}.`,
+        'Valable dans cette leçon seulement. Effacer la ligne de l’onglet Mots pour garder le sens du jeu.',
+      ]);
+  }
+  // analyses : recopiées de la leçon fournie, jamais inventées
+  const withAnalysis = mots.filter((m) => m.analyse);
+  if (withAnalysis.length) {
+    const source = compact(lessonText);
+    const notFound = withAnalysis.filter(
+      (m) => !lessonText || !source.includes(compact(m.analyse)),
+    );
+    for (const m of notFound)
+      rel.push([
+        'Analyse à vérifier',
+        lessonText
+          ? `L’analyse de ${m.mot} n’est pas recopiée telle quelle de la leçon fournie.`
+          : `${m.mot} a une analyse, mais aucune leçon n’a été fournie : l’IA a pu l’inventer.`,
+        'Comparer avec le cours (colonne Analyse de l’onglet Mots) ; une étymologie inventée doit être effacée.',
+      ]);
+    if (withAnalysis.length > notFound.length)
+      rel.push([
+        'Analyses',
+        `${withAnalysis.length - notFound.length} analyse(s) recopiée(s) mot pour mot de la leçon.`,
+        'Vérifié automatiquement (à l’espace près).',
+      ]);
+  }
   for (const m of draft.personnagesManquants ?? []) {
     const used = cat.people.get(m.remplace);
     rel.push([

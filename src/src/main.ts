@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 import { applyBranding, CLIENT, storageKey } from './engine/client';
 import type { Content } from './engine/content';
-import { calligraphyFont, packLanguage } from './engine/content';
+import { calligraphyFont, packLanguage, t } from './engine/content';
 import { count } from './engine/log';
 import { buildReport } from './engine/report';
 import * as notebook from './engine/notebook';
@@ -98,8 +98,83 @@ function renderNotebook(content: Content) {
     (s.querySelector('b') as HTMLElement).textContent = e.target;
     (s.querySelector('i') as HTMLElement).textContent = e.transcription ?? '';
     (s.querySelector('small') as HTMLElement).textContent = `${e.gloss.fr ?? ''} · ${notebook.contexts(id)}/${required}`;
+    // un mot analysé par l'enseignant : un point d'ambre, et un clic ouvre sa fiche
+    if (t(content, e.analysis)) {
+      s.classList.add('has-an');
+      s.classList.toggle('sel', id === cardWord);
+      s.dataset.word = id;
+      s.tabIndex = 0;
+      s.setAttribute('role', 'button');
+      s.title = content.ui.analysisOpen ?? '';
+      s.onclick = () => {
+        showWordCard(content, id);
+      };
+      s.onkeydown = (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        showWordCard(content, id);
+      };
+    }
     v.appendChild(s);
   }
+}
+
+/** Mot dont la fiche est ouverte dans le carnet ('' = aucune). */
+let cardWord = '';
+
+/**
+ * Fiche d'un mot dans le carnet : le mot, son pinyin, son sens, et l'analyse de l'enseignant (caractères, composants,
+ * étymologie, aide-mémoire). Le texte peut être long : retours à la ligne gardés, le carnet défile.
+ * Ouverte depuis le carnet ou en touchant le mot dans un dialogue (événement « word-analysis »).
+ */
+function showWordCard(content: Content, id: string) {
+  const e = content.lexicon.get(id);
+  const analysis = t(content, e?.analysis);
+  const details = document.querySelector<HTMLDetailsElement>('details.notebook');
+  const pop = details?.querySelector<HTMLElement>('.nb-pop');
+  if (!e || !analysis || !details || !pop) return;
+  let card = document.getElementById('nb-card');
+  if (!card) {
+    card = document.createElement('section');
+    card.id = 'nb-card';
+    card.className = 'nb-card';
+    pop.prepend(card);
+  }
+  const head = document.createElement('div');
+  head.className = 'nb-card-head';
+  const b = document.createElement('b');
+  b.textContent = e.target;
+  const i = document.createElement('i');
+  i.textContent = e.transcription ?? '';
+  const g = document.createElement('span');
+  g.textContent = t(content, e.gloss);
+  const close = document.createElement('button');
+  close.className = 'sm';
+  close.textContent = content.ui.analysisClose ?? '✕';
+  close.onclick = hideWordCard;
+  head.append(b, i, g, close);
+  const h = document.createElement('h4');
+  h.textContent = content.ui.analysis ?? 'Analyse';
+  const p = document.createElement('p');
+  p.className = 'nb-analysis';
+  p.textContent = analysis;
+  card.replaceChildren(head, h, p);
+  card.hidden = false;
+  cardWord = id;
+  document.querySelectorAll<HTMLElement>('#vocab .w.has-an').forEach((w) => {
+    w.classList.toggle('sel', w.dataset.word === id);
+  });
+  details.open = true;
+  pop.scrollTop = 0;
+}
+
+function hideWordCard() {
+  const card = document.getElementById('nb-card');
+  if (card) card.hidden = true;
+  cardWord = '';
+  document.querySelectorAll('#vocab .w.sel').forEach((w) => {
+    w.classList.remove('sel');
+  });
 }
 
 game.events.once('ready', () => {
@@ -154,6 +229,13 @@ game.events.once('ready', () => {
     document.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest('button');
       if (b && !b.disabled && !b.dataset.panel && !b.closest('#dlg .choices, #dlg .picks, #dlg-body > .go') && b.id !== 'mute') sfx.play('tap');
+    });
+    // un mot analysé, touché dans un dialogue : sa fiche s'ouvre dans le carnet ; carnet refermé, fiche refermée
+    document.addEventListener('word-analysis', (ev) => {
+      showWordCard(content, (ev as CustomEvent<string>).detail);
+    });
+    document.querySelector('details.notebook')?.addEventListener('toggle', (ev) => {
+      if (!(ev.currentTarget as HTMLDetailsElement).open) hideWordCard();
     });
     document.addEventListener('notebook-changed', () => {
       renderNotebook(content);
