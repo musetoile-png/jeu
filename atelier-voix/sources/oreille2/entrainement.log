@@ -1,0 +1,100 @@
+  [ompal pli 1] époque 1/4 perte 1.166 (5 s)
+  [ompal pli 1] époque 2/4 perte 1.119 (4 s)
+  [ompal pli 1] époque 3/4 perte 1.101 (4 s)
+  [ompal pli 1] époque 4/4 perte 1.092 (4 s)
+{"variante": "ompal", "pli": 1, "n_justes": 1369, "n_faux": 149, "seuil": -1.1776392459869385, "justes_acceptes": 86.85171658144631, "faux_detectes": 30.201342281879196, "justes_0": 47.699050401753105, "faux_0": 81.87919463087249, "auc": 0.6927802099215123, "natif_accepte": 96.4968152866242}
+  [ompal pli 2] époque 1/4 perte 1.173 (5 s)
+  [ompal pli 2] époque 2/4 perte 1.127 (4 s)
+  [ompal pli 2] époque 3/4 perte 1.108 (4 s)
+  [ompal pli 2] époque 4/4 perte 1.098 (5 s)
+{"variante": "ompal", "pli": 2, "n_justes": 1044, "n_faux": 170, "seuil": -1.2130143642425537, "justes_acceptes": 90.61302681992338, "faux_detectes": 33.52941176470588, "justes_0": 51.34099616858238, "faux_0": 83.52941176470588, "auc": 0.7549019607843137, "natif_accepte": 96.4968152866242}
+  [ompal pli 3] époque 1/4 perte 1.169 (4 s)
+  [ompal pli 3] époque 2/4 perte 1.125 (4 s)
+  [ompal pli 3] époque 3/4 perte 1.105 (4 s)
+  [ompal pli 3] époque 4/4 perte 1.095 (4 s)
+{"variante": "ompal", "pli": 3, "n_justes": 1341, "n_faux": 176, "seuil": -1.2081313133239746, "justes_acceptes": 91.12602535421327, "faux_detectes": 23.295454545454543, "justes_0": 50.70842654735272, "faux_0": 82.38636363636364, "auc": 0.7080536912751678, "natif_accepte": 96.81528662420382}
+  [ompal pli 4] époque 1/4 perte 1.175 (4 s)
+  [ompal pli 4] époque 2/4 perte 1.127 (4 s)
+  [ompal pli 4] époque 3/4 perte 1.107 (4 s)
+  [ompal pli 4] époque 4/4 perte 1.101 (4 s)
+{"variante": "ompal", "pli": 4, "n_justes": 1190, "n_faux": 328, "seuil": -1.2269319295883179, "justes_acceptes": 92.01680672268907, "faux_detectes": 26.82926829268293, "justes_0": 51.09243697478991, "faux_0": 81.40243902439023, "auc": 0.7345767575322811, "natif_accepte": 96.81528662420382}
+  [ompal pli 5] époque 1/4 perte 1.171 (4 s)
+  [ompal pli 5] époque 2/4 perte 1.126 (4 s)
+  [ompal pli 5] époque 3/4 perte 1.109 (4 s)
+  [ompal pli 5] époque 4/4 perte 1.099 (4 s)
+{"variante": "ompal", "pli": 5, "n_justes": 1234, "n_faux": 282, "seuil": -1.2159075736999512, "justes_acceptes": 89.62722852512157, "faux_detectes": 24.113475177304963, "justes_0": 50.162074554294975, "faux_0": 80.49645390070921, "auc": 0.6975154315666057, "natif_accepte": 88.73239436619718}
+  [mixte pli 1] époque 1/4 perte 1.002 (12 s)
+  [mixte pli 1] époque 2/4 perte 0.997 (12 s)
+  [mixte pli 1] époque 3/4 perte 0.989 (13 s)
+  [mixte pli 1] époque 4/4 perte 0.985 (12 s)
+{"variante": "mixte", "pli": 1, "n_justes": 1369, "n_faux": 149, "seuil": -1.2914042472839355, "justes_acceptes": 86.34039444850255, "faux_detectes": 26.845637583892618, "justes_0": 46.457268078889705, "faux_0": 82.5503355704698, "auc": 0.6870934057583794, "natif_accepte": 95.22292993630573}
+  [mixte pli 2] époque 1/4 perte 1.005 (14 s)
+  [mixte pli 2] époque 2/4 perte 0.997 (13 s)
+  [mixte pli 2] époque 3/4 perte 0.988 (13 s)
+  [mixte pli 2] époque 4/4 perte 0.983 (13 s)
+{"variante": "mixte", "pli": 2, "n_justes": 1044, "n_faux": 170, "seuil": -1.3344006538391113, "justes_acceptes": 89.9425287356322, "faux_detectes": 35.88235294117647, "justes_0": 53.16091954022989, "faux_0": 81.76470588235294, "auc": 0.7548963263466306, "natif_accepte": 94.5859872611465}
+  [mixte pli 3] époque 1/4 perte 1.001 (13 s)
+  [mixte pli 3] époque 2/4 perte 1.002 (13 s)
+  [mixte pli 3] époque 3/4 perte 0.990 (13 s)
+  [mixte pli 3] époque 4/4 perte 0.978 (13 s)
+{"variante": "mixte", "pli": 3, "n_justes": 1341, "n_faux": 176, "seuil": -1.3649598360061646, "justes_acceptes": 91.49888143176734, "faux_detectes": 26.136363636363637, "justes_0": 48.769574944071586, "faux_0": 80.11363636363636, "auc": 0.7029481052132058, "natif_accepte": 94.90445859872611}
+  [mixte pli 4] époque 1/4 perte 1.002 (15 s)
+  [mixte pli 4] époque 2/4 perte 1.007 (14 s)
+  [mixte pli 4] époque 3/4 perte 0.989 (13 s)
+  [mixte pli 4] époque 4/4 perte 0.986 (14 s)
+{"variante": "mixte", "pli": 4, "n_justes": 1190, "n_faux": 328, "seuil": -1.2999305725097656, "justes_acceptes": 92.77310924369748, "faux_detectes": 23.170731707317074, "justes_0": 51.26050420168067, "faux_0": 82.01219512195121, "auc": 0.7299087927854069, "natif_accepte": 92.99363057324841}
+  [mixte pli 5] époque 1/4 perte 1.008 (14 s)
+  [mixte pli 5] époque 2/4 perte 0.999 (14 s)
+  [mixte pli 5] époque 3/4 perte 0.988 (14 s)
+  [mixte pli 5] époque 4/4 perte 0.979 (13 s)
+{"variante": "mixte", "pli": 5, "n_justes": 1234, "n_faux": 282, "seuil": -1.3348020315170288, "justes_acceptes": 89.46515397082658, "faux_detectes": 23.404255319148938, "justes_0": 49.35170178282009, "faux_0": 78.72340425531915, "auc": 0.685233398852834, "natif_accepte": 84.50704225352112}
+  [zero pli 1] époque 1/8 perte 1.160 (58 s)
+  [zero pli 1] époque 2/8 perte 1.047 (59 s)
+  [zero pli 1] époque 3/8 perte 1.010 (59 s)
+  [zero pli 1] époque 4/8 perte 0.983 (59 s)
+  [zero pli 1] époque 5/8 perte 0.960 (60 s)
+  [zero pli 1] époque 6/8 perte 0.935 (62 s)
+  [zero pli 1] époque 7/8 perte 0.910 (59 s)
+  [zero pli 1] époque 8/8 perte 0.894 (56 s)
+{"variante": "zero", "pli": 1, "n_justes": 1369, "n_faux": 149, "seuil": -1.2825304265218174, "justes_acceptes": 86.12125639152666, "faux_detectes": 26.845637583892618, "justes_0": 46.238130021913804, "faux_0": 80.53691275167785, "auc": 0.6941773988753854, "natif_accepte": 91.40127388535032}
+{"oreille": "zero", "pli": 1, "oreille (marge)": {"justes": 86.121, "faux": 26.846, "auc": 0.694, "natif": 91.401, "faux_a_90": 21.477}, "petits indices": {"justes": 87.582, "faux": 30.201, "auc": 0.731, "natif": 97.134, "faux_a_90": 26.174}, "petits + module": {"justes": 87.874, "faux": 34.228, "auc": 0.73, "natif": 96.815, "faux_a_90": 28.859}, "tout (256 + indices + module)": {"justes": 86.852, "faux": 28.859, "auc": 0.702, "natif": 96.178, "faux_a_90": 22.819}}
+  [zero pli 2] époque 1/8 perte 1.158 (60 s)
+  [zero pli 2] époque 2/8 perte 1.049 (61 s)
+  [zero pli 2] époque 3/8 perte 1.011 (60 s)
+  [zero pli 2] époque 4/8 perte 0.984 (60 s)
+  [zero pli 2] époque 5/8 perte 0.960 (57 s)
+  [zero pli 2] époque 6/8 perte 0.938 (60 s)
+  [zero pli 2] époque 7/8 perte 0.913 (58 s)
+  [zero pli 2] époque 8/8 perte 0.895 (60 s)
+{"variante": "zero", "pli": 2, "n_justes": 1044, "n_faux": 170, "seuil": -1.2647543272255306, "justes_acceptes": 89.08045977011494, "faux_detectes": 38.23529411764706, "justes_0": 52.77777777777778, "faux_0": 82.35294117647058, "auc": 0.7571613702952444, "natif_accepte": 91.71974522292994}
+{"oreille": "zero", "pli": 2, "oreille (marge)": {"justes": 89.08, "faux": 37.647, "auc": 0.757, "natif": 91.72, "faux_a_90": 34.706}, "petits indices": {"justes": 88.123, "faux": 41.765, "auc": 0.773, "natif": 98.408, "faux_a_90": 32.941}, "petits + module": {"justes": 87.931, "faux": 38.824, "auc": 0.773, "natif": 98.089, "faux_a_90": 29.412}, "tout (256 + indices + module)": {"justes": 89.559, "faux": 35.294, "auc": 0.756, "natif": 94.586, "faux_a_90": 35.294}}
+  [zero pli 3] époque 1/8 perte 1.154 (61 s)
+  [zero pli 3] époque 2/8 perte 1.047 (60 s)
+  [zero pli 3] époque 3/8 perte 1.011 (62 s)
+  [zero pli 3] époque 4/8 perte 0.984 (60 s)
+  [zero pli 3] époque 5/8 perte 0.960 (61 s)
+  [zero pli 3] époque 6/8 perte 0.937 (63 s)
+  [zero pli 3] époque 7/8 perte 0.911 (62 s)
+  [zero pli 3] époque 8/8 perte 0.895 (64 s)
+{"variante": "zero", "pli": 3, "n_justes": 1341, "n_faux": 176, "seuil": -1.2774400849688596, "justes_acceptes": 89.26174496644296, "faux_detectes": 29.545454545454547, "justes_0": 50.18642803877703, "faux_0": 78.4090909090909, "auc": 0.7010668768219104, "natif_accepte": 92.35668789808918}
+{"oreille": "zero", "pli": 3, "oreille (marge)": {"justes": 89.485, "faux": 28.977, "auc": 0.701, "natif": 92.357, "faux_a_90": 28.409}, "petits indices": {"justes": 90.753, "faux": 26.136, "auc": 0.682, "natif": 99.363, "faux_a_90": 28.977}, "petits + module": {"justes": 90.902, "faux": 27.841, "auc": 0.686, "natif": 99.682, "faux_a_90": 30.114}, "tout (256 + indices + module)": {"justes": 92.319, "faux": 23.295, "auc": 0.688, "natif": 96.815, "faux_a_90": 26.705}}
+  [zero pli 4] époque 1/8 perte 1.161 (61 s)
+  [zero pli 4] époque 2/8 perte 1.049 (62 s)
+  [zero pli 4] époque 3/8 perte 1.014 (60 s)
+  [zero pli 4] époque 4/8 perte 0.986 (61 s)
+  [zero pli 4] époque 5/8 perte 0.963 (61 s)
+  [zero pli 4] époque 6/8 perte 0.938 (60 s)
+  [zero pli 4] époque 7/8 perte 0.915 (59 s)
+  [zero pli 4] époque 8/8 perte 0.897 (58 s)
+{"variante": "zero", "pli": 4, "n_justes": 1190, "n_faux": 328, "seuil": -1.3216618750939386, "justes_acceptes": 91.68067226890756, "faux_detectes": 24.695121951219512, "justes_0": 52.43697478991597, "faux_0": 83.23170731707317, "auc": 0.7320864931338389, "natif_accepte": 92.67515923566879}
+{"oreille": "zero", "pli": 4, "oreille (marge)": {"justes": 91.681, "faux": 24.695, "auc": 0.732, "natif": 92.675, "faux_a_90": 28.049}, "petits indices": {"justes": 91.008, "faux": 28.963, "auc": 0.775, "natif": 98.408, "faux_a_90": 32.927}, "petits + module": {"justes": 92.101, "faux": 28.354, "auc": 0.775, "natif": 98.408, "faux_a_90": 33.537}, "tout (256 + indices + module)": {"justes": 90.168, "faux": 36.28, "auc": 0.769, "natif": 93.949, "faux_a_90": 36.585}}
+  [zero pli 5] époque 1/8 perte 1.155 (59 s)
+  [zero pli 5] époque 2/8 perte 1.050 (61 s)
+  [zero pli 5] époque 3/8 perte 1.013 (60 s)
+  [zero pli 5] époque 4/8 perte 0.986 (61 s)
+  [zero pli 5] époque 5/8 perte 0.963 (57 s)
+  [zero pli 5] époque 6/8 perte 0.939 (58 s)
+  [zero pli 5] époque 7/8 perte 0.915 (58 s)
+  [zero pli 5] époque 8/8 perte 0.897 (58 s)
+{"variante": "zero", "pli": 5, "n_justes": 1234, "n_faux": 282, "seuil": -1.321828383423847, "justes_acceptes": 90.27552674230147, "faux_detectes": 20.921985815602838, "justes_0": 50.48622366288493, "faux_0": 78.01418439716312, "auc": 0.689839879536076, "natif_accepte": 85.2112676056338}
+{"oreille": "zero", "pli": 5, "oreille (marge)": {"justes": 90.276, "faux": 20.922, "auc": 0.69, "natif": 85.211, "faux_a_90": 20.922}, "petits indices": {"justes": 89.141, "faux": 24.113, "auc": 0.684, "natif": 94.366, "faux_a_90": 21.277}, "petits + module": {"justes": 90.276, "faux": 21.986, "auc": 0.685, "natif": 92.254, "faux_a_90": 22.34}, "tout (256 + indices + module)": {"justes": 91.248, "faux": 20.922, "auc": 0.692, "natif": 83.099, "faux_a_90": 22.695}}
