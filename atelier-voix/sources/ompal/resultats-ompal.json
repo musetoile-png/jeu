@@ -1,0 +1,106 @@
+{
+ "seul|module": {
+  "justes": 38.986409966024915,
+  "faux": 81.35168961201502,
+  "justes_unan": 41.09064232148679,
+  "faux_unan": 82.11920529801324,
+  "justes_fin": 44.820717131474105,
+  "faux_fin": 73.52941176470588,
+  "natifs": 38.3399209486166
+ },
+ "seul|oreille": {
+  "justes": 48.09597961494904,
+  "faux": 80.26700041718814,
+  "justes_unan": 51.10042386697098,
+  "faux_unan": 82.11920529801324,
+  "justes_fin": 59.561752988047814,
+  "faux_fin": 79.41176470588235,
+  "natifs": 52.30566534914362
+ },
+ "seul|module ET oreille>-1": {
+  "justes": 35.30577576443941,
+  "faux": 85.1898206090947,
+  "justes_unan": 37.577437235083146,
+  "faux_unan": 86.35761589403972,
+  "justes_fin": 38.645418326693225,
+  "faux_fin": 84.55882352941177,
+  "natifs": 35.30961791831357
+ },
+ "seul|module ET oreille>0": {
+  "justes": 28.94960362400906,
+  "faux": 90.86357947434293,
+  "justes_unan": 31.07270948809912,
+  "faux_unan": 92.31788079470199,
+  "justes_fin": 33.56573705179283,
+  "faux_fin": 92.64705882352942,
+  "natifs": 28.722002635046113
+ },
+ "seul|module OU oreille": {
+  "justes": 58.132785956964895,
+  "faux": 70.75511055486025,
+  "justes_unan": 61.11835670035865,
+  "faux_unan": 71.9205298013245,
+  "justes_fin": 70.81673306772909,
+  "faux_fin": 60.29411764705882,
+  "natifs": 61.9235836627141
+ },
+ "seul|oreille même exigence": {
+  "justes": 46.92808607021517,
+  "faux": 81.35168961201502,
+  "seuil": 0.04626594041852991
+ },
+ "modele|module": {
+  "justes": 32.577743146560884,
+  "faux": 83.84808013355592,
+  "justes_unan": 34.298768050909686,
+  "faux_unan": 84.50331125827815,
+  "justes_fin": 23.40637450199203,
+  "faux_fin": 87.5,
+  "natifs": NaN
+ },
+ "modele|oreille": {
+  "justes": 48.74265070482397,
+  "faux": 80.59265442404006,
+  "justes_unan": 51.55421391857714,
+  "faux_unan": 80.9271523178808,
+  "justes_fin": 62.05179282868526,
+  "faux_fin": 81.61764705882352,
+  "natifs": NaN
+ },
+ "modele|module ET oreille>-1": {
+  "justes": 28.277962739958916,
+  "faux": 89.06510851419031,
+  "justes_unan": 30.056294362405154,
+  "faux_unan": 89.5364238410596,
+  "justes_fin": 21.41434262948207,
+  "faux_fin": 94.85294117647058,
+  "natifs": NaN
+ },
+ "modele|module ET oreille>0": {
+  "justes": 21.491818375008855,
+  "faux": 94.24040066777964,
+  "justes_unan": 23.10516439585543,
+  "faux_unan": 94.96688741721854,
+  "justes_fin": 18.625498007968126,
+  "faux_fin": 98.52941176470588,
+  "natifs": NaN
+ },
+ "modele|module OU oreille": {
+  "justes": 59.828575476376,
+  "faux": 70.20033388981636,
+  "justes_unan": 62.747817573631394,
+  "faux_unan": 70.4635761589404,
+  "justes_fin": 66.83266932270917,
+  "faux_fin": 70.58823529411765,
+  "natifs": NaN
+ },
+ "modele|oreille même exigence": {
+  "justes": 44.96706099029539,
+  "faux": 83.84808013355592,
+  "seuil": 0.13481123140936893
+ },
+ "repere humain": {
+  "justes": 95.1893234016139,
+  "faux": 57.97286920911185
+ }
+}

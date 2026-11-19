@@ -1,0 +1,53 @@
+Juges : % des tons JUSTES (selon les profs) acceptés  /  % des tons FAUX (selon les profs) détectés
+
+=== mode seul : 16525 syllabes d'apprenants jugées (14128 justes, 2397 fausses ; unanimes : 12268 / 755) ; natifs : 759
+module                 majorité  39.0 /  81.4 | unanimes  41.1 /  82.1 | fin de phrase  44.8 /  73.5 | natifs acceptés  38.3
+oreille                majorité  48.1 /  80.3 | unanimes  51.1 /  82.1 | fin de phrase  59.6 /  79.4 | natifs acceptés  52.3
+module ET oreille>-1   majorité  35.3 /  85.2 | unanimes  37.6 /  86.4 | fin de phrase  38.6 /  84.6 | natifs acceptés  35.3
+module ET oreille>0    majorité  28.9 /  90.9 | unanimes  31.1 /  92.3 | fin de phrase  33.6 /  92.6 | natifs acceptés  28.7
+module OU oreille      majorité  58.1 /  70.8 | unanimes  61.1 /  71.9 | fin de phrase  70.8 /  60.3 | natifs acceptés  61.9
+oreille, même exigence majorité  46.9 /  81.4  (seuil +0.05)
+   oreille>-2 :  89.7 /  26.1
+   oreille>-1 :  72.2 /  52.6
+   oreille>+0 :  48.1 /  80.3
+   oreille>+1 :  27.5 /  92.7
+   oreille>+2 :  10.8 /  98.2
+   ton 1 : module (np.float64(31.863215084691593), np.float64(89.02195608782435)) | oreille (np.float64(39.85298817513583), np.float64(91.41716566866268)) | n=3129/501
+   ton 2 : module (np.float64(30.956112852664575), np.float64(81.37082601054482)) | oreille (np.float64(51.88087774294671), np.float64(74.34094903339191)) | n=3828/569
+   ton 3 : module (np.float64(48.631239935587764), np.float64(76.54867256637168)) | oreille (np.float64(27.455716586151368), np.float64(92.92035398230088)) | n=2484/452
+   ton 4 : module (np.float64(45.188820140815025), np.float64(79.42857142857143)) | oreille (np.float64(61.446554299125246), np.float64(71.2)) | n=4687/875
+   tons faux : l'oreille entend le ton attendu dans 19.7 %
+
+=== mode modele : 16513 syllabes d'apprenants jugées (14117 justes, 2396 fausses ; unanimes : 12257 / 755) ; natifs : 0
+module                 majorité  32.6 /  83.8 | unanimes  34.3 /  84.5 | fin de phrase  23.4 /  87.5 | natifs acceptés   nan
+oreille                majorité  48.7 /  80.6 | unanimes  51.6 /  80.9 | fin de phrase  62.1 /  81.6 | natifs acceptés   nan
+module ET oreille>-1   majorité  28.3 /  89.1 | unanimes  30.1 /  89.5 | fin de phrase  21.4 /  94.9 | natifs acceptés   nan
+module ET oreille>0    majorité  21.5 /  94.2 | unanimes  23.1 /  95.0 | fin de phrase  18.6 /  98.5 | natifs acceptés   nan
+module OU oreille      majorité  59.8 /  70.2 | unanimes  62.7 /  70.5 | fin de phrase  66.8 /  70.6 | natifs acceptés   nan
+oreille, même exigence majorité  45.0 /  83.8  (seuil +0.13)
+   oreille>-2 :  91.0 /  23.6
+   oreille>-1 :  75.3 /  51.2
+   oreille>+0 :  48.7 /  80.6
+   oreille>+1 :  25.7 /  95.0
+   oreille>+2 :   9.7 /  98.9
+   ton 1 : module (np.float64(28.237927726255197), np.float64(89.22155688622755)) | oreille (np.float64(38.407419251678924), np.float64(95.40918163672654)) | n=3127/501
+   ton 2 : module (np.float64(31.024568740198642), np.float64(85.9402460456942)) | oreille (np.float64(52.875065342394144), np.float64(74.86818980667839)) | n=3826/569
+   ton 3 : module (np.float64(34.018540910923015), np.float64(78.98230088495575)) | oreille (np.float64(26.279725916968964), np.float64(92.03539823008849)) | n=2481/452
+   ton 4 : module (np.float64(35.981208626948536), np.float64(81.92219679633868)) | oreille (np.float64(64.16826820414265), np.float64(69.90846681922197)) | n=4683/874
+   tons faux : l'oreille entend le ton attendu dans 19.4 %
+
+Repère humain (un prof contre les deux autres d'accord) : 95.2 / 58.0
+
+Compléments
+seul module juste+presque : 53.2 / 66.9 | natifs 52.4
+   oreille réglée pour accepter 80 % des justes : 80.0 / 40.8
+   oreille réglée pour accepter 90 % des justes : 90.0 / 25.9
+   oreille réglée pour accepter 95 % des justes : 95.0 / 14.0
+   AUC oreille 0.693 | AUC module (juste>presque>reprendre) 0.615
+modele module juste+presque : 51.4 / 67.1 | natifs nan
+   oreille réglée pour accepter 80 % des justes : 80.0 / 44.1
+   oreille réglée pour accepter 90 % des justes : 90.0 / 25.8
+   oreille réglée pour accepter 95 % des justes : 95.0 / 15.7
+   AUC oreille 0.709 | AUC module (juste>presque>reprendre) 0.604
+apprenant débit médian 2.50 syllabes/s
+natif débit médian 4.28 syllabes/s
