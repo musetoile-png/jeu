@@ -10,14 +10,14 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GroupKFold
 from sklearn.metrics import roc_auc_score
-from commun import Oreille, ompal, sorties, marge as marge_de, PT, CIBLE
+from commun import Oreille, ompal, sorties, marge as marge_de, PT, CIBLE, SUF
 OR, PLI = sys.argv[1], int(sys.argv[2])
 D = ompal(PLI)
 OX, Oatt, Opos, Ojuste, Oapp, Otest, M = D['X'], D['att'], D['pos'], D['juste'], D['app'], D['test'], D['M']
 tr = ~Otest
 torch.set_num_threads(2)
 m = Oreille()
-m.load_state_dict(torch.load(PT if OR == 'base' else f'/home/claude/aishell/oreille2-{OR}-pli{PLI}.pt', map_location='cpu'))
+m.load_state_dict(torch.load(PT if OR == 'base' else f'/home/claude/aishell/oreille2-{OR}{SUF}-pli{PLI}.pt', map_location='cpu'))
 H, P = sorties(m, OX, Opos)
 A = np.eye(4)[Oatt]
 marge = marge_de(P, Oatt)
@@ -45,4 +45,4 @@ for nom, X in jeux.items():
     t90 = np.quantile(s[J], 0.10); res[nom]['faux_a_90'] = 100 * (s[F] <= t90).mean()
 out = dict(oreille=OR, pli=PLI, **{k: {a: round(float(b), 3) for a, b in v.items()} for k, v in res.items()})
 print(json.dumps(out, ensure_ascii=False), flush=True)
-with open('/home/claude/aishell/resultats-tete.jsonl', 'a') as f: f.write(json.dumps(out, ensure_ascii=False) + '\n')
+with open(f'/home/claude/aishell/resultats-tete{SUF}.jsonl', 'a') as f: f.write(json.dumps(out, ensure_ascii=False) + '\n')

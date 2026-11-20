@@ -1,0 +1,488 @@
+From af5b910b83c4f1dfd6da51b5cb950fac1a433800 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Thu, 19 Nov 2026 18:53:22 +0100
+Subject: [PATCH] =?UTF-8?q?Atelier=20voix=20:=20mesure=20du=20module=20et?=
+ =?UTF-8?q?=20de=20l'oreille=20sur=20le=20corpus=20OMPAL=20(apprenants=20f?=
+ =?UTF-8?q?ran=C3=A7ais)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QhJt5hSzLitF4SGzLG68jU
+---
+ atelier-voix/sources/ompal/LISEZMOI.md        |  18 +++
+ atelier-voix/sources/ompal/juger_ompal.py     | 125 ++++++++++++++++++
+ .../sources/ompal/mesure-2026-11-19.log       |  53 ++++++++
+ atelier-voix/sources/ompal/pinyin-ompal.json  |  86 ++++++++++++
+ atelier-voix/sources/ompal/preparer.py        |  32 +++++
+ .../sources/ompal/resultats-ompal.json        | 106 +++++++++++++++
+ 6 files changed, 420 insertions(+)
+ create mode 100644 atelier-voix/sources/ompal/LISEZMOI.md
+ create mode 100644 atelier-voix/sources/ompal/juger_ompal.py
+ create mode 100644 atelier-voix/sources/ompal/mesure-2026-11-19.log
+ create mode 100644 atelier-voix/sources/ompal/pinyin-ompal.json
+ create mode 100644 atelier-voix/sources/ompal/preparer.py
+ create mode 100644 atelier-voix/sources/ompal/resultats-ompal.json
+
+diff --git a/atelier-voix/sources/ompal/LISEZMOI.md b/atelier-voix/sources/ompal/LISEZMOI.md
+new file mode 100644
+index 0000000..4adac91
+--- /dev/null
++++ b/atelier-voix/sources/ompal/LISEZMOI.md
+@@ -0,0 +1,18 @@
++# Mesure sur OMPAL (vrais apprenants français) — 19 novembre 2026
++
++Corpus : https://github.com/phantomhsieh/OMPAL-corpus (licence CC BY 4.0, fichier LICENSE vérifié ; citer Hsieh et al., Interspeech 2025, DOI 10.21437/Interspeech.2025-983).
++46 apprenants français + 3 natifs, 1 850 enregistrements. Pour chaque caractère : ton juste (1) ou faux (0) selon 3 professeurs (fichier `non-native_scores-detail.json`). Étiquette retenue : majorité des 3.
++
++## Refaire la mesure
++```bash
++git clone --depth 1 https://github.com/phantomhsieh/OMPAL-corpus.git /chemin/ompal
++pip install pypinyin torch numpy scikit-learn
++python3 preparer.py /chemin/ompal/        # pinyin (pypinyin + corrections relues à la main, voir REGLES) ; voix modèle = enregistrement natif OMPAL de la même phrase
++export MOTEUR=../calibrage/moteur-exp.js
++node ../aishell/bornes.js travaux-seul.json b-seul.jsonl ; node ../aishell/bornes.js travaux-modele.json b-modele.jsonl
++python3 ../aishell/traits_son.py b-seul.jsonl seul.npz ; python3 ../aishell/traits_son.py b-modele.jsonl modele.npz
++python3 juger_ompal.py /chemin/ompal/ ../aishell/oreille.pt seul.npz modele.npz
++```
++Durée : 1 min (sans modèle) + 5 min (avec modèle) sur 2 processeurs. Résultat complet : `mesure-2026-11-19.log`, `resultats-ompal.json`.
++
++Notes : 個 est passé en 个 pour la règle de 一 ; tons neutres (5) non jugés ; 1 phrase au découpage irrégulier et 7 mots à variante (還/也, 會/又) écartés.
+diff --git a/atelier-voix/sources/ompal/juger_ompal.py b/atelier-voix/sources/ompal/juger_ompal.py
+new file mode 100644
+index 0000000..b012c3f
+--- /dev/null
++++ b/atelier-voix/sources/ompal/juger_ompal.py
+@@ -0,0 +1,125 @@
++# Mesure sur OMPAL (vrais apprenants français, tons jugés juste/faux par des professeurs) :
++# module actuel (règles, avec ou sans voix modèle), oreille (réseau AISHELL) et leur combinaison.
++# python3 juger_ompal.py dossier_ompal oreille.pt seul.npz modele.npz
++import sys, json, numpy as np, torch, torch.nn as nn
++O, PT = sys.argv[1], sys.argv[2]
++NPZ = {'seul': sys.argv[3], 'modele': sys.argv[4]}
++
++class Oreille(nn.Module):  # copie conforme de entrainer_cnn.py
++    def __init__(s, c=43):
++        super().__init__()
++        bl = lambda i, o, k: nn.Sequential(nn.Conv1d(i, o, k, padding=k // 2), nn.BatchNorm1d(o), nn.ReLU())
++        s.f = nn.Sequential(bl(c, 64, 5), bl(64, 64, 5), nn.MaxPool1d(2), bl(64, 128, 3), bl(128, 128, 3), nn.Dropout(0.2))
++        s.t = nn.Sequential(nn.Linear(256 + 1, 64), nn.ReLU(), nn.Dropout(0.2), nn.Linear(64, 4))
++    def forward(s, x, p):
++        h = s.f(x); h = torch.cat([h.mean(2), h[:, :, 7:23].amax(2), p[:, None]], 1)
++        return s.t(h)
++m = Oreille(); m.load_state_dict(torch.load(PT, map_location='cpu')); m.eval()
++
++def proba(X, p, bs=2048):
++    out = []
++    with torch.no_grad():
++        for i in range(0, len(X), bs):
++            out.append(torch.softmax(m(torch.from_numpy(X[i:i + bs].astype(np.float32)), torch.from_numpy(p[i:i + bs])), 1).numpy())
++    return np.concatenate(out)
++
++# --- jugement des professeurs, syllabe par syllabe (3 votes par mot ; les « mots » d'OMPAL sont des caractères) ---
++det = json.load(open(O + 'non-native_scores-detail.json'))
++nat = json.load(open(O + 'native_scores.json'))
++votes = {}
++for k, u in det.items():
++    if len(u['words']) != len(u['text']): continue          # 1 phrase au découpage irrégulier
++    for i, w in enumerate(u['words']):
++        if len(w['text']) != 1: continue                      # mot à variante (還/也) : ignoré
++        votes[(k, i)] = [int(v) for v in w['tone']]
++for k, u in nat.items():
++    for i, w in enumerate(u['words']): votes[(k, i)] = [int(w['tone'])] * 3
++
++def charger(mode):
++    z = np.load(NPZ[mode]); M = [json.loads(x) for x in z['meta']]
++    keep = np.array([mm['att'] in (1, 2, 3, 4) and (mm['id'], mm['k']) in votes for mm in M])
++    X = z['X'][keep]; M = [mm for mm, kk in zip(M, keep) if kk]
++    P = proba(X, np.array([mm['pos'] == 'fin' for mm in M], dtype=np.float32))
++    att = np.array([mm['att'] - 1 for mm in M])
++    autres = np.where(np.eye(4)[att] == 1, 0, P)
++    marge = np.log(P[np.arange(len(P)), att] + 1e-9) - np.log(autres.max(1) + 1e-9)
++    return M, marge, P
++
++R = {}
++for mode in ('seul', 'modele'):
++    M, marge, P = charger(mode)
++    V = np.array([votes[(mm['id'], mm['k'])] for mm in M])
++    R[mode] = dict(M=M, marge=marge, P=P, V=V,
++                   app=np.array([mm['grp'] == 'apprenant' for mm in M]),
++                   fin=np.array([mm['pos'] == 'fin' for mm in M]),
++                   module=np.array([mm['verdict'] == 'juste' for mm in M]),
++                   ton=np.array([mm['att'] for mm in M]),
++                   loc=np.array([mm['loc'] for mm in M]))
++
++def taux(acc, juste, faux):
++    return 100 * acc[juste].mean(), 100 * (~acc[faux]).mean()
++
++print('Juges : % des tons JUSTES (selon les profs) acceptés  /  % des tons FAUX (selon les profs) détectés')
++sortie = {}
++for mode in ('seul', 'modele'):
++    r = R[mode]; a = r['app']; maj = r['V'].sum(1) >= 2
++    juste, faux = a & maj, a & ~maj
++    unan_j, unan_f = a & (r['V'].sum(1) == 3), a & (r['V'].sum(1) == 0)
++    print(f'\n=== mode {mode} : {a.sum()} syllabes d\'apprenants jugées ({juste.sum()} justes, {faux.sum()} fausses ; unanimes : {unan_j.sum()} / {unan_f.sum()}) ; natifs : {(~a).sum()}')
++    juges = {'module': r['module'], 'oreille': r['marge'] > 0, 'module ET oreille>-1': r['module'] & (r['marge'] > -1),
++             'module ET oreille>0': r['module'] & (r['marge'] > 0), 'module OU oreille': r['module'] | (r['marge'] > 0)}
++    for nom, acc in juges.items():
++        j, f = taux(acc, juste, faux); ju, fu = taux(acc, unan_j, unan_f)
++        jf, ff = taux(acc, juste & r['fin'], faux & r['fin'])
++        jn = 100 * acc[~a].mean() if (~a).any() else float('nan')
++        print(f'{nom:22s} majorité {j:5.1f} / {f:5.1f} | unanimes {ju:5.1f} / {fu:5.1f} | fin de phrase {jf:5.1f} / {ff:5.1f} | natifs acceptés {jn:5.1f}')
++        sortie[f'{mode}|{nom}'] = dict(justes=j, faux=f, justes_unan=ju, faux_unan=fu, justes_fin=jf, faux_fin=ff, natifs=jn)
++    # oreille à exigence égale au module (même taux de tons faux détectés)
++    th = np.quantile(r['marge'][faux], (~r['module'][faux]).mean())
++    acc = r['marge'] > th
++    j, f = taux(acc, juste, faux)
++    print(f'{"oreille, même exigence":22s} majorité {j:5.1f} / {f:5.1f}  (seuil {th:+.2f})')
++    sortie[f'{mode}|oreille même exigence'] = dict(justes=j, faux=f, seuil=float(th))
++    # courbe : seuil de l'oreille
++    for t in (-2, -1, 0, 1, 2):
++        acc = r['marge'] > t; j, f = taux(acc, juste, faux)
++        print(f'   oreille>{t:+d} : {j:5.1f} / {f:5.1f}')
++    # par ton attendu
++    for t in (1, 2, 3, 4):
++        s = r['ton'] == t
++        print(f'   ton {t} : module {taux(r["module"], juste & s, faux & s)} | oreille {taux(r["marge"] > 0, juste & s, faux & s)} | n={ (juste & s).sum()}/{(faux & s).sum()}')
++    # ce que l'oreille entend quand les profs disent « faux »
++    ent = r['P'].argmax(1) + 1
++    print('   tons faux : l\'oreille entend le ton attendu dans', f'{100 * (ent[faux] == r["ton"][faux]).mean():.1f} %')
++
++# --- repère humain : un professeur face à la majorité des deux autres (quand ils sont d'accord) ---
++r = R['seul']; a = r['app']; V = r['V'][a]
++J = F = nJ = nF = 0
++for i in range(3):
++    o = np.delete(V, i, 1); acc = o.sum(1) == 2; rej = o.sum(1) == 0
++    J += V[acc, i].sum(); nJ += acc.sum(); F += (1 - V[rej, i]).sum(); nF += rej.sum()
++print(f'\nRepère humain (un prof contre les deux autres d\'accord) : {100 * J / nJ:.1f} / {100 * F / nF:.1f}')
++sortie['repere humain'] = dict(justes=100 * J / nJ, faux=100 * F / nF)
++json.dump(sortie, open('resultats-ompal.json', 'w'), ensure_ascii=False, indent=1)
++
++# --- compléments : réglage « indulgent » et points de fonctionnement communs ---
++print('\nCompléments')
++for mode in ('seul', 'modele'):
++    r = R[mode]; a = r['app']; maj = r['V'].sum(1) >= 2; juste, faux = a & maj, a & ~maj
++    jp = np.array([mm['verdict'] in ('juste', 'presque') for mm in r['M']])
++    print(mode, 'module juste+presque : %.1f / %.1f' % taux(jp, juste, faux), '| natifs %.1f' % (100 * jp[~a].mean() if (~a).any() else float('nan')))
++    # oreille : seuil qui accepte 90 % / 95 % des tons justes
++    for cible in (0.80, 0.90, 0.95):
++        th = np.quantile(r['marge'][juste], 1 - cible); acc = r['marge'] > th
++        print(f'   oreille réglée pour accepter {int(cible*100)} % des justes : {taux(acc, juste, faux)[0]:.1f} / {taux(acc, juste, faux)[1]:.1f}')
++    # aire sous la courbe (capacité à classer un ton juste au-dessus d'un ton faux)
++    from sklearn.metrics import roc_auc_score
++    y = maj[a].astype(int)
++    print('   AUC oreille %.3f | AUC module (juste>presque>reprendre) %.3f' % (roc_auc_score(y, r['marge'][a]),
++          roc_auc_score(y, np.array([{'juste': 2, 'presque': 1}.get(mm['verdict'], 0) for mm in r['M']])[a])))
++    # débit
++d = [json.loads(l) for l in open('b-seul.jsonl')]
++import statistics
++for g in ('apprenant', 'natif'):
++    deb = [len(x['syll']) / (x['syll'][-1]['fin'] - x['syll'][0]['debut']) for x in d if x['grp'] == g]
++    print(g, 'débit médian %.2f syllabes/s' % statistics.median(deb))
+diff --git a/atelier-voix/sources/ompal/mesure-2026-11-19.log b/atelier-voix/sources/ompal/mesure-2026-11-19.log
+new file mode 100644
+index 0000000..f8f9994
+--- /dev/null
++++ b/atelier-voix/sources/ompal/mesure-2026-11-19.log
+@@ -0,0 +1,53 @@
++Juges : % des tons JUSTES (selon les profs) acceptés  /  % des tons FAUX (selon les profs) détectés
++
++=== mode seul : 16525 syllabes d'apprenants jugées (14128 justes, 2397 fausses ; unanimes : 12268 / 755) ; natifs : 759
++module                 majorité  39.0 /  81.4 | unanimes  41.1 /  82.1 | fin de phrase  44.8 /  73.5 | natifs acceptés  38.3
++oreille                majorité  48.1 /  80.3 | unanimes  51.1 /  82.1 | fin de phrase  59.6 /  79.4 | natifs acceptés  52.3
++module ET oreille>-1   majorité  35.3 /  85.2 | unanimes  37.6 /  86.4 | fin de phrase  38.6 /  84.6 | natifs acceptés  35.3
++module ET oreille>0    majorité  28.9 /  90.9 | unanimes  31.1 /  92.3 | fin de phrase  33.6 /  92.6 | natifs acceptés  28.7
++module OU oreille      majorité  58.1 /  70.8 | unanimes  61.1 /  71.9 | fin de phrase  70.8 /  60.3 | natifs acceptés  61.9
++oreille, même exigence majorité  46.9 /  81.4  (seuil +0.05)
++   oreille>-2 :  89.7 /  26.1
++   oreille>-1 :  72.2 /  52.6
++   oreille>+0 :  48.1 /  80.3
++   oreille>+1 :  27.5 /  92.7
++   oreille>+2 :  10.8 /  98.2
++   ton 1 : module (np.float64(31.863215084691593), np.float64(89.02195608782435)) | oreille (np.float64(39.85298817513583), np.float64(91.41716566866268)) | n=3129/501
++   ton 2 : module (np.float64(30.956112852664575), np.float64(81.37082601054482)) | oreille (np.float64(51.88087774294671), np.float64(74.34094903339191)) | n=3828/569
++   ton 3 : module (np.float64(48.631239935587764), np.float64(76.54867256637168)) | oreille (np.float64(27.455716586151368), np.float64(92.92035398230088)) | n=2484/452
++   ton 4 : module (np.float64(45.188820140815025), np.float64(79.42857142857143)) | oreille (np.float64(61.446554299125246), np.float64(71.2)) | n=4687/875
++   tons faux : l'oreille entend le ton attendu dans 19.7 %
++
++=== mode modele : 16513 syllabes d'apprenants jugées (14117 justes, 2396 fausses ; unanimes : 12257 / 755) ; natifs : 0
++module                 majorité  32.6 /  83.8 | unanimes  34.3 /  84.5 | fin de phrase  23.4 /  87.5 | natifs acceptés   nan
++oreille                majorité  48.7 /  80.6 | unanimes  51.6 /  80.9 | fin de phrase  62.1 /  81.6 | natifs acceptés   nan
++module ET oreille>-1   majorité  28.3 /  89.1 | unanimes  30.1 /  89.5 | fin de phrase  21.4 /  94.9 | natifs acceptés   nan
++module ET oreille>0    majorité  21.5 /  94.2 | unanimes  23.1 /  95.0 | fin de phrase  18.6 /  98.5 | natifs acceptés   nan
++module OU oreille      majorité  59.8 /  70.2 | unanimes  62.7 /  70.5 | fin de phrase  66.8 /  70.6 | natifs acceptés   nan
++oreille, même exigence majorité  45.0 /  83.8  (seuil +0.13)
++   oreille>-2 :  91.0 /  23.6
++   oreille>-1 :  75.3 /  51.2
++   oreille>+0 :  48.7 /  80.6
++   oreille>+1 :  25.7 /  95.0
++   oreille>+2 :   9.7 /  98.9
++   ton 1 : module (np.float64(28.237927726255197), np.float64(89.22155688622755)) | oreille (np.float64(38.407419251678924), np.float64(95.40918163672654)) | n=3127/501
++   ton 2 : module (np.float64(31.024568740198642), np.float64(85.9402460456942)) | oreille (np.float64(52.875065342394144), np.float64(74.86818980667839)) | n=3826/569
++   ton 3 : module (np.float64(34.018540910923015), np.float64(78.98230088495575)) | oreille (np.float64(26.279725916968964), np.float64(92.03539823008849)) | n=2481/452
++   ton 4 : module (np.float64(35.981208626948536), np.float64(81.92219679633868)) | oreille (np.float64(64.16826820414265), np.float64(69.90846681922197)) | n=4683/874
++   tons faux : l'oreille entend le ton attendu dans 19.4 %
++
++Repère humain (un prof contre les deux autres d'accord) : 95.2 / 58.0
++
++Compléments
++seul module juste+presque : 53.2 / 66.9 | natifs 52.4
++   oreille réglée pour accepter 80 % des justes : 80.0 / 40.8
++   oreille réglée pour accepter 90 % des justes : 90.0 / 25.9
++   oreille réglée pour accepter 95 % des justes : 95.0 / 14.0
++   AUC oreille 0.693 | AUC module (juste>presque>reprendre) 0.615
++modele module juste+presque : 51.4 / 67.1 | natifs nan
++   oreille réglée pour accepter 80 % des justes : 80.0 / 44.1
++   oreille réglée pour accepter 90 % des justes : 90.0 / 25.8
++   oreille réglée pour accepter 95 % des justes : 95.0 / 15.7
++   AUC oreille 0.709 | AUC module (juste>presque>reprendre) 0.604
++apprenant débit médian 2.50 syllabes/s
++natif débit médian 4.28 syllabes/s
+diff --git a/atelier-voix/sources/ompal/pinyin-ompal.json b/atelier-voix/sources/ompal/pinyin-ompal.json
+new file mode 100644
+index 0000000..45ac825
+--- /dev/null
++++ b/atelier-voix/sources/ompal/pinyin-ompal.json
+@@ -0,0 +1,86 @@
++{
++"他們都很忙": "ta1 men5 dou1 hen3 mang2",
++"我家有四口人": "wo3 jia1 you3 si4 kou3 ren2",
++"爸爸媽媽哥哥和我": "ba4 ba5 ma1 ma5 ge1 ge5 he2 wo3",
++"我家還有一隻小黑狗": "wo3 jia1 hai2 you3 yi1 zhi1 xiao3 hei1 gou3",
++"和一隻大花貓": "he2 yi1 zhi1 da4 hua1 mao1",
++"我父親是一個有名的大夫": "wo3 fu4 qin1 shi4 yi1 ge5 you3 ming2 de5 dai4 fu5",
++"我母親是中學英語老師": "wo3 mu3 qin1 shi4 zhong1 xue2 ying1 yu3 lao3 shi1",
++"他們都非常忙": "ta1 men5 dou1 fei1 chang2 mang2",
++"我哥哥是大學生學中文": "wo3 ge1 ge5 shi4 da4 xue2 sheng5 xue2 zhong1 wen2",
++"他個子很高比較胖": "ta1 ge5 zi5 hen3 gao1 bi3 jiao4 pang4",
++"他的同學都叫他胖子": "ta1 de5 tong2 xue2 dou1 jiao4 ta1 pang4 zi5",
++"他的女朋友很漂亮是日本人": "ta1 de5 nü3 peng2 you5 hen3 piao4 liang5 shi4 ri4 ben3 ren2",
++"我的小狗叫黑黑": "wo3 de5 xiao3 gou3 jiao4 hei1 hei1",
++"小貓的名字呢是花花": "xiao3 mao1 de5 ming2 zi5 ne5 shi4 hua1 hua1",
++"你看這是我們家": "ni3 kan4 zhe4 shi4 wo3 men5 jia1",
++"我們家的房子不大也不小": "wo3 men5 jia1 de5 fang2 zi5 bu4 da4 ye3 bu4 xiao3",
++"有四個房間": "you3 si4 ge5 fang2 jian1",
++"還有一個非常好看的小花園": "hai2 you3 yi1 ge5 fei1 chang2 hao3 kan4 de5 xiao3 hua1 yuan2",
++"我的房間不太大": "wo3 de5 fang2 jian1 bu4 tai4 da4",
++"裡邊有一張小桌子兩把椅子和一張床": "li3 bian5 you3 yi1 zhang1 xiao3 zhuo1 zi5 liang3 ba3 yi3 zi5 he2 yi1 zhang1 chuang2",
++"中國陰曆的新年叫作春節": "zhong1 guo2 yin1 li4 de5 xin1 nian2 jiao4 zuo4 chun1 jie2",
++"和西方的聖誕節一樣": "he2 xi1 fang1 de5 sheng4 dan4 jie2 yi1 yang4",
++"是中國人一年中最重要最熱鬧的節日": "shi4 zhong1 guo2 ren2 yi1 nian2 zhong1 zui4 zhong4 yao4 zui4 re4 nao5 de5 jie2 ri4",
++"也是全家人團圓的日子": "ye3 shi4 quan2 jia1 ren2 tuan2 yuan2 de5 ri4 zi5",
++"所以出門在外的人必須在年前趕回家來": "suo3 yi3 chu1 men2 zai4 wai4 de5 ren2 bi4 xu1 zai4 nian2 qian2 gan3 hui2 jia1 lai5",
++"大中小學也都在這個時候開始放寒假": "da4 zhong1 xiao3 xue2 ye3 dou1 zai4 zhe4 ge5 shi2 hou5 kai1 shi3 fang4 han2 jia4",
++"從陰曆十二月初開始": "cong2 yin1 li4 shi2 er4 yue4 chu1 kai1 shi3",
++"人們就要準備過年了": "ren2 men5 jiu4 yao4 zhun3 bei4 guo4 nian2 le5",
++"先得把屋子打掃得乾乾淨淨": "xian1 dei3 ba3 wu1 zi5 da3 sao3 de5 gan1 gan1 jing4 jing4",
++"然後在門口貼上一副紅色的對聯": "ran2 hou4 zai4 men2 kou3 tie1 shang5 yi1 fu4 hong2 se4 de5 dui4 lian2",
++"和一個倒著的福字表示福到了": "he2 yi1 ge5 dao4 zhe5 de5 fu2 zi4 biao3 shi4 fu2 dao4 le5",
++"大年三十晚上全家人坐在一起": "da4 nian2 san1 shi2 wan3 shang5 quan2 jia1 ren2 zuo4 zai4 yi1 qi3",
++"親親熱熱地吃一頓年夜飯": "qin1 qin1 re4 re4 de5 chi1 yi1 dun4 nian2 ye4 fan4",
++"夜裡十二點大人和孩子都跑到外邊去放鞭炮": "ye4 li5 shi2 er4 dian3 da4 ren2 he2 hai2 zi5 dou1 pao3 dao4 wai4 bian5 qu4 fang4 bian1 pao4",
++"據說這是為了把一個名字叫夕的怪物嚇跑": "ju4 shuo1 zhe4 shi4 wei4 le5 ba3 yi1 ge5 ming2 zi5 jiao4 xi1 de5 guai4 wu4 xia4 pao3",
++"使全家人一年平安": "shi3 quan2 jia1 ren2 yi1 nian2 ping2 an1",
++"所以這一天也叫除夕": "suo3 yi3 zhe4 yi1 tian1 ye3 jiao4 chu2 xi1",
++"正月初一人們穿上新衣服": "zheng1 yue4 chu1 yi1 ren2 men5 chuan1 shang5 xin1 yi1 fu5",
++"帶著水果或點心去親友家拜年": "dai4 zhe5 shui3 guo3 huo4 dian3 xin1 qu4 qin1 you3 jia1 bai4 nian2",
++"互相說一些祝福的話": "hu4 xiang1 shuo1 yi1 xie1 zhu4 fu2 de5 hua4",
++"比如身體健康恭喜發財萬事如意等等": "bi3 ru2 shen1 ti3 jian4 kang1 gong1 xi3 fa1 cai2 wan4 shi4 ru2 yi4 deng3 deng3",
++"孩子們還可以從大人那裡得到裝著錢的小紅包": "hai2 zi5 men5 hai2 ke3 yi3 cong2 da4 ren2 na4 li5 de2 dao4 zhuang1 zhe5 qian2 de5 xiao3 hong2 bao1",
++"最近這些年大城市裡的人": "zui4 jin4 zhe4 xie1 nian2 da4 cheng2 shi4 li5 de5 ren2",
++"不再把春節看得那麼重要了": "bu4 zai4 ba3 chun1 jie2 kan4 de5 na4 me5 zhong4 yao4 le5",
++"有些人覺得在家做飯太麻煩": "you3 xie1 ren2 jue2 de5 zai4 jia1 zuo4 fan4 tai4 ma2 fan5",
++"就把年夜飯搬到餐館裡去吃": "jiu4 ba3 nian2 ye4 fan4 ban1 dao4 can1 guan3 li5 qu4 chi1",
++"也有人利用這個假期去旅行": "ye3 you3 ren2 li4 yong4 zhe4 ge5 jia4 qi1 qu4 lü3 xing2",
++"就連拜年也變得簡單了": "jiu4 lian2 bai4 nian2 ye3 bian4 de5 jian3 dan1 le5",
++"只要用手機發幾條短信就行了": "zhi3 yao4 yong4 shou3 ji1 fa1 ji3 tiao2 duan3 xin4 jiu4 xing2 le5",
++"今天早上我有一節聽力課": "jin1 tian1 zao3 shang5 wo3 you3 yi1 jie2 ting1 li4 ke4",
++"大概昨天夜裡沒睡好": "da4 gai4 zuo2 tian1 ye4 li5 mei2 shui4 hao3",
++"所以起晚了": "suo3 yi3 qi3 wan3 le5",
++"這下我急壞了": "zhe4 xia4 wo3 ji2 huai4 le5",
++"因為開學才半個多月": "yin1 wei4 kai1 xue2 cai2 ban4 ge5 duo1 yue4",
++"我已經遲到過兩次了": "wo3 yi3 jing1 chi2 dao4 guo5 liang3 ci4 le5",
++"老師不但記住了我的名字": "lao3 shi1 bu4 dan4 ji4 zhu4 le5 wo3 de5 ming2 zi5",
++"而且還說下一次我要是再遲到的話": "er2 qie3 hai2 shuo1 xia4 yi1 ci4 wo3 yao4 shi5 zai4 chi2 dao4 de5 hua4",
++"他就不讓我進教室了": "ta1 jiu4 bu4 rang4 wo3 jin4 jiao4 shi4 le5",
++"我想去洗洗臉": "wo3 xiang3 qu4 xi3 xi5 lian3",
++"哎洗澡間的燈怎麼不亮了": "ai1 xi3 zao3 jian1 de5 deng1 zen3 me5 bu4 liang4 le5",
++"算了反正沒時間了": "suan4 le5 fan3 zheng4 mei2 shi2 jian1 le5",
++"我又穿上昨天脫下的那身衣服": "wo3 you4 chuan1 shang5 zuo2 tian1 tuo1 xia4 de5 na4 shen1 yi1 fu5",
++"騎上車就往學校趕": "qi2 shang5 che1 jiu4 wang3 xue2 xiao4 gan3",
++"教室裡坐著很多學生": "jiao4 shi4 li5 zuo4 zhe5 hen3 duo1 xue2 sheng5",
++"可是安靜極了連一點兒聲音也沒有": "ke3 shi4 an1 jing4 ji2 le5 lian2 yi1 dian3 er5 sheng1 yin1 ye3 mei2 you3",
++"看來老師還沒到": "kan4 lai2 lao3 shi1 hai2 mei2 dao4",
++"我趕快找到一個空座位坐好": "wo3 gan3 kuai4 zhao3 dao4 yi1 ge5 kong4 zuo4 wei4 zuo4 hao3",
++"這個時候我忽然發現周圍的人都是我的中學同學": "zhe4 ge5 shi2 hou5 wo3 hu1 ran2 fa1 xian4 zhou1 wei2 de5 ren2 dou1 shi4 wo3 de5 zhong1 xue2 tong2 xue2",
++"每個人的面前還擺著一本數學課本": "mei3 ge5 ren2 de5 mian4 qian2 hai2 bai3 zhe5 yi1 ben3 shu4 xue2 ke4 ben3",
++"太奇怪了這節課不是聽力嗎": "tai4 qi2 guai4 le5 zhe4 jie2 ke4 bu4 shi4 ting1 li4 ma5",
++"怎麼會變成我最討厭的高中數學課呢": "zen3 me5 hui4 bian4 cheng2 wo3 zui4 tao3 yan4 de5 gao1 zhong1 shu4 xue2 ke4 ne5",
++"還有我跟同學們打招呼他們都不答應": "hai2 you3 wo3 gen1 tong2 xue2 men5 da3 zhao1 hu5 ta1 men5 dou1 bu4 da1 ying5",
++"只是看著我笑": "zhi3 shi4 kan4 zhe5 wo3 xiao4",
++"笑什麼是因為我沒洗臉沒梳頭也沒刮胡子": "xiao4 shen2 me5 shi4 yin1 wei4 wo3 mei2 xi3 lian3 mei2 shu1 tou2 ye3 mei2 gua1 hu2 zi5",
++"還是因為我又穿了兩只顏色不同的襪子": "hai2 shi4 yin1 wei4 wo3 you4 chuan1 le5 liang3 zhi1 yan2 se4 bu4 tong2 de5 wa4 zi5",
++"正當我不知道怎麼辦的時候": "zheng4 dang1 wo3 bu4 zhi1 dao5 zen3 me5 ban4 de5 shi2 hou5",
++"叮鈴鈴上課鈴響了": "ding1 ling2 ling2 shang4 ke4 ling2 xiang3 le5",
++"我一下子就醒了": "wo3 yi1 xia4 zi5 jiu4 xing3 le5",
++"睜開眼睛看了看床頭的鬧鐘六點半": "zheng1 kai1 yan3 jing5 kan4 le5 kan5 chuang2 tou2 de5 nao4 zhong1 liu4 dian3 ban4",
++"我打開窗戶天還沒亮呢": "wo3 da3 kai1 chuang1 hu5 tian1 hai2 mei2 liang4 ne5",
++"我呼吸了一口新鮮空氣": "wo3 hu1 xi1 le5 yi1 kou3 xin1 xian1 kong1 qi4",
++"心裡得意地想今天肯定不會遲到了": "xin1 li5 de2 yi4 de5 xiang3 jin1 tian1 ken3 ding4 bu4 hui4 chi2 dao4 le5",
++"怎麼又變成我最討厭的高中數學課呢": "zen3 me5 you4 bian4 cheng2 wo3 zui4 tao3 yan4 de5 gao1 zhong1 shu4 xue2 ke4 ne5",
++"所以這一天也叫除夕正月初一": "suo3 yi3 zhe4 yi1 tian1 ye3 jiao4 chu2 xi1 zheng1 yue4 chu1 yi1"
++}
+\ No newline at end of file
+diff --git a/atelier-voix/sources/ompal/preparer.py b/atelier-voix/sources/ompal/preparer.py
+new file mode 100644
+index 0000000..1506110
+--- /dev/null
++++ b/atelier-voix/sources/ompal/preparer.py
+@@ -0,0 +1,32 @@
++# OMPAL -> travaux pour bornes.js : pinyin (pypinyin + corrections relues à la main), voix modèle = enregistrement natif OMPAL de la même phrase.
++import json, re, os, sys
++from pypinyin import lazy_pinyin, Style
++O = sys.argv[1] if len(sys.argv) > 1 else '/home/claude/ext/ompal/'
++nn = json.load(open(O + 'non-native_scores.json')); nat = json.load(open(O + 'native_scores.json'))
++# corrections : (contexte, rang du caractère dans le contexte, syllabe)
++REGLES = [('著', 0, 'zhe5'), ('得意地', 2, 'de5'), ('熱熱地', 2, 'de5'), ('看得', 1, 'de5'), ('掃得', 1, 'de5'), ('變得', 1, 'de5'), ('覺得', 1, 'de5'),
++  ('先得', 1, 'dei3'), ('乾乾', 0, 'gan1'), ('乾乾', 1, 'gan1'), ('個', 0, 'ge5'), ('夜裡', 1, 'li5'), ('那裡', 1, 'li5'), ('館裡', 1, 'li5'), ('心裡', 1, 'li5'),
++  ('室裡', 1, 'li5'), ('市裡', 1, 'li5'), ('裡邊', 1, 'bian5'), ('外邊', 1, 'bian5'), ('時候', 1, 'hou5'), ('衣服', 1, 'fu5'), ('朋友', 1, 'you5'), ('漂亮', 1, 'liang5'),
++  ('早上', 1, 'shang5'), ('晚上', 1, 'shang5'), ('穿上', 1, 'shang5'), ('貼上', 1, 'shang5'), ('騎上', 1, 'shang5'), ('名字', 1, 'zi5'), ('熱鬧', 1, 'nao5'),
++  ('麻煩', 1, 'fan5'), ('知道', 1, 'dao5'), ('眼睛', 1, 'jing5'), ('看了看', 2, 'kan5'), ('要是', 1, 'shi5'), ('招呼', 1, 'hu5'), ('答應', 0, 'da1'), ('答應', 1, 'ying5'),
++  ('哥哥', 1, 'ge5'), ('爸爸', 1, 'ba5'), ('媽媽', 1, 'ma5'), ('學生', 1, 'sheng5'), ('窗戶', 1, 'hu5'), ('洗洗', 1, 'xi5'), ('到過', 1, 'guo5'), ('點兒', 1, 'er5'),
++  ('大夫', 0, 'dai4'), ('大夫', 1, 'fu5'), ('空座', 0, 'kong4'), ('兩只', 1, 'zhi1'), ('家來', 1, 'lai5'), ('一', 0, 'yi1'), ('不', 0, 'bu4')]
++def pinyin(t):
++    py = [s.replace('v', 'ü') for s in lazy_pinyin(t, style=Style.TONE3, neutral_tone_with_five=True)]
++    assert len(py) == len(t) and all(re.fullmatch(r'[a-zü]+[1-5]', s) for s in py), t
++    for ctx, r, syl in REGLES:
++        for m in re.finditer(re.escape(ctx), t): py[m.start() + r] = syl
++    return ' '.join(py)
++modele = {u['text']: f'{O}wav/SPEAKER{k[1:6]}/{k}.wav' for k, u in nat.items()}
++jobs, PY = [], {}
++for grp, D in (('apprenant', nn), ('natif', nat)):
++    for k, u in sorted(D.items()):
++        t = u['text']; PY.setdefault(t, pinyin(t))
++        j = {'id': k, 'audio': f'{O}wav/SPEAKER{k[1:6]}/{k}.wav', 'hanzi': t.replace('個', '个') + '。', 'pinyin': PY[t], 'extra': {'loc': k[1:6], 'grp': grp}}
++        assert os.path.exists(j['audio']), j['audio']
++        jobs.append(j)
++json.dump(jobs, open('travaux-seul.json', 'w'), ensure_ascii=False)
++jm = [dict(j, modele=modele[j['hanzi'][:-1].replace('个', '個')]) for j in jobs if j['extra']['grp'] == 'apprenant' and j['hanzi'][:-1].replace('个', '個') in modele]
++json.dump(jm, open('travaux-modele.json', 'w'), ensure_ascii=False)
++json.dump(PY, open('pinyin-ompal.json', 'w'), ensure_ascii=False, indent=0)
++print(len(jobs), 'travaux seul ;', len(jm), 'avec voix modèle')
+diff --git a/atelier-voix/sources/ompal/resultats-ompal.json b/atelier-voix/sources/ompal/resultats-ompal.json
+new file mode 100644
+index 0000000..7d09758
+--- /dev/null
++++ b/atelier-voix/sources/ompal/resultats-ompal.json
+@@ -0,0 +1,106 @@
++{
++ "seul|module": {
++  "justes": 38.986409966024915,
++  "faux": 81.35168961201502,
++  "justes_unan": 41.09064232148679,
++  "faux_unan": 82.11920529801324,
++  "justes_fin": 44.820717131474105,
++  "faux_fin": 73.52941176470588,
++  "natifs": 38.3399209486166
++ },
++ "seul|oreille": {
++  "justes": 48.09597961494904,
++  "faux": 80.26700041718814,
++  "justes_unan": 51.10042386697098,
++  "faux_unan": 82.11920529801324,
++  "justes_fin": 59.561752988047814,
++  "faux_fin": 79.41176470588235,
++  "natifs": 52.30566534914362
++ },
++ "seul|module ET oreille>-1": {
++  "justes": 35.30577576443941,
++  "faux": 85.1898206090947,
++  "justes_unan": 37.577437235083146,
++  "faux_unan": 86.35761589403972,
++  "justes_fin": 38.645418326693225,
++  "faux_fin": 84.55882352941177,
++  "natifs": 35.30961791831357
++ },
++ "seul|module ET oreille>0": {
++  "justes": 28.94960362400906,
++  "faux": 90.86357947434293,
++  "justes_unan": 31.07270948809912,
++  "faux_unan": 92.31788079470199,
++  "justes_fin": 33.56573705179283,
++  "faux_fin": 92.64705882352942,
++  "natifs": 28.722002635046113
++ },
++ "seul|module OU oreille": {
++  "justes": 58.132785956964895,
++  "faux": 70.75511055486025,
++  "justes_unan": 61.11835670035865,
++  "faux_unan": 71.9205298013245,
++  "justes_fin": 70.81673306772909,
++  "faux_fin": 60.29411764705882,
++  "natifs": 61.9235836627141
++ },
++ "seul|oreille même exigence": {
++  "justes": 46.92808607021517,
++  "faux": 81.35168961201502,
++  "seuil": 0.04626594041852991
++ },
++ "modele|module": {
++  "justes": 32.577743146560884,
++  "faux": 83.84808013355592,
++  "justes_unan": 34.298768050909686,
++  "faux_unan": 84.50331125827815,
++  "justes_fin": 23.40637450199203,
++  "faux_fin": 87.5,
++  "natifs": NaN
++ },
++ "modele|oreille": {
++  "justes": 48.74265070482397,
++  "faux": 80.59265442404006,
++  "justes_unan": 51.55421391857714,
++  "faux_unan": 80.9271523178808,
++  "justes_fin": 62.05179282868526,
++  "faux_fin": 81.61764705882352,
++  "natifs": NaN
++ },
++ "modele|module ET oreille>-1": {
++  "justes": 28.277962739958916,
++  "faux": 89.06510851419031,
++  "justes_unan": 30.056294362405154,
++  "faux_unan": 89.5364238410596,
++  "justes_fin": 21.41434262948207,
++  "faux_fin": 94.85294117647058,
++  "natifs": NaN
++ },
++ "modele|module ET oreille>0": {
++  "justes": 21.491818375008855,
++  "faux": 94.24040066777964,
++  "justes_unan": 23.10516439585543,
++  "faux_unan": 94.96688741721854,
++  "justes_fin": 18.625498007968126,
++  "faux_fin": 98.52941176470588,
++  "natifs": NaN
++ },
++ "modele|module OU oreille": {
++  "justes": 59.828575476376,
++  "faux": 70.20033388981636,
++  "justes_unan": 62.747817573631394,
++  "faux_unan": 70.4635761589404,
++  "justes_fin": 66.83266932270917,
++  "faux_fin": 70.58823529411765,
++  "natifs": NaN
++ },
++ "modele|oreille même exigence": {
++  "justes": 44.96706099029539,
++  "faux": 83.84808013355592,
++  "seuil": 0.13481123140936893
++ },
++ "repere humain": {
++  "justes": 95.1893234016139,
++  "faux": 57.97286920911185
++ }
++}
+\ No newline at end of file
+-- 
+2.43.0
+

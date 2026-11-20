@@ -1,7 +1,9 @@
 # Éléments communs : architecture de l'oreille et chargement d'OMPAL (jugement des professeurs + images du son).
 import json, numpy as np, torch, torch.nn as nn
 OMPAL = '/home/claude/ext/ompal/'
-SEUL = '/home/claude/ompal-eval/seul.npz'
+import os
+SEUL = os.environ.get('OMPAL_NPZ', '/home/claude/ompal-eval/seul.npz')   # images du son d'OMPAL (frontières du module, ou du MFA)
+SUF = os.environ.get('SUFFIXE', '')
 PT = '/home/claude/jeu/atelier-voix/sources/aishell/oreille.pt'
 CIBLE = 0.90   # part des tons justes que le juge doit accepter (les professeurs : 95 %)
 

@@ -3,10 +3,10 @@
 import json, numpy as np, torch, pickle
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.model_selection import GroupKFold
-from commun import Oreille, ompal, sorties, marge as marge_de, CIBLE
+from commun import Oreille, ompal, sorties, marge as marge_de, CIBLE, SUF
 torch.set_num_threads(2)
 D = ompal(0); M = D['M']
-m = Oreille(); m.load_state_dict(torch.load('/home/claude/aishell/oreille2-ompal-final.pt', map_location='cpu'))
+m = Oreille(); m.load_state_dict(torch.load(f'/home/claude/aishell/oreille2-ompal{SUF}-final.pt', map_location='cpu'))
 H, P = sorties(m, D['X'], D['pos'])
 def indices(P, att, pos, dur, ids, k, n):
     A = np.eye(4)[att]; mg = marge_de(P, att)
@@ -21,5 +21,5 @@ seuil = float(np.quantile(oof[D['app'] & y], 1 - CIBLE))
 J, F = D['app'] & y, D['app'] & ~y
 print(f'validation croisée voix par voix : justes acceptés {100 * (oof[J] > seuil).mean():.1f} %, faux détectés {100 * (oof[F] <= seuil).mean():.1f} %')
 tete = mk().fit(X, y)
-pickle.dump({'tete': tete, 'seuil': seuil, 'indices': 'P(4), ton attendu(4), P*attendu(4), marge, fin de phrase, durée, durée/durée moyenne de la phrase, durée moyenne, rang/longueur'}, open('/home/claude/aishell/tete-finale.pkl', 'wb'))
+pickle.dump({'tete': tete, 'seuil': seuil, 'indices': 'P(4), ton attendu(4), P*attendu(4), marge, fin de phrase, durée, durée/durée moyenne de la phrase, durée moyenne, rang/longueur'}, open(f'/home/claude/aishell/tete-finale{SUF}.pkl', 'wb'))
 print('seuil', seuil)

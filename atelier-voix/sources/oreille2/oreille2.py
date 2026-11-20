@@ -12,7 +12,7 @@ VAR, PLI = sys.argv[1], int(sys.argv[2])
 AISH = sorted(glob.glob('/home/claude/aishell/npz/S*.npz'))
 torch.manual_seed(PLI); np.random.seed(PLI)
 
-from commun import Oreille, ompal, sorties, marge as marge_de, PT, CIBLE
+from commun import Oreille, ompal, sorties, marge as marge_de, PT, CIBLE, SUF
 D = ompal(PLI)
 OX, Oatt, Opos, Ojuste, Oapp, Otest = D['X'], D['att'], D['pos'], D['juste'], D['app'], D['test']
 tr = ~Otest
@@ -62,7 +62,7 @@ if VAR != 'base':
 
 # ---------- mesure ----------
 if PLI == 0:
-    torch.save(m.state_dict(), f'/home/claude/aishell/oreille2-{VAR}-final.pt'); sys.exit()
+    torch.save(m.state_dict(), f'/home/claude/aishell/oreille2-{VAR}{SUF}-final.pt'); sys.exit()
 _, P = sorties(m, OX, Opos)
 marge = marge_de(P, Oatt)
 jtr = tr & Oapp & Ojuste
@@ -74,5 +74,5 @@ res = dict(variante=VAR, pli=PLI, n_justes=int(J.sum()), n_faux=int(F.sum()), se
            auc=float(roc_auc_score(Ojuste[te], marge[te])),
            natif_accepte=float(100 * (marge[Otest & ~Oapp] > seuil).mean()))
 print(json.dumps(res, ensure_ascii=False), flush=True)
-with open('/home/claude/aishell/resultats-oreille2.jsonl', 'a') as f: f.write(json.dumps(res, ensure_ascii=False) + '\n')
-if VAR != 'base': torch.save(m.state_dict(), f'/home/claude/aishell/oreille2-{VAR}-pli{PLI}.pt')
+with open(f'/home/claude/aishell/resultats-oreille2{SUF}.jsonl', 'a') as f: f.write(json.dumps(res, ensure_ascii=False) + '\n')
+if VAR != 'base': torch.save(m.state_dict(), f'/home/claude/aishell/oreille2-{VAR}{SUF}-pli{PLI}.pt')
