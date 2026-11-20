@@ -19,7 +19,23 @@ export interface PuppetRig {
   cx: number;
   legs: PuppetLeg[];
 }
+/**
+ * Marche image par image (planche horizontale d'images de même taille, personnage tourné vers la droite),
+ * tirée par exemple d'une vidéo. Remplace la marche découpée quand elle est choisie.
+ */
+export interface WalkSheet {
+  /** Clé de l'image de la planche (déclarée dans assets.images). */
+  sheet: string;
+  frames: number;
+  /** Distance parcourue au sol entre deux images, en pixels de la planche : règle la cadence pour que les pieds ne glissent pas. */
+  stride: number;
+  /** Image affichée à l'arrêt. */
+  still?: number;
+  /** Axe du buste dans une image (0 à 1, depuis la gauche). */
+  axis?: number;
+}
 export interface PlayerArt {
+  walk?: WalkSheet;
   side: string;
   front?: string;
   height?: number;
@@ -58,6 +74,11 @@ export class Puppet extends Phaser.GameObjects.Container {
   private settle = 0;
   private wasMoving = false;
   private talking = false;
+  /** Marche image par image (si une planche est fournie et choisie). */
+  private walkImg?: Phaser.GameObjects.Image;
+  private walkArt?: WalkSheet;
+  private walkT = 0;
+  private artHeight: number;
 
   constructor(
     scene: Phaser.Scene,
@@ -67,6 +88,7 @@ export class Puppet extends Phaser.GameObjects.Container {
   ) {
     super(scene, x, y);
     this.rig = art.rig;
+    this.artHeight = art.height ?? 600;
     const r = art.rig;
     this.u = (art.height ?? 600) / r.ground;
     this.body_ = scene.add.container(0, 0);
@@ -107,12 +129,57 @@ export class Puppet extends Phaser.GameObjects.Container {
       this.front.setScale((art.height ?? 600) / tex.height);
       this.add(this.front);
     }
+    if (art.walk && scene.textures.exists(art.walk.sheet)) {
+      const w = art.walk;
+      const tex = scene.textures.get(w.sheet);
+      const src = tex.getSourceImage();
+      const fw = Math.floor(src.width / w.frames);
+      // découpe de la planche en images numérotées (une seule fois par texture)
+      if (!tex.has('0'))
+        for (let i = 0; i < w.frames; i++)
+          tex.add(String(i), 0, i * fw, 0, fw, src.height);
+      this.walkArt = w;
+      this.walkImg = scene.add
+        .image(0, 0, w.sheet, String(w.still ?? 0))
+        .setOrigin(w.axis ?? 0.5, 1)
+        .setVisible(false);
+      this.walkImg.setScale(this.artHeight / src.height);
+      this.body_.add(this.walkImg);
+    }
     this.pose(0);
     scene.add.existing(this);
   }
 
-  /** dt en ms ; moving : le joueur appuie sur une direction. */
-  step(dt: number, moving: boolean) {
+  /** La marche image par image existe-t-elle pour ce personnage ? */
+  get hasFrameWalk() {
+    return !!this.walkImg;
+  }
+
+  /** Choisit la marche : image par image (true) ou découpée (false). */
+  setFrameWalk(on: boolean) {
+    if (!this.walkImg) return;
+    this.walkImg.setVisible(on);
+    this.torso.setVisible(!on);
+    for (const l of this.legs) l.img.setVisible(!on);
+  }
+
+  private get frameWalk() {
+    return !!this.walkImg?.visible;
+  }
+
+  /** dt en ms ; moving : le joueur appuie sur une direction ; speed : vitesse au sol (px/s), pour caler les pas. */
+  step(dt: number, moving: boolean, speed = 260) {
+    if (this.walkImg && this.walkArt && this.frameWalk) {
+      const w = this.walkArt;
+      const k = this.walkImg.scaleX;
+      if (moving)
+        this.walkT =
+          (this.walkT +
+            (speed * dt) / 1000 / (w.stride * k * this.depthScale)) %
+          w.frames;
+      else this.walkT = w.still ?? 0;
+      this.walkImg.setFrame(String(Math.floor(this.walkT) % w.frames));
+    }
     // l'amplitude monte et redescend en douceur : départ et arrêt sans à-coup
     const target = moving ? 1 : 0;
     this.amount += (target - this.amount) * Math.min(1, dt / 120);
@@ -144,7 +211,7 @@ export class Puppet extends Phaser.GameObjects.Container {
       lowest = Math.max(lowest, leg.pivotY + leg.len * Math.cos(t * DEG));
     }
     // le pied le plus bas reste au sol : le rebond du pas en découle tout seul
-    const lift = lowest - this.rig.ground;
+    const lift = this.frameWalk ? 0 : lowest - this.rig.ground;
     // à l'arrêt, le corps se tasse un instant puis se redresse (le poids se pose)
     const dip = Math.sin(this.settle * Math.PI) * 5;
     this.body_.y = -lift * this.u + dip;
@@ -156,6 +223,7 @@ export class Puppet extends Phaser.GameObjects.Container {
     if (this.front)
       this.front.scaleY =
         this.front.scaleX * (1 + BREATH * Math.sin(this.breath));
+    if (this.walkImg) this.walkImg.scaleY = this.walkImg.scaleX * b;
   }
 
   /** instant : sans pivot (entrée dans un lieu). */

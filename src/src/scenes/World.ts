@@ -90,6 +90,16 @@ export class World extends Phaser.Scene {
   private exitBannerFor: string | null = null;
   /** Point d'interaction visé par un clic : on y marche, puis on parle / on entre. */
   private clickTarget: Hotspot | null = null;
+  /** Marche image par image plutôt que découpée (comparaison : ?marche=video, touche K). */
+  private frameWalk = (() => {
+    const q = new URLSearchParams(location.search).get('marche');
+    if (q) return q === 'video';
+    try {
+      return localStorage.getItem('jeu-marche') === 'video';
+    } catch {
+      return false;
+    }
+  })();
   /** Décalage courant de la caméra vers l'avant (px du lieu, signé). */
   private look = 0;
 
@@ -465,6 +475,8 @@ export class World extends Phaser.Scene {
     if (art?.rig && rigged) {
       this.player = new Puppet(this, at.x, at.y, { ...art, rig: art.rig, height: (art.height ?? 600) * (this.place.playerScale ?? 1) });
       this.player.setFacing(at.facing === 'left', true);
+      // marche image par image si elle est choisie (?marche=video, touche K pour comparer)
+      this.player.setFrameWalk(this.frameWalk);
     } else {
       this.player = this.add.sprite(at.x, at.y, 'player_0').setOrigin(0.5, 1).setFlipX(at.facing === 'left');
       this.player.setData('base', this.place.playerScale ?? 1);
@@ -620,6 +632,17 @@ export class World extends Phaser.Scene {
     const side = Math.sign(p.x - h.x) || -1;
     this.autoWalk = Phaser.Math.Clamp(h.x + side * Math.min(90, near - 40), w.xMin, w.xMax) - p.x;
     this.clickTarget = h;
+  }
+
+  /** Petite étiquette en haut de l'écran, qui s'efface d'elle-même. */
+  private walkLabel(text: string) {
+    const cam = this.cameras.main;
+    const t = this.add
+      .text(cam.width / 2, 40, text, { fontFamily: 'Inter, sans-serif', fontSize: '22px', color: '#2b2b33', backgroundColor: '#f3ede0', padding: { x: 14, y: 8 } })
+      .setOrigin(0.5, 0)
+      .setScrollFactor(0)
+      .setDepth(5000);
+    this.tweens.add({ targets: t, alpha: 0, delay: 1600, duration: 500, onComplete: () => t.destroy() });
   }
 
   /** Rond d'encre au sol là où l'on a cliqué : le jeu a compris où aller. */
@@ -1540,6 +1563,16 @@ export class World extends Phaser.Scene {
     if (e.code === 'KeyO') ui.panelOpen() ? ui.closePanel() : this.openPanel('album');
     if (e.code === 'KeyP') this.togglePhoto();
     if (e.code === 'KeyM') document.dispatchEvent(new CustomEvent('toggle-sound'));
+    if (e.code === 'KeyK' && this.player instanceof Puppet && this.player.hasFrameWalk) {
+      this.frameWalk = !this.frameWalk;
+      this.player.setFrameWalk(this.frameWalk);
+      try {
+        localStorage.setItem('jeu-marche', this.frameWalk ? 'video' : 'decoupe');
+      } catch {
+        /* navigation privée */
+      }
+      this.walkLabel(this.frameWalk ? 'Marche : vidéo (K pour changer)' : 'Marche : découpée (K pour changer)');
+    }
     if (e.code === 'Escape') {
       ui.closePanel();
       if (this.photo) this.togglePhoto();
