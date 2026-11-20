@@ -464,7 +464,7 @@ export class World extends Phaser.Scene {
     const rigged = art?.rig && this.textures.exists(art.side) && art.rig.legs.every((l) => this.textures.exists(l.key));
     if (art?.rig && rigged) {
       this.player = new Puppet(this, at.x, at.y, { ...art, rig: art.rig, height: (art.height ?? 600) * (this.place.playerScale ?? 1) });
-      this.player.setFacing(at.facing === 'left');
+      this.player.setFacing(at.facing === 'left', true);
     } else {
       this.player = this.add.sprite(at.x, at.y, 'player_0').setOrigin(0.5, 1).setFlipX(at.facing === 'left');
       this.player.setData('base', this.place.playerScale ?? 1);
@@ -707,7 +707,7 @@ export class World extends Phaser.Scene {
     const who = merchant?.h ?? h;
     // tout près de l'interlocuteur (on l'a presque dépassé au clavier), on reste du côté d'où l'on arrivait :
     // c'est le regard du joueur qui le dit, pas un pixel de part ou d'autre (sinon il sautait de l'autre côté)
-    const facingLeft = p instanceof Puppet ? p.scaleX < 0 : (p as Phaser.GameObjects.Sprite).flipX;
+    const facingLeft = p instanceof Puppet ? p.facesLeft : (p as Phaser.GameObjects.Sprite).flipX;
     const side = h.playerAt ? Math.sign(h.playerAt) : Math.abs(p.x - who.x) < 120 ? (facingLeft ? 1 : -1) : p.x <= who.x ? -1 : 1;
     // l'écart suit la taille des personnages dans le lieu (petits dans la bouquinerie, grands en cuisine)
     const gap = Math.round(300 * Math.max(0.65, this.place.playerScale ?? 1));
@@ -722,7 +722,7 @@ export class World extends Phaser.Scene {
     this.talkTo = npcSpot?.obj;
     // l'interlocuteur se tourne vers le joueur (si l'on sait de quel côté regarde son dessin)
     const look = npcSpot?.h.facing;
-    if (look && npcSpot.obj instanceof Phaser.GameObjects.Image) npcSpot.obj.setFlipX((x > who.x ? 'right' : 'left') !== look);
+    if (look && npcSpot.obj instanceof Phaser.GameObjects.Image) this.turnNpc(npcSpot.obj, (x > who.x ? 'right' : 'left') !== look);
     if (p instanceof Puppet) p.setFacing(side > 0);
     this.tweens.add({
       targets: p,
@@ -750,6 +750,7 @@ export class World extends Phaser.Scene {
         this.busy = false;
         this.unframeDialogue();
         if (this.player instanceof Puppet) this.player.setTalking(false);
+        this.speakBob(undefined);
         if (success) this.sceneEnd(sc.id);
       },
     });
@@ -800,10 +801,61 @@ export class World extends Phaser.Scene {
   }
 
   /** Petit sursaut de celui qui parle (marionnette de papier qu'on agite). */
+  /** Qui parle : le personnage qui a la parole prend sa pose « parle » (si elle est dessinée), les autres reprennent la leur. */
   private speakBob(obj: Phaser.GameObjects.Image | undefined) {
+    for (const s of this.spots) if (s.obj !== obj && s.obj.getData('talkImg')) this.talkPose(s.obj, false);
     if (!obj?.active) return;
-    const y = obj.y;
-    this.tweens.add({ targets: obj, y: y - 6, duration: 110, yoyo: true, repeat: 1, ease: 'Sine.easeOut', onComplete: () => obj.setY(y) });
+    if (this.talkPose(obj, true)) return;
+    // pas de pose dessinée : un hochement (le corps s'incline à peine depuis les pieds, puis revient)
+    const a = obj.flipX ? -1.4 : 1.4;
+    this.tweens.add({ targets: obj, angle: a, duration: 140, yoyo: true, ease: 'Sine.easeInOut', onComplete: () => obj.setAngle(0) });
+  }
+
+  /**
+   * Pose « parle » d'un personnage : l'image *_talk du même personnage (ex. nainai_stand → nainai_talk)
+   * apparaît en fondu par-dessus et suit l'image de repos (respiration, regard). Renvoie false s'il n'y en a pas.
+   */
+  private talkPose(obj: Phaser.GameObjects.Image, on: boolean) {
+    let over = obj.getData('talkImg') as Phaser.GameObjects.Image | undefined;
+    if (!over) {
+      if (!on) return false;
+      const key = obj.texture.key.replace(/_stand$/, '_talk');
+      if (key === obj.texture.key || !this.textures.exists(key)) return false;
+      const base = obj.texture.getSourceImage();
+      const src = this.textures.get(key).getSourceImage();
+      const k = base.height / src.height;
+      over = this.add.image(obj.x, obj.y, key).setOrigin(0.5, 1).setAlpha(0);
+      const follow = () => {
+        if (!over?.active || !obj.active) return;
+        over.setPosition(obj.x, obj.y).setDepth(obj.depth + 0.01).setFlipX(obj.flipX).setAngle(obj.angle);
+        over.setScale(obj.scaleX * k, obj.scaleY * k);
+      };
+      follow();
+      this.events.on('update', follow);
+      over.once('destroy', () => this.events.off('update', follow));
+      obj.once('destroy', () => over?.destroy());
+      obj.setData('talkImg', over);
+    }
+    this.tweens.killTweensOf(over);
+    this.tweens.add({ targets: over, alpha: on ? 1 : 0, duration: 200, ease: 'Sine.easeInOut' });
+    this.tweens.add({ targets: obj, alpha: on ? 0 : 1, duration: 200, ease: 'Sine.easeInOut' });
+    return true;
+  }
+
+  /** Un personnage se retourne : il pivote sur lui-même (comme une carte) au lieu de basculer d'un coup. */
+  private turnNpc(obj: Phaser.GameObjects.Image, flip: boolean) {
+    if (obj.flipX === flip) return;
+    const sx = obj.scaleX;
+    this.tweens.add({
+      targets: obj,
+      scaleX: sx * 0.05,
+      duration: 90,
+      ease: 'Sine.easeIn',
+      onComplete: () => {
+        obj.setFlipX(flip);
+        this.tweens.add({ targets: obj, scaleX: sx, duration: 110, ease: 'Sine.easeOut' });
+      },
+    });
   }
 
   // ---------- Vie du lieu : passants, chats, moineaux ----------
@@ -1614,7 +1666,7 @@ export class World extends Phaser.Scene {
     // la caméra glisse un peu devant le joueur, du côté où il marche (pas pendant les dialogues : elle est alors cadrée)
     {
       const cam = this.cameras.main;
-      const facing = p instanceof Puppet ? (p.scaleX < 0 ? -1 : 1) : p.flipX ? -1 : 1;
+      const facing = p instanceof Puppet ? (p.facesLeft ? -1 : 1) : p.flipX ? -1 : 1;
       const want = (moving ? facing : facing * 0.6) * (LOOK_AHEAD / cam.zoom);
       this.look += (want - this.look) * Math.min(1, dt / 600);
       cam.setFollowOffset(-this.look, 0);
