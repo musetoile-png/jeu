@@ -207,7 +207,8 @@
       "portrait_guichet_surprise": "art/guichet_bust_surprise.jpg",
       "portrait_police_neutral": "art/police_bust_neutral.jpg",
       "portrait_police_joy": "art/police_bust_joy.jpg",
-      "portrait_police_surprise": "art/police_bust_surprise.jpg"
+      "portrait_police_surprise": "art/police_bust_surprise.jpg",
+      "player_walk": "art/player_walk.webp"
     },
     "voicePath": "audio/vo/zh/",
     "keyWhite": [
@@ -251,6 +252,14 @@
             ]
           }
         ]
+      },
+      "walk": {
+        "sheet": "player_walk",
+        "frames": 32,
+        "cols": 8,
+        "stride": 21.0,
+        "still": 0,
+        "axis": 0.447
       }
     },
     "playerF": {

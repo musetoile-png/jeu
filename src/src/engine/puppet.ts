@@ -27,6 +27,8 @@ export interface WalkSheet {
   /** Clé de l'image de la planche (déclarée dans assets.images). */
   sheet: string;
   frames: number;
+  /** Images par rangée (planche en grille, pour rester sous la taille maximale des textures sur mobile). Absent : une seule rangée. */
+  cols?: number;
   /** Distance parcourue au sol entre deux images, en pixels de la planche : règle la cadence pour que les pieds ne glissent pas. */
   stride: number;
   /** Image affichée à l'arrêt. */
@@ -133,17 +135,20 @@ export class Puppet extends Phaser.GameObjects.Container {
       const w = art.walk;
       const tex = scene.textures.get(w.sheet);
       const src = tex.getSourceImage();
-      const fw = Math.floor(src.width / w.frames);
+      const cols = w.cols ?? w.frames;
+      const rows = Math.ceil(w.frames / cols);
+      const fw = Math.floor(src.width / cols);
+      const fh = Math.floor(src.height / rows);
       // découpe de la planche en images numérotées (une seule fois par texture)
       if (!tex.has('0'))
         for (let i = 0; i < w.frames; i++)
-          tex.add(String(i), 0, i * fw, 0, fw, src.height);
+          tex.add(String(i), 0, (i % cols) * fw, Math.floor(i / cols) * fh, fw, fh);
       this.walkArt = w;
       this.walkImg = scene.add
         .image(0, 0, w.sheet, String(w.still ?? 0))
         .setOrigin(w.axis ?? 0.5, 1)
         .setVisible(false);
-      this.walkImg.setScale(this.artHeight / src.height);
+      this.walkImg.setScale(this.artHeight / fh);
       this.body_.add(this.walkImg);
     }
     this.pose(0);
