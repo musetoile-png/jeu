@@ -1,4 +1,4 @@
-# Atelier d'écriture — module de 千里 Mille li (v0.7, 21 novembre 2026)
+# Atelier d'écriture — module de 千里 Mille li (v0.8, 21 novembre 2026)
 
 En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, tablette, ordinateur ; doigt, stylet ou souris).
 
@@ -8,6 +8,11 @@ En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, t
 3. **Dictée** : on entend un mot (ou une phrase du jeu) avec la voix ElevenLabs, on écrit les caractères. Les caractères déjà appris viennent en premier.
 4. **Carnet** : les caractères du paquet, de l'encre pâle (jamais écrit) à l'encre noire (maîtrisé : 3 réussites et 3 contextes). Choix du paquet (HSK 1, 2, 3, autres, ajoutés), réglages (tolérance, nouveaux par jour, épaisseur du trait), import Excel.
 5. **Journal** : un événement par geste (tracé, écoute, indice, ordre montré, pinyin…), avec erreurs par trait, durée, contexte déjà vu ou nouveau, doigt/stylet/souris. Export CSV (séparateur `;`, s'ouvre dans Excel) ou JSON, avec un pseudonyme d'élève.
+
+## Ordre de présentation des caractères (v0.8)
+- Paquets du jeu (HSK 1, 2, 3, autres) : l'ordre où le jeu enseigne les caractères.
+- Dès qu'un paquet importé (Anki, Word, Excel) est choisi, ses caractères passent **d'abord, dans l'ordre du cours** — y compris ceux que le jeu connaît déjà (给你 « tenez », 护照 « passeport »…). Les caractères déjà appris sont sautés comme nouveaux ; les révisions dues restent mélangées aux nouveaux.
+- Chaque caractère importé garde son rang par paquet (`rangs` dans `ecriture_ajouts_v1`). Pour un import fait avant la v0.8, le rang est retrouvé à partir des fiches (approché pour les caractères qui n'apparaissent que dans des phrases) ; réimporter le paquet donne l'ordre exact, sans perdre la progression.
 
 ## Moins de « on recommence », bilan court, geste animé (v0.7, retours du 21 novembre)
 - **Notation plus douce, révisions plus nombreuses** (`moteur-ecriture.js`, `noter`) : étapes 1 et 2 avancent toujours ; à l'étape de mémoire, « parfait » (0 erreur), « réussi » (1 trait raté, 2 erreurs au plus), « presque » (quelques traits ratés : revient de mémoire dans 5 min, sans repasser par le guidé), « pas encore » (la moitié des traits ratés, ou ordre montré : guidé puis mémoire 10 min plus tard). Un caractère récent réussi revient en petit rappel 10 minutes après.

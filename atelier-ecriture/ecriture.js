@@ -46,6 +46,13 @@
       if (a.niveau) d.niveau = a.niveau;
       d.importe = true;
       d.paquets = [...new Set(d.paquets.concat(a.paquets))];
+      // rang dans le paquet (ordre du cours). Imports d'avant la v0.8 : on le retrouve par les fiches (identifiants croissants)
+      d.rangs = Object.assign(d.rangs || {}, a.rangs || {});
+      a.paquets.forEach(pq => {
+        if (d.rangs[pq] !== undefined) return;
+        const ids = a.mots.filter(x => x.paquet === pq).map(x => parseFloat(String(x.id).split('-').pop())).filter(x => !isNaN(x));
+        d.rangs[pq] = ids.length ? Math.min(...ids) : 1e15;
+      });
       const deja = new Set(d.contextes.map(x => x.zh));
       d.contextes = a.contextes.filter(x => !deja.has(x.zh)).concat(d.contextes);
       const dejaM = new Set(d.mots.map(x => x.zh));
@@ -69,7 +76,18 @@
     if (d.source !== 'import' || d.niveau) t.push(d.niveau >= 1 && d.niveau <= 3 ? String(d.niveau) : 'autres');
     return t;
   }
-  const liste = () => ORDRE.filter(c => etiquettes(PAR[c]).some(t => R.niveaux.includes(t)));
+  /* Ordre de présentation :
+     - paquets du jeu (HSK 1, 2, 3, autres) : l'ordre où le jeu enseigne les caractères ;
+     - dès qu'un paquet importé (cours de la prof) est choisi, ses caractères passent d'abord, DANS L'ORDRE DU COURS
+       (même ceux que le jeu connaît déjà, comme 我 ou 你) ; les autres groupes choisis suivent. */
+  function liste() {
+    const choisis = ORDRE.filter(c => etiquettes(PAR[c]).some(t => R.niveaux.includes(t)));
+    const pq = R.niveaux.filter(g => g.startsWith('p:')).map(g => g.slice(2));
+    if (!pq.length) return choisis;
+    const rang = c => { const d = PAR[c]; let m = Infinity; pq.forEach(n => { if (d.paquets.includes(n) && d.rangs && d.rangs[n] !== undefined) m = Math.min(m, d.rangs[n]); }); return m; };
+    const pos = new Map(choisis.map((c, i) => [c, i]));
+    return choisis.slice().sort((a, b) => (rang(a) - rang(b)) || (pos.get(a) - pos.get(b)));
+  }
   function paquetsImportes() {
     const n = {}; Object.values(PAR).forEach(d => d.paquets.forEach(p => { n[p] = (n[p] || 0) + 1; })); return n;
   }
@@ -606,7 +624,7 @@
     document.querySelectorAll('[data-seul]').forEach(b => b.onclick = () => { R.niveaux = ['p:' + b.dataset.seul]; sauverR(); majCarnet(); majCompteurs(); });
     document.querySelectorAll('[data-retirer]').forEach(b => b.onclick = () => retirerPaquet(b.dataset.retirer));
     const l = liste();
-    $('infoPaquet').textContent = l.length + ' caractères dans le paquet, dans l\'ordre où le jeu les enseigne.';
+    $('infoPaquet').textContent = l.length + ' caractères, dans l\'ordre où ils seront proposés' + (R.niveaux.some(g => g.startsWith('p:')) ? ' (ordre du cours importé d\'abord).' : ' (ordre du jeu).');
     $('carnetGrille').innerHTML = l.map(c => `<button type="button" class="n${moteur.niveau(c)}" data-c="${c}" title="${PAR[c].pinyin} ${PAR[c].sens}">${c}</button>`).join('');
     document.querySelectorAll('#carnetGrille button').forEach(b => b.onclick = () => {
       const c = b.dataset.c, k = moteur.etat()[c];
@@ -658,6 +676,7 @@
         if (PAR[c] || ajouts[c]) maj++; else ajout++;
         if (!(window.TRAITS_EMBARQUES || '').includes(c)) horsLigne++;
         const a = ajouts[c] || { c, contextes: [], mots: [], paquets: [] };
+        a.rangs = a.rangs || {}; if (a.rangs[paquet] === undefined) a.rangs[paquet] = rows.indexOf(r);
         a.pinyin = String(r[1] || '') || a.pinyin; a.sens = String(r[2] || '') || a.sens; a.histoire = String(r[3] || '') || a.histoire;
         a.mnemo = String(r[4] || '') || a.mnemo; a.niveau = niv || a.niveau; a.force = true;
         if (!a.paquets.includes(paquet)) a.paquets.push(paquet);
@@ -699,7 +718,8 @@
     // on repart de zéro pour ce paquet (réimporter une version corrigée remplace l'ancienne)
     Object.values(ajouts).forEach(a => { a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom); });
     const cars = new Set(), nouveaux = new Set();
-    let phrases = 0;
+    let phrases = 0, rang = 0;
+    Object.values(ajouts).forEach(a => { if (a.rangs) delete a.rangs[nom]; });
     fiches.forEach(a => {
       const son = a.sons.find(n => p.sons.has(n));
       const vo = son ? 'idb:' + nom + '/' + son : '';
@@ -708,6 +728,7 @@
         if (vus.has(c)) return; vus.add(c); cars.add(c);
         if (!PAR[c] || PAR[c].source === 'import') nouveaux.add(c);
         const e = entree(c);
+        e.rangs = e.rangs || {}; if (e.rangs[nom] === undefined) e.rangs[nom] = rang++;
         if (!e.pinyin && !(PAR[c] && PAR[c].source !== 'import' && PAR[c].pinyin)) e.pinyin = (/[^a-z]/i.test(py) ? py : '') || pyCars[c] || py;  // pinyin de la prof s'il porte un ton (机场 : chǎng), sinon forme de citation
         if (a.zh === c && a.fr) { e.sens = a.fr; if (a.note) e.noteProf = a.note; }
         if (a.nbHan >= 2) {
@@ -743,6 +764,7 @@
     const ajouts = lireAjouts();
     Object.values(ajouts).forEach(a => {
       a.paquets = [...new Set(a.paquets.map(x => x === ancien ? nom : x))];
+      if (a.rangs && a.rangs[ancien] !== undefined) { a.rangs[nom] = a.rangs[ancien]; delete a.rangs[ancien]; }
       a.contextes.forEach(x => { if (x.paquet === ancien) x.paquet = nom; });
       a.mots.forEach(x => { if (x.paquet === ancien) x.paquet = nom; });   // les sons gardent leur clé d'origine
     });
@@ -774,11 +796,14 @@
     };
     const duJeu = c => PAR[c] && PAR[c].source !== 'import';
     const cars = new Set(), nouveaux = new Set();
+    let rang = 0;
+    Object.values(ajouts).forEach(a => { if (a.rangs) delete a.rangs[nom]; });
     p.mots.forEach((m, i) => {
       const cs = [...m.zh].filter(c => HAN.test(c));
       new Set(cs).forEach(c => {
         cars.add(c); if (!duJeu(c)) nouveaux.add(c);
         const e = entree(c);
+        e.rangs = e.rangs || {}; if (e.rangs[nom] === undefined) e.rangs[nom] = rang++;
         const texte = m.parCar[c] || (cs.length > 1 ? m.analyse : m.analyse);
         if (texte && !e.analyses.some(x => x.mot === m.zh)) e.analyses.push({ mot: m.zh, texte, paquet: nom });
         if (m.zh === c && m.fr && !duJeu(c)) e.sens = m.fr;
@@ -818,6 +843,7 @@
       a.paquets = a.paquets.filter(x => x !== nom);
       a.contextes = a.contextes.filter(x => x.paquet !== nom); a.mots = a.mots.filter(x => x.paquet !== nom);
       a.analyses = (a.analyses || []).filter(x => x.paquet !== nom);
+      if (a.rangs) delete a.rangs[nom];
       if (!a.paquets.length) delete ajouts[c];
     });
     stock.ecrire('ecriture_ajouts_v1', ajouts);
@@ -887,5 +913,5 @@
 
   majReglages();
   suivante();
-  window.__atelier = { moteur, journal, get PAR() { return PAR; }, liste, etat: () => etat, dic: () => dic, R }; // pour les tests
+  window.__atelier = { moteur, journal, get PAR() { return PAR; }, liste, construirePaquet: () => construirePaquet(), etat: () => etat, dic: () => dic, R }; // pour les tests
 })();
