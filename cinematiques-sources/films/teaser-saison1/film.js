@@ -20,7 +20,7 @@ const ZH = "'Noto Serif CJK SC', 'Noto Serif CJK TC', serif";
 
 const load = (src) => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ko(new Error('image ' + src)); i.src = src; });
 const IMG = {};
-for (const k of ['ruelle_far', 'bouquinerie_far', 'land_a', 'land_b', 'scroll_a']) IMG[k] = await load(`./assets/${k}.jpg`);
+for (const k of ['ruelle_far', 'bouquinerie_far', 'scroll_pano']) IMG[k] = await load(`./assets/${k}.jpg`);
 IMG.bai = await load('./assets/bai_stand.png');
 
 // ---------- images des plans IA et du générique, chargées à la demande ----------
@@ -185,7 +185,7 @@ function p1(t) {
 }
 
 // ---------- P2 : le rouleau, puis coupé en huit ----------
-const BAND = { y: 270, h: 540, border: 30 };
+const BAND = { y: 180, h: 720, border: 30 };
 const SEAMS = (() => { // 7 lignes de déchirure irrégulières
   const R = rng(77), seams = [];
   for (let k = 1; k < 8; k++) {
@@ -200,11 +200,11 @@ function drawStrip(scrollX) {
   ctx.fillStyle = '#5b4a37'; ctx.fillRect(-20, y - border - 8, W + 40, h + 2 * border + 16); // soie de montage
   ctx.fillStyle = '#7a6448'; ctx.fillRect(-20, y - border, W + 40, 6); ctx.fillRect(-20, y + h + border - 6, W + 40, 6);
   ctx.fillStyle = '#e6dcc6'; ctx.fillRect(-20, y - 6, W + 40, h + 12);
-  const iw = h * 16 / 9;
-  ctx.save(); ctx.filter = 'grayscale(1) sepia(0.25) contrast(1.05)';
-  ctx.drawImage(IMG.land_a, scrollX, y, iw, h);
-  ctx.drawImage(IMG.land_b, scrollX + iw, y, iw, h);
-  ctx.drawImage(IMG.land_a, scrollX + 2 * iw, y, iw, h);
+  // un seul panorama (3:1), assez large pour le travelling : 2160 px de large, la bande en montre le milieu
+  const P = IMG.scroll_pano, iw = W + 240, ih = iw * P.height / P.width;
+  ctx.save(); ctx.beginPath(); ctx.rect(-20, y, W + 40, h); ctx.clip();
+  ctx.filter = 'grayscale(1) sepia(0.25) contrast(1.05)';
+  ctx.drawImage(P, scrollX, y + h / 2 - ih / 2, iw, ih);
   ctx.restore();
 }
 function p2(t) {

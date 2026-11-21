@@ -105,7 +105,8 @@
   ],
   "music": {
     "file": "audio/musique.mp3",
-    "fadeOut": 54.6,
-    "credit": "Musique générée avec ElevenLabs Music"
+    "fadeOut": 52.6,
+    "credit": "Musique générée avec ElevenLabs Music",
+    "fadeOutDur": 2.3
   }
 }

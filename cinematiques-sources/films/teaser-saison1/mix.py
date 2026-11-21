@@ -18,7 +18,7 @@ n = len(labels)
 fc = ';'.join(parts)
 fc += f";{''.join(labels)}amix=inputs={n}:normalize=0:duration=longest,atrim=0:{dur}[vo]"
 fc += ';[vo]asplit=2[vo1][vo2]'
-fc += f";[0:a]aresample=44100,aformat=channel_layouts=stereo,volume=0.62,afade=t=out:st={T['music'].get('fadeOut', 54.6)}:d=1.4,apad=whole_dur={dur},atrim=0:{dur}[mu]"
+fc += f";[0:a]aresample=44100,aformat=channel_layouts=stereo,volume=0.62,afade=t=out:st={T['music'].get('fadeOut', 54.6)}:d={T['music'].get('fadeOutDur', 1.4)},apad=whole_dur={dur},atrim=0:{dur}[mu]"
 fc += ';[mu][vo1]sidechaincompress=threshold=0.02:ratio=5:attack=25:release=450:makeup=1[mud]'
 if SFX.exists():
     inputs += ['-i', str(SFX)]
