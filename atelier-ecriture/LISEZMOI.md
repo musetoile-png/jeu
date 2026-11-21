@@ -1,4 +1,4 @@
-# Atelier d'écriture — module de 千里 Mille li (v0.6, 16 novembre 2026)
+# Atelier d'écriture — module de 千里 Mille li (v0.7, 21 novembre 2026)
 
 En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, tablette, ordinateur ; doigt, stylet ou souris).
 
@@ -8,6 +8,11 @@ En ligne : https://musetoile-png.github.io/jeu/atelier-ecriture/ (téléphone, t
 3. **Dictée** : on entend un mot (ou une phrase du jeu) avec la voix ElevenLabs, on écrit les caractères. Les caractères déjà appris viennent en premier.
 4. **Carnet** : les caractères du paquet, de l'encre pâle (jamais écrit) à l'encre noire (maîtrisé : 3 réussites et 3 contextes). Choix du paquet (HSK 1, 2, 3, autres, ajoutés), réglages (tolérance, nouveaux par jour, épaisseur du trait), import Excel.
 5. **Journal** : un événement par geste (tracé, écoute, indice, ordre montré, pinyin…), avec erreurs par trait, durée, contexte déjà vu ou nouveau, doigt/stylet/souris. Export CSV (séparateur `;`, s'ouvre dans Excel) ou JSON, avec un pseudonyme d'élève.
+
+## Moins de « on recommence », bilan court, geste animé (v0.7, retours du 21 novembre)
+- **Notation plus douce, révisions plus nombreuses** (`moteur-ecriture.js`, `noter`) : étapes 1 et 2 avancent toujours ; à l'étape de mémoire, « parfait » (0 erreur), « réussi » (1 trait raté, 2 erreurs au plus), « presque » (quelques traits ratés : revient de mémoire dans 5 min, sans repasser par le guidé), « pas encore » (la moitié des traits ratés, ou ordre montré : guidé puis mémoire 10 min plus tard). Un caractère récent réussi revient en petit rappel 10 minutes après.
+- **Bilan court** : une ligne par trait raté (numéro, nom du trait, l'erreur en quelques mots) ; les conseils de geste sont repliés dans « Comment les écrire » ; l'histoire ne s'ouvre plus d'elle-même quand il y a un bilan (le bouton reste disponible).
+- **« Voir le geste »** (ex-« Revoir ce trait », qui animait la grande grille hors de l'écran) : anime les traits ratés en rouge, lentement, dans le bilan lui-même. « Montrer l'ordre » et « Indice » ramènent la grille à l'écran.
 
 ## Histoires, cours Word et relecture de Nuwa (v0.6)
 - **Les 235 caractères ont une histoire et un moyen mnémotechnique**, rédigés par Claude : `sources/brouillons/*.json` (`{"car": {"h": histoire, "m": mnémo}}`), statut « brouillon à vérifier par Nuwa » affiché dans l'atelier. Conventions : « explication traditionnelle », « origine discutée », « pour le son ».

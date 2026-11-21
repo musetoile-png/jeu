@@ -152,7 +152,7 @@
     const num = n + 1;
     const base = { trait: num, nom: info.nom, fr: info.fr, conseil: info.conseil, ou: ou(A.centre) };
     if (pts.length < 2 || longueur(pts) < 25) {
-      return { ...base, code: 'trop_court', message: A.point ? `Trait ${num} : c'est ${info.fr}. Appuie un peu plus longtemps.` : `Trait ${num} : glisse le doigt, ne fais pas que toucher.` };
+      return { ...base, code: 'trop_court', court: A.point ? 'appuie un peu plus longtemps' : 'glisse le doigt, ne fais pas que toucher', message: A.point ? `Trait ${num} : c'est ${info.fr}. Appuie un peu plus longtemps.` : `Trait ${num} : glisse le doigt, ne fais pas que toucher.` };
     }
     const D = analyser(pts, true);
     // 1. ordre : le dessin ressemble beaucoup plus à un autre trait
@@ -164,35 +164,35 @@
     });
     const dAtt = Math.min(distanceMoyenne(pts, att), distanceMoyenne(pts, att.slice().reverse()));
     if (meilleur !== n && dmin < 130 && dmin < dAtt * 0.6) {
-      if (meilleur > n) return { ...base, autre: meilleur + 1, code: 'ordre', message: `Ordre des traits : celui-là, c'est le trait ${meilleur + 1}. Avant, le trait ${num} : ${info.fr}, ${base.ou}.` };
-      return { ...base, autre: meilleur + 1, code: 'deja_fait', message: `Ce trait est déjà fait. Maintenant le trait ${num} : ${info.fr}, ${base.ou}.` };
+      if (meilleur > n) return { ...base, autre: meilleur + 1, code: 'ordre', court: `ordre — tu as d'abord tracé le trait ${meilleur + 1}`, message: `Ordre des traits : celui-là, c'est le trait ${meilleur + 1}. Avant, le trait ${num} : ${info.fr}, ${base.ou}.` };
+      return { ...base, autre: meilleur + 1, code: 'deja_fait', court: `tu as repassé le trait ${meilleur + 1}, déjà fait`, message: `Ce trait est déjà fait. Maintenant le trait ${num} : ${info.fr}, ${base.ou}.` };
     }
     // 2. sens : départ et arrivée inversés
     const direct = d2(pts[0], att[0]) + d2(pts[pts.length - 1], att[att.length - 1]);
     const inverse = d2(pts[0], att[att.length - 1]) + d2(pts[pts.length - 1], att[0]);
     if (inverse < direct * 0.7 && !A.point) {
-      return { ...base, code: 'sens', message: `Trait ${num} : dans l'autre sens. On l'écrit ${NOMS_DIR[A.dir0]} — commence ${ou(att[0])}.` };
+      return { ...base, code: 'sens', court: `dans l'autre sens — commence ${ou(att[0])}`, message: `Trait ${num} : dans l'autre sens. On l'écrit ${NOMS_DIR[A.dir0]} — commence ${ou(att[0])}.` };
     }
     // 3. forme : point, crochet, coude
-    if (A.point && D.L > 1.8 * A.L + 60) return { ...base, code: 'point', message: `Trait ${num} : c'est un simple point. ${cap(info.conseil)}.` };
-    if (A.coudes > D.coudes) return { ...base, code: 'coude_oublie', message: `Trait ${num} : c'est ${info.fr}. Ne lève pas le doigt au coude.` };
-    if (A.crochet && !D.crochet) return { ...base, code: 'crochet_oublie', message: `Trait ${num} : il finit par un crochet. ${cap(info.conseil.split(' ; ')[1] || 'Finis par un petit coup sec')}.` };
-    if (!A.crochet && D.crochet && D.L > 150) return { ...base, code: 'crochet_en_trop', message: `Trait ${num} : pas de crochet ici, arrête-toi net à la fin.` };
-    if (A.coudes < D.coudes && !A.point) return { ...base, code: 'coude_en_trop', message: `Trait ${num} : ${info.fr}, d'un seul mouvement, sans tourner.` };
+    if (A.point && D.L > 1.8 * A.L + 60) return { ...base, code: 'point', court: 'c\'est un simple point : court', message: `Trait ${num} : c'est un simple point. ${cap(info.conseil)}.` };
+    if (A.coudes > D.coudes) return { ...base, code: 'coude_oublie', court: 'ne lève pas le doigt au coude', message: `Trait ${num} : c'est ${info.fr}. Ne lève pas le doigt au coude.` };
+    if (A.crochet && !D.crochet) return { ...base, code: 'crochet_oublie', court: 'il finit par un crochet', message: `Trait ${num} : il finit par un crochet. ${cap(info.conseil.split(' ; ')[1] || 'Finis par un petit coup sec')}.` };
+    if (!A.crochet && D.crochet && D.L > 150) return { ...base, code: 'crochet_en_trop', court: 'pas de crochet, arrête-toi net', message: `Trait ${num} : pas de crochet ici, arrête-toi net à la fin.` };
+    if (A.coudes < D.coudes && !A.point) return { ...base, code: 'coude_en_trop', court: 'd\'un seul mouvement, sans tourner', message: `Trait ${num} : ${info.fr}, d'un seul mouvement, sans tourner.` };
     if (!A.point && D.coudes === 0 && A.coudes === 0 && ecartAngle(A.morceaux[0].a, D.morceaux[0].a) > 35) {
-      return { ...base, code: 'direction', message: `Trait ${num} : la direction n'est pas la bonne. ${cap(info.conseil)}.` };
+      return { ...base, code: 'direction', court: `direction : ${NOMS_DIR[A.dir0] || 'à revoir'}`, message: `Trait ${num} : la direction n'est pas la bonne. ${cap(info.conseil)}.` };
     }
     // 4. place et longueur
     if (d2(pts[0], att[0]) < 150) {
-      if (D.L < 0.6 * A.L) return { ...base, code: 'court', message: `Trait ${num} : bon départ, mais trop court — va jusqu'au bout.` };
-      if (D.L > 1.6 * A.L) return { ...base, code: 'long', message: `Trait ${num} : bon départ, mais trop long — arrête-toi plus tôt.` };
+      if (D.L < 0.6 * A.L) return { ...base, code: 'court', court: 'trop court, va jusqu\'au bout', message: `Trait ${num} : bon départ, mais trop court — va jusqu'au bout.` };
+      if (D.L > 1.6 * A.L) return { ...base, code: 'long', court: 'trop long, arrête-toi plus tôt', message: `Trait ${num} : bon départ, mais trop long — arrête-toi plus tôt.` };
     }
     const ca = A.centre, cd = D.centre;
     const v = versOu(ca[0] - cd[0], ca[1] - cd[1]);
-    if (v) return { ...base, code: 'place', message: `Trait ${num} : bonne forme, mais ${v}.` };
-    if (D.L < 0.6 * A.L) return { ...base, code: 'court', message: `Trait ${num} : trop court, va jusqu'au bout.` };
-    if (D.L > 1.6 * A.L) return { ...base, code: 'long', message: `Trait ${num} : trop long, arrête-toi plus tôt.` };
-    return { ...base, code: 'forme', message: `Trait ${num} : ${info.fr}, ${base.ou}. ${cap(info.conseil)}.` };
+    if (v) return { ...base, code: 'place', court: `bonne forme, mais ${v}`, message: `Trait ${num} : bonne forme, mais ${v}.` };
+    if (D.L < 0.6 * A.L) return { ...base, code: 'court', court: 'trop court, va jusqu\'au bout', message: `Trait ${num} : trop court, va jusqu'au bout.` };
+    if (D.L > 1.6 * A.L) return { ...base, code: 'long', court: 'trop long, arrête-toi plus tôt', message: `Trait ${num} : trop long, arrête-toi plus tôt.` };
+    return { ...base, code: 'forme', court: `regarde la forme : ${info.fr}`, message: `Trait ${num} : ${info.fr}, ${base.ou}. ${cap(info.conseil)}.` };
   }
   const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 

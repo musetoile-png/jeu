@@ -23,31 +23,50 @@
     }
     function estNouveau(c) { return !S[c] || (!S[c].vu && S[c].etape === 1); }
 
-    /* Note un essai. erreurs = total des erreurs de trait ; aide = indice ou ordre montré pendant l'étape 3. */
-    function noter(c, etape, erreurs, aide) {
+    /* Note un essai.
+       erreurs : total des erreurs de trait ; aide : indice ou ordre montré (étape 3) ;
+       details (facultatif) : { nbTraits, traitsKO (nombre de traits ratés), grave (ordre montré, « je ne sais pas ») }.
+       Règles (16 → 21 novembre, retour de Manu : « on recommence trop souvent ») :
+       - étapes 1 et 2 : on avance toujours (ce sont des étapes d'apprentissage) ;
+       - étape 3, parfait (0 erreur, sans aide) : l'intervalle grandit ;
+       - étape 3, bien (1 trait raté, 2 erreurs au plus) : réussi, intervalle qui grandit peu ;
+       - étape 3, fragile (quelques traits ratés) : PAS de retour au guidé, le caractère revient de mémoire dans 5 minutes ;
+       - étape 3, à revoir (la moitié des traits ratés, ou ordre montré) : retour au guidé, nouvel essai 10 minutes plus tard.
+       Toute réussite d'un caractère récent est suivie d'un rappel dans 10 minutes : plus de révisions, plus courtes. */
+    function noter(c, etape, erreurs, aide, details) {
       const k = carte(c), t = maintenant();
-      const resultat = erreurs === 0 && !aide ? 'parfait' : erreurs <= 2 && !aide ? 'bien' : 'a_revoir';
       if (!k.vu) k.vu = t;
       if (etape < 3) {
-        // apprentissage : on avance si le tracé est assez propre, sinon on refait la même étape
-        if (erreurs <= 3) k.etape = etape + 1;
-        k.due = t;
+        k.etape = etape + 1; k.due = t;
         sauver();
-        return { resultat: erreurs <= 3 ? 'etape_suivante' : 'refaire', carte: k };
+        return { resultat: 'etape_suivante', carte: k };
       }
+      const n = (details && details.nbTraits) || 8;
+      const ko = details && details.traitsKO !== undefined ? details.traitsKO : Math.min(erreurs, n);
+      const grave = !!(details && details.grave) || ko >= Math.max(3, Math.ceil(n / 2));
+      const resultat = erreurs === 0 && !aide ? 'parfait' : grave ? 'a_revoir' : ko <= 1 && erreurs <= 2 ? 'bien' : 'fragile';
+      let rappel = false;
       if (resultat === 'a_revoir') {
         k.ko++; k.reps = 0; k.ivl = 0; k.facilite = Math.max(1.3, k.facilite - 0.2);
-        k.etape = 2; k.due = t;            // repasse tout de suite par le guidé
+        k.etape = 2; k.due = t;            // repasse par le guidé
         k.retourMemoire = t + 10 * MIN;    // puis de mémoire dans 10 minutes
+        delete k.rappel;
+      } else if (resultat === 'fragile') {
+        k.etape = 3; k.facilite = Math.max(1.3, k.facilite - 0.1);
+        k.due = t + 5 * MIN;               // revient vite, toujours de mémoire
+        delete k.retourMemoire;
+      } else if (k.rappel) {               // rappel réussi : on confirme l'intervalle prévu
+        k.etape = 3; k.due = t + k.ivl * JOUR; delete k.rappel; delete k.retourMemoire;
       } else {
         k.ok++; k.reps++; k.etape = 3;
-        k.ivl = k.reps === 1 ? 1 : k.reps === 2 ? 3 : Math.max(k.ivl + 1, Math.round(k.ivl * k.facilite));
+        k.ivl = k.reps === 1 ? 1 : k.reps === 2 ? 3 : resultat === 'parfait' ? Math.max(k.ivl + 1, Math.round(k.ivl * k.facilite)) : Math.max(k.ivl, Math.round(k.ivl * 1.3));
         k.facilite = resultat === 'parfait' ? Math.min(3.2, k.facilite + 0.1) : Math.max(1.3, k.facilite - 0.05);
-        k.due = t + k.ivl * JOUR;
         delete k.retourMemoire;
+        if (k.reps <= 2) { rappel = true; k.rappel = true; k.due = t + 10 * MIN; }   // caractère récent : petit rappel
+        else k.due = t + k.ivl * JOUR;
       }
       sauver();
-      return { resultat, carte: k };
+      return { resultat, carte: k, rappel };
     }
 
     /* Après un guidé de rattrapage réussi, la carte attend 10 minutes avant le nouvel essai de mémoire. */

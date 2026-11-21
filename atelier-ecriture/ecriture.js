@@ -192,29 +192,47 @@
   const cap1 = t => t ? t[0].toUpperCase() + t.slice(1) : t;
   const codesDiag = diags => diags.map(x => 't' + x.trait + ':' + x.code).join('|');
   /* Bilan après le tracé : planche avec les traits à revoir et ce qu'il faut corriger, trait par trait. */
-  function bilan(el, c, diags, w) {
+  /* Bilan compact : la planche (traits à revoir en rouge, numéro, départ, sens) et UNE ligne courte par trait.
+     Les conseils de geste sont repliés dans « Comment les écrire ». « Voir le geste » anime les traits ratés
+     DANS le bilan (la grande grille est souvent hors de l'écran à ce moment-là). */
+  function bilan(el, c, diags) {
     if (!diags.length || !DONNEES[c]) { el.hidden = true; el.innerHTML = ''; return; }
     const parTrait = new Map();
-    diags.forEach(x => { const p = parTrait.get(x.trait) || { n: 0, liste: [] }; parTrait.set(x.trait, { ...x, n: p.n + 1, liste: p.liste.concat(x) }); });
+    diags.forEach(x => { const p = parTrait.get(x.trait) || { n: 0, codes: [] }; parTrait.set(x.trait, { ...x, n: p.n + 1, codes: p.codes.includes(x.code) ? p.codes : p.codes.concat(x.code), premier: p.premier || x }); });
     const traits = [...parTrait.keys()].sort((a, b) => a - b);
-    const enBilan = x => x.code === 'ordre' ? `tu as commencé par le trait ${x.autre}, qui vient après.`
-      : x.code === 'deja_fait' ? `tu as repassé le trait ${x.autre}, déjà fait, au lieu de celui-ci.`
-      : x.message.replace(/^Trait \d+ : /, '');
     const lignes = traits.map(t => {
-      const x = parTrait.get(t);
-      const vus = new Set(), textes = [];
-      x.liste.forEach(y => { if (!vus.has(y.code)) { vus.add(y.code); textes.push(enBilan(y)); } });
-      const conseil = textes.some(tx => tx.includes(x.conseil.slice(0, 20))) ? '' : `<span class="conseil">Comment l'écrire : ${x.fr}, ${x.ou} — ${x.conseil}.</span>`;
-      return `<li><b>Trait ${t}${x.nom ? ' ' + x.nom : ''}</b>${x.n > 1 ? ' · ' + x.n + ' essais' : ''}<br>${textes.map(cap1).join('<br>')}${conseil ? '<br>' + conseil : ''}</li>`;
+      const x = parTrait.get(t), y = x.premier;   // la première erreur sur ce trait est la plus parlante
+      return `<li><span class="num">${t}</span>${x.nom ? '<span class="nom">' + x.nom + '</span>' : ''} ${cap1(y.court || y.message.replace(/^Trait \d+ : /, ''))}</li>`;
     }).join('');
-    el.innerHTML = `<h3>Ce qui a coincé</h3><div class="bilan-corps">${DiagnosticTraits.planche(DONNEES[c], traits, 140)}<ol>${lignes}</ol></div>
-      <div class="boutons" style="justify-content:flex-start"><button class="btn son" type="button">Revoir ${traits.length > 1 ? 'ces traits' : 'ce trait'}</button></div>`;
-    el.querySelector('button').onclick = () => {
+    const conseils = traits.map(t => { const x = parTrait.get(t); return `<li><span class="num">${t}</span> ${cap1(x.fr)}, ${x.ou} : ${x.conseil}.</li>`; }).join('');
+    el.innerHTML = `<h3>Ce qui a coincé</h3><div class="bilan-corps"><div class="planche">${DiagnosticTraits.planche(DONNEES[c], traits, 130)}</div><ol>${lignes}</ol></div>
+      <details class="conseils"><summary>Comment ${traits.length > 1 ? 'les ' : "l'"}écrire</summary><ol>${conseils}</ol></details>
+      <div class="boutons" style="justify-content:flex-start"><button class="btn son" type="button">Voir le geste</button></div>`;
+    const bouton = el.querySelector('.boutons button'), zone = el.querySelector('.planche');
+    bouton.onclick = () => {
       journal.ajouter({ evenement: 'revoir_traits', caractere: c, detail: traits.join('-') });
-      let p = Promise.resolve();
-      traits.forEach(t => { p = p.then(() => new Promise(ok => w.animateStroke(t - 1, { onComplete: ok }))).then(() => new Promise(ok => setTimeout(ok, 250))); });
+      animerTraits(zone, c, traits, () => { bouton.textContent = 'Revoir le geste'; });
     };
     el.hidden = false;
+  }
+  /* Petit tableau animé : le caractère en gris clair, puis chaque trait raté dessiné lentement en rouge, dans l'ordre. */
+  function animerTraits(zone, c, traits, fini) {
+    zone.innerHTML = '';
+    const t = 130, boite = document.createElement('div');
+    boite.style.cssText = `width:${t}px;height:${t}px;background:#fffefa;border:2px solid #e6d6d2;border-radius:6px`;
+    zone.appendChild(boite);
+    const legende = document.createElement('div'); legende.className = 'legende-anim'; zone.appendChild(legende);
+    const w = HanziWriter.create(boite, c, {
+      width: t, height: t, padding: 8, showCharacter: false, showOutline: true, outlineColor: '#d8cbbf',
+      strokeColor: '#b4412e', strokeAnimationSpeed: 0.55, delayBetweenStrokes: 400,
+      charDataLoader: (car, onLoad) => onLoad(DONNEES[car]),
+    });
+    let p = Promise.resolve();
+    traits.forEach(n => {
+      p = p.then(() => { legende.textContent = 'Trait ' + n; return new Promise(ok => w.animateStroke(n - 1, { onComplete: ok })); })
+           .then(() => new Promise(ok => setTimeout(ok, 500)));
+    });
+    p.then(() => { legende.textContent = traits.length > 1 ? 'Traits ' + traits.join(', ') : 'Trait ' + traits[0]; if (fini) fini(); });
   }
 
   // ---------- RÉVISER ----------
@@ -243,7 +261,8 @@
     });
   }
   function afficherMots(d, revele) {
-    const m = d.mots.filter(x => x.zh !== d.c).slice(0, 3);
+    const vus = new Set();
+    const m = d.mots.filter(x => x.zh !== d.c && !vus.has(x.zh) && vus.add(x.zh)).slice(0, 3);
     $('mots').innerHTML = m.map(x => `<span class="hz">${revele ? x.zh.split(d.c).join('<span style="color:var(--cinabre)">' + d.c + '</span>') : x.zh.split(d.c).join('＿')}</span> ${x.fr}`).join(' · ');
   }
   function afficherContexte(revele) {
@@ -310,7 +329,8 @@
     if (etat.fini) return; etat.fini = true;
     const d = PAR[etat.c], e = etat.etape;
     const aide = e === 3 && (etat.indices > 0 || etat.ordreMontre);
-    const r = moteur.noter(etat.c, e, etat.erreurs, aide);
+    const nbT = traceur.w._character ? traceur.w._character.strokes.length : 0;
+    const r = moteur.noter(etat.c, e, etat.erreurs, aide, { nbTraits: nbT, traitsKO: etat.parTrait.filter(Boolean).length, grave: etat.ordreMontre });
     moteur.marquerContexte(etat.c, etat.ctx && etat.ctx.zh);
     const nbTraits = traceur.w._character ? traceur.w._character.strokes.length : '';
     journal.ajouter({
@@ -320,17 +340,15 @@
       prochain_intervalle_j: e === 3 ? r.carte.ivl : '', contexte: etat.ctx ? etat.ctx.zh : '', contexte_nouveau: etat.ctx ? etat.ctxNouveau : '',
       pinyin_visible: R.pinyin, tolerance: R.tolerance, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(etat.diags),
     });
-    bilan($('bilan'), etat.c, etat.diags, traceur.w);
+    bilan($('bilan'), etat.c, etat.diags);
     $('sens').textContent = d.sens || '—';
     afficherMots(d, true); afficherContexte(true); majPinyin(); majCompteurs();
     const b = $('btnSuite'), m = $('retour');
     $('aides').hidden = true; b.hidden = false;
-    if (aHistoire(d)) afficherHistoire(d, false);
+    // l'histoire ne s'ouvre d'elle-même que si tout s'est bien passé (sinon le bilan suffit ; le bouton reste là)
+    if (aHistoire(d) && !etat.diags.length) afficherHistoire(d, false);
     if (e < 3) {
-      if (r.resultat === 'refaire') {
-        m.className = 'retour moyen'; m.textContent = 'Encore une fois cette étape, tranquillement.';
-        b.textContent = 'Recommencer l\'étape ' + e + ' →'; b.onclick = () => lancerEtape(e);
-      } else if (etat.rattrapage) {
+      if (etat.rattrapage) {
         moteur.finRattrapage(etat.c);
         m.className = 'retour ok'; m.textContent = 'Bien. Tu le réécriras de mémoire dans 10 minutes.';
         b.textContent = 'Suite →'; b.onclick = () => suivante();
@@ -340,11 +358,15 @@
       }
     } else {
       if (r.resultat === 'a_revoir') {
-        m.className = 'retour ko'; m.textContent = 'À revoir : regarde ci-dessous ce qui a coincé, puis on repasse par l\'étape guidée.';
+        m.className = 'retour ko'; m.textContent = 'Pas encore : un petit passage par l\'étape guidée.';
         b.textContent = 'Étape 2 : guidé →'; b.onclick = () => { etat.rattrapage = true; lancerEtape(2); };
+      } else if (r.resultat === 'fragile') {
+        m.className = 'retour moyen'; m.textContent = 'Presque ! Il revient dans quelques minutes, de mémoire.';
+        b.textContent = 'Suite →'; b.onclick = () => suivante();
       } else {
         m.className = 'retour ok';
-        m.textContent = (r.resultat === 'parfait' ? 'Parfait ! ' : 'Bien. ') + 'Prochaine fois dans ' + r.carte.ivl + (r.carte.ivl > 1 ? ' jours.' : ' jour.');
+        const quand = r.rappel ? 'Petit rappel dans 10 minutes, puis dans ' + r.carte.ivl + (r.carte.ivl > 1 ? ' jours.' : ' jour.') : 'Prochaine fois dans ' + r.carte.ivl + (r.carte.ivl > 1 ? ' jours.' : ' jour.');
+        m.textContent = (r.resultat === 'parfait' ? 'Parfait ! ' : 'Réussi. ') + quand;
         b.textContent = 'Suite →'; b.onclick = () => suivante();
       }
     }
@@ -401,12 +423,14 @@
     etat.ordreMontre = true;
     journal.ajouter({ evenement: 'ordre', mode: 'revision', caractere: etat.c, etape: etat.etape });
     const w = traceur.w; w.cancelQuiz(); w.showOutline();
+    $('zone').scrollIntoView({ block: 'center', behavior: 'smooth' });   // sur téléphone, la grille peut être hors de l'écran
     w.animateCharacter({ onComplete: () => { if (etat.etape !== 1) w.hideOutline(); w.hideCharacter(); etat.traitCourant = 0; traceur.quiz(); } });
   };
   $('btnIndice').onclick = () => {
     if (!traceur || etat.fini) return;
     etat.indices++;
     journal.ajouter({ evenement: 'indice', mode: 'revision', caractere: etat.c, etape: etat.etape, detail: 'trait ' + (etat.traitCourant + 1) });
+    $('zone').scrollIntoView({ block: 'center', behavior: 'smooth' });
     traceur.w.highlightStroke(etat.traitCourant);
   };
   $('btnEffacer').onclick = () => {
@@ -481,7 +505,7 @@
           erreurs: dic.erreurs[ci], indices: dic.aides[ci] ? 1 : 0, ordre_montre: !!dic.aides[ci], contexte: dic.it.zh, tolerance: R.tolerance,
           pinyin_visible: R.pinyin, saisie, ecran: innerWidth + 'x' + innerHeight, diagnostics: codesDiag(dic.diags[ci]),
           resultat: dic.aides[ci] || dic.erreurs[ci] > 2 ? 'a_revoir' : dic.erreurs[ci] ? 'bien' : 'parfait' });
-        if (appris(c)) moteur.noter(c, 3, dic.erreurs[ci], !!dic.aides[ci]);
+        if (appris(c)) moteur.noter(c, 3, dic.erreurs[ci], !!dic.aides[ci], { nbTraits: (DONNEES[c] || { strokes: [] }).strokes.length, traitsKO: new Set(dic.diags[ci].map(x => x.trait)).size, grave: !!dic.aides[ci] });
         dic.i++; dessinerCases(); $('dIndice').innerHTML = '';
         if (dic.i < dic.it.cibles.length) { if (R.dictee === 'phrase') montrerTexte(false); ecrireCible(); } else finDictee();
       },
@@ -498,10 +522,8 @@
     dic.it.cibles.forEach(ci => {
       if (!dic.diags[ci] || !dic.diags[ci].length) return;
       const bloc = document.createElement('div'); bloc.className = 'bilan'; zone.appendChild(bloc);
-      bilan(bloc, dic.cars[ci], dic.diags[ci], dTraceur.w);
+      bilan(bloc, dic.cars[ci], dic.diags[ci]);
       const h = bloc.querySelector('h3'); if (h) h.textContent = 'Ce qui a coincé dans ' + dic.cars[ci];
-      const b = bloc.querySelector('button'); if (b) b.textContent = 'Voir ' + dic.cars[ci] + ' tracé';
-      if (b) b.onclick = () => { creerTraceur($('dZone'), dic.cars[ci], 1, {}).w.animateCharacter(); };
     });
     zone.hidden = !zone.children.length;
     $('dSuite').hidden = false; $('dAide').hidden = true; $('dSuite').focus({ preventScroll: true });
