@@ -1,0 +1,111 @@
+{
+  "title": "teaser-saison1",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "duration": 57.5,
+  "formats": [
+    {
+      "name": "16x9",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "shots": {
+    "p1": [
+      0,
+      6
+    ],
+    "p2": [
+      6,
+      12.5
+    ],
+    "p3": [
+      12.5,
+      19.5
+    ],
+    "p4": [
+      19.5,
+      26.5
+    ],
+    "p5": [
+      26.5,
+      37.5
+    ],
+    "p6": [
+      37.5,
+      46
+    ],
+    "p7": [
+      46,
+      57.5
+    ]
+  },
+  "clips": {
+    "p4": {
+      "dir": "clips/p4",
+      "start": 19.5,
+      "frames": 210,
+      "fps": 30
+    },
+    "p6": {
+      "dir": "clips/p6",
+      "start": 37.5,
+      "frames": 240,
+      "fps": 30
+    },
+    "p7": {
+      "dir": "clips/p7",
+      "start": 46,
+      "frames": 300,
+      "fps": 30
+    }
+  },
+  "voice": [
+    {
+      "t": 0.6,
+      "file": "n1",
+      "text": "1919. Une jeune peintre cache son nom… dans un rouleau."
+    },
+    {
+      "t": 6.8,
+      "file": "n2",
+      "text": "1945. Le rouleau est coupé en huit. Les fragments disparaissent."
+    },
+    {
+      "t": 13.0,
+      "file": "n3",
+      "text": "Aujourd'hui, l'un d'eux vous attend… chez un calligraphe de Shanghai."
+    },
+    {
+      "t": 24.9,
+      "file": "mm1",
+      "zh": "不要相信他。",
+      "py": "Bú yào xiāngxìn tā.",
+      "fr": "Ne lui fais pas confiance.",
+      "pos": "top"
+    },
+    {
+      "t": 27.6,
+      "file": "n4",
+      "text": "Huit villes. Un collectionneur prêt à tout. Une restauratrice… qui veut tout figer."
+    },
+    {
+      "t": 38.0,
+      "file": "n5",
+      "text": "Chaque fragment rend une couleur au paysage. Chaque mot compris… vous rapproche de la vérité."
+    },
+    {
+      "t": 44.4,
+      "file": "mm2",
+      "zh": "走吧！",
+      "py": "Zǒu ba !",
+      "fr": "En route !"
+    }
+  ],
+  "music": {
+    "file": "audio/musique.mp3",
+    "fadeOut": 54.6,
+    "credit": "Musique générée avec ElevenLabs Music"
+  }
+}
