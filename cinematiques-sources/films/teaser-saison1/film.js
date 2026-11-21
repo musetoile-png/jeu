@@ -6,6 +6,8 @@ import { rng } from '../../lib/rng.js';
 
 const T = await (await fetch('./timeline.json')).json();
 const D = await (await fetch('./data.json')).json();
+// côte, fleuves (Natural Earth, domaine public) et Grand Canal (tracé simplifié), déjà projetés en pixels
+const GEO = await (await fetch('./geo.json')).json();
 const W = T.width, H = T.height;
 const cv = document.getElementById('c');
 cv.width = W; cv.height = H;
@@ -303,9 +305,42 @@ function routeTo(t) { // points de la route dessinée jusqu'à t
   }
   return pts;
 }
+function poly(pts) { ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); }
+function mapLabel(zh, py, x, y, a, size = 30, align = 'center') {
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha = a; ctx.textAlign = align;
+  ctx.fillStyle = 'rgba(70,82,90,0.85)'; ctx.font = `400 ${size}px ${ZH}`; ctx.letterSpacing = '6px'; ctx.fillText(zh, x, y); ctx.letterSpacing = '0px';
+  ctx.fillStyle = 'rgba(94,79,61,0.8)'; ctx.font = "italic 400 21px 'Fraunces'"; ctx.fillText(py, x, y + 28);
+  ctx.restore();
+}
+function geography(t) {
+  const a = ease.inOutCubic(prog(t, 26.6, 27.8));
+  if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha = a; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  for (const l of GEO.coast) { // la côte : un lavis flou puis un trait fin
+    ctx.save(); ctx.filter = 'blur(6px)'; ctx.strokeStyle = 'rgba(90,110,120,0.22)'; ctx.lineWidth = 16; poly(l); ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = 'rgba(27,22,18,0.5)'; ctx.lineWidth = 2.2; poly(l); ctx.stroke();
+  }
+  for (const [k, ls] of Object.entries(GEO.rivers)) {
+    for (const l of ls) {
+      ctx.save(); ctx.filter = 'blur(3px)'; ctx.strokeStyle = 'rgba(80,105,120,0.25)'; ctx.lineWidth = k === 'wei' ? 6 : 10; poly(l); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = 'rgba(60,85,100,0.55)'; ctx.lineWidth = k === 'wei' ? 1.8 : 3; poly(l); ctx.stroke();
+    }
+  }
+  ctx.setLineDash([8, 9]); ctx.strokeStyle = 'rgba(110,80,50,0.72)'; ctx.lineWidth = 2.6; poly(GEO.canal); ctx.stroke(); ctx.setLineDash([]);
+  ctx.restore();
+  const b = ease.outCubic(prog(t, 27.2, 28.2));
+  mapLabel('黄河', 'Huáng Hé', 470, 372, b);
+  mapLabel('长江', 'Cháng Jiāng', 640, 858, b);
+  mapLabel('大运河', 'Dà Yùnhé', 1296, 462, b, 24, 'left');
+  mapLabel('渤海', 'Bó Hǎi', 1404, 246, b * 0.8, 28);
+  mapLabel('黄海', 'Huáng Hǎi', 1712, 560, b * 0.8, 28);
+  mapLabel('东海', 'Dōng Hǎi', 1760, 990, b * 0.8, 28);
+}
 function p5(t) {
   ctx.drawImage(paper, 0, 0);
   mountains(t, 0.7);
+  geography(t);
   // la route
   ctx.save(); ctx.strokeStyle = 'rgba(27,22,18,0.82)'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   const pts = routeTo(t);
@@ -327,6 +362,11 @@ function p5(t) {
     const pop = ease.outBack(clamp((t - c.t + 0.05) / 0.35));
     ctx.fillStyle = c === CITIES[0] ? RED : INK;
     ctx.beginPath(); ctx.arc(c.p[0], c.p[1], 11 * pop, 0, 7); ctx.fill();
+    { // un halo de papier sous le nom, pour qu'il reste lisible par-dessus fleuves et route
+      const p0 = c.places[c.zh[0]], h = clamp((t - c.t) / 0.3);
+      ctx.save(); ctx.globalAlpha = 0.8 * h; ctx.filter = 'blur(10px)'; ctx.fillStyle = PAPER;
+      ctx.fillRect(p0.x - CW / 2 - 4, p0.y - CW / 2 - 2, CW * 2 + 8, CW + 44); ctx.restore();
+    }
     drawSchedule(ctx, c.sch, c.places, t, false);
     const a = ease.outCubic(prog(t, c.t + 0.35, c.t + 0.8));
     if (a > 0) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = BROWN; ctx.textAlign = 'center'; ctx.font = "italic 400 26px 'Fraunces'"; ctx.fillText(c.py, c.labelX, c.labelY); ctx.restore(); }

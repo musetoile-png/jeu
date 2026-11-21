@@ -3,6 +3,7 @@
 Film de présentation (16:9, 57,5 s). Découpage et textes : `SCRIPT.md` ; temps des plans et des voix : `timeline.json`.
 
 ## Sources
+- Carte (P5) : côte et fleuves Natural Earth (domaine public, `geo.json` déjà projeté), Grand Canal en tracé simplifié.
 - Plans P1, P2, P3, P5 : animés par le code (`film.js`) avec les images du jeu (ruelle, bouquinerie, 白老师) et deux paysages générés
   (ElevenLabs, gpt-image-2.5-sunburst, style pris sur `bouquinerie_far.jpg`). Tracés des caractères : hanzi-writer-data (licence Arphic).
 - Plans P4 (Mò Mò sort du rouleau) et P6 (les couleurs reviennent) : vidéos ElevenLabs, Seedance 2.5, 720p, à partir de `assets/scroll_a.jpg`
